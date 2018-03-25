@@ -72,7 +72,7 @@ ANTHEM_BUILD_ROOT = os.environ.get(
 ANTHEM_REPO_NAME = os.environ.get("ANTHEM_REPO_NAME", "unsung-anthem")
 
 
-SCRIPT_DIR = os.path.join(ANTHEM_SOURCE_ROOT, "script", "utils")
+SCRIPT_DIR = os.path.join(ANTHEM_SOURCE_ROOT, "script")  # TODO _script_path()
 
 
 ANTHEM_SCRIPT_DIR = os.path.join(ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME, "utils")
