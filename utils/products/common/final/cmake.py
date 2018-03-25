@@ -174,6 +174,7 @@ def construct_call(is_ode=False, lib=False, test=False):
         cmake_call += ["-DODE_LINK_LIBCXX=OFF"]
 
     if args.build_llvm:
+        cmake_call += ["-DODE_LINK_LIBCXX=ON"]
         cmake_call += ["-DODE_USE_LOCAL_LLVM=ON"]
     else:
         cmake_call += ["-DODE_USE_LOCAL_LLVM=OFF"]
