@@ -23,17 +23,17 @@ def _ode_build_path():
     # Get the parent directory of this file for checking if this file is
     # located in an Unsung Anthem checkout.
     #
-    # $ANTHEM_SOURCE_ROOT/ode-build/utils/script_support/variables.py
+    # $ANTHEM_SOURCE_ROOT/script/utils/script_support/variables.py
     utils_path = os.path.dirname(os.path.dirname(__file__))
     # Split the path as the first part of the 'utils_path' is presumably the
-    # Unsung Anthem checkout.
-    anthem_path, parent_dirname = os.path.split(utils_path)
+    # script checkout.
+    script_path, parent_dirname = os.path.split(utils_path)
     if parent_dirname != "utils":
         return ""
     # The checkout has to have CMake Listfile.
-    if not os.path.exists(os.path.join(anthem_path, "README.md")):
+    if not os.path.exists(os.path.join(script_path, "README.md")):
         return ""
-    return anthem_path
+    return script_path
 
 
 def _get_default_source_root():
@@ -66,27 +66,12 @@ ANTHEM_BUILD_ROOT = os.environ.get(
 #     return anthem_repo_name
 
 
-def _get_default_ode_build_repo_name():
-    # Split the path of the checkout directory as the latter part of it is the
-    # filename of the checkout directory.
-    _, ode_build_repo_name = os.path.split(_ode_build_path())
-    return ode_build_repo_name
-
-
 # $ANTHEM_REPO_NAME is resolved from the path of this file if the environment
 # variable is not set.
 ANTHEM_REPO_NAME = os.environ.get("ANTHEM_REPO_NAME", "unsung-anthem")
-# ANTHEM_REPO_NAME = os.environ.get(
-#     "ANTHEM_REPO_NAME", _get_default_anthem_repo_name())
 
 
-# $REPO_NAME is resolved from the path of this file if the environment
-# variable is not set.
-REPO_NAME = os.environ.get(
-    "ODE_BUILD_REPO_NAME", _get_default_ode_build_repo_name())
-
-
-SCRIPT_DIR = os.path.join(ANTHEM_SOURCE_ROOT, REPO_NAME, "utils")
+SCRIPT_DIR = os.path.join(ANTHEM_SOURCE_ROOT, "script", "utils")
 
 
 ANTHEM_SCRIPT_DIR = os.path.join(ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME, "utils")
