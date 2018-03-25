@@ -41,11 +41,21 @@ def do_build():
     if common.build.binary_exists(product=product, path=bin_path):
         return
     source_dir = workspace.source_dir(product=product)
-    shell.copytree(os.path.join(source_dir, "bin"), os.path.join(data.build.local_root, "bin"))
-    shell.copytree(os.path.join(source_dir, "include"), os.path.join(data.build.local_root, "include"))
-    shell.copytree(os.path.join(source_dir, "lib"), os.path.join(data.build.local_root, "lib"))
-    shell.copytree(os.path.join(source_dir, "libexec"), os.path.join(data.build.local_root, "lib"))
-    shell.copytree(os.path.join(source_dir, "share"), os.path.join(data.build.local_root, "share"))
+    shell.copytree(
+        os.path.join(source_dir, "bin"),
+        os.path.join(data.build.local_root, "bin"))
+    shell.copytree(
+        os.path.join(source_dir, "include"),
+        os.path.join(data.build.local_root, "include"))
+    shell.copytree(
+        os.path.join(source_dir, "lib"),
+        os.path.join(data.build.local_root, "lib"))
+    shell.copytree(
+        os.path.join(source_dir, "libexec"),
+        os.path.join(data.build.local_root, "lib"))
+    shell.copytree(
+        os.path.join(source_dir, "share"),
+        os.path.join(data.build.local_root, "share"))
 
 
 def should_build():
