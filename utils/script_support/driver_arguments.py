@@ -294,6 +294,11 @@ def create_argument_parser():
         toggle_true,
         help="build Obliging Ode and Unsung Anthem for development")
 
+    option(
+        "--build-llvm",
+        toggle_true,
+        help="build download LLVM, Clang, and libc++")
+
     # -------------------------------------------------------------------------
     in_group("Select the C++ standard")
 

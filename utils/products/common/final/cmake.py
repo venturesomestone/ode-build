@@ -173,6 +173,11 @@ def construct_call(is_ode=False, lib=False, test=False):
     else:
         cmake_call += ["-DODE_LINK_LIBCXX=OFF"]
 
+    if args.build_llvm:
+        cmake_call += ["-DODE_USE_LOCAL_LLVM=ON"]
+    else:
+        cmake_call += ["-DODE_USE_LOCAL_LLVM=OFF"]
+
     if test and platform.system() == "Windows":
         cmake_call += ["-DCMAKE_CXX_FLAGS=\
             \"/D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING \

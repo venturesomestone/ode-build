@@ -53,7 +53,7 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 # These options are not exposed as command line options on purpose. If you
 # need to change any of these, you should do so on trunk or in a branch.
 
-SCRIPT_VERSION = "0.2.2"
+SCRIPT_VERSION = "0.2.3"
 
 PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
@@ -138,6 +138,16 @@ PRODUCT_CONFIG = Mapping(
             asset_data=SOURCE_ASSET,
             version_prefix="release-"
         )
+    ),
+
+    llvm=product_config(
+        version="6.0.0",
+        name="Low Level Virtual Machine",
+        key="llvm",
+        is_tool=True,
+        is_source=False,
+        url_format="{protocol}://releases.llvm.org/{version}/"
+                   "clang+llvm-{version}-{platform}.{extension}"
     ),
 
     lua=product_config(
