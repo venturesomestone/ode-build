@@ -23,17 +23,18 @@ def _ode_build_path():
     # Get the parent directory of this file for checking if this file is
     # located in an Unsung Anthem checkout.
     #
-    # $ANTHEM_SOURCE_ROOT/script/utils/script_support/variables.py
-    utils_path = os.path.dirname(os.path.dirname(__file__))
+    # $ANTHEM_SOURCE_ROOT/script/script_support/variables.py
+    script_path = os.path.dirname(os.path.dirname(__file__))
     # Split the path as the first part of the 'utils_path' is presumably the
     # script checkout.
-    script_path, parent_dirname = os.path.split(utils_path)
-    if parent_dirname != "utils":
+    root_path, parent_dirname = os.path.split(script_path)
+    if parent_dirname != "script":
         return ""
     # The checkout has to have CMake Listfile.
-    if not os.path.exists(os.path.join(script_path, "README.md")):
+    if not os.path.exists(os.path.join(
+            root_path, "unsung-anthem", "CMakeLists.txt")):
         return ""
-    return script_path
+    return root_path
 
 
 def _get_default_source_root():

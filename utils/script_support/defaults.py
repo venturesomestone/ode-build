@@ -53,7 +53,7 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 # These options are not exposed as command line options on purpose. If you
 # need to change any of these, you should do so on trunk or in a branch.
 
-SCRIPT_VERSION = "0.1.0"
+SCRIPT_VERSION = "0.2.0"
 
 PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
@@ -80,20 +80,6 @@ PRODUCT_CONFIG = Mapping(
             owner="google",
             name="benchmark",
             asset_data=SOURCE_ASSET,
-            version_prefix="v"
-        )
-    ),
-
-    catch2=product_config(
-        version="2.1.1",
-        name="Catch2",
-        key="catch2",
-        is_tool=False,
-        is_source=True,
-        github_data=github_config(
-            owner="catchorg",
-            name="Catch2",
-            asset_data=asset("catch.hpp"),
             version_prefix="v"
         )
     ),
