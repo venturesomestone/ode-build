@@ -84,20 +84,6 @@ PRODUCT_CONFIG = Mapping(
         )
     ),
 
-    catch2=product_config(
-        version="2.1.1",
-        name="Catch2",
-        key="catch2",
-        is_tool=False,
-        is_source=True,
-        github_data=github_config(
-            owner="catchorg",
-            name="Catch2",
-            asset_data=asset("catch.hpp"),
-            version_prefix="v"
-        )
-    ),
-
     clara=product_config(
         version="1.1.1",
         name="Clara",
