@@ -37,7 +37,7 @@ __all__ = [
 BUILD_VARIANT = "Debug"
 CMAKE_GENERATOR = "Ninja"
 
-CXX_STANDARD = "c++14"
+CXX_STANDARD = "c++17"
 
 ODE_VERSION = "0.1.0-dev.1"
 ANTHEM_VERSION = "0.1.0-dev.1"
@@ -52,6 +52,8 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 #
 # These options are not exposed as command line options on purpose. If you
 # need to change any of these, you should do so on trunk or in a branch.
+
+SCRIPT_VERSION = "0.1.0"
 
 PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
