@@ -140,6 +140,16 @@ PRODUCT_CONFIG = Mapping(
         )
     ),
 
+    llvm=product_config(
+        version="6.0.0",
+        name="Low Level Virtual Machine",
+        key="llvm",
+        is_tool=True,
+        is_source=False,
+        url_format="{protocol}://releases.llvm.org/{version}/"
+                   "clang+llvm-{version}-{platform}.{extension}"
+    ),
+
     lua=product_config(
         version="5.3.4",
         name="Lua",

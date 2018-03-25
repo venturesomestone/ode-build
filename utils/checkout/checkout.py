@@ -77,6 +77,8 @@ def update():
         if not args.build_test:
             skip_list += ["catch"]
             skip_list += ["hayai"]
+        if not args.build_llvm:
+            skip_list += ["llvm"]
         return skip_list
     skip_repository_list = _skip_repositories()
     diagnostics.debug("Using {} protocol to make the HTTP calls".format(
