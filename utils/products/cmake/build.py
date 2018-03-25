@@ -50,7 +50,18 @@ def do_build():
             os.path.join(source_dir, "CMake.app"),
             os.path.join(data.build.local_root, "CMake.app"))
     else:
-        shell.copytree(source_dir, data.build.local_root)
+        shell.copytree(
+            os.path.join(source_dir, "bin"),
+            os.path.join(data.build.local_root, "bin"))
+        shell.copytree(
+            os.path.join(source_dir, "doc"),
+            os.path.join(data.build.local_root, "doc"))
+        shell.copytree(
+            os.path.join(source_dir, "man"),
+            os.path.join(data.build.local_root, "man"))
+        shell.copytree(
+            os.path.join(source_dir, "share"),
+            os.path.join(data.build.local_root, "share"))
 
 
 def should_build():
