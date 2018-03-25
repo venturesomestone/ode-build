@@ -19,7 +19,7 @@ import os
 HOME = os.environ.get("HOME", "/")
 
 
-def _ode_build_path():
+def _script_path():
     # Get the parent directory of this file for checking if this file is
     # located in an Unsung Anthem checkout.
     #
@@ -34,11 +34,11 @@ def _ode_build_path():
     if not os.path.exists(os.path.join(
             root_path, "unsung-anthem", "CMakeLists.txt")):
         return ""
-    return root_path
+    return script_path
 
 
 def _get_default_source_root():
-    return os.path.dirname(_ode_build_path())
+    return os.path.dirname(_script_path())
 
 
 # $ANTHEM_SOURCE_ROOT is resolved from the path of this file if the environment
