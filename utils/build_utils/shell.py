@@ -233,7 +233,7 @@ def listtree(path, dry_run=None, echo=None):
     if os.path.isdir(path):
         for dirpath, dirnames, filenames in os.walk(path):
             for name in filenames:
-                print(os.path.join(dirpath, name))
+                print(os.path.join(os.path.relpath(dirpath, path), name))
     else:
         diagnostics.warning("{} is not a directory!".format(path))
 
