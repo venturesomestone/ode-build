@@ -70,9 +70,10 @@ def _copy_source():
     # shell.makedirs(build_dir)
     if os.path.isdir(os.path.join(data.build.local_root, "src", "gtest")):
         shell.rmtree(os.path.join(data.build.local_root, "src", "gtest"))
+    shell.makedirs(os.path.join(data.build.local_root, "src", "gtest"))
     shell.copytree(
         os.path.join(workspace.source_dir(product), "googletest", "src"),
-        os.path.join(data.build.local_root, "src", "gtest"))
+        os.path.join(data.build.local_root, "src", "gtest", "src"))
     if os.path.isdir(workspace.include_file("gtest")):
         shell.rmtree(workspace.include_file("gtest"))
     shell.copytree(
