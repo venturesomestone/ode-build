@@ -223,6 +223,21 @@ def move(src, dest, dry_run=None, echo=None):
     shutil.move(src, dest)
 
 
+def listtree(path, dry_run=None, echo=None):
+    dry_run = _coerce_dry_run(dry_run)
+    echo = _coerce_echo(echo)
+    if dry_run or echo:
+        _echo_command(dry_run, ["ls", "-R", path])
+    if dry_run:
+        return
+    if os.path.isdir(path):
+        for dirpath, dirnames, filenames in os.walk(path):
+            for name in filenames:
+                print(os.path.join(dirpath, name))
+    else:
+        diagnostics.warning("{} is not a directory!".format(path))
+
+
 def tar(path, dest=None, dry_run=None, echo=None):
     """Extract an archive."""
     dry_run = _coerce_dry_run(dry_run)
@@ -268,9 +283,7 @@ def curl(url, dest, env=None, dry_run=None, echo=None):
     """Download a file."""
     call(
         ["curl", "-o", dest, "--create-dirs", url],
-        env=env,
-        dry_run=dry_run,
-        echo=echo)
+        env=env, dry_run=dry_run, echo=echo)
 
 
 def caffeinate(command, env=None, dry_run=False, echo=None):
