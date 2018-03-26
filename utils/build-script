@@ -96,7 +96,7 @@ def _clean_delay():
 
 def _set_up_build(args):
     shell.DRY_RUN = args.dry_run
-    shell.ECHO_DEFAULT = args.verbose_build
+    shell.ECHO = args.verbose_build
 
     diagnostics.VERBOSE = args.verbose_build
     diagnostics.DEBUG = args.verbose_build
