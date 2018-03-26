@@ -168,6 +168,11 @@ def construct_call(is_ode=False, lib=False, test=False):
     else:
         cmake_call += ["-DODE_ADD_LUA_SOURCE=OFF"]
 
+    if test and platform.system() != "Windows":
+        cmake_call += ["-DODE_ADD_GTEST_SOURCE=ON"]
+    else:
+        cmake_call += ["-DODE_ADD_GTEST_SOURCE=OFF"]
+
     if not args.search_cxx and args.host_cxx:
         cmake_call += ["-DODE_LINK_LIBCXX=ON"]
     else:
