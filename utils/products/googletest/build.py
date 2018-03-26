@@ -41,10 +41,8 @@ def _copy_windows():
         os.path.join(data.build.local_root, "include", "gtest"))
 
 
-def do_build():
-    """Build Google Test."""
+def _build():
     product = data.build.products.googletest
-    common.build.check_source(product)
     if platform.system() == "Windows":
         bin_path = os.path.join(data.build.local_root, "lib", "gtest.lib")
     else:
@@ -62,6 +60,35 @@ def do_build():
     else:
         common.build.build_call(
             product=product, solution_name="gtest", source_subdir="googletest")
+
+
+def _copy_source():
+    product = data.build.products.googletest
+    # build_dir = workspace.build_dir(product)
+    # if common.build.binary_exists(product=product, path=bin_path):
+    #     return
+    # shell.makedirs(build_dir)
+    if os.path.isdir(os.path.join(data.build.local_root, "src", "gtest")):
+        shell.rmtree(os.path.join(data.build.local_root, "src", "gtest"))
+    shell.copytree(
+        os.path.join(workspace.source_dir(product), "googletest", "src"),
+        os.path.join(data.build.local_root, "src", "gtest"))
+    if os.path.isdir(workspace.include_file("gtest")):
+        shell.rmtree(workspace.include_file("gtest"))
+    shell.copytree(
+        os.path.join(
+            workspace.source_dir(product), "googletest", "include", "gtest"),
+        workspace.include_file("gtest"))
+
+
+def do_build():
+    """Build Google Test."""
+    product = data.build.products.googletest
+    common.build.check_source(product)
+    if platform.system() == "Windows":
+        _build()
+    else:
+        _copy_source()
 
 
 def should_build():
