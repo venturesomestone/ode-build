@@ -36,6 +36,14 @@ def do_build():
             "BENCHMARK_USE_LIBCXX": True
         })
     elif data.build.args.build_llvm:
+        cmakelist = os.path.join(workspace.source_dir(product), "CMakeLists.txt")
+        cmakelist2 = os.path.join(workspace.source_dir(product), "CMakeLists2.txt")
+        shell.move(cmakelist, cmakelist2)
+        with open(cmakelist2, "rt") as fin:
+            with open(cmakelist, "wt") as fout:
+                for line in fin:
+                    fout.write(line.replace("c++11", "{}".format(data.build.std)))
+        shell.rm(cmakelist2)
         std_path = os.path.join(data.build.local_root, "include", "c++", "v1")
         lib_path = os.path.join(data.build.local_root, "lib")
         common.build.build_call(product=product, cmake_args={
