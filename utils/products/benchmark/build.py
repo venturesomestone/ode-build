@@ -30,11 +30,23 @@ def do_build():
     if common.build.binary_exists(product=product, path=bin_path):
         return
     shell.makedirs(build_dir)
-    common.build.build_call(product=product, cmake_args={
-        "BENCHMARK_ENABLE_GTEST_TESTS": False,
-        # "BENCHMARK_USE_LIBCXX": True,
-        # "CMAKE_CXX_FLAGS": "-I/usr/local/include/c++/v1"
-    })
+    if data.build.args.stdlib == "libc++":
+        common.build.build_call(product=product, cmake_args={
+            "BENCHMARK_ENABLE_GTEST_TESTS": False,
+            "BENCHMARK_USE_LIBCXX": True
+        })
+    elif data.build.args.build_llvm:
+        std_path = os.path.join(data.build.local_root, "include", "c++", "v1")
+        lib_path = os.path.join(data.build.local_root, "lib")
+        common.build.build_call(product=product, cmake_args={
+            "BENCHMARK_ENABLE_GTEST_TESTS": False,
+            "BENCHMARK_USE_LIBCXX": True,
+            "CMAKE_CXX_FLAGS": "-I{} -L{}".format(std_path, lib_path)
+        })
+    else:
+        common.build.build_call(product=product, cmake_args={
+            "BENCHMARK_ENABLE_GTEST_TESTS": False
+        })
 
 
 def should_build():
