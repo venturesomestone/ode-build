@@ -126,7 +126,7 @@ def construct_call(is_ode=False, lib=False, test=False):
     if args.cmake_generator == "Ninja":
         cmake_call += ["-DCMAKE_MAKE_PROGRAM={}".format(toolchain.ninja)]
 
-    if data.build.stdlib:
+    if data.build.stdlib and not args.build_llvm:
         cmake_call += ["-DODE_STDLIB={}".format(data.build.stdlib)]
 
     if args.optimization_level:
@@ -181,6 +181,7 @@ def construct_call(is_ode=False, lib=False, test=False):
     if args.build_llvm:
         cmake_call += ["-DODE_LINK_LIBCXX=ON"]
         cmake_call += ["-DODE_USE_LOCAL_LLVM=ON"]
+        cmake_call += ["-DODE_STDLIB=libc++"]
     else:
         cmake_call += ["-DODE_USE_LOCAL_LLVM=OFF"]
 
