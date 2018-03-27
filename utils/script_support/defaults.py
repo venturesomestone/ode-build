@@ -26,7 +26,7 @@ from .product_config import product_config, version_config, github_config, \
 __all__ = [
     # Command line configurable
     "BUILD_VARIANT", "CMAKE_GENERATOR", "CXX_STANDARD", "ANTHEM_VERSION",
-    "DARWIN_DEPLOYMENT_VERSION", "UNIX_INSTALL_PREFIX",
+    "ODE_VERSION", "DARWIN_DEPLOYMENT_VERSION", "UNIX_INSTALL_PREFIX",
     "DARWIN_INSTALL_PREFIX",
 
     # Constants
@@ -41,6 +41,9 @@ CMAKE_GENERATOR = "Ninja"
 
 CXX_STANDARD = "c++17"
 
+ANTHEM_VERSION = anthem_config_value("ANTHEM_VERSION")
+ODE_VERSION = anthem_config_value("ODE_VERSION")
+
 DARWIN_DEPLOYMENT_VERSION = "10.9"
 
 UNIX_INSTALL_PREFIX = "/usr"
@@ -52,7 +55,7 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 # These options are not exposed as command line options on purpose. If you
 # need to change any of these, you should do so on trunk or in a branch.
 
-SCRIPT_VERSION = "0.3.0-alpha.2"
+SCRIPT_VERSION = "0.3.0-alpha.3"
 
 PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
