@@ -66,20 +66,15 @@ def should_build():
 def copy_dynamic(dest):
     """Move the dynamic library."""
     if platform.system() == "Darwin":
-        for libfile in os.listdir(dest):
-            if "libc++" in libfile and ".dylib" in libfile:
-                shell.rm(os.path.join(dest, libfile))
-        for libfile in os.listdir(os.path.join(data.build.local_dir, "lib")):
-            if "libc++" in libfile and ".dylib" in libfile:
-                shell.copy(
-                    os.path.join(data.build.local_dir, "lib", libfile),
-                    os.path.join(dest, libfile))
+        extension = ".dylib"
     else:
-        for libfile in os.listdir(dest):
-            if "libc++" in libfile and ".so" in libfile:
-                shell.rm(os.path.join(dest, libfile))
-        for libfile in os.listdir(os.path.join(data.build.local_dir, "lib")):
-            if "libc++" in libfile and ".so" in libfile:
-                shell.copy(
-                    os.path.join(data.build.local_dir, "lib", libfile),
-                    os.path.join(dest, libfile))
+        extension = ".so"
+
+    for libfile in os.listdir(dest):
+        if "libc++" in libfile and extension in libfile:
+            shell.rm(os.path.join(dest, libfile))
+    for libfile in os.listdir(os.path.join(data.build.local_dir, "lib")):
+        if "libc++" in libfile and extension in libfile:
+            shell.copy(
+                os.path.join(data.build.local_dir, "lib", libfile),
+                os.path.join(dest, libfile))
