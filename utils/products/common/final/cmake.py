@@ -161,12 +161,12 @@ def construct_call(is_ode=False, lib=False, test=False):
     if data.build.ci:  # and not platform.system() == "Darwin":
         cmake_call += ["-DODE_MANUAL_SDL=ON"]
 
-    manual_rpath_ci = data.build.ci and platform.system() == "Darwin"
+    manual_rpath_ci = data.build.ci \
+        and (platform.system() == "Darwin" or args.build_llvm)
 
     if manual_rpath_ci:
-        cmake_call += ["-DODE_SET_RPATH=ON"]
-    else:
-        cmake_call += ["-DODE_SET_RPATH=OFF"]
+        cmake_call += ["-DODE_RPATH={}".format(
+            os.path.join(install_root, "bin"))]
 
     if data.build.lua_in_source:
         cmake_call += ["-DODE_ADD_LUA_SOURCE=ON"]
