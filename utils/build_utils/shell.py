@@ -209,7 +209,11 @@ def copy(src, dest, dry_run=None, echo=None):
         _echo_command(dry_run, ["cp", "-p", src, dest])
     if dry_run:
         return
-    shutil.copy2(src, dest)
+    if os.path.islink(src):
+        link = os.readlink(src)
+        os.symlink(link, dest)
+    else:
+        shutil.copy2(src, dest)
 
 
 def move(src, dest, dry_run=None, echo=None):
