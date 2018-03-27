@@ -61,3 +61,25 @@ def do_build():
 def should_build():
     """Check whether or not this product should be built."""
     return data.build.args.build_llvm
+
+
+def copy_dynamic(dest):
+    """Move the dynamic library."""
+    if platform.system() == "Darwin":
+        for libfile in os.listdir(dest):
+            if "libc++" in libfile and ".dylib" in libfile:
+                shell.rm(os.path.join(dest, libfile))
+        for libfile in os.listdir(os.path.join(data.build.local_dir, "lib")):
+            if "libc++" in libfile and ".dylib" in libfile:
+                shell.copy(
+                    os.path.join(data.build.local_dir, "lib", libfile),
+                    os.path.join(dest, libfile))
+    else:
+        for libfile in os.listdir(dest):
+            if "libc++" in libfile and ".so" in libfile:
+                shell.rm(os.path.join(dest, libfile))
+        for libfile in os.listdir(os.path.join(data.build.local_dir, "lib")):
+            if "libc++" in libfile and ".so" in libfile:
+                shell.copy(
+                    os.path.join(data.build.local_dir, "lib", libfile),
+                    os.path.join(dest, libfile))
