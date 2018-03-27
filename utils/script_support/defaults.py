@@ -16,6 +16,8 @@ import platform
 
 from build_utils.mapping import Mapping
 
+from build_utils.reflection import anthem_config_value
+
 from .product_config import product_config, version_config, github_config, \
     asset, SOURCE_ASSET, platform_specific_asset, platform_file_config, \
     ode_anthem_config
@@ -39,9 +41,6 @@ CMAKE_GENERATOR = "Ninja"
 
 CXX_STANDARD = "c++17"
 
-ODE_VERSION = "0.1.0-dev.1"
-ANTHEM_VERSION = "0.1.0-dev.1"
-
 DARWIN_DEPLOYMENT_VERSION = "10.9"
 
 UNIX_INSTALL_PREFIX = "/usr"
@@ -53,7 +52,7 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 # These options are not exposed as command line options on purpose. If you
 # need to change any of these, you should do so on trunk or in a branch.
 
-SCRIPT_VERSION = "0.3.0-alpha.1"
+SCRIPT_VERSION = "0.3.0-alpha.2"
 
 PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
@@ -61,17 +60,17 @@ GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
 
 PRODUCT_CONFIG = Mapping(
     anthem=ode_anthem_config(
-        version="0.1.0-dev.1",
-        name="Unsung Anthem",
-        key="anthem",
-        window_name="Unsung Anthem",
-        logger_name="anthem",
+        version=anthem_config_value("ANTHEM_VERSION"),
+        name=anthem_config_value("ANTHEM_NAME"),
+        key=anthem_config_value("ANTHEM_KEY"),
+        window_name=anthem_config_value("ANTHEM_WINDOW_NAME"),
+        logger_name=anthem_config_value("ANTHEM_LOGGER_NAME"),
         is_tool=False,
         is_source=True
     ),
 
     benchmark=product_config(
-        version="1.3.0",
+        version=anthem_config_value("BENCHMARK_VERSION"),
         name="benchmark",
         key="benchmark",
         is_tool=False,
@@ -85,7 +84,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     clara=product_config(
-        version="1.1.4",
+        version=anthem_config_value("CLARA_VERSION"),
         name="Clara",
         key="clara",
         is_tool=False,
@@ -100,9 +99,9 @@ PRODUCT_CONFIG = Mapping(
 
     cmake=product_config(
         version=version_config(
-            major=3,
-            minor=8,
-            patch=2
+            major=anthem_config_value("CMAKE_MAJOR_VERSION"),
+            minor=anthem_config_value("CMAKE_MINOR_VERSION"),
+            patch=anthem_config_value("CMAKE_PATCH_VERSION")
         ),
         name="CMake",
         key="cmake",
@@ -113,7 +112,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     glad=product_config(
-        version="0.1.18a0",
+        version=anthem_config_value("GLAD_VERSION"),
         name="glad",
         key="glad",
         is_tool=False,
@@ -127,7 +126,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     googletest=product_config(
-        version="1.8.0",
+        version=anthem_config_value("GOOGLETEST_VERSION"),
         name="Google Test",
         key="googletest",
         is_tool=False,
@@ -141,7 +140,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     llvm=product_config(
-        version="6.0.0",
+        version=anthem_config_value("LLVM_VERSION"),
         name="Low Level Virtual Machine",
         key="llvm",
         is_tool=True,
@@ -151,7 +150,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     lua=product_config(
-        version="5.3.4",
+        version=anthem_config_value("LUA_VERSION"),
         name="Lua",
         key="lua",
         is_tool=False,
@@ -160,7 +159,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     ninja=product_config(
-        version="1.8.2",
+        version=anthem_config_value("NINJA_VERSION"),
         name="Ninja",
         key="ninja",
         is_tool=True,
@@ -181,17 +180,19 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     ode=ode_anthem_config(
-        version="0.1.0-dev.1",
-        name="Obliging Ode",
-        key="ode",
-        opengl=Mapping(version=Mapping(major=3, minor=2)),
-        logger_name="ode",
+        version=anthem_config_value("ODE_VERSION"),
+        name=anthem_config_value("ODE_NAME"),
+        key=anthem_config_value("ODE_KEY"),
+        opengl=Mapping(version=Mapping(
+            major=anthem_config_value("ODE_OPENGL_MAJOR_VERSION"),
+            minor=anthem_config_value("ODE_OPENGL_MINOR_VERSION"))),
+        logger_name=anthem_config_value("ODE_LOGGER_NAME"),
         is_tool=False,
         is_source=True
     ),
 
     sdl=product_config(
-        version="2.0.8",
+        version=anthem_config_value("SDL_VERSION"),
         name="Simple DirectMedia Layer",
         key="sdl",
         is_tool=False,
@@ -203,7 +204,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     spdlog=product_config(
-        version="0.16.3",
+        version=anthem_config_value("SPDLOG_VERSION"),
         name="spdlog",
         key="spdlog",
         is_tool=False,

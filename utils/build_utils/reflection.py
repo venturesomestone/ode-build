@@ -12,7 +12,10 @@
 
 
 import importlib
+import os
 import sys
+
+from script_support.variables import ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME
 
 from . import diagnostics
 
@@ -109,3 +112,25 @@ def product_exists(product):
         return True
     except ImportError:
         return False
+
+
+def anthem_config_value(variable):
+    """Get a configuration value from the Unsung Anthem."""
+    name = "config"
+    file = os.path.join(
+        ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME, "utils", "config.py")
+    if sys.version_info.major >= 3:
+        if sys.version_info.minor >= 4:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(name, file)
+            package = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(package)
+            return getattr(package, variable)
+        else:
+            from importlib.machinery import SourceFileLoader
+            package = SourceFileLoader(name, file).load_module()
+            return getattr(package, variable)
+    else:
+        import imp
+        package = imp.load_source(name, file)
+        return getattr(package, variable)
