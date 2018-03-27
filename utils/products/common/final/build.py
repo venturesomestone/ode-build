@@ -19,7 +19,7 @@ import platform
 
 from build_utils import diagnostics, shell, workspace
 
-from products import common, sdl
+from products import common, llvm, sdl
 
 from script_support import data
 
