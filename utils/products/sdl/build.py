@@ -80,9 +80,17 @@ def copy_dynamic(dest):
     """Move the dynamic library."""
     if platform.system() == "Windows":
         copy_dynamic_windows(dest)
+        return
+    elif platform.system() == "Darwin":
+        extension = ".dylib"
     else:
-        bin_path = workspace.lib_file(path="libSDL2d.dylib")
-        dest_path = os.path.join(dest, "libSDL2d.dylib")
-        if os.path.exists(dest_path):
-            return
-        shell.copy(bin_path, dest)
+        extension = ".so"
+
+    for libfile in os.listdir(dest):
+        if "SDL2" in libfile and extension in libfile:
+            shell.rm(os.path.join(dest, libfile))
+    for libfile in os.listdir(os.path.join(data.build.local_dir, "lib")):
+        if "SDL2" in libfile and extension in libfile:
+            shell.copy(
+                os.path.join(data.build.local_dir, "lib", libfile),
+                os.path.join(dest, libfile))
