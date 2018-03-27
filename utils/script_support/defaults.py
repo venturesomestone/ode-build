@@ -53,7 +53,7 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 # These options are not exposed as command line options on purpose. If you
 # need to change any of these, you should do so on trunk or in a branch.
 
-SCRIPT_VERSION = "0.3.0-dev.16"
+SCRIPT_VERSION = "0.3.0-alpha.1"
 
 PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
@@ -85,7 +85,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     clara=product_config(
-        version="1.1.1",
+        version="1.1.4",
         name="Clara",
         key="clara",
         is_tool=False,
@@ -113,7 +113,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     glad=product_config(
-        version="0.1.16a0",
+        version="0.1.18a0",
         name="glad",
         key="glad",
         is_tool=False,
@@ -191,7 +191,7 @@ PRODUCT_CONFIG = Mapping(
     ),
 
     sdl=product_config(
-        version="2.0.7",
+        version="2.0.8",
         name="Simple DirectMedia Layer",
         key="sdl",
         is_tool=False,
