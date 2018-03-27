@@ -73,8 +73,8 @@ def copy_dynamic(dest):
     for libfile in os.listdir(dest):
         if "libc++" in libfile and extension in libfile:
             shell.rm(os.path.join(dest, libfile))
-    for libfile in os.listdir(os.path.join(data.build.local_dir, "lib")):
+    for libfile in os.listdir(os.path.join(data.build.local_root, "lib")):
         if "libc++" in libfile and extension in libfile:
             shell.copy(
-                os.path.join(data.build.local_dir, "lib", libfile),
+                os.path.join(data.build.local_root, "lib", libfile),
                 os.path.join(dest, libfile))
