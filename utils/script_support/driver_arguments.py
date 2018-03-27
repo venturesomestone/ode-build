@@ -297,7 +297,11 @@ def create_argument_parser():
     option(
         "--build-llvm",
         toggle_true,
-        help="build download LLVM, Clang, and libc++")
+        help="build LLVM, Clang, and libc++ by downloading them")
+    option(
+        "--build-separate-benchmark-library",
+        toggle_true,
+        help="build the Google Benchmark library as a separate binary")
 
     # -------------------------------------------------------------------------
     in_group("Select the C++ standard")
