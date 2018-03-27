@@ -114,9 +114,14 @@ def construct_call(is_ode=False, lib=False, test=False):
         cmake_call += ["-DODE_TEST_BENCHMARKING=ON"]
         if not is_ode:
             cmake_call += ["-DANTHEM_TEST_BENCHMARKING=ON"]
+        if args.build_llvm:
+            cmake_call += ["-DODE_ADD_BENCHMARK_SOURCE=ON"]
+        else:
+            cmake_call += ["-DODE_ADD_BENCHMARK_SOURCE=OFF"]
     else:
         cmake_call += ["-DODE_TEST_BENCHMARKING=OFF"]
         cmake_call += ["-DANTHEM_TEST_BENCHMARKING=OFF"]
+        cmake_call += ["-DODE_ADD_BENCHMARK_SOURCE=OFF"]
 
     if args.ode_assertions:
         cmake_call += ["-DODE_ENABLE_ASSERTIONS=ON"]

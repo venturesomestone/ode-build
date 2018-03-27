@@ -64,10 +64,6 @@ def _build():
 
 def _copy_source():
     product = data.build.products.googletest
-    # build_dir = workspace.build_dir(product)
-    # if common.build.binary_exists(product=product, path=bin_path):
-    #     return
-    # shell.makedirs(build_dir)
     if os.path.isdir(os.path.join(data.build.local_root, "src", "gtest")):
         shell.rmtree(os.path.join(data.build.local_root, "src", "gtest"))
     shell.makedirs(os.path.join(data.build.local_root, "src", "gtest"))
