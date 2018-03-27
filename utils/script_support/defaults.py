@@ -26,7 +26,7 @@ from .product_config import product_config, version_config, github_config, \
 __all__ = [
     # Command line configurable
     "BUILD_VARIANT", "CMAKE_GENERATOR", "CXX_STANDARD", "ANTHEM_VERSION",
-    "DARWIN_DEPLOYMENT_VERSION", "UNIX_INSTALL_PREFIX",
+    "ODE_VERSION", "DARWIN_DEPLOYMENT_VERSION", "UNIX_INSTALL_PREFIX",
     "DARWIN_INSTALL_PREFIX",
 
     # Constants
@@ -40,6 +40,9 @@ BUILD_VARIANT = "Debug"
 CMAKE_GENERATOR = "Ninja"
 
 CXX_STANDARD = "c++17"
+
+ANTHEM_VERSION = anthem_config_value("ANTHEM_VERSION")
+ODE_VERSION = anthem_config_value("ODE_VERSION")
 
 DARWIN_DEPLOYMENT_VERSION = "10.9"
 
