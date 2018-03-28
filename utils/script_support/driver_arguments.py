@@ -206,6 +206,11 @@ def create_argument_parser():
                  "to CXX. Default is auto detected")
 
     option(
+        "--link-libc++",
+        toggle_true("link_libcxx"),
+        help="manually link libc++ with the executable")
+
+    option(
         "--ode-version",
         store,
         default=defaults.ODE_VERSION,

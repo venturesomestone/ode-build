@@ -178,7 +178,7 @@ def construct_call(is_ode=False, lib=False, test=False):
     else:
         cmake_call += ["-DODE_ADD_GTEST_SOURCE=OFF"]
 
-    if not args.search_cxx and not args.host_cxx:
+    if args.link_libcxx:
         cmake_call += ["-DODE_LINK_LIBCXX=ON"]
     else:
         cmake_call += ["-DODE_LINK_LIBCXX=OFF"]
