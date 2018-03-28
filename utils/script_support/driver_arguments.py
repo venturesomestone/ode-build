@@ -13,6 +13,7 @@
 
 import multiprocessing
 import os
+import re
 
 from build_utils.targets import host_target
 
@@ -49,6 +50,27 @@ def _apply_default_arguments(args):
     """Preprocess argument namespace to apply default behaviours."""
     if args.verbose_build:
         args.print_debug = True
+
+    if args.ode_version and "{ver}" in args.ode_version:
+        args.ode_version = args.ode_version.format(ver=defaults.ODE_VERSION)
+
+    if args.anthem_version and "{ver}" in args.anthem_version:
+        args.anthem_version = args.anthem_version.format(
+            ver=defaults.ANTHEM_VERSION)
+
+    env_var = re.compile("env{([0-9a-zA-Z_])+}")
+
+    if args.ode_version and env_var.search(args.ode_version):
+        for var in env_var.findall(args.ode_version):
+            var_name = var[4:-1]
+            args.ode_version = args.ode_version.replace(
+                var, os.environ[var_name])
+
+    if args.anthem_version and env_var.search(args.anthem_version):
+        for var in env_var.findall(args.anthem_version):
+            var_name = var[4:-1]
+            args.anthem_version = args.anthem_version.replace(
+                var, os.environ[var_name])
 
     # Set the default build variant.
     if args.build_variant is None:
@@ -215,13 +237,17 @@ def create_argument_parser():
         store,
         default=defaults.ODE_VERSION,
         metavar="MAJOR.MINOR.PATCH",
-        help="the version of Obliging Ode")
+        help="the version of Obliging Ode. Token {ver} in the value equals "
+             "the default version and env{NAME} equals the environment "
+             "variable 'NAME'")
     option(
         "--anthem-version",
         store,
         default=defaults.ANTHEM_VERSION,
         metavar="MAJOR.MINOR.PATCH",
-        help="the version of Unsung Anthem")
+        help="the version of Unsung Anthem. Token {ver} in the value equals "
+             "the default version and env{NAME} equals the environment "
+             "variable 'NAME'")
 
     option(
         "--darwin-deployment-version",

@@ -101,6 +101,10 @@ def _set_up_build(args):
     diagnostics.VERBOSE = args.verbose_build
     diagnostics.DEBUG = args.verbose_build
 
+    diagnostics.head("Building {} version {} and {} version {}".format(
+        PRODUCT_CONFIG.anthem.repr, args.anthem_version,
+        PRODUCT_CONFIG.ode.repr, args.ode_version))
+
     diagnostics.debug_head("Starting the setup phase")
 
     if args.build_subdir is None:

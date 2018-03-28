@@ -65,7 +65,9 @@ def construct_call(is_ode=False, lib=False, test=False):
         "-DODE_LOGGER_NAME={}".format(ode.logger_name),
         "-DODE_WINDOW_NAME={}".format("ode_window"),
         "-DODE_OPENGL_VERSION_MAJOR={}".format(ode.opengl.version.major),
-        "-DODE_OPENGL_VERSION_MINOR={}".format(ode.opengl.version.minor)
+        "-DODE_OPENGL_VERSION_MINOR={}".format(ode.opengl.version.minor),
+        "-DODE_VERSION={}".format(args.ode_version),
+        "-DANTHEM_VERSION={}".format(args.anthem_version)
     ]
 
     if is_ode:
