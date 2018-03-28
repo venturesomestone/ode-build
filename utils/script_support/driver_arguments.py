@@ -69,12 +69,18 @@ def _apply_default_arguments(args):
 
     if args.ode_version and env_var.search(args.ode_version):
         for var in env_var.findall(args.ode_version):
+            if args.verbose_build:
+                diagnostics.trace_do_print(
+                    "Found a version environment variable: {}".format(var))
             var_name = var[4:-1]
             args.ode_version = args.ode_version.replace(
                 var, os.environ[var_name])
 
     if args.anthem_version and env_var.search(args.anthem_version):
         for var in env_var.findall(args.anthem_version):
+            if args.verbose_build:
+                diagnostics.trace_do_print(
+                    "Found a version environment variable: {}".format(var))
             var_name = var[4:-1]
             args.anthem_version = args.anthem_version.replace(
                 var, os.environ[var_name])
