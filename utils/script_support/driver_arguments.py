@@ -65,7 +65,7 @@ def _apply_default_arguments(args):
         args.anthem_version = args.anthem_version.format(
             v=defaults.ANTHEM_VERSION)
 
-    env_var = re.compile("env\(([0-9a-zA-Z_])+\)")
+    env_var = re.compile(r"env\(\w+\)")
 
     if args.ode_version and env_var.search(args.ode_version):
         for var in env_var.findall(args.ode_version):
