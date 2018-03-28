@@ -243,6 +243,12 @@ def create_argument_parser():
         toggle_true,
         help="print the debug messages during the build")
 
+    option(
+        ["-D", "--develop-script"],
+        toggle_true,
+        help="use the development version of the build script instead of the "
+             "given version")
+
     # -------------------------------------------------------------------------
     in_group("TODO: Host and cross-compilation targets")
 

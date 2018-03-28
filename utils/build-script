@@ -351,6 +351,12 @@ def main_preset():
         help="Print the expanded build-script invocation generated "
              "by the preset, but do not run the preset",
         action="store_true")
+    parser.add_argument(
+        "-D", "--develop-script",
+        help="use the development version of the build script instead of the "
+             "given version",
+        action="store_true",
+        default=False)
     args = parser.parse_args()
 
     if not args.preset_file_names:
@@ -387,6 +393,8 @@ def main_preset():
 
     if args.dry_run:
         build_script_args += ["--dry-run"]
+    if args.develop_script:
+        build_script_args += ["--develop-script"]
     build_script_args += preset_args
     if args.build_jobs:
         build_script_args += ["--jobs", str(args.build_jobs)]
