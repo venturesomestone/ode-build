@@ -125,6 +125,9 @@ def _set_up_build(args):
                       or args.cmake_generator == "Visual Studio 15 2017",
         lua_with_cmake=platform.system() == "Windows")
 
+    data.build.products.ode.version = args.ode_version
+    data.build.products.anthem.version = args.anthem_version
+
     data.build["local_root"] = os.path.join(data.build.build_root, "local")
 
     if args.clean:
