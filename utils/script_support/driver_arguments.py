@@ -15,10 +15,11 @@ import multiprocessing
 import os
 import re
 
+from build_utils import diagnostics
+
 from build_utils.targets import host_target
 
-from . import argparse
-from . import defaults
+from . import argparse, defaults
 
 from .variables import ANTHEM_REPO_NAME, ANTHEM_SOURCE_ROOT
 
@@ -50,6 +51,12 @@ def _apply_default_arguments(args):
     """Preprocess argument namespace to apply default behaviours."""
     if args.verbose_build:
         args.print_debug = True
+
+    if args.verbose_build:
+        diagnostics.trace_do_print("The {} version is set to {}".format(
+            defaults.PRODUCT_CONFIG.anthem.repr, args.anthem_version))
+        diagnostics.trace_do_print("The {} version is set to {}".format(
+            defaults.PRODUCT_CONFIG.ode.repr, args.ode_version))
 
     if args.ode_version and "{ver}" in args.ode_version:
         args.ode_version = args.ode_version.format(ver=defaults.ODE_VERSION)
@@ -237,15 +244,15 @@ def create_argument_parser():
         store,
         default=defaults.ODE_VERSION,
         metavar="MAJOR.MINOR.PATCH",
-        help="the version of Obliging Ode. Token {ver} in the value equals "
-             "the default version and env{NAME} equals the environment "
-             "variable 'NAME'")
+        help="the version of Obliging Ode. Token {v} in the value equals the "
+             "default version and env{NAME} equals the environment variable "
+             "'NAME'")
     option(
         "--anthem-version",
         store,
         default=defaults.ANTHEM_VERSION,
         metavar="MAJOR.MINOR.PATCH",
-        help="the version of Unsung Anthem. Token {ver} in the value equals "
+        help="the version of Unsung Anthem. Token {v} in the value equals "
              "the default version and env{NAME} equals the environment "
              "variable 'NAME'")
 
