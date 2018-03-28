@@ -110,7 +110,7 @@ def construct_call(is_ode=False, lib=False, test=False):
         cmake_call += ["-DODE_DEVELOPER=OFF"]
         cmake_call += ["-DANTHEM_DEVELOPER=OFF"]
 
-    if args.build_benchmarking and test:
+    if args.build_benchmarking and test and not args.enable_gcov:
         cmake_call += ["-DODE_TEST_BENCHMARKING=ON"]
         if not is_ode:
             cmake_call += ["-DANTHEM_TEST_BENCHMARKING=ON"]
