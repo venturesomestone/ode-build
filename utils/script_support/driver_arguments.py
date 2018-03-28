@@ -59,13 +59,13 @@ def _apply_default_arguments(args):
             defaults.PRODUCT_CONFIG.ode.repr, args.ode_version))
 
     if args.ode_version and "{ver}" in args.ode_version:
-        args.ode_version = args.ode_version.format(ver=defaults.ODE_VERSION)
+        args.ode_version = args.ode_version.format(v=defaults.ODE_VERSION)
 
     if args.anthem_version and "{ver}" in args.anthem_version:
         args.anthem_version = args.anthem_version.format(
-            ver=defaults.ANTHEM_VERSION)
+            v=defaults.ANTHEM_VERSION)
 
-    env_var = re.compile("env{([0-9a-zA-Z_])+}")
+    env_var = re.compile(r"env\(([0-9a-zA-Z_])+\)")
 
     if args.ode_version and env_var.search(args.ode_version):
         for var in env_var.findall(args.ode_version):
@@ -245,7 +245,7 @@ def create_argument_parser():
         default=defaults.ODE_VERSION,
         metavar="MAJOR.MINOR.PATCH",
         help="the version of Obliging Ode. Token {v} in the value equals the "
-             "default version and env{NAME} equals the environment variable "
+             "default version and env(NAME) equals the environment variable "
              "'NAME'")
     option(
         "--anthem-version",
@@ -253,7 +253,7 @@ def create_argument_parser():
         default=defaults.ANTHEM_VERSION,
         metavar="MAJOR.MINOR.PATCH",
         help="the version of Unsung Anthem. Token {v} in the value equals "
-             "the default version and env{NAME} equals the environment "
+             "the default version and env(NAME) equals the environment "
              "variable 'NAME'")
 
     option(
