@@ -71,8 +71,12 @@ def _apply_default_arguments(args):
         for var in env_var.findall(args.ode_version):
             if args.verbose_build:
                 diagnostics.trace_do_print(
-                    "Found a version environment variable: {}".format(var))
+                    "Found a version environment token: {}".format(var))
             var_name = var[4:-1]
+            if args.verbose_build:
+                diagnostics.trace_do_print(
+                    "The token mathces the variable {} which expands to "
+                    "{}".format(var_name, os.environ[var_name]))
             args.ode_version = args.ode_version.replace(
                 var, os.environ[var_name])
 
@@ -80,8 +84,12 @@ def _apply_default_arguments(args):
         for var in env_var.findall(args.anthem_version):
             if args.verbose_build:
                 diagnostics.trace_do_print(
-                    "Found a version environment variable: {}".format(var))
+                    "Found a version environment token: {}".format(var))
             var_name = var[4:-1]
+            if args.verbose_build:
+                diagnostics.trace_do_print(
+                    "The token mathces the variable {} which expands to "
+                    "{}".format(var_name, os.environ[var_name]))
             args.anthem_version = args.anthem_version.replace(
                 var, os.environ[var_name])
 
