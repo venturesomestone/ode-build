@@ -52,11 +52,11 @@ def _apply_default_arguments(args):
     if args.verbose_build:
         args.print_debug = True
 
-    if args.verbose_build:
-        diagnostics.trace_do_print("The {} version is set to {}".format(
-            defaults.PRODUCT_CONFIG.anthem.repr, args.anthem_version))
-        diagnostics.trace_do_print("The {} version is set to {}".format(
-            defaults.PRODUCT_CONFIG.ode.repr, args.ode_version))
+    # if args.verbose_build:
+    #     diagnostics.trace_do_print("The {} version is set to {}".format(
+    #         defaults.PRODUCT_CONFIG.anthem.repr, args.anthem_version))
+    #     diagnostics.trace_do_print("The {} version is set to {}".format(
+    #         defaults.PRODUCT_CONFIG.ode.repr, args.ode_version))
 
     if args.ode_version and "{v}" in args.ode_version:
         args.ode_version = args.ode_version.format(v=defaults.ODE_VERSION)
@@ -69,27 +69,27 @@ def _apply_default_arguments(args):
 
     if args.ode_version and env_var.search(args.ode_version):
         for var in env_var.findall(args.ode_version):
-            if args.verbose_build:
-                diagnostics.trace_do_print(
-                    "Found a version environment token: {}".format(var))
+            # if args.verbose_build:
+            #     diagnostics.trace_do_print(
+            #         "Found a version environment token: {}".format(var))
             var_name = var[4:-1]
-            if args.verbose_build:
-                diagnostics.trace_do_print(
-                    "The token mathces the variable {} which expands to "
-                    "{}".format(var_name, os.environ[var_name]))
+            # if args.verbose_build:
+            #     diagnostics.trace_do_print(
+            #         "The token mathces the variable {} which expands to "
+            #         "{}".format(var_name, os.environ[var_name]))
             args.ode_version = args.ode_version.replace(
                 var, os.environ[var_name])
 
     if args.anthem_version and env_var.search(args.anthem_version):
         for var in env_var.findall(args.anthem_version):
-            if args.verbose_build:
-                diagnostics.trace_do_print(
-                    "Found a version environment token: {}".format(var))
+            # if args.verbose_build:
+            #     diagnostics.trace_do_print(
+            #         "Found a version environment token: {}".format(var))
             var_name = var[4:-1]
-            if args.verbose_build:
-                diagnostics.trace_do_print(
-                    "The token mathces the variable {} which expands to "
-                    "{}".format(var_name, os.environ[var_name]))
+            # if args.verbose_build:
+            #     diagnostics.trace_do_print(
+            #         "The token mathces the variable {} which expands to "
+            #         "{}".format(var_name, os.environ[var_name]))
             args.anthem_version = args.anthem_version.replace(
                 var, os.environ[var_name])
 
