@@ -245,11 +245,11 @@ def _invoke():
 
     _build_dependencies()
 
-    if args.verbose_build:
-        shell.listtree(os.path.join(data.build.local_root, "bin"))
-        shell.listtree(os.path.join(data.build.local_root, "include"))
-        shell.listtree(os.path.join(data.build.local_root, "lib"))
-        shell.listtree(os.path.join(data.build.local_root, "src"))
+    # if args.verbose_build:
+    #     shell.listtree(os.path.join(data.build.local_root, "bin"))
+    #     shell.listtree(os.path.join(data.build.local_root, "include"))
+    #     shell.listtree(os.path.join(data.build.local_root, "lib"))
+    #     shell.listtree(os.path.join(data.build.local_root, "src"))
 
     ode_p = data.build.products.ode
     anthem_p = data.build.products.anthem
