@@ -58,10 +58,10 @@ def _apply_default_arguments(args):
         diagnostics.trace_do_print("The {} version is set to {}".format(
             defaults.PRODUCT_CONFIG.ode.repr, args.ode_version))
 
-    if args.ode_version and "{ver}" in args.ode_version:
+    if args.ode_version and "{v}" in args.ode_version:
         args.ode_version = args.ode_version.format(v=defaults.ODE_VERSION)
 
-    if args.anthem_version and "{ver}" in args.anthem_version:
+    if args.anthem_version and "{v}" in args.anthem_version:
         args.anthem_version = args.anthem_version.format(
             v=defaults.ANTHEM_VERSION)
 
