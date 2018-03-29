@@ -300,6 +300,11 @@ def create_argument_parser():
         toggle_true,
         help="use the development version of the build script instead of the "
              "given version")
+    option(
+        ["-N", "--no-script-update"],
+        toggle_true,
+        help="use the currently downloaded version of the build script "
+             "instead of the downloading the proper or new version")
 
     # -------------------------------------------------------------------------
     in_group("TODO: Host and cross-compilation targets")
