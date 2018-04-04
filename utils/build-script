@@ -329,6 +329,11 @@ def main_preset():
         action="store_true",
         default=False)
     parser.add_argument(
+        "-c", "--clean",
+        help="do a clean build",
+        action="store_true",
+        default=False)
+    parser.add_argument(
         "--preset-file",
         help="load presets from the specified file",
         metavar="PATH",
@@ -422,6 +427,8 @@ def main_preset():
 
     if args.dry_run:
         build_script_args += ["--dry-run"]
+    if args.clean:
+        build_script_args += ["--clean"]
     if args.develop_script:
         build_script_args += ["--develop-script"]
     if args.verbose_build:
