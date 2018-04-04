@@ -116,11 +116,15 @@ def _set_up_build(args):
     _validate_arguments(args)
 
     data.build = Mapping(
-        args=args, source_root=ANTHEM_SOURCE_ROOT,
+        args=args,
+        source_root=ANTHEM_SOURCE_ROOT,
         build_root=os.path.join(ANTHEM_BUILD_ROOT, args.build_subdir),
         install_root=os.path.join(args.install_prefix, args.anthem_version),
-        checkout_root=ANTHEM_CHECKOUT_ROOT, products=PRODUCT_CONFIG,
-        host_target=args.host_target, std=args.std, stdlib=args.stdlib,
+        checkout_root=ANTHEM_CHECKOUT_ROOT,
+        products=PRODUCT_CONFIG,
+        host_target=args.host_target,
+        std=args.std,
+        stdlib=args.stdlib,
         visual_studio=args.cmake_generator == "Visual Studio 14 2015"
                       or args.cmake_generator == "Visual Studio 15 2017",
         lua_with_cmake=platform.system() == "Windows")
