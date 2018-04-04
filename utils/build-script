@@ -137,6 +137,7 @@ def _set_up_build(args):
     if args.clean:
         _clean_delay()
         shell.rmtree(path=data.build.build_root)
+        shell.rmtree(path=data.build.install_root)
 
     shell.makedirs(data.build.build_root)
     shell.makedirs(data.build.local_root)
