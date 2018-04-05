@@ -333,11 +333,6 @@ def create_argument_parser():
         help="skip building Unsung Anthem and build only Obliging Ode")
 
     option(
-        "--developer-build",
-        toggle_true,
-        help="build Obliging Ode and Unsung Anthem for development")
-
-    option(
         "--build-llvm",
         toggle_true,
         help="build LLVM, Clang, and libc++ by downloading them")
@@ -595,6 +590,19 @@ def create_argument_parser():
         store("anthem_test_name"),
         help="the name of the Unsung Anthem test executable"
     )
+
+    # -------------------------------------------------------------------------
+    in_group("Feature options")
+
+    option(
+        "--log-tests",
+        toggle_true,
+        help="let the loggers in tests to write output into a non-null sink")
+
+    option(
+        "--developer-build",
+        toggle_true,
+        help="build Obliging Ode and Unsung Anthem for development")
 
     # -------------------------------------------------------------------------
     in_group("Threading options")

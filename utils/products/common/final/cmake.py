@@ -155,6 +155,11 @@ def construct_call(is_ode=False, lib=False, test=False):
             cmake_call += ["-DCMAKE_BUILD_TYPE={}".format(
                 args.anthem_build_variant)]
 
+    if args.log_tests and test:
+        cmake_call += ["-DODE_TEST_USE_NULL_SINK=OFF"]
+    else:
+        cmake_call += ["-DODE_TEST_USE_NULL_SINK=ON"]
+
     if args.multithreading:
         cmake_call += ["-DODE_MULTITHREADING=ON"]
     else:
