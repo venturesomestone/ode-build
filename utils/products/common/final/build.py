@@ -93,9 +93,11 @@ def do_build(is_ode=False, lib=False, test=False):
             shell.copytree(os.path.join(source_dir, "script"), os.path.join(
                 build_dir, "script"))
 
-    if data.build.ci and (platform.system() == "Darwin" or args.build_llvm):
-        sdl.build.copy_dynamic(os.path.join(data.build.install_root, "bin"))
-        llvm.build.copy_dynamic(os.path.join(data.build.install_root, "bin"))
+    if args.rpath:
+        sdl.build.copy_dynamic(
+            os.path.join(data.build.install_root, "bin", args.rpath))
+        llvm.build.copy_dynamic(
+            os.path.join(data.build.install_root, "bin", args.rpath))
 
     if data.build.visual_studio:
         if is_ode:
