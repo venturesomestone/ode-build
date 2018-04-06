@@ -58,8 +58,10 @@ def construct_call(is_ode=False, lib=False, test=False):
         "-DCMAKE_C_COMPILER={}".format(toolchain.cc),
         "-DCMAKE_CXX_COMPILER={}".format(toolchain.cxx),
         "-DCMAKE_INSTALL_PREFIX={}".format(install_root),
-        "-DODE_INSTALL_PREFIX={}".format(local_root), "-DODE_BIN_DIR_NAME=bin",
-        "-DODE_INCLUDE_DIR_NAME=include", "-DODE_LIB_DIR_NAME=lib",
+        "-DODE_INSTALL_PREFIX={}".format(local_root),
+        "-DODE_BIN_DIR_NAME=bin",
+        "-DODE_INCLUDE_DIR_NAME=include",
+        "-DODE_LIB_DIR_NAME=lib",
         "-DODE_SCRIPT_DIR_NAME=script",
         "-DODE_CXX_VERSION={}".format(data.build.std),
         "-DODE_LOGGER_NAME={}".format(ode.logger_name),
@@ -69,6 +71,11 @@ def construct_call(is_ode=False, lib=False, test=False):
         "-DODE_VERSION={}".format(args.ode_version),
         "-DANTHEM_VERSION={}".format(args.anthem_version)
     ]
+
+    if args.verbose_build:
+        cmake_call += ["-DODE_VERBOSE_BUILD=ON"]
+    else:
+        cmake_call += ["-DODE_VERBOSE_BUILD=OFF"]
 
     if is_ode:
         cmake_call += ["-DBUILD_ODE={}".format("ON")]
