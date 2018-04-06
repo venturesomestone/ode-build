@@ -183,7 +183,7 @@ def create_argument_parser():
              "installed.")
     option(
         "--rpath",
-        store_path,
+        store,
         help="the runtime library path relative to the executable")
 
     option(
