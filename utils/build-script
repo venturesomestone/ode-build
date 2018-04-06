@@ -215,6 +215,10 @@ def _build_tools():
         diagnostics.fine("The C++ standard library is {}".format(
             data.build.stdlib))
 
+    if data.build.args.rpath:
+        diagnostics.fine("The rpath is set to '{}'".format(
+            data.build.args.rpath))
+
     diagnostics.debug_head("Tool setup phase is done")
 
 
