@@ -294,6 +294,10 @@ def create_argument_parser():
         toggle_true,
         help="use the currently downloaded version of the build script "
              "instead of the downloading the proper or new version")
+    option(
+        ["-U", "--update-script"],
+        toggle_true,
+        help="force the download of the build script")
 
     # -------------------------------------------------------------------------
     in_group("TODO: Host and cross-compilation targets")

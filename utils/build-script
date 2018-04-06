@@ -385,6 +385,11 @@ def main_preset():
         action="store_true",
         default=False)
     parser.add_argument(
+        "-U", "--update-script",
+        help="force the download of the build script",
+        action="store_true",
+        default=False)
+    parser.add_argument(
         "-v", "--verbose-build",
         help="print the commands executed during the build",
         action="store_true",
