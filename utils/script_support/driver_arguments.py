@@ -275,6 +275,11 @@ def create_argument_parser():
         help="print the commands executed during the build")
 
     option(
+        "--verbose-cmake",
+        toggle_true,
+        help="run the compiler and linker with verbosity enabled")
+
+    option(
         "--print-debug",
         toggle_true,
         help="print the debug messages during the build")

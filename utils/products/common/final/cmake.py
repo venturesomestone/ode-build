@@ -72,7 +72,7 @@ def construct_call(is_ode=False, lib=False, test=False):
         "-DANTHEM_VERSION={}".format(args.anthem_version)
     ]
 
-    if args.verbose_build:
+    if args.verbose_cmake:
         cmake_call += ["-DODE_VERBOSE_BUILD=ON"]
     else:
         cmake_call += ["-DODE_VERBOSE_BUILD=OFF"]
