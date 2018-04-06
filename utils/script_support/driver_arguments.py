@@ -181,6 +181,10 @@ def create_argument_parser():
         help="the installation prefix. This is where built Obliging Ode and "
              "Unsung Anthem products (like bin, lib, and include) will be "
              "installed.")
+    option(
+        "--rpath",
+        store_path,
+        help="the runtime library directory")
 
     option(
         ["-j", "--jobs"],
