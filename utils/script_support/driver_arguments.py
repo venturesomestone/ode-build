@@ -184,7 +184,7 @@ def create_argument_parser():
     option(
         "--rpath",
         store_path,
-        help="the runtime library directory")
+        help="the runtime library path relative to the executable")
 
     option(
         ["-j", "--jobs"],
