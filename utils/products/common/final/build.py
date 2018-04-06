@@ -100,6 +100,8 @@ def do_build(is_ode=False, lib=False, test=False):
             llvm.build.copy_dynamic(
                 os.path.join(data.build.install_root, "bin"))
         else:
+            shell.makedirs(
+                os.path.join(data.build.install_root, "bin", args.rpath))
             sdl.build.copy_dynamic(
                 os.path.join(data.build.install_root, "bin", args.rpath))
             llvm.build.copy_dynamic(
