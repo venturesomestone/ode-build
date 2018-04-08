@@ -61,6 +61,9 @@ PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
 
 
+COVERAGE_TARGET_MARK = "c"
+
+
 PRODUCT_CONFIG = Mapping(
     anthem=ode_anthem_config(
         version=anthem_config_value("ANTHEM_VERSION"),

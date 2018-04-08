@@ -23,6 +23,8 @@ from products import common, llvm, sdl
 
 from script_support import data
 
+from script_support.defaults import COVERAGE_TARGET_MARK
+
 from script_support.variables import ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME
 
 from . import cmake
@@ -71,12 +73,16 @@ def do_build(is_ode=False, lib=False, test=False):
                     exe_name = args.ode_name
                 else:
                     exe_name = args.anthem_name
-                common.build.make(target="{}_coverage".format(exe_name))
+                common.build.make(target="{}{}".format(
+                    exe_name,
+                    COVERAGE_TARGET_MARK))
                 if data.build.ci:
                     shell.call([
                         "coveralls-lcov", "--repo-token",
                         os.environ["ANTHEM_COVERALLS_REPO_TOKEN"],
-                        "{}_coverage.info.cleaned".format(exe_name)
+                        "{}{}.info.cleaned".format(
+                            exe_name,
+                            COVERAGE_TARGET_MARK)
                     ])
 
         elif data.build.visual_studio:

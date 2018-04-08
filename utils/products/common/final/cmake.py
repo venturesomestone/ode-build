@@ -21,6 +21,8 @@ from build_utils import diagnostics, workspace
 
 from script_support import data
 
+from script_support.defaults import COVERAGE_TARGET_MARK
+
 from script_support.variables import ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME
 
 from .directory import anthem_build_dir, ode_build_dir
@@ -151,10 +153,9 @@ def construct_call(is_ode=False, lib=False, test=False):
     if args.enable_gcov:
         cmake_call += ["-DODE_ENABLE_GCOV=ON"]
         cmake_call += ["-DCMAKE_BUILD_TYPE=Coverage"]
-        cmake_call += ["-DODE_INSTALL_ONLY_SCRIPTS=ON"]
+        cmake_call += ["-DODE_COVERAGE_MARK={}".format(COVERAGE_TARGET_MARK)]
     else:
         cmake_call += ["-DODE_ENABLE_GCOV=OFF"]
-        cmake_call += ["-DODE_INSTALL_ONLY_SCRIPTS=OFF"]
         if is_ode:
             cmake_call += ["-DCMAKE_BUILD_TYPE={}".format(
                 args.ode_build_variant)]
