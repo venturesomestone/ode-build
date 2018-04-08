@@ -21,6 +21,8 @@ from build_utils import diagnostics, workspace
 
 from script_support import data
 
+from script_support.defaults import COVERAGE_TARGET_MARK
+
 from script_support.variables import ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME
 
 from .directory import anthem_build_dir, ode_build_dir
@@ -58,15 +60,24 @@ def construct_call(is_ode=False, lib=False, test=False):
         "-DCMAKE_C_COMPILER={}".format(toolchain.cc),
         "-DCMAKE_CXX_COMPILER={}".format(toolchain.cxx),
         "-DCMAKE_INSTALL_PREFIX={}".format(install_root),
-        "-DODE_INSTALL_PREFIX={}".format(local_root), "-DODE_BIN_DIR_NAME=bin",
-        "-DODE_INCLUDE_DIR_NAME=include", "-DODE_LIB_DIR_NAME=lib",
+        "-DODE_INSTALL_PREFIX={}".format(local_root),
+        "-DODE_BIN_DIR_NAME=bin",
+        "-DODE_INCLUDE_DIR_NAME=include",
+        "-DODE_LIB_DIR_NAME=lib",
         "-DODE_SCRIPT_DIR_NAME=script",
         "-DODE_CXX_VERSION={}".format(data.build.std),
         "-DODE_LOGGER_NAME={}".format(ode.logger_name),
         "-DODE_WINDOW_NAME={}".format("ode_window"),
         "-DODE_OPENGL_VERSION_MAJOR={}".format(ode.opengl.version.major),
-        "-DODE_OPENGL_VERSION_MINOR={}".format(ode.opengl.version.minor)
+        "-DODE_OPENGL_VERSION_MINOR={}".format(ode.opengl.version.minor),
+        "-DODE_VERSION={}".format(args.ode_version),
+        "-DANTHEM_VERSION={}".format(args.anthem_version)
     ]
+
+    if args.verbose_cmake:
+        cmake_call += ["-DODE_VERBOSE_BUILD=ON"]
+    else:
+        cmake_call += ["-DODE_VERBOSE_BUILD=OFF"]
 
     if is_ode:
         cmake_call += ["-DBUILD_ODE={}".format("ON")]
@@ -110,7 +121,7 @@ def construct_call(is_ode=False, lib=False, test=False):
         cmake_call += ["-DODE_DEVELOPER=OFF"]
         cmake_call += ["-DANTHEM_DEVELOPER=OFF"]
 
-    if args.build_benchmarking and test:
+    if args.build_benchmarking and test and not args.enable_gcov:
         cmake_call += ["-DODE_TEST_BENCHMARKING=ON"]
         if not is_ode:
             cmake_call += ["-DANTHEM_TEST_BENCHMARKING=ON"]
@@ -142,10 +153,9 @@ def construct_call(is_ode=False, lib=False, test=False):
     if args.enable_gcov:
         cmake_call += ["-DODE_ENABLE_GCOV=ON"]
         cmake_call += ["-DCMAKE_BUILD_TYPE=Coverage"]
-        cmake_call += ["-DODE_INSTALL_ONLY_SCRIPTS=ON"]
+        cmake_call += ["-DODE_COVERAGE_MARK={}".format(COVERAGE_TARGET_MARK)]
     else:
         cmake_call += ["-DODE_ENABLE_GCOV=OFF"]
-        cmake_call += ["-DODE_INSTALL_ONLY_SCRIPTS=OFF"]
         if is_ode:
             cmake_call += ["-DCMAKE_BUILD_TYPE={}".format(
                 args.ode_build_variant)]
@@ -153,20 +163,18 @@ def construct_call(is_ode=False, lib=False, test=False):
             cmake_call += ["-DCMAKE_BUILD_TYPE={}".format(
                 args.anthem_build_variant)]
 
+    if args.log_tests and test:
+        cmake_call += ["-DODE_TEST_USE_NULL_SINK=OFF"]
+    else:
+        cmake_call += ["-DODE_TEST_USE_NULL_SINK=ON"]
+
     if args.multithreading:
         cmake_call += ["-DODE_MULTITHREADING=ON"]
     else:
         cmake_call += ["-DODE_MULTITHREADING=OFF"]
 
-    if data.build.ci:  # and not platform.system() == "Darwin":
-        cmake_call += ["-DODE_MANUAL_SDL=ON"]
-
-    manual_rpath_ci = data.build.ci \
-        and (platform.system() == "Darwin" or args.build_llvm)
-
-    if manual_rpath_ci:
-        cmake_call += ["-DODE_RPATH={}".format(
-            os.path.join(install_root, "bin"))]
+    if args.rpath:
+        cmake_call += ["-DODE_RPATH={}".format(args.rpath)]
 
     if data.build.lua_in_source:
         cmake_call += ["-DODE_ADD_LUA_SOURCE=ON"]
@@ -178,7 +186,7 @@ def construct_call(is_ode=False, lib=False, test=False):
     else:
         cmake_call += ["-DODE_ADD_GTEST_SOURCE=OFF"]
 
-    if not args.search_cxx and args.host_cxx:
+    if args.link_libcxx:
         cmake_call += ["-DODE_LINK_LIBCXX=ON"]
     else:
         cmake_call += ["-DODE_LINK_LIBCXX=OFF"]

@@ -79,6 +79,12 @@ def trace(message):
     return message
 
 
+@_printer(level="trace", verbosity_check=lambda: True)
+def trace_do_print(message):
+    """Print a trace diagnostic notification to the standard output."""
+    return message
+
+
 @_printer(level="trace", colour=ORANGE, verbosity_check=_coerce_verbosity)
 def trace_head(message):
     """Print a trace diagnostic notification to the standard output."""

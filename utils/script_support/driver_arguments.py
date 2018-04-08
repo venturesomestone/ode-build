@@ -13,11 +13,13 @@
 
 import multiprocessing
 import os
+import re
+
+from build_utils import diagnostics
 
 from build_utils.targets import host_target
 
-from . import argparse
-from . import defaults
+from . import argparse, defaults
 
 from .variables import ANTHEM_REPO_NAME, ANTHEM_SOURCE_ROOT
 
@@ -49,6 +51,27 @@ def _apply_default_arguments(args):
     """Preprocess argument namespace to apply default behaviours."""
     if args.verbose_build:
         args.print_debug = True
+
+    if args.ode_version and "{v}" in args.ode_version:
+        args.ode_version = args.ode_version.format(v=defaults.ODE_VERSION)
+
+    if args.anthem_version and "{v}" in args.anthem_version:
+        args.anthem_version = args.anthem_version.format(
+            v=defaults.ANTHEM_VERSION)
+
+    env_var = re.compile(r"env\(\w+\)")
+
+    if args.ode_version and env_var.search(args.ode_version):
+        for var in env_var.findall(args.ode_version):
+            var_name = var[4:-1]
+            args.ode_version = args.ode_version.replace(
+                var, os.environ[var_name])
+
+    if args.anthem_version and env_var.search(args.anthem_version):
+        for var in env_var.findall(args.anthem_version):
+            var_name = var[4:-1]
+            args.anthem_version = args.anthem_version.replace(
+                var, os.environ[var_name])
 
     # Set the default build variant.
     if args.build_variant is None:
@@ -158,6 +181,10 @@ def create_argument_parser():
         help="the installation prefix. This is where built Obliging Ode and "
              "Unsung Anthem products (like bin, lib, and include) will be "
              "installed.")
+    option(
+        "--rpath",
+        store,
+        help="the runtime library path relative to the executable")
 
     option(
         ["-j", "--jobs"],
@@ -206,17 +233,26 @@ def create_argument_parser():
                  "to CXX. Default is auto detected")
 
     option(
+        "--link-libc++",
+        toggle_true("link_libcxx"),
+        help="manually link libc++ with the executable")
+
+    option(
         "--ode-version",
         store,
         default=defaults.ODE_VERSION,
         metavar="MAJOR.MINOR.PATCH",
-        help="the version of Obliging Ode")
+        help="the version of Obliging Ode. Token {v} in the value equals the "
+             "default version and env(NAME) equals the environment variable "
+             "'NAME'")
     option(
         "--anthem-version",
         store,
         default=defaults.ANTHEM_VERSION,
         metavar="MAJOR.MINOR.PATCH",
-        help="the version of Unsung Anthem")
+        help="the version of Unsung Anthem. Token {v} in the value equals "
+             "the default version and env(NAME) equals the environment "
+             "variable 'NAME'")
 
     option(
         "--darwin-deployment-version",
@@ -239,9 +275,29 @@ def create_argument_parser():
         help="print the commands executed during the build")
 
     option(
+        "--verbose-cmake",
+        toggle_true,
+        help="run the compiler and linker with verbosity enabled")
+
+    option(
         "--print-debug",
         toggle_true,
         help="print the debug messages during the build")
+
+    option(
+        ["-D", "--develop-script"],
+        toggle_true,
+        help="use the development version of the build script instead of the "
+             "given version")
+    option(
+        ["-N", "--no-script-update"],
+        toggle_true,
+        help="use the currently downloaded version of the build script "
+             "instead of the downloading the proper or new version")
+    option(
+        ["-U", "--update-script"],
+        toggle_true,
+        help="force the download of the build script")
 
     # -------------------------------------------------------------------------
     in_group("TODO: Host and cross-compilation targets")
@@ -288,11 +344,6 @@ def create_argument_parser():
         "--skip-build-anthem",
         toggle_false("build_anthem"),
         help="skip building Unsung Anthem and build only Obliging Ode")
-
-    option(
-        "--developer-build",
-        toggle_true,
-        help="build Obliging Ode and Unsung Anthem for development")
 
     option(
         "--build-llvm",
@@ -552,6 +603,19 @@ def create_argument_parser():
         store("anthem_test_name"),
         help="the name of the Unsung Anthem test executable"
     )
+
+    # -------------------------------------------------------------------------
+    in_group("Feature options")
+
+    option(
+        "--log-tests",
+        toggle_true,
+        help="let the loggers in tests to write output into a non-null sink")
+
+    option(
+        "--developer-build",
+        toggle_true,
+        help="build Obliging Ode and Unsung Anthem for development")
 
     # -------------------------------------------------------------------------
     in_group("Threading options")
