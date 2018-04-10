@@ -306,7 +306,7 @@ def _invoke():
                         test_run_dir, "{}.exe".format(exe_name))
                 else:
                     test_executable = os.path.join(test_run_dir, exe_name)
-                if args.enable_gcov:
+                if args.enable_xvfb:
                     shell.call([
                         data.build.toolchain.xvfb_run,
                         "-e",
