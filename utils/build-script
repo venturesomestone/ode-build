@@ -257,12 +257,6 @@ def _invoke():
 
     _build_dependencies()
 
-    # if args.verbose_build:
-    #     shell.listtree(os.path.join(data.build.local_root, "bin"))
-    #     shell.listtree(os.path.join(data.build.local_root, "include"))
-    #     shell.listtree(os.path.join(data.build.local_root, "lib"))
-    #     shell.listtree(os.path.join(data.build.local_root, "src"))
-
     ode_p = data.build.products.ode
     anthem_p = data.build.products.anthem
 
@@ -312,7 +306,12 @@ def _invoke():
                         test_run_dir, "{}.exe".format(exe_name))
                 else:
                     test_executable = os.path.join(test_run_dir, exe_name)
-                shell.call([test_executable], echo=True)
+                if args.enable_gcov:
+                    shell.call(
+                        [data.build.toolchain.xvfb_run, test_executable],
+                        echo=True)
+                else:
+                    shell.call([test_executable], echo=True)
 
     diagnostics.debug_head("Build phase is done")
 

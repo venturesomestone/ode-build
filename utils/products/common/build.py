@@ -60,7 +60,11 @@ def ninja(target=None, env=None):
 
 def make(target=None, extra_args=None, env=None):
     """Call Make."""
-    call = [data.build.toolchain.make]
+    if data.build.args.enable_xvfb:
+        call = [data.build.toolchain.xvfb_run]
+        call += [data.build.toolchain.make]
+    else:
+        call = [data.build.toolchain.make]
     if target:
         if isinstance(target, list):
             call += target

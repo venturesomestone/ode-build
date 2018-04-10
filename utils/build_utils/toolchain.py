@@ -47,6 +47,8 @@ def register_tools(args):
     tools.cmake = "cmake"
     tools.git = "git"
     tools.make = "make"
+    if args.enable_xvfb:
+        tools.xvfb_run = "xvfb-run"
     return tools
 
 
