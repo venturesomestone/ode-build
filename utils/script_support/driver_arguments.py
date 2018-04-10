@@ -580,32 +580,33 @@ def create_argument_parser():
     option(
         "--ode-name",
         store,
-        help="the name of the Obliging Ode library binaries"
-    )
+        help="the name of the Obliging Ode library binaries")
     option(
         "--ode-test-executable-name",
         store("ode_test_name"),
-        help="the name of the Obliging Ode test executable"
-    )
+        help="the name of the Obliging Ode test executable")
 
     option(
         "--executable-name",
         store("anthem_name"),
-        help="the name of the Unsung Anthem executable"
-    )
+        help="the name of the Unsung Anthem executable")
     option(
         "--lib-name",
         store("anthem_lib_name"),
-        help="the name of the Unsung Anthem library binaries"
-    )
+        help="the name of the Unsung Anthem library binaries")
     option(
         "--test-executable-name",
         store("anthem_test_name"),
-        help="the name of the Unsung Anthem test executable"
-    )
+        help="the name of the Unsung Anthem test executable")
 
     # -------------------------------------------------------------------------
     in_group("Feature options")
+
+    option(
+        "--sdl-clock",
+        toggle_true,
+        help="use the tick clock of Simple DirectMedia Layer instead of the "
+             "standard library clock")
 
     option(
         "--log-tests",
