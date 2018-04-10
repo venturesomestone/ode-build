@@ -43,28 +43,19 @@ def do_build(is_ode=False, lib=False, test=False):
     ode = data.build.products.ode
     anthem = data.build.products.anthem
 
-    if args.enable_gcov and data.build.ci:
-        if is_ode:
-            product = ode
-            build_dir = os.path.join(ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME)
-        else:
-            product = anthem
-            build_dir = os.path.join(ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME)
+    if is_ode:
+        product = ode
+        build_dir = ode_build_dir(lib=lib, test=test)
     else:
-        if is_ode:
-            product = ode
-            build_dir = ode_build_dir(lib=lib, test=test)
-        else:
-            product = anthem
-            build_dir = anthem_build_dir(lib=lib, test=test)
+        product = anthem
+        build_dir = anthem_build_dir(lib=lib, test=test)
     source_dir = os.path.join(ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME)
     if not os.path.exists(source_dir):
         diagnostics.fatal(
             "Cannot find source directory for {} (tried {})".format(
                 product.repr, source_dir))
 
-    if not (args.enable_gcov and data.build.ci):
-        shell.makedirs(build_dir)
+    shell.makedirs(build_dir)
 
     cmake_env = {"CC": str(toolchain.cc), "CXX": str(toolchain.cxx)}
 
@@ -87,9 +78,8 @@ def do_build(is_ode=False, lib=False, test=False):
                     exe_name,
                     COVERAGE_TARGET_MARK))
                 if data.build.ci:
-                    exe = which.which("coveralls-lcov")
                     shell.call([
-                        exe, "--repo-token",
+                        "coveralls-lcov", "--repo-token",
                         os.environ["ANTHEM_COVERALLS_REPO_TOKEN"],
                         "{}{}.info.cleaned".format(
                             exe_name,

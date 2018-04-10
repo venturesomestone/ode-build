@@ -56,7 +56,7 @@ def _exit_rejecting_arguments(message, parser=None):
 
 
 def _validate_arguments(args):
-    if not args.build_ode and not args.build_anthem and not args.enable_gcov:
+    if not args.build_ode and not args.build_anthem:
         _exit_rejecting_arguments(
             "Both the build of Obliging Ode and the build of Unsung Anthem "
             "cannot be skipped")
