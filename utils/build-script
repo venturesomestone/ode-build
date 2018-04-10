@@ -309,6 +309,8 @@ def _invoke():
                 if args.enable_xvfb:
                     shell.call([
                         data.build.toolchain.xvfb_run,
+                        "--server-args",
+                        "-screen 0 1920x1080x24",
                         "-e",
                         "/dev/stdout",
                         "-a",

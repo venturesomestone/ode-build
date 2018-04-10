@@ -62,6 +62,8 @@ def make(target=None, extra_args=None, env=None, xvfb=False):
     """Call Make."""
     if xvfb and data.build.args.enable_xvfb:
         call = [data.build.toolchain.xvfb_run]
+        call += ["--server-args"]
+        call += ["-screen 0 1920x1080x24"]
         call += ["-e"]
         call += ["/dev/stdout"]
         call += ["-a"]
