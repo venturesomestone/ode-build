@@ -307,9 +307,13 @@ def _invoke():
                 else:
                     test_executable = os.path.join(test_run_dir, exe_name)
                 if args.enable_gcov:
-                    shell.call(
-                        [data.build.toolchain.xvfb_run, test_executable],
-                        echo=True)
+                    shell.call([
+                        data.build.toolchain.xvfb_run,
+                        "-e",
+                        "/dev/stdout",
+                        "-a",
+                        test_executable
+                    ], echo=True)
                 else:
                     shell.call([test_executable], echo=True)
 

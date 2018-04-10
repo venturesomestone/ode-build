@@ -58,10 +58,13 @@ def ninja(target=None, env=None):
             data.build.args.build_jobs)], env=env)
 
 
-def make(target=None, extra_args=None, env=None):
+def make(target=None, extra_args=None, env=None, xvfb=False):
     """Call Make."""
-    if data.build.args.enable_xvfb:
+    if xvfb and data.build.args.enable_xvfb:
         call = [data.build.toolchain.xvfb_run]
+        call += ["-e"]
+        call += ["/dev/stdout"]
+        call += ["-a"]
         call += [data.build.toolchain.make]
     else:
         call = [data.build.toolchain.make]

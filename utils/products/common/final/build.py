@@ -74,9 +74,9 @@ def do_build(is_ode=False, lib=False, test=False):
                     exe_name = args.ode_name
                 else:
                     exe_name = args.anthem_name
-                common.build.make(target="{}{}".format(
-                    exe_name,
-                    COVERAGE_TARGET_MARK))
+                common.build.make(
+                    target="{}{}".format(exe_name, COVERAGE_TARGET_MARK),
+                    xvfb=True)
                 if data.build.ci:
                     shell.call([
                         "coveralls-lcov", "--repo-token",
