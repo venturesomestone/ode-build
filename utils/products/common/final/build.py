@@ -17,7 +17,7 @@ builds.
 import os
 import platform
 
-from build_utils import diagnostics, shell, workspace
+from build_utils import diagnostics, shell, which, workspace
 
 from products import common, llvm, sdl
 
@@ -87,8 +87,9 @@ def do_build(is_ode=False, lib=False, test=False):
                     exe_name,
                     COVERAGE_TARGET_MARK))
                 if data.build.ci:
+                    exe = which.which("coveralls-lcov")
                     shell.call([
-                        "coveralls-lcov", "--repo-token",
+                        exe, "--repo-token",
                         os.environ["ANTHEM_COVERALLS_REPO_TOKEN"],
                         "{}{}.info.cleaned".format(
                             exe_name,
