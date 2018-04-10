@@ -52,6 +52,12 @@ def _apply_default_arguments(args):
     if args.verbose_build:
         args.print_debug = True
 
+    if args.enable_gcov:
+        args.build_ode = False
+        args.build_anthem = False
+        args.build_anthem_lib = False
+        args.build_test = True
+
     if args.ode_version and "{v}" in args.ode_version:
         args.ode_version = args.ode_version.format(v=defaults.ODE_VERSION)
 
