@@ -621,6 +621,8 @@ def create_argument_parser():
         toggle_true,
         help="build Obliging Ode and Unsung Anthem for development")
 
+    option("--disable-gl-calls", toggle_true, help="disable OpenGL calls")
+
     # -------------------------------------------------------------------------
     in_group("Threading options")
 

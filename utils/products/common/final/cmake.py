@@ -121,6 +121,11 @@ def construct_call(is_ode=False, lib=False, test=False):
         cmake_call += ["-DODE_DEVELOPER=OFF"]
         cmake_call += ["-DANTHEM_DEVELOPER=OFF"]
 
+    if args.disable_gl_calls:
+        cmake_call += ["-DODE_DISABLE_GL_CALLS=ON"]
+    else:
+        cmake_call += ["-DODE_DISABLE_GL_CALLS=OFF"]
+
     if args.build_benchmarking and test and not args.enable_gcov:
         cmake_call += ["-DODE_TEST_BENCHMARKING=ON"]
         if not is_ode:
