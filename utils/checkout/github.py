@@ -16,7 +16,45 @@ import platform
 
 from build_utils import diagnostics, shell, workspace
 
-from . import github_asset, github_tag
+from . import github_asset, github_master, github_tag
+
+
+def platform_specific_asset(product):
+    """Download a platform-specific asset from GitHub."""
+    asset = product.github_data.asset
+    if platform.system() in asset.platform_files.keys() \
+            and asset.platform_files[platform.system()] is not None:
+        diagnostics.trace(
+            "Entering the download of a platform-specific asset:")
+        asset_file = asset.platform_files[platform.system()]
+    elif asset.fallback:
+        diagnostics.trace("Entering the download of a fallback asset:")
+        asset_file = asset.fallback_file
+    else:
+        # TODO
+        diagnostics.fatal("TODO")
+        asset_file = None
+    diagnostics.trace_head(asset_file)
+    github_asset.download(product=product, asset_name=asset_file)
+    dest_file = asset.file
+    shell.tar(
+        path=os.path.join(workspace.temp_dir(product=product), dest_file),
+        dest=workspace.source_dir(product=product))
+
+
+def master_asset(product):
+    """Download a master branch asset from GitHub."""
+    diagnostics.trace("Entering the download of a master branch source asset:")
+    diagnostics.trace_head(product.repr)
+    github_master.download(product=product)
+    if platform.system() != "Windows":
+        source_dir = workspace.source_dir(product=product)
+        version_dir = os.path.dirname(source_dir)
+        shell.rmtree(source_dir)
+        shell.rmtree(version_dir)
+        shell.copytree(
+            os.path.join(workspace.temp_dir(product=product), product.key),
+            workspace.source_dir(product=product))
 
 
 def simple_asset(product):
@@ -43,29 +81,6 @@ def simple_asset(product):
             os.path.join(workspace.source_dir(product=product), asset.file))
 
 
-def platform_specific_asset(product):
-    """Download a platform-specific asset from GitHub."""
-    asset = product.github_data.asset
-    if platform.system() in asset.platform_files.keys() \
-            and asset.platform_files[platform.system()] is not None:
-        diagnostics.trace(
-            "Entering the download of a platform-specific asset:")
-        asset_file = asset.platform_files[platform.system()]
-    elif asset.fallback:
-        diagnostics.trace("Entering the download of a fallback asset:")
-        asset_file = asset.fallback_file
-    else:
-        # TODO
-        diagnostics.fatal("TODO")
-        asset_file = None
-    diagnostics.trace_head(asset_file)
-    github_asset.download(product=product, asset_name=asset_file)
-    dest_file = asset.file
-    shell.tar(
-        path=os.path.join(workspace.temp_dir(product=product), dest_file),
-        dest=workspace.source_dir(product=product))
-
-
 def get_dependency(product):
     """Download an asset from GitHub."""
     shell.rmtree(workspace.source_dir(product=product))
@@ -77,6 +92,9 @@ def get_dependency(product):
         diagnostics.trace("The asset of {} is platform-specific".format(
             product.repr))
         platform_specific_asset(product)
+    elif "master" in product and product.master:
+        diagnostics.trace("The asset of {} is simple".format(product.repr))
+        master_asset(product)
     else:
         diagnostics.trace("The asset of {} is simple".format(product.repr))
         simple_asset(product)

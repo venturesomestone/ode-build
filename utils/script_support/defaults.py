@@ -222,5 +222,19 @@ PRODUCT_CONFIG = Mapping(
             asset_data=SOURCE_ASSET,
             version_prefix="Version "
         )
+    ),
+
+    stb=product_config(
+        version=anthem_config_value("STB_IMAGE_VERSION"),
+        name="stb_image",
+        key="stb_image",
+        is_tool=False,
+        is_source=True,
+        master=True,
+        github_data=github_config(
+            owner="nothings",
+            name="stb",
+            asset_data=SOURCE_ASSET
+        )
     )
 )
