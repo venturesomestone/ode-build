@@ -60,9 +60,9 @@ def download_v4(product):
                 response_json_data["repository"]["url"])])
 
     if platform.system() == "Windows":
-        checkout_tag_windows(product=product, tag_ref_name=tag_ref_name)
+        checkout_tag_windows(product)
     else:
-        checkout_tag(product=product, tag_ref_name=tag_ref_name)
+        checkout_tag(product)
 
 
 def download(product):
