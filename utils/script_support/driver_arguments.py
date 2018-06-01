@@ -606,10 +606,10 @@ def create_argument_parser():
     in_group("Feature options")
 
     option(
-        "--sdl-clock",
+        "--std-clock",
         toggle_true,
-        help="use the tick clock of Simple DirectMedia Layer instead of the "
-             "standard library clock")
+        help="use the C++ standard library clock instead of the clock of "
+             "Simple DirectMedia Layer")
 
     option(
         "--log-tests",
