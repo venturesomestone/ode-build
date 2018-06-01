@@ -168,10 +168,10 @@ def construct_call(is_ode=False, lib=False, test=False):
             cmake_call += ["-DCMAKE_BUILD_TYPE={}".format(
                 args.anthem_build_variant)]
 
-    if args.sdl_clock:
-        cmake_call += ["-DODE_SDL_TICK_CLOCK=ON"]
+    if args.std_clock:
+        cmake_call += ["-DODE_STD_CLOCK=ON"]
     else:
-        cmake_call += ["-DODE_SDL_TICK_CLOCK=OFF"]
+        cmake_call += ["-DODE_STD_CLOCK=OFF"]
 
     if args.log_tests and test:
         cmake_call += ["-DODE_TEST_USE_NULL_SINK=OFF"]
