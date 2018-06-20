@@ -185,6 +185,13 @@ def create_argument_parser():
         "--rpath",
         store,
         help="the runtime library path relative to the executable")
+    option(
+        "--products-path",
+        store_path,
+        default=os.path.join(
+            ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME, "utils", "products"),
+        help="the path to the directory which contains the product "
+             "configurations")
 
     option(
         ["-j", "--jobs"],

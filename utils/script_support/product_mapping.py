@@ -1,4 +1,4 @@
-#===-------------------------- product_config.py -------------*- python -*-===#
+#===-------------------------- product_mapping.py ------------*- python -*-===#
 #
 #                         Obliging Ode & Unsung Anthem
 #
