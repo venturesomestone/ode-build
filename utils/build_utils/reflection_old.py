@@ -136,23 +136,3 @@ def anthem_config_value(variable):
         import imp
         package = imp.load_source(name, file)
         return getattr(package, variable)
-
-
-def import_product_package(name):
-    """Get a product configuration value from Unsung Anthem."""
-    file = os.path.join(data.build.args.products_path, name)
-    if sys.version_info.major >= 3:
-        if sys.version_info.minor >= 4:
-            import importlib.util
-            spec = importlib.util.spec_from_file_location(name, file)
-            package = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(package)
-            return package
-        else:
-            from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(name, file).load_module()
-            return package
-    else:
-        import imp
-        package = imp.load_source(name, file)
-        return package

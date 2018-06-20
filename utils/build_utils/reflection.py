@@ -36,11 +36,26 @@ def product_checkout_call(product, function, *args, **kwargs):
     args -- the positional arguments to be passed into the function.
     kwargs -- the key-value arguments to be passed into the function.
     """
-    package = "{}.{}.{}".format(PRODUCT_PACKAGE, product.key, CHECKOUT_MODULE)
-    diagnostics.trace("Importing package {}".format(package))
-    product_module = importlib.import_module(package)
-    diagnostics.trace("Imported package {}".format(package))
-    getattr(product_module, function)(*args, **kwargs)
+    file = os.path.join(
+        data.build.args.products_path, product, CHECKOUT_MODULE)
+    if sys.version_info.major >= 3:
+        if sys.version_info.minor >= 4:
+            import importlib.util
+            diagnostics.trace("Loading package {} from file {}".format(
+                CHECKOUT_MODULE, file))
+            spec = importlib.util.spec_from_file_location(
+                CHECKOUT_MODULE, file)
+            package = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(package)
+            getattr(package, function)(*args, **kwargs)
+        else:
+            from importlib.machinery import SourceFileLoader
+            package = SourceFileLoader(CHECKOUT_MODULE, file).load_module()
+            getattr(package, function)(*args, **kwargs)
+    else:
+        import imp
+        package = imp.load_source(CHECKOUT_MODULE, file)
+        getattr(package, function)(*args, **kwargs)
 
 
 def get_build_call(product, function):
@@ -50,11 +65,24 @@ def get_build_call(product, function):
     product -- the name of the product.
     function -- the name of the function.
     """
-    package = "{}.{}.{}".format(PRODUCT_PACKAGE, product.key, BUILD_MODULE)
-    diagnostics.trace("Importing package {}".format(package))
-    product_module = importlib.import_module(package)
-    diagnostics.trace("Imported package {}".format(package))
-    return getattr(product_module, function)
+    file = os.path.join(data.build.args.products_path, product, BUILD_MODULE)
+    if sys.version_info.major >= 3:
+        if sys.version_info.minor >= 4:
+            import importlib.util
+            diagnostics.trace("Loading package {} from file {}".format(
+                BUILD_MODULE, file))
+            spec = importlib.util.spec_from_file_location(BUILD_MODULE, file)
+            package = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(package)
+            return getattr(package, function)
+        else:
+            from importlib.machinery import SourceFileLoader
+            package = SourceFileLoader(BUILD_MODULE, file).load_module()
+            return getattr(package, function)
+    else:
+        import imp
+        package = imp.load_source(BUILD_MODULE, file)
+        return getattr(package, function)
 
 
 def build_call(product, function, *args, **kwargs):
@@ -76,19 +104,44 @@ def build_function_exists(product, function):
     product -- the name of the product.
     function -- the name of the function.
     """
-    package = "{}.{}.{}".format(PRODUCT_PACKAGE, product.key, BUILD_MODULE)
-    diagnostics.trace(
-        "Importing package {} for checking whether function {} exists".format(
-            package, function))
-    product_module = importlib.import_module(package)
-    diagnostics.trace("Imported package {}".format(package))
-    if hasattr(product_module, function):
-        diagnostics.trace("Package {} has function '{}'".format(
-            package, function))
+    file = os.path.join(data.build.args.products_path, product, BUILD_MODULE)
+    if sys.version_info.major >= 3:
+        if sys.version_info.minor >= 4:
+            import importlib.util
+            diagnostics.trace("Loading package {} from file {}".format(
+                BUILD_MODULE, file))
+            spec = importlib.util.spec_from_file_location(BUILD_MODULE, file)
+            package = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(package)
+            if hasattr(package, function):
+                diagnostics.trace(
+                    "Package {} has function '{}'".format(file, function))
+            else:
+                diagnostics.trace(
+                    "Package {} doesn't have function '{}'".format(
+                        file, function))
+            return hasattr(package, function)
+        else:
+            from importlib.machinery import SourceFileLoader
+            package = SourceFileLoader(BUILD_MODULE, file).load_module()
+            if hasattr(package, function):
+                diagnostics.trace(
+                    "Package {} has function '{}'".format(file, function))
+            else:
+                diagnostics.trace(
+                    "Package {} doesn't have function '{}'".format(
+                        file, function))
+            return hasattr(package, function)
     else:
-        diagnostics.trace("Package {} doesn't have function '{}'".format(
-            package, function))
-    return hasattr(product_module, function)
+        import imp
+        package = imp.load_source(BUILD_MODULE, file)
+        if hasattr(package, function):
+            diagnostics.trace("Package {} has function '{}'".format(
+                file, function))
+        else:
+            diagnostics.trace("Package {} doesn't have function '{}'".format(
+                file, function))
+        return hasattr(package, function)
 
 
 def product_exists(product):
@@ -97,23 +150,9 @@ def product_exists(product):
 
     product -- the name of the product.
     """
-    package = "{}.{}".format(PRODUCT_PACKAGE, product.key)
-    diagnostics.trace("Looking for package {}".format(package))
-    if sys.version_info.major >= 3:
-        if sys.version_info.minor >= 4:
-            return importlib.util.find_spec(package) is not None
-        else:
-            return importlib.find_loader(package) is not None
-    import imp
-    try:
-        products_info = imp.find_module(PRODUCT_PACKAGE)
-        products = imp.load_module(PRODUCT_PACKAGE, *products_info)
-        diagnostics.trace("Found package {}".format(PRODUCT_PACKAGE))
-        imp.find_module(product.key, products.__path__)
-        diagnostics.trace("Found package {}".format(product.key))
-        return True
-    except ImportError:
-        return False
+    file = os.path.join(data.build.args.products_path, product)
+    diagnostics.trace("Looking for module {}".format(file))
+    return os.path.isdir(file)
 
 
 def anthem_config_value(variable):
@@ -136,23 +175,3 @@ def anthem_config_value(variable):
         import imp
         package = imp.load_source(name, file)
         return getattr(package, variable)
-
-
-def import_product_package(name):
-    """Get a product configuration value from Unsung Anthem."""
-    file = os.path.join(data.build.args.products_path, name)
-    if sys.version_info.major >= 3:
-        if sys.version_info.minor >= 4:
-            import importlib.util
-            spec = importlib.util.spec_from_file_location(name, file)
-            package = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(package)
-            return package
-        else:
-            from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(name, file).load_module()
-            return package
-    else:
-        import imp
-        package = imp.load_source(name, file)
-        return package
