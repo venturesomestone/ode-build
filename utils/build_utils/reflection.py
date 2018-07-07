@@ -25,7 +25,7 @@ from .mapping import Mapping
 
 
 PRODUCT_PACKAGE = "products"
-CHECKOUT_MODULE = "checkout"
+CHECKOUT_MODULE = "checkout.py"
 BUILD_MODULE = "build.py"
 CMAKE_MODULE = "cmake.py"
 DIRECTORY_MODULE = "directory.py"
@@ -45,24 +45,24 @@ def product_checkout_call(product, function, *args, **kwargs):
     args -- the positional arguments to be passed into the function.
     kwargs -- the key-value arguments to be passed into the function.
     """
+    name = product.key
     file = os.path.join(PRODUCT_PATH, product.key, CHECKOUT_MODULE)
     if sys.version_info.major >= 3:
         if sys.version_info.minor >= 4:
             import importlib.util
             diagnostics.trace("Loading package {} from file {}".format(
                 CHECKOUT_MODULE, file))
-            spec = importlib.util.spec_from_file_location(
-                CHECKOUT_MODULE, file)
+            spec = importlib.util.spec_from_file_location(name, file)
             package = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(package)
             getattr(package, function)(*args, **kwargs)
         else:
             from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(CHECKOUT_MODULE, file).load_module()
+            package = SourceFileLoader(name, file).load_module()
             getattr(package, function)(*args, **kwargs)
     else:
         import imp
-        package = imp.load_source(CHECKOUT_MODULE, file)
+        package = imp.load_source(name, file)
         getattr(package, function)(*args, **kwargs)
 
 
@@ -73,6 +73,7 @@ def get_build_call(product, function):
     product -- the product.
     function -- the name of the function.
     """
+    name = product.key
     diagnostics.trace("The product path: {}".format(PRODUCT_PATH))
     diagnostics.trace("The product: {}".format(product))
     file = os.path.join(PRODUCT_PATH, product.key, BUILD_MODULE)
@@ -81,17 +82,17 @@ def get_build_call(product, function):
     if sys.version_info.major >= 3:
         if sys.version_info.minor >= 4:
             import importlib.util
-            spec = importlib.util.spec_from_file_location(BUILD_MODULE, file)
+            spec = importlib.util.spec_from_file_location(name, file)
             package = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(package)
             return getattr(package, function)
         else:
             from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(BUILD_MODULE, file).load_module()
+            package = SourceFileLoader(name, file).load_module()
             return getattr(package, function)
     else:
         import imp
-        package = imp.load_source(BUILD_MODULE, file)
+        package = imp.load_source(name, file)
         return getattr(package, function)
 
 
@@ -114,44 +115,37 @@ def build_function_exists(product, function):
     product -- the product.
     function -- the name of the function.
     """
+    name = product.key
+    diagnostics.trace("The product path: {}".format(PRODUCT_PATH))
+    diagnostics.trace("The product: {}".format(product))
     file = os.path.join(PRODUCT_PATH, product.key, BUILD_MODULE)
-    if sys.version_info.major >= 3:
-        if sys.version_info.minor >= 4:
-            import importlib.util
-            diagnostics.trace("Loading package {} from file {}".format(
-                BUILD_MODULE, file))
-            spec = importlib.util.spec_from_file_location(BUILD_MODULE, file)
-            package = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(package)
-            if hasattr(package, function):
-                diagnostics.trace(
-                    "Package {} has function '{}'".format(file, function))
-            else:
-                diagnostics.trace(
-                    "Package {} doesn't have function '{}'".format(
-                        file, function))
-            return hasattr(package, function)
-        else:
-            from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(BUILD_MODULE, file).load_module()
-            if hasattr(package, function):
-                diagnostics.trace(
-                    "Package {} has function '{}'".format(file, function))
-            else:
-                diagnostics.trace(
-                    "Package {} doesn't have function '{}'".format(
-                        file, function))
-            return hasattr(package, function)
-    else:
-        import imp
-        package = imp.load_source(BUILD_MODULE, file)
+    diagnostics.trace(
+        "Loading package {} from file {}".format(BUILD_MODULE, file))
+
+    def _hasattr(package, function):
         if hasattr(package, function):
             diagnostics.trace("Package {} has function '{}'".format(
                 file, function))
         else:
-            diagnostics.trace("Package {} doesn't have function '{}'".format(
-                file, function))
+            diagnostics.trace(
+                "Package {} doesn't have function '{}'".format(
+                    file, function))
         return hasattr(package, function)
+    if sys.version_info.major >= 3:
+        if sys.version_info.minor >= 4:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location(name, file)
+            package = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(package)
+            return _hasattr(package, function)
+        else:
+            from importlib.machinery import SourceFileLoader
+            package = SourceFileLoader(name, file).load_module()
+            return _hasattr(package, function)
+    else:
+        import imp
+        package = imp.load_source(name, file)
+        return _hasattr(package, function)
 
 
 def product_exists(product):
@@ -167,7 +161,7 @@ def product_exists(product):
 
 def anthem_config_value(variable):
     """Get a configuration value from Unsung Anthem."""
-    name = "config.py"
+    name = "config"
     file = os.path.join(PRODUCT_PATH, "config.py")
     diagnostics.trace(
         "Loading package {} from file {}".format(name, file))
@@ -194,6 +188,7 @@ def get_anthem_common_build_call(function):
 
     function -- the name of the function.
     """
+    name = COMMON_PRODUCT.key
     diagnostics.trace("The product path: {}".format(PRODUCT_PATH))
     diagnostics.trace("The product: {}".format(COMMON_PRODUCT))
     file = os.path.join(PRODUCT_PATH, COMMON_PRODUCT.key, BUILD_MODULE)
@@ -202,17 +197,17 @@ def get_anthem_common_build_call(function):
     if sys.version_info.major >= 3:
         if sys.version_info.minor >= 4:
             import importlib.util
-            spec = importlib.util.spec_from_file_location(BUILD_MODULE, file)
+            spec = importlib.util.spec_from_file_location(name, file)
             package = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(package)
             return getattr(package, function)
         else:
             from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(BUILD_MODULE, file).load_module()
+            package = SourceFileLoader(name, file).load_module()
             return getattr(package, function)
     else:
         import imp
-        package = imp.load_source(BUILD_MODULE, file)
+        package = imp.load_source(name, file)
         return getattr(package, function)
 
 
@@ -233,6 +228,7 @@ def get_anthem_common_cmake_call(function):
 
     function -- the name of the function.
     """
+    name = COMMON_PRODUCT.key
     diagnostics.trace("The product path: {}".format(PRODUCT_PATH))
     diagnostics.trace("The product: {}".format(COMMON_PRODUCT))
     file = os.path.join(PRODUCT_PATH, COMMON_PRODUCT.key, CMAKE_MODULE)
@@ -241,17 +237,17 @@ def get_anthem_common_cmake_call(function):
     if sys.version_info.major >= 3:
         if sys.version_info.minor >= 4:
             import importlib.util
-            spec = importlib.util.spec_from_file_location(CMAKE_MODULE, file)
+            spec = importlib.util.spec_from_file_location(name, file)
             package = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(package)
             return getattr(package, function)
         else:
             from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(CMAKE_MODULE, file).load_module()
+            package = SourceFileLoader(name, file).load_module()
             return getattr(package, function)
     else:
         import imp
-        package = imp.load_source(CMAKE_MODULE, file)
+        package = imp.load_source(name, file)
         return getattr(package, function)
 
 
@@ -273,6 +269,7 @@ def get_anthem_common_directory_call(function):
 
     function -- the name of the function.
     """
+    name = COMMON_PRODUCT.key
     diagnostics.trace("The product path: {}".format(PRODUCT_PATH))
     diagnostics.trace("The product: {}".format(COMMON_PRODUCT))
     file = os.path.join(PRODUCT_PATH, COMMON_PRODUCT.key, DIRECTORY_MODULE)
@@ -281,18 +278,17 @@ def get_anthem_common_directory_call(function):
     if sys.version_info.major >= 3:
         if sys.version_info.minor >= 4:
             import importlib.util
-            spec = importlib.util.spec_from_file_location(
-                DIRECTORY_MODULE, file)
+            spec = importlib.util.spec_from_file_location(name, file)
             package = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(package)
             return getattr(package, function)
         else:
             from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader(DIRECTORY_MODULE, file).load_module()
+            package = SourceFileLoader(name, file).load_module()
             return getattr(package, function)
     else:
         import imp
-        package = imp.load_source(DIRECTORY_MODULE, file)
+        package = imp.load_source(name, file)
         return getattr(package, function)
 
 
