@@ -38,7 +38,7 @@ from build_utils.toolchain import host_toolchain, set_arguments_to_toolchain
 
 from checkout import checkout
 
-from products import anthem, common, ode
+from products import common
 
 from script_support import defaults, data, driver_arguments
 
@@ -260,39 +260,46 @@ def _invoke():
     ode_p = data.build.products.ode
     anthem_p = data.build.products.anthem
 
+    ode_key = reflection.anthem_config_value("ODE_KEY")
+    anthem_key = reflection.anthem_config_value("ANTHEM_KEY")
+
     if args.build_ode:
         diagnostics.debug_head("Entering the build of {}".format(ode_p.repr))
-        ode.build.do_build(lib=True, test=False)
+        reflection.build_call(ode_key, "do_build", lib=True, test=False)
 
     if args.build_anthem:
         diagnostics.debug_head("Entering the build of {}".format(
             anthem_p.repr))
-        anthem.build.do_build(lib=False, test=False)
+        reflection.build_call(anthem_p, "do_build", lib=False, test=False)
 
     if args.build_anthem_lib:
         diagnostics.debug_head("Entering the build of {} library".format(
             anthem_p.repr))
-        anthem.build.do_build(lib=True, test=False)
+        reflection.build_call(anthem_p, "do_build", lib=True, test=False)
 
     if args.build_test:
         ode_test = args.build_ode and not args.build_anthem
         if ode_test:
             diagnostics.debug_head("Entering the build of {} tests".format(
                 ode_p.repr))
-            ode.build.do_build(lib=False, test=True)
+            reflection.build_call(ode_p, "do_build", lib=False, test=True)
         else:
             diagnostics.debug_head("Entering the build of {} tests".format(
                 anthem_p.repr))
-            anthem.build.do_build(lib=False, test=True)
+            reflection.build_call(anthem_p, "do_build", lib=False, test=True)
 
         if platform.system() == "Windows":
             if ode_test:
                 # TODO
-                test_run_dir = os.path.join(ode.build.ode_build_dir(
-                    lib=False, test=True), args.ode_build_variant)
+                test_run_dir = os.path.join(
+                    reflection.build_call(
+                        ode_p, "ode_build_dir", lib=False, test=True),
+                    args.ode_build_variant)
             else:
-                test_run_dir = os.path.join(anthem.build.anthem_build_dir(
-                    lib=False, test=True), args.anthem_build_variant)
+                test_run_dir = os.path.join(
+                    reflection.build_call(
+                        anthem_p, "anthem_build_dir", lib=False, test=True),
+                    args.anthem_build_variant)
         else:
             test_run_dir = os.path.join(data.build.install_root, "bin")
         if not args.enable_gcov:
