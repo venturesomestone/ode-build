@@ -260,12 +260,9 @@ def _invoke():
     ode_p = data.build.products.ode
     anthem_p = data.build.products.anthem
 
-    ode_key = reflection.anthem_config_value("ODE_KEY")
-    anthem_key = reflection.anthem_config_value("ANTHEM_KEY")
-
     if args.build_ode:
         diagnostics.debug_head("Entering the build of {}".format(ode_p.repr))
-        reflection.build_call(ode_key, "do_build", lib=True, test=False)
+        reflection.build_call(ode_p, "do_build", lib=True, test=False)
 
     if args.build_anthem:
         diagnostics.debug_head("Entering the build of {}".format(

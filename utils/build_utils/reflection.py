@@ -159,8 +159,8 @@ def product_exists(product):
     return os.path.isdir(file)
 
 
-def anthem_config_value(variable):
-    """Get a configuration value from Unsung Anthem."""
+def product_config_value(variable):
+    """Get a product configuration value from Unsung Anthem."""
     name = "config"
     file = os.path.join(PRODUCT_PATH, "config.py")
     diagnostics.trace(

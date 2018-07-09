@@ -13,7 +13,7 @@
 
 from build_utils.mapping import Mapping
 
-from build_utils.reflection import anthem_config_value
+from build_utils.reflection import product_config_value
 
 
 __all__ = [
@@ -34,8 +34,8 @@ CMAKE_GENERATOR = "Ninja"
 
 CXX_STANDARD = "c++17"
 
-ANTHEM_VERSION = anthem_config_value("ANTHEM_VERSION")
-ODE_VERSION = anthem_config_value("ODE_VERSION")
+ANTHEM_VERSION = product_config_value("ANTHEM_VERSION")
+ODE_VERSION = product_config_value("ODE_VERSION")
 
 DARWIN_DEPLOYMENT_VERSION = "10.9"
 
@@ -57,4 +57,4 @@ GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
 COVERAGE_TARGET_MARK = "c"
 
 
-PRODUCT_CONFIG = anthem_config_value("PRODUCT_CONFIG")
+PRODUCT_CONFIG = product_config_value("PRODUCT_CONFIG")
