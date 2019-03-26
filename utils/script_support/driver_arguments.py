@@ -5,8 +5,8 @@
 # This source file is part of the Obliging Ode and Unsung Anthem open source
 # projects.
 #
-# Copyright (c) 2018 Venturesome Stone
-# Licensed under GNU Affero General Public License v3.0
+# Copyright (C) 2019 Venturesome Stone
+# All rights reserved
 
 """The support module containing the script options."""
 
