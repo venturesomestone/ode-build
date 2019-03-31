@@ -1,16 +1,16 @@
-# --------------------------------------------------------------------------- #
-#                         Obliging Ode & Unsung Anthem
-# --------------------------------------------------------------------------- #
+# ------------------------------------------------------------- #
+#                 Obliging Ode & Unsung Anthem
+# ------------------------------------------------------------- #
 #
-# This source file is part of the Obliging Ode and Unsung Anthem projects.
+# This source file is part of the Obliging Ode and Unsung Anthem
+# projects.
 #
 # Copyright (C) 2019 Antti Kivi
 # All rights reserved
 #
-# --------------------------------------------------------------------------- #
+# ------------------------------------------------------------- #
 
 """This support module contains the logging functions."""
-
 
 from __future__ import print_function
 
@@ -76,58 +76,75 @@ def _printer(
 
 @_printer(level="trace", verbosity_check=_coerce_verbosity)
 def trace(message):
-    """Print a trace diagnostic notification to the standard output."""
+    """
+    Print a trace diagnostic notification to the standard output.
+    """
     return message
 
 
 @_printer(level="trace", verbosity_check=lambda: True)
 def trace_do_print(message):
-    """Print a trace diagnostic notification to the standard output."""
+    """
+    Print a trace diagnostic notification to the standard output.
+    """
     return message
 
 
 @_printer(level="trace", colour=ORANGE, verbosity_check=_coerce_verbosity)
 def trace_head(message):
-    """Print a trace diagnostic notification to the standard output."""
+    """
+    Print a trace diagnostic notification to the standard output.
+    """
     return message
 
 
 @_printer(level="debug", verbosity_check=_coerce_debug)
 def debug(message):
-    """Print a debug diagnostic notification to the standard output."""
+    """
+    Print a debug diagnostic notification to the standard output.
+    """
     return message
 
 
 @_printer(level="debug", colour=OK_GREEN, verbosity_check=_coerce_debug)
 def debug_ok(message):
-    """Print a debug diagnostic notification to the standard output."""
+    """
+    Print a debug diagnostic notification to the standard output.
+    """
     return message
 
 
 @_printer(level="debug", colour=WARNING, verbosity_check=_coerce_debug)
 def debug_note(message):
-    """Print a debug diagnostic notification to the standard output."""
+    """
+    Print a debug diagnostic notification to the standard output.
+    """
     return message
 
 
 @_printer(level="debug", colour=ORANGE, verbosity_check=_coerce_debug)
 def debug_head(message):
-    """Print a debug diagnostic notification to the standard output."""
+    """
+    Print a debug diagnostic notification to the standard output.
+    """
     return message
 
 
 @_printer(level="note", colour=OK_BLUE)
 def fine(message):
     """
-    Print a diagnostic notification to the standard output notifying some step
-    is complete.
+    Print a diagnostic notification to the standard output
+    notifying some step is complete.
     """
     return message
 
 
 @_printer(level="note", colour=HEADER + BOLD)
 def head(message):
-    """Print a header diagnostic notification to the standard output."""
+    """
+    Print a header diagnostic notification to the standard
+    output.
+    """
     return message
 
 

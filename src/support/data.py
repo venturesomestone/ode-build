@@ -9,3 +9,8 @@
 # All rights reserved
 #
 # ------------------------------------------------------------- #
+
+"""This support module has the common session data."""
+
+
+session = 0

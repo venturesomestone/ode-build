@@ -1,24 +1,24 @@
-# --------------------------------------------------------------------------- #
-#                         Obliging Ode & Unsung Anthem
-# --------------------------------------------------------------------------- #
+# ------------------------------------------------------------- #
+#                 Obliging Ode & Unsung Anthem
+# ------------------------------------------------------------- #
 #
-# This source file is part of the Obliging Ode and Unsung Anthem projects.
+# This source file is part of the Obliging Ode and Unsung Anthem
+# projects.
 #
 # Copyright (C) 2019 Antti Kivi
 # All rights reserved
 #
-# --------------------------------------------------------------------------- #
+# ------------------------------------------------------------- #
 
 """This support module helps to handle date and time objects."""
-
 
 from datetime import datetime, time
 
 
 def date_difference(first, second):
     """
-    Works out the time that is left from the second date until the first date.
-    The returned time is given in seconds.
+    Works out the time that is left from the second date until
+    the first date. The returned time is given in seconds.
 
     first -- the first date
     second -- the second date
@@ -41,7 +41,8 @@ def to_days(s):
 
 def to_date_string(s):
     """
-    Turns some seconds into a string of days, hours, minutes, seconds.
+    Turns some seconds into a string of days, hours, minutes,
+    seconds.
 
     s -- time in seconds
     """
