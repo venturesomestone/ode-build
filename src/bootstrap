@@ -153,8 +153,15 @@ def _run_preset():
     return 0
 
 
+def _run():
+    # parser = driver_arguments.create_argument_parser()
+    # TODO Unknown args
+    # args, unknown_args = parser.parse_known_args(
+    #     list(arg for arg in sys.argv[1:] if arg != '--'))
+    return 0
+
+
 def _main():
-    """The entry function."""
     if sys.version_info.major == 2:
         if sys.version_info.minor < 7:
             diagnostics.fatal(
@@ -174,6 +181,7 @@ def _main():
     else:
         diagnostics.fine("You're using Python {}".format(sys.version))
         diagnostics.fine("You seem to have an excellent taste!")
+
     if not ANTHEM_SOURCE_ROOT:
         diagnostics.fatal(
             "Couldn't work out the source root directory (did you forget to "
@@ -184,10 +192,12 @@ def _main():
             "The source root directory '{}' doesn't exist (did you forget to "
             "set $ANTHEM_SOURCE_ROOT environment variable?)".format(
                 ANTHEM_SOURCE_ROOT))
+
     if any([(opt.startswith("--preset") or opt == "--show-presets")
             for opt in sys.argv[1:]]):
         return _run_preset()
-    return 0
+    else:
+        return _run()
 
 
 if __name__ == "__main__":
