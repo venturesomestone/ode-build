@@ -25,13 +25,15 @@ import os
 import sys
 import time
 
-from util import diagnostics, shell
-
-from util.date import date_difference, to_date_string
+from support import arguments
 
 from support.presets import get_all_preset_names, get_preset_options
 
-from support.variables import HOME, ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME
+from support.variables import HOME, ODE_SOURCE_ROOT, ODE_REPO_NAME
+
+from util import diagnostics, shell
+
+from util.date import date_difference, to_date_string
 
 
 def _run_preset():
@@ -101,8 +103,7 @@ def _run_preset():
             os.path.join(HOME, ".anthem-build-presets"),
             os.path.join(HOME, ".ode-build-presets"),
             os.path.join(
-                ANTHEM_SOURCE_ROOT, ANTHEM_REPO_NAME, "util",
-                "build-presets.ini")
+                ODE_SOURCE_ROOT, ODE_REPO_NAME, "util", "build-presets.ini")
         ]
 
     if args.show_presets:
@@ -154,10 +155,10 @@ def _run_preset():
 
 
 def _run():
-    # parser = driver_arguments.create_argument_parser()
+    parser = arguments.create_argument_parser(True)
     # TODO Unknown args
-    # args, unknown_args = parser.parse_known_args(
-    #     list(arg for arg in sys.argv[1:] if arg != '--'))
+    args, unknown_args = parser.parse_known_args(
+        list(arg for arg in sys.argv[1:] if arg != '--'))
     return 0
 
 
@@ -182,16 +183,16 @@ def _main():
         diagnostics.fine("You're using Python {}".format(sys.version))
         diagnostics.fine("You seem to have an excellent taste!")
 
-    if not ANTHEM_SOURCE_ROOT:
+    if not ODE_SOURCE_ROOT:
         diagnostics.fatal(
             "Couldn't work out the source root directory (did you forget to "
-            "set the '$ANTHEM_SOURCE_ROOT' environment variable?)")
+            "set the '$ODE_SOURCE_ROOT' environment variable?)")
 
-    if not os.path.isdir(ANTHEM_SOURCE_ROOT):
+    if not os.path.isdir(ODE_SOURCE_ROOT):
         diagnostics.fatal(
             "The source root directory '{}' doesn't exist (did you forget to "
-            "set $ANTHEM_SOURCE_ROOT environment variable?)".format(
-                ANTHEM_SOURCE_ROOT))
+            "set $ODE_SOURCE_ROOT environment variable?)".format(
+                ODE_SOURCE_ROOT))
 
     if any([(opt.startswith("--preset") or opt == "--show-presets")
             for opt in sys.argv[1:]]):

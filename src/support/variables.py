@@ -24,7 +24,7 @@ def _script_path():
     # Get the parent directory of this file for checking if this
     # file is in an Unsung Anthem checkout.
     #
-    # $ANTHEM_SOURCE_ROOT/build/script/support/variables.py
+    # $ODE_SOURCE_ROOT/build/script/support/variables.py
     script_path = os.path.dirname(os.path.dirname(__file__))
 
     # Split the path as the first part of the 'script_path' is
@@ -44,11 +44,11 @@ def _get_default_source_root():
     return os.path.dirname(os.path.dirname(_script_path()))
 
 
-# $ANTHEM_SOURCE_ROOT is got from the path of this file if the
+# $ODE_SOURCE_ROOT is got from the path of this file if the
 # environment variable is not set.
-ANTHEM_SOURCE_ROOT = os.environ.get(
-    "ANTHEM_SOURCE_ROOT", _get_default_source_root())
+ODE_SOURCE_ROOT = os.environ.get(
+    "ODE_SOURCE_ROOT", _get_default_source_root())
 
-# $ANTHEM_REPO_NAME is got from the default value if the
-# environment variable is not set.
-ANTHEM_REPO_NAME = os.environ.get("ANTHEM_REPO_NAME", "unsung-anthem")
+# $ODE_REPO_NAME is got from the default value if the environment
+# variable is not set.
+ODE_REPO_NAME = os.environ.get("ODE_REPO_NAME", "unsung-anthem")
