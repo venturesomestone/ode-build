@@ -314,10 +314,10 @@ def create_argument_parser(bootstrap):
             "--gcov",
             store_true("enable_gcov"),
             help="use gcov and lcov to generate code coverage information")
-        option(
-            "--xvfb",
-            store_true("enable_xvfb"),
-            help="use X virtual framebuffer with the build")
+    option(
+        "--xvfb",
+        store_true("enable_xvfb"),
+        help="use X virtual framebuffer with the build")
 
     # --------------------------------------------------------- #
     in_group("Build variant")

@@ -25,7 +25,9 @@ import os
 import sys
 import time
 
-from support import arguments
+from common import set_up
+
+from support import arguments, defaults
 
 from support.presets import get_all_preset_names, get_preset_options
 
@@ -159,6 +161,7 @@ def _run():
     # TODO Unknown args
     args, unknown_args = parser.parse_known_args(
         list(arg for arg in sys.argv[1:] if arg != '--'))
+    set_up.run(args, True)
     return 0
 
 

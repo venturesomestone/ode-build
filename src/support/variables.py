@@ -49,6 +49,11 @@ def _get_default_source_root():
 ODE_SOURCE_ROOT = os.environ.get(
     "ODE_SOURCE_ROOT", _get_default_source_root())
 
+# $ODE_BUILD_ROOT is resolved from $ODE_SOURCE_ROOT if the environment
+# variable is not set.
+ODE_BUILD_ROOT = os.environ.get("ODE_BUILD_ROOT", os.path.join(
+    ODE_SOURCE_ROOT, "build"))
+
 # $ODE_REPO_NAME is got from the default value if the environment
 # variable is not set.
 ODE_REPO_NAME = os.environ.get("ODE_REPO_NAME", "unsung-anthem")

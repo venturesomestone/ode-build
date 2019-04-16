@@ -10,9 +10,4 @@
 #
 # ------------------------------------------------------------- #
 
-"""This support module has the common session data."""
-
-from util.mapping import Mapping
-
-
-session = Mapping()
+__all__ = ["set_up"]
