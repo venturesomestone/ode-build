@@ -52,7 +52,10 @@ def _find_tools(tools, func):
     for key, name in tools.items():
         diagnostics.debug("Looking for {}".format(name))
         found = func(cmd=name)
-        diagnostics.debug_ok("Found {}".format(found))
+        if found is None:
+            diagnostics.debug("Found {}".format(found))
+        else:
+            diagnostics.debug_ok("Found {}".format(found))
         tool_mapping[key] = found
     return tool_mapping
 

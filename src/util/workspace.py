@@ -17,6 +17,26 @@ project workspace.
 
 import os
 
+from support import data
+
+
+def source_dir(component):
+    """
+    Create an absolute path to the source directory of a
+    dependency.
+    """
+    if component.is_source:
+        target = "source"
+    else:
+        target = data.session.host_target
+    return os.path.join(
+        data.session.shared_dir, component.key, component.version, target)
+
+
+def temporary_dir(component):
+    """Create an absolute path to the temporary directory of a dependency."""
+    return os.path.join(data.session.shared_dir, component.key, "tmp")
+
 
 def compute_build_subdir(args):
     """

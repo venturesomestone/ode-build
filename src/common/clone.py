@@ -26,28 +26,31 @@ from util import diagnostics
 __all__ = ["run"]
 
 
-SOURCE_TARGET = "source"
+_SOURCE_TARGET = "source"
+
+
+def _write_version_file(versions, final_write=False):
+    with open(data.session.shared_status_file, "w") as outfile:
+        json.dump(versions, outfile)
+
+    if final_write:
+        log_function = diagnostics.debug_ok
+    else:
+        log_function = diagnostics.debug
+    log_function("Wrote the dependency version information to {}".format(
+        data.session.shared_status_file))
 
 
 def _get_component(component, versions):
-    """Download a dependency."""
-    if component.github_data:
-        diagnostics.debug(
-            "{} is a GitHub project and it will be downloaded from "
-            "GitHub".format(product.repr))
-        github.get_dependency(product)
-    else:
-        diagnostics.debug(
-            "GitHub data is not found from {} and, thus, a custom function is "
-            "used to download it".format(product.repr))
-        reflection.product_checkout_call(product, "get_dependency")
+    getattr(component.clone_module, "get_dependency")(component)
 
-    if product.is_source:
-        target = SOURCE_TARGET
+    if component.is_source:
+        target = _SOURCE_TARGET
     else:
-        target = data.build.host_target
-    info = {"version": product.version, "targets": [target]}
-    versions[product.key] = info
+        target = data.session.host_target
+    # info = {"version": component.version, "targets": [target]}
+    info = {"version": "0", "targets": [target]}
+    versions[component.key] = info
 
 
 def run(bootstrap):
@@ -79,8 +82,8 @@ def run(bootstrap):
             skip_list += ["cmake"]
         if toolchain.ninja is not None:
             skip_list += ["ninja"]
-        if not args.build_test:
-            skip_list += ["catch"]
+        # if not args.build_test:
+        #     skip_list += ["catch"]
         return skip_list
 
     skip_repository_list = _skip_repositories()
@@ -102,7 +105,7 @@ def run(bootstrap):
 
         if not args.clean:
             if component.is_source:
-                target = SOURCE_TARGET
+                target = _SOURCE_TARGET
             else:
                 target = data.session.host_target
             # TODO Cross-compile targets
@@ -112,11 +115,10 @@ def run(bootstrap):
                 diagnostics.trace(
                     "{} should not be re-downloaded, skipping".format(name))
                 continue
-        _get_component(product=product, versions=versions)
-        diagnostics.debug_ok("Updating the checkout of {} is complete".format(
-            name))
-        write_version_file(versions)
+        _get_component(component, versions)
+        diagnostics.debug_ok("Updating {} is complete".format(name))
+        _write_version_file(versions)
 
-    write_version_file(versions)
+    _write_version_file(versions)
 
     diagnostics.debug_head("The download of the dependencies is done")

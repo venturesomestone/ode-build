@@ -37,7 +37,6 @@ def _get_defaults():
         return json.load(f)
 
 
-
 # Options that can be "configured" by command line options
 
 # BUILD_VARIANT = "Debug"
