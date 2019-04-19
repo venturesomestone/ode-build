@@ -32,6 +32,8 @@ from util.mapping import Mapping
 
 from util.toolchain import host_toolchain
 
+from . import component_set_up
+
 
 __all__ = ["run"]
 
@@ -173,5 +175,13 @@ def run(args, bootstrap):
         data.session.github_token = str(os.environ["ANTHEM_OAUTH"])
 
     data.session.connection_protocol = defaults.PROTOCOL
+
+    # The shared status file is a JSON file containing the
+    # versions of the dependencies in order to determine whether
+    # to download new versions of them.
+    data.session.shared_status_file = os.path.join(
+        data.session.shared_dir, "status")
+
+    component_set_up.run(bootstrap)
 
     diagnostics.debug_head("Setup phase is done")
