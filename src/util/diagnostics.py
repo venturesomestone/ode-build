@@ -16,6 +16,8 @@ from __future__ import print_function
 
 import sys
 
+from datetime import datetime
+
 
 ENDC = "\033[0m"
 BOLD = "\033[1m"
@@ -34,9 +36,9 @@ OK_BLUE = "\033[94m"
 HEADER = "\033[95m"
 
 
-VERBOSE = True  # False
+VERBOSE = False
 
-DEBUG = True  # False
+DEBUG = False
 
 
 def _coerce_verbosity(verbosity_override=None):
@@ -54,22 +56,29 @@ def _coerce_debug(debug_override=None):
 
 
 def _printer(
-        level, colour=None, verbosity_check=lambda: True, print_script=False,
-        show_type=False):
+        level, color=None, verbosity_check=lambda: True, print_script=True,
+        show_date=True, show_type=True):
     def _printer_decorator(func):
         def _wrapper(message):
-            executable = sys.argv[0] + ": " if print_script else ""
-            message_type = "{}: ".format(level) if show_type else ""
-            if colour is not None:
-                full_message = "{}{}{}{}{}".format(
-                    executable, colour, message_type, func(message), ENDC)
-            else:
-                full_message = "{}{}{}".format(
-                    executable, message_type, func(message))
+            msg = ""
+            if print_script:
+                msg += "{}: ".format(sys.argv[0])
+            if show_date:
+                msg += "[{}]".format(
+                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            if show_type:
+                msg += "[{}]".format(level)
+            if show_date or show_type:
+                msg += " "
+            if color is not None:
+                msg += "{}".format(color)
+            msg += message
+            if color is not None:
+                msg += "{}".format(ENDC)
             if verbosity_check():
-                print(full_message)
+                print(msg)
             sys.stdout.flush()
-            return full_message
+            return msg
         return _wrapper
     return _printer_decorator
 
@@ -90,7 +99,7 @@ def trace_do_print(message):
     return message
 
 
-@_printer(level="trace", colour=ORANGE, verbosity_check=_coerce_verbosity)
+@_printer(level="trace", color=ORANGE, verbosity_check=_coerce_verbosity)
 def trace_head(message):
     """
     Print a trace diagnostic notification to the standard output.
@@ -106,7 +115,7 @@ def debug(message):
     return message
 
 
-@_printer(level="debug", colour=OK_GREEN, verbosity_check=_coerce_debug)
+@_printer(level="debug", color=OK_GREEN, verbosity_check=_coerce_debug)
 def debug_ok(message):
     """
     Print a debug diagnostic notification to the standard output.
@@ -114,7 +123,7 @@ def debug_ok(message):
     return message
 
 
-@_printer(level="debug", colour=WARNING, verbosity_check=_coerce_debug)
+@_printer(level="debug", color=WARNING, verbosity_check=_coerce_debug)
 def debug_note(message):
     """
     Print a debug diagnostic notification to the standard output.
@@ -122,7 +131,7 @@ def debug_note(message):
     return message
 
 
-@_printer(level="debug", colour=ORANGE, verbosity_check=_coerce_debug)
+@_printer(level="debug", color=ORANGE, verbosity_check=_coerce_debug)
 def debug_head(message):
     """
     Print a debug diagnostic notification to the standard output.
@@ -130,7 +139,7 @@ def debug_head(message):
     return message
 
 
-@_printer(level="note", colour=OK_BLUE)
+@_printer(level="note", color=OK_BLUE)
 def fine(message):
     """
     Print a diagnostic notification to the standard output
@@ -139,7 +148,7 @@ def fine(message):
     return message
 
 
-@_printer(level="note", colour=HEADER + BOLD)
+@_printer(level="note", color=HEADER + BOLD)
 def head(message):
     """
     Print a header diagnostic notification to the standard
@@ -154,7 +163,7 @@ def note(message):
     return message
 
 
-@_printer(level="warning", colour=WARNING)
+@_printer(level="warning", color=WARNING)
 def warn(message):
     """Print a warning notification to the standard output."""
     return message
@@ -168,7 +177,7 @@ def warning(message):
 def fatal(message):
     """Raise a fatal error."""
     @_printer(
-        level="fatal error", colour=BOLD + FAIL, verbosity_check=lambda: False)
+        level="fatal error", color=BOLD + FAIL, verbosity_check=lambda: False)
     def _impl(msg):
         return msg
     raise SystemExit(_impl(message))
