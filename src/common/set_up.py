@@ -177,6 +177,11 @@ def run(args, bootstrap):
     elif "ANTHEM_OAUTH" in os.environ:
         data.session.github_token = str(os.environ["ANTHEM_OAUTH"])
 
+    if not data.session.github_token:
+        with open(args.auth_token_file) as file:
+            # TODO This isn't not all that elegant solution
+            data.session.github_token = file.readline().replace("\n", "")
+
     data.session.connection_protocol = defaults.PROTOCOL
 
     # The shared status file is a JSON file containing the

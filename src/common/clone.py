@@ -96,7 +96,7 @@ def run(bootstrap):
     for key, component in data.session.dependencies.items():
         name = component.repr
 
-        diagnostics.debug("Beginning to process the update of {}".format(name))
+        diagnostics.debug("Beginning to update {}".format(name))
 
         if key in skip_repository_list:
             diagnostics.debug(

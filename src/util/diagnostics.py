@@ -56,8 +56,8 @@ def _coerce_debug(debug_override=None):
 
 
 def _printer(
-        level, color=None, verbosity_check=lambda: True, print_script=True,
-        show_date=True, show_type=True):
+        level, color=None, verbosity_check=lambda: True, print_script=False,
+        show_date=False, show_type=False):
     def _printer_decorator(func):
         def _wrapper(message):
             msg = ""

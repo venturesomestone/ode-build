@@ -17,7 +17,11 @@ project workspace.
 
 import os
 
+from contextlib import contextmanager
+
 from support import data
+
+from . import shell
 
 
 def source_dir(component):
@@ -36,6 +40,17 @@ def source_dir(component):
 def temporary_dir(component):
     """Create an absolute path to the temporary directory of a dependency."""
     return os.path.join(data.session.shared_dir, component.key, "tmp")
+
+
+@contextmanager
+def clone_directory(component):
+    """Creates the directories for cloning a dependency."""
+    shell.rmtree(source_dir(component))
+    shell.rmtree(temporary_dir(component))
+    shell.makedirs(source_dir(component))
+    shell.makedirs(temporary_dir(component))
+    yield
+    shell.rmtree(temporary_dir(component))
 
 
 def compute_build_subdir(args):
