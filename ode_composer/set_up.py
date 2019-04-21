@@ -24,7 +24,7 @@ import time
 
 from support import data, defaults
 
-from support.variables import ODE_SOURCE_ROOT, ODE_BUILD_ROOT
+from support.variables import ODE_BUILD_ROOT, ODE_SCRIPT_ROOT, ODE_SOURCE_ROOT
 
 from util import diagnostics, shell, workspace
 
@@ -132,7 +132,7 @@ def run(args, bootstrap):
         build_dir=os.path.join(ODE_BUILD_ROOT, "build"),
         # The script directory in the build root is the
         # directory that the build script files are copied in.
-        script_dir=os.path.join(ODE_BUILD_ROOT, "script"),
+        script_dir=ODE_SCRIPT_ROOT,
         # The dependencies are the projects that are needed to
         # build the project. The dependencies are built by the
         # bootstrap script.

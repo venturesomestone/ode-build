@@ -28,9 +28,10 @@ def import_clone_component(name):
 
     name -- the name of the component
     """
-    diagnostics.trace("Importing component '{}'".format(name))
     path = os.path.join(
         data.session.script_dir, "components", name, "clone.py")
+    diagnostics.trace("Importing component '{}' from path '{}'".format(
+        name, path))
     if sys.version_info.major >= 3:
         if sys.version_info.minor >= 4:
             import importlib.util

@@ -23,6 +23,8 @@ from support import data
 
 from support.defaults import GITHUB_API_V4_ENDPOINT
 
+from support.variables import ODE_GRAPHQL_ROOT
+
 from util import diagnostics
 
 
@@ -37,7 +39,7 @@ def get_github_version(component, github_data):
 
 def call_query(file_name, replacements=None):
     """Calls the given GraphQL query."""
-    with open(os.path.join(data.session.script_dir, file_name)) as query_file:
+    with open(os.path.join(ODE_GRAPHQL_ROOT, file_name)) as query_file:
         raw_query = str(query_file.read())
     if replacements:
         for k, v in replacements.items():

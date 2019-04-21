@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                 Obliging Ode & Unsung Anthem
+#                         Ode Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -10,4 +10,8 @@
 #
 # ------------------------------------------------------------- #
 
-__all__ = ["set_up"]
+"""The version data of Ode Composer."""
+
+VERSION = (0, 1, 0)
+
+__version__ = '.'.join(map(str, VERSION))

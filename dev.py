@@ -1,5 +1,7 @@
+#!/usr/bin/env python
+
 # ------------------------------------------------------------- #
-#                 Obliging Ode & Unsung Anthem
+#                         Ode Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -11,13 +13,14 @@
 # ------------------------------------------------------------- #
 
 """
-This support module has the info necessary for downloading CMake.
+Helper script that is used to run the project in development
+mode.
 """
 
+import sys
 
-SOURCE = False
-GITHUB = False
+from ode_composer import __main__
 
 
-def get_dependency(component):
-    """Downloads the dependency."""
+if __name__ == "__main__":
+    sys.exit(__main__.main())
