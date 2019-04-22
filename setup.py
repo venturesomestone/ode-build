@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # ------------------------------------------------------------- #
-#                         Ode Composer
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -21,19 +21,19 @@ from setuptools import find_packages, setup
 
 
 # Package metadata
-NAME = "ode-composer"
+NAME = "couplet-composer"
 DESCRIPTION = "Tool for building, testing, and preparing binary " \
     "distribution archives of Obliging Ode."
-URL = "https://github.com/anttikivi/ode-composer"
+URL = "https://github.com/anttikivi/couplet-composer"
 EMAIL = "antti@anttikivi.fi"
 AUTHOR = "Antti Kivi"
 REQUIRES_PYTHON = ">=2.7.11"
 VERSION = None
 
-# The packages that Ode Composer needs
+# The packages that Couplet Composer needs
 REQUIRED = []
 
-# The optional packages that Ode Composer can use
+# The optional packages that Couplet Composer can use
 EXTRAS = {}
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -70,7 +70,7 @@ setup(
         exclude=["tests", "*.tests", "*.tests.*", "tests.*"],
         include=("*", "components")),
     entry_points={
-        "console_scripts": ["ode-composer=ode_composer.__main__:main"]
+        "console_scripts": ["couplet-composer=couplet_composer.__main__:main"]
     },
     install_requires=REQUIRED,
     extras_require=EXTRAS,
