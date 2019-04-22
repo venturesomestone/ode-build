@@ -20,7 +20,7 @@ import os
 
 from support import data
 
-from util import diagnostics
+from util import diagnostics, reflection
 
 
 __all__ = ["run"]
@@ -50,7 +50,40 @@ def _get_component(component, versions):
         target = data.session.host_target
     # info = {"version": component.version, "targets": [target]}
     info = {"version": "0", "targets": [target]}
+    extra_data = reflection.get_custom_version_data(component)
+    if extra_data is not None:
+        for key, value in extra_data.items():
+            info[key] = value
     versions[component.key] = info
+
+
+def _has_correct_version(component, versions, target):
+    key = component.key
+    added = key in versions
+    version_equals = component.version == versions[key]["version"]
+    same_target = target in versions[key]["targets"]
+    extra_data = reflection.get_custom_version_data(component)
+    if extra_data is not None:
+        for key, value in extra_data.items():
+            diagnostics.trace(
+                "Checking if the version of {} for value '{}' for key '{}' is "
+                "already downloaded".format(component.repr, value, key)
+            )
+            if versions[key] is None:
+                diagnostics.trace(
+                    "The key '{}' is not yet in downloaded version "
+                    "data".format(key)
+                )
+                return False
+            diagnostics.trace(
+                "The value of {} in the downloaded version data is {}".format(
+                    key,
+                    versions[key]
+                )
+            )
+            if versions[key] != value:
+                return False
+    return added and version_equals and same_target
 
 
 def run(bootstrap):
@@ -110,11 +143,10 @@ def run(bootstrap):
             else:
                 target = data.session.host_target
             # TODO Cross-compile targets
-            if key in versions \
-                    and component.version == versions[key]["version"] \
-                    and target in versions[key]["targets"]:
+            if not _has_correct_version(component, versions, target):
                 diagnostics.trace(
-                    "{} should not be re-downloaded, skipping".format(name))
+                    "{} should not be re-downloaded, skipping".format(name)
+                )
                 continue
         _get_component(component, versions)
         diagnostics.debug_ok("Updating {} is complete".format(name))
