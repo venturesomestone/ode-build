@@ -10,7 +10,7 @@
 #
 # ------------------------------------------------------------- #
 
-"""The entry point of Ode Composer."""
+"""The entry point of Couplet Composer."""
 
 import os
 import sys

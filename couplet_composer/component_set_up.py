@@ -26,7 +26,7 @@ from util import diagnostics
 
 from util.mapping import Mapping
 
-from util.reflection import import_clone_component
+from util.reflection import import_build_component, import_clone_component
 
 
 __all__ = ["run"]
@@ -73,6 +73,7 @@ def run(bootstrap):
                 dependency.repr, dependency.version))
 
         dependency.clone_module = import_clone_component(key)
+        dependency.build_module = import_build_component(key)
 
         dependency.is_source = getattr(dependency.clone_module, "SOURCE")
 

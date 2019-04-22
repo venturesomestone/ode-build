@@ -16,7 +16,7 @@ import argparse
 import os
 import sys
 
-from support import arguments
+from support import arguments, data
 
 from support.presets import get_all_preset_names, get_preset_options
 
@@ -25,6 +25,15 @@ from support.variables import HOME, ODE_REPO_NAME, ODE_SOURCE_ROOT
 from util import diagnostics, shell
 
 from . import clone, preset, set_up
+
+
+def _build_dependencies():
+    diagnostics.debug_head("Starting to build the dependencies")
+    for key, value in data.session.dependencies.items():
+        if value.repr == key:
+            diagnostics.debug("Building {}".format(value.repr))
+        else:
+            diagnostics.debug("Building {} ({})".format(value.repr, key))
 
 
 def run_preset():
@@ -105,4 +114,5 @@ def run():
         list(arg for arg in sys.argv[1:] if arg != '--'))
     set_up.run(args, True)
     clone.run(True)
+    _build_dependencies()
     return 0
