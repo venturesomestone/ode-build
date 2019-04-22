@@ -19,7 +19,7 @@ mode.
 
 import sys
 
-from ode_composer import __main__
+from couplet_composer import __main__
 
 
 if __name__ == "__main__":
