@@ -168,7 +168,7 @@ def rmtree(path, dry_run=None, echo=None):
     if dry_run:
         return
     if os.path.exists(path):
-        shutil.rmtree(path)
+        shutil.rmtree(path, ignore_errors=True)
 
 
 def rm(file, dry_run=None, echo=None):

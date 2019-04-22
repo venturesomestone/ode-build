@@ -38,7 +38,7 @@ def get_github_version(component, github_data):
 
 
 def call_query(file_name, replacements=None):
-    """Calls the given GraphQL query."""
+    """Calls the given GraphQL query and return the raw data."""
     with open(os.path.join(ODE_GRAPHQL_ROOT, file_name)) as query_file:
         raw_query = str(query_file.read())
     if replacements:
@@ -58,48 +58,28 @@ def call_query(file_name, replacements=None):
     diagnostics.trace("The response of the query was:\n{}".format(
         response.json()))
 
-    return response.json()["data"]
+    return response.json()
 
 
-def find_release_node(
-        component, github_data, json_data, let_use_fallback=False):
+def find_release_node(component, github_data, json_data):
     """
     Finds the requested release node from the GitHub API JSON
     data.
     """
-    release_edges = json_data["repository"]["releases"]["edges"]
+    release_id = json_data["data"]["repository"]["release"]["id"]
+    diagnostics.trace(
+        "The release ID that the utility tries to find is {}".format(
+            release_id))
+    release_edges = json_data["data"]["repository"]["releases"]["edges"]
     ret_node = None
-    gh_version = get_github_version(component, github_data)
     for edge in release_edges:
         node = edge["node"]
-        if node is None or node["name"] == "":
+        diagnostics.trace("The current edge has the ID {}".format(node["id"]))
+        if node is None or node["id"] == "":
             continue
-        if node["name"] == gh_version:
-            diagnostics.debug("Found the release {} ({}) of {}".format(
-                component.version, gh_version, component.repr))
-            ret_node = node
-
-    if not ret_node and let_use_fallback:
-        return release_edges[0]["node"]
-
-    return ret_node
-
-
-def find_release_node_by_tag(component, github_data, json_data):
-    """
-    Finds the requested release node from the GitHub API JSON
-    data by the tag name.
-    """
-    release_edges = json_data["repository"]["releases"]["edges"]
-    ret_node = None
-    gh_version = get_github_version(component, github_data)
-    for edge in release_edges:
-        node = edge["node"]
-        if node is None or node["name"] == "":
-            continue
-        tag_name = node["tag"]["name"]
-        if tag_name == gh_version:
-            diagnostics.debug("Found the release {} ({}) of {}".format(
-                component.version, gh_version, component.repr))
+        if node["id"] == release_id:
+            diagnostics.debug(
+                "The release with the ID {} of {} was found".format(
+                    release_id, component.repr))
             ret_node = node
     return ret_node

@@ -14,6 +14,10 @@
 This support module has the info necessary for downloading Glad.
 """
 
+from github import tag
+
+from util import workspace
+
 from util.mapping import Mapping
 
 
@@ -27,3 +31,5 @@ GITHUB_DATA = Mapping(
 
 def get_dependency(component):
     """Downloads the dependency."""
+    with workspace.clone_directory(component):
+        tag.clone(component, GITHUB_DATA)

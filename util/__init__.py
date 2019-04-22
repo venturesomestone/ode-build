@@ -10,4 +10,4 @@
 #
 # ------------------------------------------------------------- #
 
-__all__ = ["diagnostics", "target", "toolchain", "which", "xcrun"]
+__all__ = ["diagnostics", "shell", "target", "toolchain", "which", "xcrun"]

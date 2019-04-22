@@ -15,6 +15,10 @@ This support module has the info necessary for downloading Google
 Test.
 """
 
+from github import release
+
+from util import workspace
+
 from util.mapping import Mapping
 
 
@@ -28,3 +32,5 @@ GITHUB_DATA = Mapping(
 
 def get_dependency(component):
     """Downloads the dependency."""
+    with workspace.clone_directory(component):
+        release.basic_tag(component, GITHUB_DATA)

@@ -15,7 +15,7 @@ This support module has the info necessary for downloading Google
 Benchmark.
 """
 
-from github import asset
+from github import release
 
 from util import workspace
 
@@ -33,4 +33,4 @@ GITHUB_DATA = Mapping(
 def get_dependency(component):
     """Downloads the dependency."""
     with workspace.clone_directory(component):
-        asset.basic_asset(component, GITHUB_DATA)
+        release.basic_tag(component, GITHUB_DATA)

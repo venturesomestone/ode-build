@@ -15,6 +15,10 @@ This support module has the info necessary for downloading
 spdlog.
 """
 
+from github import release
+
+from util import workspace
+
 from util.mapping import Mapping
 
 
@@ -22,9 +26,11 @@ SOURCE = True
 GITHUB = True
 GITHUB_DATA = Mapping(
     owner="gabime",
-    version_prefix="Version "
+    version_prefix="v"
 )
 
 
 def get_dependency(component):
     """Downloads the dependency."""
+    with workspace.clone_directory(component):
+        release.basic_tag(component, GITHUB_DATA)

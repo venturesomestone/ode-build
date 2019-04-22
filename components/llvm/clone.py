@@ -21,3 +21,4 @@ GITHUB = False
 
 def get_dependency(component):
     """Downloads the dependency."""
+    pass
