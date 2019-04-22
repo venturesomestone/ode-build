@@ -142,10 +142,6 @@ def clone(component, github_data):
         # TODO
         diagnostics.fatal("TODO")
     if platform.system() != "Windows":
-        source_dir = workspace.source_dir(component)
-        version_dir = os.path.dirname(source_dir)
-        shell.rmtree(source_dir)
-        shell.rmtree(version_dir)
         shell.copytree(
             os.path.join(workspace.temporary_dir(component), component.key),
             workspace.source_dir(component))

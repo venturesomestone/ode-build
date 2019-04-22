@@ -31,7 +31,7 @@ _SOURCE_TARGET = "source"
 
 def _write_version_file(versions, final_write=False):
     with open(data.session.shared_status_file, "w") as outfile:
-        json.dump(versions, outfile)
+        json.dump(versions, outfile, indent=2, sort_keys=True)
 
     if final_write:
         log_function = diagnostics.debug_ok
@@ -48,11 +48,16 @@ def _get_component(component, versions):
         target = _SOURCE_TARGET
     else:
         target = data.session.host_target
-    # info = {"version": component.version, "targets": [target]}
-    info = {"version": "0", "targets": [target]}
+    info = {"version": component.version, "targets": [target]}
     extra_data = reflection.get_custom_version_data(component)
     if extra_data is not None:
         for key, value in extra_data.items():
+            diagnostics.trace(
+                "Adding {} with the value {} to the version JSON".format(
+                    key,
+                    value
+                )
+            )
             info[key] = value
     versions[component.key] = info
 
@@ -60,16 +65,19 @@ def _get_component(component, versions):
 def _has_correct_version(component, versions, target):
     key = component.key
     added = key in versions
+    if not added:
+        return False
     version_equals = component.version == versions[key]["version"]
     same_target = target in versions[key]["targets"]
     extra_data = reflection.get_custom_version_data(component)
     if extra_data is not None:
+        record = versions[key]
         for key, value in extra_data.items():
             diagnostics.trace(
-                "Checking if the version of {} for value '{}' for key '{}' is "
-                "already downloaded".format(component.repr, value, key)
+                "Checking if the version of {} for key {} with the value {} "
+                "is already downloaded".format(component.repr, value, key)
             )
-            if versions[key] is None:
+            if record[key] is None:
                 diagnostics.trace(
                     "The key '{}' is not yet in downloaded version "
                     "data".format(key)
@@ -78,12 +86,12 @@ def _has_correct_version(component, versions, target):
             diagnostics.trace(
                 "The value of {} in the downloaded version data is {}".format(
                     key,
-                    versions[key]
+                    record[key]
                 )
             )
-            if versions[key] != value:
+            if record[key] != value:
                 return False
-    return added and version_equals and same_target
+    return version_equals and same_target
 
 
 def run(bootstrap):
@@ -143,7 +151,7 @@ def run(bootstrap):
             else:
                 target = data.session.host_target
             # TODO Cross-compile targets
-            if not _has_correct_version(component, versions, target):
+            if _has_correct_version(component, versions, target):
                 diagnostics.trace(
                     "{} should not be re-downloaded, skipping".format(name)
                 )
@@ -152,6 +160,6 @@ def run(bootstrap):
         diagnostics.debug_ok("Updating {} is complete".format(name))
         _write_version_file(versions)
 
-    _write_version_file(versions)
+    _write_version_file(versions, True)
 
     diagnostics.debug_head("The download of the dependencies is done")
