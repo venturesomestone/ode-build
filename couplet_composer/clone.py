@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                 Obliging Ode & Unsung Anthem
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem

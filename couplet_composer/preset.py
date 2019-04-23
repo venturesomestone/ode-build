@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                         Ode Composer
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -13,13 +13,10 @@
 import argparse
 
 
-def create_parser(bootstrap):
+def create_parser():
     """
     Makes the parser containing the arguments for the preset
     mode.
-
-    bootstrap -- whether or not the script was run in the
-    bootstrap mode.
     """
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,

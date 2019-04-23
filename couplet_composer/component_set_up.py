@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                 Obliging Ode & Unsung Anthem
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -20,7 +20,7 @@ import os
 
 from support import data
 
-from support.variables import ODE_SOURCE_ROOT, ODE_REPO_NAME
+from support.variables import ODE_REPO_NAME, ODE_SOURCE_ROOT
 
 from util import diagnostics
 
@@ -32,26 +32,29 @@ from util.reflection import import_build_component, import_clone_component
 __all__ = ["run"]
 
 
-def run(bootstrap):
+def run():
     """
     Create the mappings of the dependencies and components of the
     build.
-
-    bootstrap -- whether or not this is called from the bootstrap
-    script and not the build script
     """
     with open(os.path.join(
-            ODE_SOURCE_ROOT, ODE_REPO_NAME, "util", "build",
-            "dependencies.json")) as f:
+        ODE_SOURCE_ROOT,
+        ODE_REPO_NAME,
+        "util",
+        "build",
+        "dependencies.json"
+    )) as f:
         components = json.load(f)
 
     for key, component in components.items():
         diagnostics.trace(
-            "Creating a mapping for the component '{}' ({})".format(
-                component["name"], key))
+            "Creating a mapping for '{}' ({})".format(component["name"], key)
+        )
 
         data.session.dependencies[key] = Mapping(
-            repr=component["name"], key=key)
+            repr=component["name"],
+            key=key
+        )
 
         dependency = data.session.dependencies[key]
 
@@ -61,16 +64,26 @@ def run(bootstrap):
                 dependency.version_data[v_key] = value
                 diagnostics.trace(
                     "The value of '{}' in the version of {} is {}".format(
-                        v_key, dependency.repr, value))
+                        v_key,
+                        dependency.repr,
+                        value
+                    )
+                )
             dependency.version = "{}.{}.{}".format(
-                dependency.version_data.major, dependency.version_data.minor,
-                dependency.version_data.patch)
+                dependency.version_data.major,
+                dependency.version_data.minor,
+                dependency.version_data.patch
+            )
             diagnostics.trace("The version of {} is {}".format(
-                dependency.repr, dependency.version))
+                dependency.repr,
+                dependency.version
+            ))
         else:
             dependency.version = component["version"]
             diagnostics.trace("The version of {} is {}".format(
-                dependency.repr, dependency.version))
+                dependency.repr,
+                dependency.version
+            ))
 
         dependency.clone_module = import_clone_component(key)
         dependency.build_module = import_build_component(key)
@@ -80,21 +93,31 @@ def run(bootstrap):
         if dependency.is_source:
             diagnostics.trace(
                 "{} is going to be downloaded as source code".format(
-                    dependency.repr))
+                    dependency.repr
+                )
+            )
         else:
             diagnostics.trace(
                 "{} is going to be downloaded as a binary".format(
-                    dependency.repr))
+                    dependency.repr
+                )
+            )
 
         dependency.github = getattr(dependency.clone_module, "GITHUB")
 
         if dependency.github:
             diagnostics.trace(
                 "{} is going to be downloaded from GitHub".format(
-                    dependency.repr))
+                    dependency.repr
+                )
+            )
             dependency.github_data = getattr(
-                dependency.clone_module, "GITHUB_DATA")
+                dependency.clone_module,
+                "GITHUB_DATA"
+            )
         else:
             diagnostics.trace(
                 "{} isn't going to be downloaded from GitHub".format(
-                    dependency.repr))
+                    dependency.repr
+                )
+            )

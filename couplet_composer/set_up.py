@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                 Obliging Ode & Unsung Anthem
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -85,23 +85,22 @@ def _clean_delay():
     return index_list
 
 
-def run(args, bootstrap):
-    """
-    Run the common set up phase of the scripts.
-
-    args -- the parsed command line arguments
-    bootstrap -- whether or not this is called from the bootstrap
-    script and not the build script
-    """
+def run(args):
+    """Run the common set up phase of the scripts."""
     shell.DRY_RUN = args.dry_run
     shell.ECHO = args.verbosity >= 1
 
     diagnostics.DEBUG = args.verbosity >= 1
     diagnostics.VERBOSE = args.verbosity >= 2
 
-    diagnostics.head("Setting up version {} of {} and version {} of {}".format(
-        defaults.ANTHEM_VERSION, defaults.ANTHEM_NAME, defaults.ODE_VERSION,
-        defaults.ODE_NAME))
+    diagnostics.debug(
+        "Setting up version {} of {} and version {} of {}".format(
+            defaults.ANTHEM_VERSION,
+            defaults.ANTHEM_NAME,
+            defaults.ODE_VERSION,
+            defaults.ODE_NAME
+        )
+    )
 
     diagnostics.debug_head("Starting the setup phase")
 
@@ -109,7 +108,8 @@ def run(args, bootstrap):
         args.build_subdir = workspace.compute_build_subdir_name(args)
 
     diagnostics.trace(
-        "The build subdirectory is set to {}".format(args.build_subdir))
+        "The build subdirectory is set to {}".format(args.build_subdir)
+    )
 
     data.session = Mapping(
         args=args,
@@ -152,6 +152,7 @@ def run(args, bootstrap):
         # std=args.std,
         # TODO The C++ standard library implementation
         # stdlib=args.stdlib,
+        # TODO This will be removed
         build_lua_with_cmake=platform.system() == "Windows"
     )
 
@@ -172,6 +173,25 @@ def run(args, bootstrap):
 
     diagnostics.trace("The mapping of the session data is created")
 
+    diagnostics.debug("The source root is set to {}".format(
+        data.session.source_root
+    ))
+    diagnostics.debug("The build root is set to {}".format(
+        data.session.build_root
+    ))
+    diagnostics.debug("The shared directory is set to {}".format(
+        data.session.shared_dir
+    ))
+    diagnostics.debug("The build directory is set to {}".format(
+        data.session.build_dir
+    ))
+    diagnostics.debug("The script directory is set to {}".format(
+        data.session.script_dir
+    ))
+    diagnostics.debug("The shared build directory is set to {}".format(
+        data.session.shared_build_dir
+    ))
+
     if args.clean:
         _clean_delay()
         shell.rmtree(path=data.session.shared_dir)
@@ -181,6 +201,8 @@ def run(args, bootstrap):
     shell.makedirs(data.session.shared_dir)
     shell.makedirs(data.session.build_dir)
     shell.makedirs(data.session.shared_build_dir)
+
+    diagnostics.trace("Created the build directories")
 
     os.environ["TOOLCHAINS"] = "default"
     data.session.toolchain = host_toolchain(args=args)
@@ -205,8 +227,10 @@ def run(args, bootstrap):
     # versions of the dependencies in order to determine whether
     # to download new versions of them.
     data.session.shared_status_file = os.path.join(
-        data.session.shared_dir, "status")
+        data.session.shared_dir,
+        "status"
+    )
 
-    component_set_up.run(bootstrap)
+    component_set_up.run()
 
     diagnostics.debug_head("Setup phase is done")

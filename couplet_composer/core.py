@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                         Ode Composer
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -9,8 +9,6 @@
 # All rights reserved
 #
 # ------------------------------------------------------------- #
-
-from __future__ import print_function
 
 import sys
 

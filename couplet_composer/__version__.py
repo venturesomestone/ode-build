@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                         Ode Composer
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -10,8 +10,8 @@
 #
 # ------------------------------------------------------------- #
 
-"""The version data of Ode Composer."""
+"""The version data of Couplet Composer."""
 
 VERSION = (0, 1, 0)
 
-__version__ = '.'.join(map(str, VERSION))
+__version__ = ".".join(map(str, VERSION))

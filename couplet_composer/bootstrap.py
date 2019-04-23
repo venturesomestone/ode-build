@@ -1,5 +1,5 @@
 # ------------------------------------------------------------- #
-#                         Ode Composer
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
@@ -17,6 +17,8 @@ import os
 import sys
 
 from support import arguments, data
+
+from support.defaults import ANTHEM_NAME
 
 from support.presets import get_all_preset_names, get_preset_options
 
@@ -66,13 +68,12 @@ def _build_dependencies():
         _build_dependency(value, built)
 
 
-
 def run_preset():
     """
     Works out the preset of the bootstrap mode and runs the
     script with the arguments.
     """
-    parser = preset.create_parser(True)
+    parser = preset.create_parser()
     args = parser.parse_args()
 
     shell.DRY_RUN = args.dry_run
@@ -81,17 +82,30 @@ def run_preset():
     diagnostics.DEBUG = args.verbose >= 1
     diagnostics.VERBOSE = args.verbose >= 2
 
+    diagnostics.trace("Parsed the command line arguments")
+
     if not args.preset_file_names:
         args.preset_file_names = [
             os.path.join(HOME, ".anthem-build-presets"),
             os.path.join(HOME, ".ode-build-presets"),
             os.path.join(
-                ODE_SOURCE_ROOT, ODE_REPO_NAME, "util", "build-presets.ini")
+                ODE_SOURCE_ROOT,
+                ODE_REPO_NAME,
+                "util",
+                "build-presets.ini"
+            )
         ]
 
+    diagnostics.trace(
+        "The preset files are {}".format(", ".join(args.preset_file_names))
+    )
+
     if args.show_presets:
+        diagnostics.note("The available presets are:")
         for name in sorted(
-                get_all_preset_names(args.preset_file_names), key=str.lower):
+            get_all_preset_names(args.preset_file_names),
+            key=str.lower
+        ):
             print(name)
         return 0
 
@@ -101,11 +115,15 @@ def run_preset():
     args.preset_substitutions = {}
 
     for arg in args.preset_substitutions_raw:
+        diagnostics.trace("Found a preset substitution: {}".format(arg))
         name, value = arg.split("=", 1)
         args.preset_substitutions[name] = value
 
     preset_args = get_preset_options(
-        args.preset_substitutions, args.preset_file_names, args.preset)
+        args.preset_substitutions,
+        args.preset_file_names,
+        args.preset
+    )
 
     build_script_args = [sys.argv[0]]
     build_script_args += ["bootstrap"]
@@ -116,19 +134,22 @@ def run_preset():
         build_script_args += ["--clean"]
     if args.verbose:
         build_script_args += ["--verbose", args.verbose]
-    if args.develop_stack:
-        build_script_args += ["--develop-stack"]
     build_script_args += preset_args
     if args.build_jobs:
         build_script_args += ["--jobs", str(args.build_jobs)]
 
     diagnostics.note("Using preset '{}', which expands to \n\n{}\n".format(
-        args.preset, shell.quote_command(build_script_args)))
+        args.preset,
+        shell.quote_command(build_script_args)
+    ))
     diagnostics.debug(
         "The script will run with '{}' as the Python executable\n".format(
-            sys.executable))
+            sys.executable
+        )
+    )
 
     if args.expand_build_script_invocation:
+        diagnostics.trace("The build script invocation is printed")
         return 0
 
     command_to_run = [sys.executable] + build_script_args
@@ -142,8 +163,16 @@ def run():
     parser = arguments.create_argument_parser()
     # TODO Unknown args
     args, unknown_args = parser.parse_known_args(
-        list(arg for arg in sys.argv[1:] if arg != '--'))
-    set_up.run(args, True)
+        list(arg for arg in sys.argv[1:] if arg != '--')
+    )
+    diagnostics.head(
+        "Starting to bootstrap the workspace of {} version {}".format(
+            ANTHEM_NAME,
+            args.anthem_version
+        )
+    )
+    set_up.run(args)
     clone.run(True)
     _build_dependencies()
+    diagnostics.note("The bootstrap is complete")
     return 0

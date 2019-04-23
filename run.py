@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # ------------------------------------------------------------- #
-#                         Ode Composer
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Obliging Ode and Unsung Anthem
