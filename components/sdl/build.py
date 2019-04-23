@@ -62,7 +62,7 @@ def build(component):
     """Builds the dependency."""
     bin_name = os.path.join(
         "lib",
-        "SDL2.lib" if platform.system() == "Windows" else "libSDL2d.a"
+        "SDL2.lib" if platform.system() == "Windows" else "libSDL2.a"
     )
     if binaries.exist(component, bin_name):
         return
