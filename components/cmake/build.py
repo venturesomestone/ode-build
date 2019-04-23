@@ -22,6 +22,12 @@ from support import data
 from util import binaries, cmake, diagnostics, shell, workspace
 
 
+def skip_build():
+    """Whether the build is skippped."""
+    return data.session.toolchain.cmake is not None
+    # and not data.session.args.build_cmake
+
+
 def _bin_name(component):
     if platform.system() == "Windows":
         return os.path.join("bin", "cmake.exe")

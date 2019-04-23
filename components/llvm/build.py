@@ -15,6 +15,11 @@ This support module has the info necessary for building LLVM.
 """
 
 
+def skip_build():
+    """Whether the build is skippped."""
+    return True
+
+
 def build(component):
     """Builds the dependency."""
     pass

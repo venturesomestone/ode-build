@@ -122,8 +122,7 @@ def run(bootstrap):
         if toolchain.cmake is not None:
             skip_list += ["cmake"]
         if toolchain.ninja is not None:
-            pass
-            # skip_list += ["ninja"]
+            skip_list += ["ninja"]
         # if not args.build_test:
         #     skip_list += ["catch"]
         return skip_list

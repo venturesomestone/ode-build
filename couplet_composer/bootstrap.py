@@ -29,34 +29,35 @@ from . import clone, preset, set_up
 
 def _build_dependency(component, built):
     key = component.key
-    if key in built:
-        if component.repr == key:
-            diagnostics.debug("{} is already built".format(component.repr))
-        else:
+    skip = False
+    if hasattr(component.build_module, "skip_build"):
+        skip = getattr(component.build_module, "skip_build")()
+        if skip:
             diagnostics.debug(
-                "{} ({}) is already built".format(component.repr, key)
+                "The build of {} is skipped".format(component.repr)
             )
-        return
-    if component.repr == key:
-        diagnostics.debug("Building {}".format(component.repr))
-    else:
-        diagnostics.debug("Building {} ({})".format(component.repr, key))
-    # TODO
-    if key != "llvm":
+    if key in built:
+        diagnostics.debug("{} is already built".format(component.repr))
+        skip = True
+    diagnostics.debug("Building {}".format(component.repr))
+    if not skip:
         sources.exist(component)
-    if hasattr(component.build_module, "dependencies"):
-        dependencies = getattr(component.build_module, "dependencies")()
-        diagnostics.debug("{} depends on {}".format(
-            component.repr,
-            ", ".join(dependencies)
-        ))
-        for dependency in dependencies:
-            if dependency not in built:
-                diagnostics.trace("{} isn't built yet".format(dependency))
-                _build_dependency(data.session.depedencies[dependency], built)
-            else:
-                diagnostics.trace("{} is already built".format(dependency))
-    getattr(component.build_module, "build")(component)
+        if hasattr(component.build_module, "dependencies"):
+            dependencies = getattr(component.build_module, "dependencies")()
+            diagnostics.debug("{} depends on {}".format(
+                component.repr,
+                ", ".join(dependencies)
+            ))
+            for dependency in dependencies:
+                if dependency not in built:
+                    diagnostics.trace("{} isn't built yet".format(dependency))
+                    _build_dependency(
+                        data.session.depedencies[dependency],
+                        built
+                    )
+                else:
+                    diagnostics.trace("{} is already built".format(dependency))
+        getattr(component.build_module, "build")(component)
     built += [key]
 
 
