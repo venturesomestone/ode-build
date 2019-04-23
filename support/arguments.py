@@ -45,10 +45,9 @@ class _ApplyDefaultsArgumentParser(argparse.ArgumentParser):
         return args, argv
 
 
-def _apply_common_default_arguments(args):
+def _apply_default_arguments(args):
     """
-    Preprocess argument namespace to apply default behaviours for both the
-    build script and bootstrap.
+    Preprocess argument namespace to apply default behaviours.
     """
     if args.verbosity < 0:
         args.verbosity = 0
@@ -85,13 +84,6 @@ def _apply_common_default_arguments(args):
     # TODO Add the build variants for rest of the projects if
     # needed
 
-
-def _apply_default_arguments(args):
-    """
-    Preprocess argument namespace to apply default behaviours.
-    """
-    _apply_common_default_arguments(args)
-
     # Assertions are enabled by default.
     if args.assertions is None:
         args.assertions = True
@@ -119,31 +111,16 @@ def _apply_default_arguments(args):
             args.auth_token = str(token_file.read())
 
 
-def _apply_default_bootstrap_arguments(args):
-    """
-    Preprocess argument namespace to apply default behaviours for
-    the bootstrap script.
-    """
-    _apply_common_default_arguments(args)
+def create_argument_parser():
+    """Build a configured argument parser."""
 
-
-def create_argument_parser(bootstrap):
-    """
-    Build a configured argument parser.
-
-    bootstrap -- whether or not the parser is created for the
-    bootstrap script and not the build script
-    """
-    if bootstrap:
-        parser = _ApplyDefaultsArgumentParser(
-            apply_defaults=_apply_default_bootstrap_arguments,
-            formatter_class=argparse.RawDescriptionHelpFormatter, usage=USAGE,
-            description=DESCRIPTION_BOOTSTRAP, epilog=EPILOG_BOOTSTRAP)
-    else:
-        parser = _ApplyDefaultsArgumentParser(
-            apply_defaults=_apply_default_arguments,
-            formatter_class=argparse.RawDescriptionHelpFormatter, usage=USAGE,
-            description=DESCRIPTION, epilog=EPILOG)
+    parser = _ApplyDefaultsArgumentParser(
+        apply_defaults=_apply_default_arguments,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        usage=USAGE,
+        description=DESCRIPTION,
+        epilog=EPILOG
+    )
 
     builder = parser.to_builder()
 
@@ -180,13 +157,12 @@ def create_argument_parser(bootstrap):
         help="name of the directory under $ODE_BUILD_ROOT where the build "
              "products will be placed")
 
-    if not bootstrap:
-        option(
-            "--install-prefix",
-            store_path,
-            default=os.path.join(ODE_SOURCE_ROOT, "local"),
-            help="the installation prefix. This is where built products (like "
-                 "bin, lib, and include) will be installed.")
+    option(
+        "--install-prefix",
+        store_path,
+        default=os.path.join(ODE_SOURCE_ROOT, "local"),
+        help="the installation prefix. This is where built products (like "
+             "bin, lib, and include) will be installed.")
 
     option(
         ["-j", "--jobs"],
@@ -223,14 +199,13 @@ def create_argument_parser(bootstrap):
         metavar="MAJOR.MINOR",
         help="minimum deployment target version for macOS")
 
-    if not bootstrap:
-        option(
-            "--extra-cmake-options",
-            append,
-            type=argparse.ShellSplitType(),
-            help="pass through extra options to CMake in the form of comma "
-                 "separated options, for example "
-                 "'-DCMAKE_VAR1=YES,-DCMAKE_VAR2=/tmp'")
+    option(
+        "--extra-cmake-options",
+        append,
+        type=argparse.ShellSplitType(),
+        help="pass through extra options to CMake in the form of comma "
+             "separated options, for example "
+             "'-DCMAKE_VAR1=YES,-DCMAKE_VAR2=/tmp'")
 
     option(
         ["-v", "--verbose"],
@@ -255,51 +230,49 @@ def create_argument_parser(bootstrap):
              "for")
 
     # --------------------------------------------------------- #
-    if not bootstrap:
-        in_group("Options to select projects")
+    in_group("Options to select projects")
 
-        option(
-            ["-t", "--test"],
-            toggle_true("build_test"),
-            help="build the tests for the project")
-        option(
-            ["-b", "--benchmarking"],
-            toggle_true("build_benchmarking"),
-            help="build the benchmarkings with tests")
+    option(
+        ["-t", "--test"],
+        toggle_true("build_test"),
+        help="build the tests for the project")
+    option(
+        ["-b", "--benchmarking"],
+        toggle_true("build_benchmarking"),
+        help="build the benchmarkings with tests")
 
     # --------------------------------------------------------- #
-    if not bootstrap:
-        in_group("Select the CMake generator")
+    in_group("Select the CMake generator")
 
-        set_defaults(cmake_generator=defaults.CMAKE_GENERATOR)
+    set_defaults(cmake_generator=defaults.CMAKE_GENERATOR)
 
-        option(
-            ["-e", "--eclipse"],
-            store("cmake_generator"),
-            const="Eclipse CDT4 - Ninja",
-            help="use CMake's Eclipse generator (%(default)s by default)")
-        option(
-            ["-m", "--make"],
-            store("cmake_generator"),
-            const="Unix Makefiles",
-            help="use CMake's Makefile generator (%(default)s by default)")
-        option(
-            ["-x", "--xcode"],
-            store("cmake_generator"),
-            const="Xcode",
-            help="use CMake's Xcode generator (%(default)s by default)")
-        option(
-            "--visual-studio-14",
-            store("cmake_generator"),
-            const="Visual Studio 14 2015",
-            help="use CMake's Visual Studio 2015 generator (%(default)s by "
-                 "default)")
-        option(
-            "--visual-studio-15",
-            store("cmake_generator"),
-            const="Visual Studio 15 2017",
-            help="use CMake's Visual Studio 2017 generator (%(default)s by "
-                 "default)")
+    option(
+        ["-e", "--eclipse"],
+        store("cmake_generator"),
+        const="Eclipse CDT4 - Ninja",
+        help="use CMake's Eclipse generator (%(default)s by default)")
+    option(
+        ["-m", "--make"],
+        store("cmake_generator"),
+        const="Unix Makefiles",
+        help="use CMake's Makefile generator (%(default)s by default)")
+    option(
+        ["-x", "--xcode"],
+        store("cmake_generator"),
+        const="Xcode",
+        help="use CMake's Xcode generator (%(default)s by default)")
+    option(
+        "--visual-studio-14",
+        store("cmake_generator"),
+        const="Visual Studio 14 2015",
+        help="use CMake's Visual Studio 2015 generator (%(default)s by "
+             "default)")
+    option(
+        "--visual-studio-15",
+        store("cmake_generator"),
+        const="Visual Studio 15 2017",
+        help="use CMake's Visual Studio 2017 generator (%(default)s by "
+             "default)")
 
     # --------------------------------------------------------- #
     in_group("Extra actions to perform before or in addition to building")
@@ -309,11 +282,10 @@ def create_argument_parser(bootstrap):
         store_true,
         help="do a clean build")
 
-    if not bootstrap:
-        option(
-            "--gcov",
-            store_true("enable_gcov"),
-            help="use gcov and lcov to generate code coverage information")
+    option(
+        "--gcov",
+        store_true("enable_gcov"),
+        help="use gcov and lcov to generate code coverage information")
     option(
         "--xvfb",
         store_true("enable_xvfb"),
@@ -356,98 +328,93 @@ def create_argument_parser(bootstrap):
     # --------------------------------------------------------- #
     # Assertions group
 
-    if not bootstrap:
-        with mutually_exclusive_group():
+    with mutually_exclusive_group():
 
-            set_defaults(assertions=True)
+        set_defaults(assertions=True)
 
-            # TODO: Convert to store_true
-            option(
-                "--assertions",
-                store,
-                const=True,
-                help="enable assertions in all projects")
+        # TODO: Convert to store_true
+        option(
+            "--assertions",
+            store,
+            const=True,
+            help="enable assertions in all projects")
 
-            # TODO: Convert to store_false
-            option(
-                "--no-assertions",
-                store("assertions"),
-                const=False,
-                help="disable assertions in all projects")
+        # TODO: Convert to store_false
+        option(
+            "--no-assertions",
+            store("assertions"),
+            const=False,
+            help="disable assertions in all projects")
 
     # --------------------------------------------------------- #
-    if bootstrap:
-        in_group("Authentication options")
+    in_group("Authentication options")
 
-        with mutually_exclusive_group():
+    with mutually_exclusive_group():
 
-            option(
-                "--auth-token-file",
-                store,
-                default=os.path.join(
-                    ODE_SOURCE_ROOT,
-                    ODE_REPO_NAME,
-                    "token"),
-                metavar="TOKEN",
-                help="the file which contains the OAuth token which is used "
-                     "to access the GitHub API")
+        option(
+            "--auth-token-file",
+            store,
+            default=os.path.join(
+                ODE_SOURCE_ROOT,
+                ODE_REPO_NAME,
+                "token"),
+            metavar="TOKEN",
+            help="the file which contains the OAuth token which is used to "
+                 "access the GitHub API")
 
-            option(
-                "--auth-token",
-                store,
-                metavar="TOKEN",
-                help="the OAuth token which is used to access the GitHub API")
+        option(
+            "--auth-token",
+            store,
+            metavar="TOKEN",
+            help="the OAuth token which is used to access the GitHub API")
 
     # --------------------------------------------------------- #
-    if not bootstrap:
-        in_group("Feature options")
+    in_group("Feature options")
 
-        option(
-            "--std-clock",
-            toggle_true,
-            help="use the C++ standard library clock instead of the clock of "
-                 "Simple DirectMedia Layer")
+    option(
+        "--std-clock",
+        toggle_true,
+        help="use the C++ standard library clock instead of the clock of "
+             "Simple DirectMedia Layer")
 
-        option(
-            "--log-tests",
-            toggle_true,
-            help="let the loggers in tests to write output into a non-null "
-                 "sink")
+    option(
+        "--log-tests",
+        toggle_true,
+        help="let the loggers in tests to write output into a non-null sink")
 
-        option(
-            "--developer-build",
-            toggle_true,
-            help="build the project for development")
+    option(
+        "--developer-build",
+        toggle_true,
+        help="build the project for development")
 
-        option("--disable-gl-calls", toggle_true, help="disable OpenGL calls")
+    option("--disable-gl-calls", toggle_true, help="disable OpenGL calls")
 
     # --------------------------------------------------------- #
-    if not bootstrap:
-        in_group("Threading options")
+    in_group("Threading options")
 
-        with mutually_exclusive_group():
-            set_defaults(multithreading=True)
+    with mutually_exclusive_group():
+        set_defaults(multithreading=True)
 
-            # TODO: Convert to store_true
-            option(
-                "--multithreading",
-                store("multithreading"),
-                const=True,
-                help="use multithreading in the game")
+        # TODO: Convert to store_true
+        option(
+            "--multithreading",
+            store("multithreading"),
+            const=True,
+            help="use multithreading in the game")
 
-            # TODO: Convert to store_false
-            option(
-                "--no-multithreading",
-                store("multithreading"),
-                const=False,
-                help="use single thread in the game")
+        # TODO: Convert to store_false
+        option(
+            "--no-multithreading",
+            store("multithreading"),
+            const=False,
+            help="use single thread in the game")
 
-            # TODO: Convert to store_false
-            option(
-                "--single-thread",
-                store("multithreading"),
-                const=False,
-                help="use single thread in the game")
+        # TODO: Convert to store_false
+        option(
+            "--single-thread",
+            store("multithreading"),
+            const=False,
+            help="use single thread in the game")
 
     # --------------------------------------------------------- #
     in_group("MSBuild options")
