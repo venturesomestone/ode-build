@@ -17,7 +17,7 @@ from support import data
 from . import shell, workspace
 
 
-def call(component, build_directory, cmake_args=None):
+def call(component, source_directory, build_directory, cmake_args=None):
     """Builds the given component by using CMake."""
     args = data.session.args
     toolchain = data.session.toolchain
@@ -26,7 +26,7 @@ def call(component, build_directory, cmake_args=None):
 
     cmake_call = [
         toolchain.cmake,
-        build_directory,
+        source_directory,
         "-DCMAKE_INSTALL_PREFIX={}".format(data.session.shared_build_dir)
     ]
 

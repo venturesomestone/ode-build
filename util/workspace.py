@@ -87,22 +87,23 @@ def build_directory(component):
     yield path
 
 
-def compute_build_subdir(args):
+def compute_build_subdir_name(args):
     """
-    Creates the directory name for the full build subdirectory.
+    Creates the directory name for the build subdirectory.
     """
-    version_subdir = args.anthem_version
     cmake_label = args.cmake_generator.replace(" ", "_")
     build_subdir = cmake_label
     # NOTE: It is not possible to set assertions to SDL at least
     # for now.
-    sdl_build_dir_label = args.sdl_build_variant
-    anthem_build_dir_label = args.anthem_build_variant
+    # sdl_build_dir_label = args.sdl_build_variant
+    ode_build_dir_label = args.ode_build_variant
     if args.assertions:
-        anthem_build_dir_label += "Assert"
-    if args.sdl_build_variant == args.anthem_build_variant:
-        build_subdir += anthem_build_dir_label
-    else:
-        build_subdir += anthem_build_dir_label
-        build_subdir += "+sdl-{}".format(sdl_build_dir_label)
-    return os.path.join(version_subdir, build_subdir)
+        ode_build_dir_label += "Assert"
+    # TODO It's not possible to set SDL build variant
+    # if args.sdl_build_variant == args.anthem_build_variant:
+    #     build_subdir += anthem_build_dir_label
+    # else:
+    #     build_subdir += anthem_build_dir_label
+    #     build_subdir += "+sdl-{}".format(sdl_build_dir_label)
+    build_subdir += ode_build_dir_label
+    return build_subdir

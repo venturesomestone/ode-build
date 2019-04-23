@@ -22,28 +22,50 @@ from support.presets import get_all_preset_names, get_preset_options
 
 from support.variables import HOME, ODE_REPO_NAME, ODE_SOURCE_ROOT
 
-from util import diagnostics, reflection, shell
+from util import diagnostics, reflection, shell, sources
 
 from . import clone, preset, set_up
 
 
+def _build_dependency(component, built):
+    key = component.key
+    if key in built:
+        if component.repr == key:
+            diagnostics.debug("{} is already built".format(component.repr))
+        else:
+            diagnostics.debug(
+                "{} ({}) is already built".format(component.repr, key)
+            )
+        return
+    if component.repr == key:
+        diagnostics.debug("Building {}".format(component.repr))
+    else:
+        diagnostics.debug("Building {} ({})".format(component.repr, key))
+    # TODO
+    if key != "llvm":
+        sources.exist(component)
+    if hasattr(component.build_module, "dependencies"):
+        dependencies = getattr(component.build_module, "dependencies")()
+        diagnostics.debug("{} depends on {}".format(
+            component.repr,
+            ", ".join(dependencies)
+        ))
+        for dependency in dependencies:
+            if dependency not in built:
+                diagnostics.trace("{} isn't built yet".format(dependency))
+                _build_dependency(data.session.depedencies[dependency], built)
+            else:
+                diagnostics.trace("{} is already built".format(dependency))
+    getattr(component.build_module, "build")(component)
+    built += [key]
+
+
 def _build_dependencies():
     diagnostics.debug_head("Starting to build the dependencies")
-    shell.makedirs(os.path.join(data.session.shared_build_dir))
-    shell.makedirs(os.path.join(
-        ODE_SOURCE_ROOT,
-        data.session.build_dir,
-        data.session.host_target,
-        "local"
-    ))
-    for key, value in data.session.dependencies.items():
-        if value.repr == key:
-            diagnostics.debug("Building {}".format(value.repr))
-        else:
-            diagnostics.debug("Building {} ({})".format(value.repr, key))
-        getattr(reflection.import_build_component(key), "build")(
-            data.session.dependencies[key]
-        )
+    built = []
+    for _, value in data.session.dependencies.items():
+        _build_dependency(value, built)
+
 
 
 def run_preset():

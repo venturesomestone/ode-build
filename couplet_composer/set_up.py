@@ -105,12 +105,11 @@ def run(args, bootstrap):
 
     diagnostics.debug_head("Starting the setup phase")
 
-    if not bootstrap:
-        if args.build_subdir is None:
-            args.build_subdir = workspace.compute_build_subdir(args)
+    if args.build_subdir is None:
+        args.build_subdir = workspace.compute_build_subdir_name(args)
 
-        diagnostics.trace(
-            "The build subdirectory is set to {}".format(args.build_subdir))
+    diagnostics.trace(
+        "The build subdirectory is set to {}".format(args.build_subdir))
 
     data.session = Mapping(
         args=args,
@@ -129,7 +128,12 @@ def run(args, bootstrap):
         shared_dir=os.path.join(ODE_BUILD_ROOT, "shared"),
         # The build directory in the build root is the
         # directory that the build files are created in.
-        build_dir=os.path.join(ODE_BUILD_ROOT, "build", args.ode_version),
+        build_dir=os.path.join(
+            ODE_BUILD_ROOT,
+            "build",
+            args.ode_version,
+            args.build_subdir
+        ),
         # The script directory in the build root is the
         # directory that the build script files are copied in.
         script_dir=ODE_SCRIPT_ROOT,
@@ -148,12 +152,23 @@ def run(args, bootstrap):
         # std=args.std,
         # TODO The C++ standard library implementation
         # stdlib=args.stdlib,
-        build_lua_with_cmake=platform.system() == "Windows")
+        build_lua_with_cmake=platform.system() == "Windows"
+    )
 
-    if not bootstrap:
-        data.session.visual_studio = \
-            args.cmake_generator == "Visual Studio 14 2015" \
-            or args.cmake_generator == "Visual Studio 15 2017"
+    # The shared build directory in the build directory is the
+    # directory that the dependency binaries are created in.
+    data.session.shared_build_dir = os.path.join(
+        ODE_BUILD_ROOT,
+        "build",
+        "shared",
+        args.build_subdir,
+        data.session.host_target,
+        "local"
+    )
+
+    data.session.visual_studio = \
+        args.cmake_generator == "Visual Studio 14 2015" \
+        or args.cmake_generator == "Visual Studio 15 2017"
 
     diagnostics.trace("The mapping of the session data is created")
 
@@ -161,9 +176,11 @@ def run(args, bootstrap):
         _clean_delay()
         shell.rmtree(path=data.session.shared_dir)
         shell.rmtree(path=data.session.build_dir)
+        shell.rmtree(path=data.session.shared_build_dir)
 
     shell.makedirs(data.session.shared_dir)
     shell.makedirs(data.session.build_dir)
+    shell.makedirs(data.session.shared_build_dir)
 
     os.environ["TOOLCHAINS"] = "default"
     data.session.toolchain = host_toolchain(args=args)
@@ -183,16 +200,6 @@ def run(args, bootstrap):
             data.session.github_token = file.readline().replace("\n", "")
 
     data.session.connection_protocol = defaults.PROTOCOL
-
-    # The shared build directory in the build directory is the
-    # directory that the dependency binaries are created in.
-    data.session.shared_build_dir = os.path.join(
-        ODE_BUILD_ROOT,
-        "build",
-        "shared",
-        data.session.host_target,
-        "local"
-    )
 
     # The shared status file is a JSON file containing the
     # versions of the dependencies in order to determine whether
