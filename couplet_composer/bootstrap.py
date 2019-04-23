@@ -32,10 +32,6 @@ def _build_dependency(component, built):
     skip = False
     if hasattr(component.build_module, "skip_build"):
         skip = getattr(component.build_module, "skip_build")()
-        if skip:
-            diagnostics.debug(
-                "The build of {} is skipped".format(component.repr)
-            )
     if key in built:
         diagnostics.debug("{} is already built".format(component.repr))
         skip = True
@@ -58,6 +54,8 @@ def _build_dependency(component, built):
                 else:
                     diagnostics.trace("{} is already built".format(dependency))
         getattr(component.build_module, "build")(component)
+    else:
+        diagnostics.debug("The build of {} is skipped".format(component.repr))
     built += [key]
 
 

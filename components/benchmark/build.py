@@ -16,10 +16,21 @@ Benchmark.
 """
 
 import os
+import platform
 
 from support import data
 
-from util import binaries, cmake, shell, workspace
+from util import binaries, cmake, diagnostics, shell, workspace
+
+
+def skip_build():
+    """Whether the build is skippped."""
+    if platform.system() == "Windows":
+        diagnostics.debug("{} won't be built on Windows".format(
+            data.session.dependencies["benchmark"].repr
+        ))
+        return True
+    return False
 
 
 def dependencies():
