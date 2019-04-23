@@ -97,7 +97,8 @@ def compile(
     build_directory,
     make_targets=None,
     install_targets=None,
-    solution_name=None
+    solution_name=None,
+    install=True
 ):
     """
     Compiles the binary from source code with CMake-generated
@@ -114,19 +115,21 @@ def compile(
                 ninja(make_targets)
             else:
                 ninja()
-            if install_targets:
-                ninja(install_targets)
-            else:
-                ninja("install")
+            if install:
+                if install_targets:
+                    ninja(install_targets)
+                else:
+                    ninja("install")
         elif args.cmake_generator == "Unix Makefiles":
             if make_targets:
                 make(make_targets)
             else:
                 make()
-            if install_targets:
-                make(install_targets)
-            else:
-                make(target="install")
+            if install:
+                if install_targets:
+                    make(install_targets)
+                else:
+                    make(target="install")
         elif data.session.visual_studio:
             if solution_name is None:
                 msbuild_args = ["{}.sln".format(component.key)]

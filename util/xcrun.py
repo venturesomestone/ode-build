@@ -36,3 +36,17 @@ def find(cmd):
     if out is None:
         return None
     return out.rstrip()
+
+
+@cache_util.cached
+def sdk_path(sdk):
+    """
+    Return the path string for given SDK, according to
+    'xcrun --show-sdk-path'. If 'xcrun --show-sdk-path' cannot
+    find the SDK, return None.
+    """
+    command = ['xcrun', '--sdk', sdk, '--show-sdk-path']
+    out = shell.capture(command, dry_run=False, echo=False, optional=True)
+    if out is None:
+        return None
+    return out.rstrip()
