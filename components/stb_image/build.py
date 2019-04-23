@@ -15,7 +15,25 @@ This support module has the info necessary for building
 stb_image.
 """
 
+import os
+
+from support import data
+
+from util import binaries, shell, workspace
+
 
 def build(component):
     """Builds the dependency."""
-    pass
+    bin_name = os.path.join("include", "stb_image.h")
+    if binaries.exist(component, bin_name):
+        return
+    if not os.path.isdir(
+        os.path.join(data.session.shared_build_dir, "include")
+    ):
+        shell.makedirs(os.path.join(data.session.shared_build_dir, "include"))
+    if os.path.exists(os.path.join(data.session.shared_build_dir, bin_name)):
+        shell.rmtree(os.path.join(data.session.shared_build_dir, bin_name))
+    shell.copy(
+        os.path.join(workspace.source_dir(component), "stb_image.h"),
+        os.path.join(data.session.shared_build_dir, bin_name)
+    )
