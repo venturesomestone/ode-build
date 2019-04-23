@@ -35,10 +35,7 @@ def build(component):
     if binaries.exist(component, os.path.join("lib", "libbenchmark.a")):
         return
     with workspace.build_directory(component) as build_dir:
-        if binaries.exist(component, os.path.join("lib", "libbenchmark.a")):
-            return
         src_dir = workspace.source_dir(component)
-        # shell.copytree(src_dir, build_dir)
         cmake.call(
             component,
             src_dir,
