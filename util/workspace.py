@@ -21,6 +21,8 @@ from contextlib import contextmanager
 
 from support import data
 
+from support.variables import ODE_SOURCE_ROOT
+
 from . import shell
 
 
@@ -34,12 +36,32 @@ def source_dir(component):
     else:
         target = data.session.host_target
     return os.path.join(
-        data.session.shared_dir, component.key, component.version, target)
+        data.session.shared_dir,
+        component.key,
+        component.version,
+        target
+    )
 
 
 def temporary_dir(component):
-    """Create an absolute path to the temporary directory of a dependency."""
+    """
+    Create an absolute path to the temporary directory of a
+    dependency.
+    """
     return os.path.join(data.session.shared_dir, component.key, "tmp")
+
+
+def build_dir(component):
+    """
+    Gives the build directory for a dependency.
+    """
+    path = os.path.join(
+        data.session.build_dir,
+        "{}-{}".format(component.key, data.session.host_target),
+        component.version
+    )
+    shell.makedirs(path)
+    return path
 
 
 @contextmanager
@@ -51,6 +73,18 @@ def clone_directory(component):
     shell.makedirs(temporary_dir(component))
     yield
     shell.rmtree(temporary_dir(component))
+
+
+@contextmanager
+def build_directory(component):
+    """
+    Creates the directories for building a dependency and yields
+    the build directory.
+    """
+    path = build_dir(component)
+    shell.rmtree(path)
+    shell.makedirs(path)
+    yield path
 
 
 def compute_build_subdir(args):

@@ -22,18 +22,28 @@ from support.presets import get_all_preset_names, get_preset_options
 
 from support.variables import HOME, ODE_REPO_NAME, ODE_SOURCE_ROOT
 
-from util import diagnostics, shell
+from util import diagnostics, reflection, shell
 
 from . import clone, preset, set_up
 
 
 def _build_dependencies():
     diagnostics.debug_head("Starting to build the dependencies")
+    shell.makedirs(os.path.join(data.session.shared_build_dir))
+    shell.makedirs(os.path.join(
+        ODE_SOURCE_ROOT,
+        data.session.build_dir,
+        data.session.host_target,
+        "local"
+    ))
     for key, value in data.session.dependencies.items():
         if value.repr == key:
             diagnostics.debug("Building {}".format(value.repr))
         else:
             diagnostics.debug("Building {} ({})".format(value.repr, key))
+        getattr(reflection.import_build_component(key), "build")(
+            data.session.dependencies[key]
+        )
 
 
 def run_preset():
@@ -108,7 +118,7 @@ def run_preset():
 
 
 def run():
-    parser = arguments.create_argument_parser(True)
+    parser = arguments.create_argument_parser()
     # TODO Unknown args
     args, unknown_args = parser.parse_known_args(
         list(arg for arg in sys.argv[1:] if arg != '--'))

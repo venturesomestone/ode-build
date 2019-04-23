@@ -129,7 +129,7 @@ def run(args, bootstrap):
         shared_dir=os.path.join(ODE_BUILD_ROOT, "shared"),
         # The build directory in the build root is the
         # directory that the build files are created in.
-        build_dir=os.path.join(ODE_BUILD_ROOT, "build"),
+        build_dir=os.path.join(ODE_BUILD_ROOT, "build", args.ode_version),
         # The script directory in the build root is the
         # directory that the build script files are copied in.
         script_dir=ODE_SCRIPT_ROOT,
@@ -183,6 +183,16 @@ def run(args, bootstrap):
             data.session.github_token = file.readline().replace("\n", "")
 
     data.session.connection_protocol = defaults.PROTOCOL
+
+    # The shared build directory in the build directory is the
+    # directory that the dependency binaries are created in.
+    data.session.shared_build_dir = os.path.join(
+        ODE_BUILD_ROOT,
+        "build",
+        "shared",
+        data.session.host_target,
+        "local"
+    )
 
     # The shared status file is a JSON file containing the
     # versions of the dependencies in order to determine whether
