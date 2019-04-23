@@ -63,8 +63,10 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 
 SCRIPT_VERSION = "0.3.0"
 
+OPENGL_MAJOR_VERSION = 3
+OPENGL_MINOR_VERSION = 2
+
 PROTOCOL = "https"
 GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
-
 
 COVERAGE_TARGET_MARK = "c"
