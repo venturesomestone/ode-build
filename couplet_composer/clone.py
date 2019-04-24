@@ -36,9 +36,10 @@ def _write_version_file(versions, final_write=False):
     if final_write:
         log_function = diagnostics.debug_ok
     else:
-        log_function = diagnostics.debug
+        log_function = diagnostics.trace
     log_function("Wrote the dependency version information to {}".format(
-        data.session.shared_status_file))
+        data.session.shared_status_file
+    ))
 
 
 def _get_component(component, versions):
@@ -119,10 +120,12 @@ def run():
 
     skip_repository_list = _skip_repositories()
 
-    diagnostics.debug("Using {} to make the hypertext calls".format(
-        data.session.connection_protocol.upper()))
+    diagnostics.debug("Using {} to make the hypertext transfer calls".format(
+        data.session.connection_protocol.upper()
+    ))
     diagnostics.trace("The dependencies to be skipped are {}".format(
-        skip_repository_list))
+        skip_repository_list
+    ))
 
     for key, component in data.session.dependencies.items():
         name = component.repr
@@ -131,7 +134,8 @@ def run():
 
         if key in skip_repository_list:
             diagnostics.debug(
-                "{} is on the list of repositories to be skipped".format(name))
+                "{} is on the list of repositories to be skipped".format(name)
+            )
             continue
 
         if not args.clean:
