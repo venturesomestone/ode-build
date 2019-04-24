@@ -23,6 +23,14 @@ from support import data
 from util import binaries, cmake, shell, workspace
 
 
+def dependencies():
+    """
+    Gives the names of the components that this component depends
+    on.
+    """
+    return ["cmake"]
+
+
 def _copy_windows(component, src_dir):
     build_dir = workspace.build_dir(component)
     if not os.path.isdir(

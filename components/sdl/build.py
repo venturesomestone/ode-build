@@ -23,6 +23,14 @@ from support import data
 from util import binaries, cmake, shell, workspace
 
 
+def dependencies():
+    """
+    Gives the names of the components that this component depends
+    on.
+    """
+    return [] if platform.system() == "Windows" else ["cmake"]
+
+
 def _build_windows(component, src_dir, build_dir):
     if not os.path.isdir(os.path.join(
         data.session.shared_build_dir, "include"

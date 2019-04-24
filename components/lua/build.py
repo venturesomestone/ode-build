@@ -24,6 +24,14 @@ from support.variables import ODE_REPO_NAME, ODE_SOURCE_ROOT
 from util import binaries, cmake, shell, workspace
 
 
+def dependencies():
+    """
+    Gives the names of the components that this component depends
+    on.
+    """
+    return ["cmake"] if platform.system() == "Windows" else []
+
+
 def _create_cxx_header():
     if not os.path.isdir(
         os.path.join(data.session.shared_build_dir, "include")
