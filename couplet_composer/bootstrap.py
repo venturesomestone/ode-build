@@ -241,7 +241,7 @@ def run():
         )
     )
     set_up.run(args)
-    clone.run(True)
+    clone.run()
     _build_dependencies()
     diagnostics.note("The bootstrap is complete")
     return 0

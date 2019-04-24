@@ -94,18 +94,8 @@ def _has_correct_version(component, versions, target):
     return version_equals and same_target
 
 
-def run(bootstrap):
-    """
-    Run the download script.
-
-    bootstrap -- whether or not this is called from the bootstrap
-    script and not the build script
-    """
-    if not bootstrap:
-        diagnostics.fatal(
-            "The download of the dependencies cannot be run from the build "
-            "script")
-
+def run():
+    """Run the download script."""
     diagnostics.debug_head("Starting the download of the dependencies")
 
     args = data.session.args
