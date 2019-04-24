@@ -23,9 +23,13 @@ from support import data
 from util import binaries, shell, workspace
 
 
-def skip_build():
+def skip_build(component, has_correct_version):
     """Whether the build is skippped."""
-    return data.session.toolchain.ninja is not None
+    bin_name = os.path.join("bin", "ninja.exe") \
+        if platform.system() == "Windows" else os.path.join("bin", "ninja")
+    return data.session.toolchain.ninja is not None or (
+        binaries.exist(component, bin_name) and has_correct_version
+    )
     # and not data.session.args.build_ninja
 
 
@@ -33,9 +37,6 @@ def build(component):
     """Builds the dependency."""
     bin_name = os.path.join("bin", "ninja.exe") \
         if platform.system() == "Windows" else os.path.join("bin", "ninja")
-
-    if binaries.exist(component, bin_name):
-        return
 
     src_dir = workspace.source_dir(component)
     src_bin = os.path.join(src_dir, "ninja.exe") \

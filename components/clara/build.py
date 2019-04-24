@@ -21,10 +21,14 @@ from support import data
 from util import binaries, cmake, shell, workspace
 
 
+def skip_build(component, has_correct_version):
+    """Whether the build is skippped."""
+    return binaries.exist(component, os.path.join("include", "clara.hpp")) \
+        and has_correct_version
+
+
 def build(component):
     """Builds the dependency."""
-    if binaries.exist(component, os.path.join("include", "clara.hpp")):
-        return
     src_dir = workspace.source_dir(component)
     if not os.path.isdir(
         os.path.join(data.session.shared_build_dir, "include")

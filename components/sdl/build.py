@@ -31,6 +31,15 @@ def dependencies():
     return [] if platform.system() == "Windows" else ["cmake"]
 
 
+def skip_build(component, has_correct_version):
+    """Whether the build is skippped."""
+    bin_name = os.path.join(
+        "lib",
+        "SDL2.lib" if platform.system() == "Windows" else "libSDL2.a"
+    )
+    return binaries.exist(component, bin_name) and has_correct_version
+
+
 def _build_windows(component, src_dir, build_dir):
     if not os.path.isdir(os.path.join(
         data.session.shared_build_dir, "include"
@@ -68,12 +77,6 @@ def _build(component, src_dir, build_dir):
 
 def build(component):
     """Builds the dependency."""
-    bin_name = os.path.join(
-        "lib",
-        "SDL2.lib" if platform.system() == "Windows" else "libSDL2.a"
-    )
-    if binaries.exist(component, bin_name):
-        return
     with workspace.build_directory(component) as build_dir:
         src_dir = workspace.source_dir(component)
         if platform.system() == "Windows":

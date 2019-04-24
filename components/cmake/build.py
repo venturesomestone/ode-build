@@ -22,12 +22,6 @@ from support import data
 from util import binaries, cmake, diagnostics, shell, workspace
 
 
-def skip_build():
-    """Whether the build is skippped."""
-    return data.session.toolchain.cmake is not None
-    # and not data.session.args.build_cmake
-
-
 def _bin_name(component):
     if platform.system() == "Windows":
         return os.path.join("bin", "cmake.exe")
@@ -41,6 +35,15 @@ def _bin_name(component):
     ))
 
 
+def skip_build(component, has_correct_version):
+    """Whether the build is skippped."""
+    bin_name = _bin_name(component)
+    return data.session.toolchain.cmake is not None or (
+        binaries.exist(component, bin_name) and has_correct_version
+    )
+    # and not data.session.args.build_cmake
+
+
 def build(component):
     """Builds the dependency."""
     bin_name = _bin_name(component)
@@ -48,8 +51,6 @@ def build(component):
         data.session.shared_build_dir,
         bin_name
     )
-    if binaries.exist(component, bin_name):
-        return
     src_dir = workspace.source_dir(component)
     if platform.system() == "Darwin":
         shell.copytree(

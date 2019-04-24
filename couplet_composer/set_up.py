@@ -192,6 +192,26 @@ def run(args):
         data.session.shared_build_dir
     ))
 
+    # The shared status file is a JSON file containing the
+    # versions of the dependencies in order to determine whether
+    # to download new versions of them.
+    data.session.shared_status_file = os.path.join(
+        data.session.shared_dir,
+        "status"
+    )
+
+    # The shared build status file is a JSON file containing the
+    # versions of the built dependencies in order to determine
+    # whether to re-build them.
+    data.session.shared_build_status_file = os.path.join(
+        data.session.build_root,
+        "build",
+        "status-{}-{}".format(
+            data.session.anthem.version,
+            data.session.host_target
+        )
+    )
+
     if args.clean:
         _clean_delay()
         shell.rmtree(path=data.session.shared_dir)
@@ -222,14 +242,6 @@ def run(args):
             data.session.github_token = file.readline().replace("\n", "")
 
     data.session.connection_protocol = defaults.PROTOCOL
-
-    # The shared status file is a JSON file containing the
-    # versions of the dependencies in order to determine whether
-    # to download new versions of them.
-    data.session.shared_status_file = os.path.join(
-        data.session.shared_dir,
-        "status"
-    )
 
     component_set_up.run()
 

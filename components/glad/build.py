@@ -24,11 +24,14 @@ from support.defaults import OPENGL_MAJOR_VERSION, OPENGL_MINOR_VERSION
 from util import binaries, shell, workspace
 
 
+def skip_build(component, has_correct_version):
+    """Whether the build is skippped."""
+    return binaries.exist(component, os.path.join("src", "glad.c")) \
+        and has_correct_version
+
+
 def build(component):
     """Builds the dependency."""
-    bin_name = os.path.join("src", "glad.c")
-    if binaries.exist(component, bin_name):
-        return
     with workspace.build_directory(component) as build_dir:
         src_dir = workspace.source_dir(component)
         shell.copytree(src_dir, build_dir)

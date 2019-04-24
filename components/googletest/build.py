@@ -31,6 +31,16 @@ def dependencies():
     return ["cmake"]
 
 
+def skip_build(component, has_correct_version):
+    """Whether the build is skippped."""
+    if platform.system() == "Windows":
+        bin_name = os.path.join("lib", "gtest.lib")
+    else:
+        bin_name = os.path.join("lib", "libgtest.a")
+    # TODO Check whether or not the tests are actually built
+    return binaries.exist(component, bin_name) and has_correct_version
+
+
 def _copy_windows(component, src_dir):
     build_dir = workspace.build_dir(component)
     if not os.path.isdir(
@@ -87,12 +97,6 @@ def _copy(component, src_dir):
 
 def build(component):
     """Builds the dependency."""
-    if platform.system() == "Windows":
-        bin_name = os.path.join("lib", "gtest.lib")
-    else:
-        bin_name = os.path.join("lib", "libgtest.a")
-    if binaries.exist(component, bin_name):
-        return
     with workspace.build_directory(component) as build_dir:
         src_dir = os.path.join(workspace.source_dir(component), "googletest")
         if platform.system() == "Windows":

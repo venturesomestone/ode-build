@@ -32,6 +32,14 @@ def dependencies():
     return ["cmake"] if platform.system() == "Windows" else []
 
 
+def skip_build(component, has_correct_version):
+    """Whether the build is skippped."""
+    bin_name = os.path.join("lib", "lua.lib") \
+        if platform.system() == "Windows" \
+        else os.path.join("lib", "liblua.a")
+    return binaries.exist(component, bin_name) and has_correct_version
+
+
 def _create_cxx_header():
     if not os.path.isdir(
         os.path.join(data.session.shared_build_dir, "include")
@@ -128,11 +136,6 @@ def _build(component, build_dir):
 
 def build(component):
     """Builds the dependency."""
-    bin_name = os.path.join("lib", "lua.lib") \
-        if platform.system() == "Windows" \
-        else os.path.join("lib", "liblua.a")
-    if binaries.exist(component, bin_name):
-        return
     with workspace.build_directory(component) as build_dir:
         if platform.system() == "Windows":
             _build_cmake(component, build_dir)

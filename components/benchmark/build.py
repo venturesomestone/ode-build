@@ -23,14 +23,15 @@ from support import data
 from util import binaries, cmake, diagnostics, shell, workspace
 
 
-def skip_build():
+def skip_build(component, has_correct_version):
     """Whether the build is skippped."""
     if platform.system() == "Windows":
         diagnostics.debug("{} won't be built on Windows".format(
             data.session.dependencies["benchmark"].repr
         ))
         return True
-    return False
+    return binaries.exist(component, os.path.join("lib", "libbenchmark.a")) \
+        and has_correct_version
 
 
 def dependencies():
@@ -43,8 +44,6 @@ def dependencies():
 
 def build(component):
     """Builds the dependency."""
-    if binaries.exist(component, os.path.join("lib", "libbenchmark.a")):
-        return
     with workspace.build_directory(component) as build_dir:
         src_dir = workspace.source_dir(component)
         cmake.call(

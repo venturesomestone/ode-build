@@ -22,11 +22,15 @@ from support import data
 from util import binaries, shell, workspace
 
 
+def skip_build(component, has_correct_version):
+    """Whether the build is skippped."""
+    return binaries.exist(component, os.path.join("include", "stb_image.h")) \
+        and has_correct_version
+
+
 def build(component):
     """Builds the dependency."""
     bin_name = os.path.join("include", "stb_image.h")
-    if binaries.exist(component, bin_name):
-        return
     if not os.path.isdir(
         os.path.join(data.session.shared_build_dir, "include")
     ):

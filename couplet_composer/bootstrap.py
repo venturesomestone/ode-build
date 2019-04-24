@@ -13,6 +13,7 @@
 from __future__ import print_function
 
 import argparse
+import json
 import os
 import sys
 
@@ -29,11 +30,56 @@ from util import diagnostics, reflection, shell, sources
 from . import clone, preset, set_up
 
 
-def _build_dependency(component, built):
+def _write_version_file(versions, final_write=False):
+    with open(data.session.shared_build_status_file, "w") as outfile:
+        json.dump(versions, outfile, indent=2, sort_keys=True)
+
+    if final_write:
+        log_function = diagnostics.debug_ok
+    else:
+        log_function = diagnostics.debug
+    log_function("Wrote the dependency build version information to {}".format(
+        data.session.shared_build_status_file)
+    )
+
+
+def _has_correct_version(component, versions, target):
     key = component.key
-    skip = False
-    if hasattr(component.build_module, "skip_build"):
-        skip = getattr(component.build_module, "skip_build")()
+    added = key in versions
+    if not added:
+        return False
+    version_equals = component.version == versions[key]["version"]
+    same_target = target in versions[key]["targets"]
+    extra_data = reflection.get_custom_version_data(component)
+    if extra_data is not None:
+        record = versions[key]
+        for key, value in extra_data.items():
+            diagnostics.trace(
+                "Checking if the version of {} for key {} with the value {} "
+                "is already built".format(component.repr, value, key)
+            )
+            if record[key] is None:
+                diagnostics.trace(
+                    "The key '{}' is not yet in built version data".format(key)
+                )
+                return False
+            diagnostics.trace(
+                "The value of {} in the built version data is {}".format(
+                    key,
+                    record[key]
+                )
+            )
+            if record[key] != value:
+                return False
+    return version_equals and same_target
+
+
+def _build_dependency(component, built, versions):
+    key = component.key
+    skip = getattr(component.build_module, "skip_build")(
+        component,
+        _has_correct_version(component, versions, data.session.host_target)
+    )
     if key in built:
         diagnostics.debug("{} is already built".format(component.repr))
         skip = True
@@ -51,11 +97,28 @@ def _build_dependency(component, built):
                     diagnostics.trace("{} isn't built yet".format(dependency))
                     _build_dependency(
                         data.session.depedencies[dependency],
-                        built
+                        built,
+                        versions
                     )
                 else:
                     diagnostics.trace("{} is already built".format(dependency))
         getattr(component.build_module, "build")(component)
+        info = {
+            "version": component.version,
+            "targets": [data.session.host_target]
+        }
+        extra_data = reflection.get_custom_version_data(component)
+        if extra_data is not None:
+            for key, value in extra_data.items():
+                diagnostics.trace(
+                    "Adding {} with the value {} to the version JSON".format(
+                        key,
+                        value
+                    )
+                )
+                info[key] = value
+        versions[component.key] = info
+        _write_version_file(versions)
     else:
         diagnostics.debug("The build of {} is skipped".format(component.repr))
     built += [key]
@@ -63,9 +126,15 @@ def _build_dependency(component, built):
 
 def _build_dependencies():
     diagnostics.debug_head("Starting to build the dependencies")
+    if os.path.isfile(data.session.shared_build_status_file):
+        with open(data.session.shared_build_status_file) as json_file:
+            versions = json.load(json_file)
+    else:
+        versions = {}
     built = []
     for _, value in data.session.dependencies.items():
-        _build_dependency(value, built)
+        _build_dependency(value, built, versions)
+    _write_version_file(versions, True)
 
 
 def run_preset():
