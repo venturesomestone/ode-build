@@ -4,8 +4,8 @@
 #                       Couplet Composer
 # ------------------------------------------------------------- #
 #
-# This source file is part of the Obliging Ode and Unsung Anthem
-# projects.
+# This source file is part of the Couplet Composer project which
+# is part of the Obliging Ode and Unsung Anthem projects.
 #
 # Copyright (C) 2019 Antti Kivi
 # All rights reserved
@@ -19,8 +19,10 @@ mode.
 
 import sys
 
+from absl import app
+
 from couplet_composer import __main__
 
 
 if __name__ == "__main__":
-    sys.exit(__main__.main())
+    app.run(__main__.main)

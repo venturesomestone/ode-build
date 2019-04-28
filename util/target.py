@@ -1,9 +1,9 @@
 # ------------------------------------------------------------- #
-#                 Obliging Ode & Unsung Anthem
+#                       Couplet Composer
 # ------------------------------------------------------------- #
 #
-# This source file is part of the Obliging Ode and Unsung Anthem
-# projects.
+# This source file is part of the Couplet Composer project which
+# is part of the Obliging Ode and Unsung Anthem projects.
 #
 # Copyright (C) 2019 Antti Kivi
 # All rights reserved
@@ -22,17 +22,20 @@ from .mapping import Mapping
 
 def _create_target(system, arch):
     """
-    Create a dictionary representation of a target that Obliging
+    Creates a dictionary representation of a target that Obliging
     Ode can run on.
     """
     result = Mapping(
-        platform=system, arch=arch, name="{}-{}".format(system.name, arch))
+        platform=system,
+        arch=arch,
+        name="{}-{}".format(system.name, arch)
+    )
     return result
 
 
 def _create_platform(name, system, archs):
     """
-    Create a dictionary representation of a platform that
+    Creates a dictionary representation of a platform that
     Obliging Ode can run on.
     """
     result = Mapping(name=name, system=system)
@@ -44,8 +47,8 @@ def _create_platform(name, system, archs):
 
 def host_target():
     """
-    Return the host target for the build machine, if it is one of
-    the recognized targets.
+    Returns the host target for the build machine, if it is one
+    of the recognized targets.
     """
     system = platform.system()
     machine = platform.machine()
@@ -57,16 +60,33 @@ def host_target():
         return False
     macos = _create_platform(name="macos", system="Darwin", archs=["x86_64"])
     linux = _create_platform(
-        name="linux", system="Linux", archs=[
-            "x86_64", "armv6", "armv7", "aarch64", "powerpc64", "powerpc64le",
+        name="linux",
+        system="Linux",
+        archs=[
+            "x86_64",
+            "armv6",
+            "armv7",
+            "aarch64",
+            "powerpc64",
+            "powerpc64le",
             "s390x"
-        ])
+        ]
+    )
     freebsd = _create_platform(
-        name="freebsd", system="FreeBSD", archs=["x86_64"])
+        name="freebsd",
+        system="FreeBSD",
+        archs=["x86_64"]
+    )
     cygwin = _create_platform(
-        name="cygwin", system="CYGWIN_NT-10.0", archs=["x86_64"])
+        name="cygwin",
+        system="CYGWIN_NT-10.0",
+        archs=["x86_64"]
+    )
     windows = _create_platform(
-        name="windows", system="Windows", archs=["x86_64", "AMD64"])
+        name="windows",
+        system="Windows",
+        archs=["x86_64", "AMD64"]
+    )
     known_platforms = [macos, linux, freebsd, cygwin, windows]
     found_platform = [p for p in known_platforms if p.system == system]
     if found_platform:
@@ -76,4 +96,7 @@ def host_target():
             return found_target[0]
     raise NotImplementedError(
         "System '{}' with architecture '{}' is not supported".format(
-            system, machine))
+            system,
+            machine
+        )
+    )

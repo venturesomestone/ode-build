@@ -2,8 +2,8 @@
 #                       Couplet Composer
 # ------------------------------------------------------------- #
 #
-# This source file is part of the Obliging Ode and Unsung Anthem
-# projects.
+# This source file is part of the Couplet Composer project which
+# is part of the Obliging Ode and Unsung Anthem projects.
 #
 # Copyright (C) 2019 Antti Kivi
 # All rights reserved
@@ -14,4 +14,4 @@
 
 VERSION = (0, 1, 0)
 
-__version__ = ".".join(map(str, VERSION))
+__version__ = ".".join(map(str, VERSION)) + "-dev.1"
