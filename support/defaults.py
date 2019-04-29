@@ -79,6 +79,7 @@ DARWIN_INSTALL_PREFIX = "/Applications/Xcode.app/Contents/Developer" \
 # need to change any of these, you should do so on trunk or in a branch.
 
 SCRIPT_VERSION = "0.3.0"
+SCRIPT_NAME = "Couplet Composer"
 
 OPENGL_MAJOR_VERSION = 3
 OPENGL_MINOR_VERSION = 2

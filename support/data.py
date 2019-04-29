@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # ------------------------------------------------------------- #
 #                       Couplet Composer
 # ------------------------------------------------------------- #
@@ -12,13 +10,10 @@
 #
 # ------------------------------------------------------------- #
 
-"""
-Helper script that is used to run the project in development
-mode.
-"""
+"""This support module has the common session data."""
 
-from couplet_composer import __main__
+from util.mapping import Mapping
 
 
-if __name__ == "__main__":
-    __main__.run()
+# TODO Replace
+session = Mapping()
