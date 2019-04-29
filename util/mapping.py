@@ -14,7 +14,22 @@
 
 
 class Mapping(dict):
-    """Type of enhanced dictionary objects."""
+    """
+    Mapping() -> new empty dictionary
+
+    Mapping(mapping) -> new dictionary initialized from a mapping
+    object's (key, value) pairs
+
+    Mapping(iterable) -> new dictionary initialized as if via:
+
+    d = {}
+    for k, v in iterable:
+        d[k] = v
+
+    Mapping(**kwargs) -> new dictionary initialized with the
+    name=value pairs in the keyword argument list. For example:
+    Mapping(one=1, two=2)
+    """
     def __init__(self, *args, **kwargs):
         super(Mapping, self).__init__(*args, **kwargs)
         for arg in args:
