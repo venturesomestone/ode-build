@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # ------------------------------------------------------------- #
 #                       Couplet Composer
 # ------------------------------------------------------------- #
@@ -11,16 +9,3 @@
 # All rights reserved
 #
 # ------------------------------------------------------------- #
-
-"""
-Helper script that is used to run the project in development
-mode.
-"""
-
-import sys
-
-from couplet_composer import __main__
-
-
-if __name__ == "__main__":
-    sys.exit(__main__.run())

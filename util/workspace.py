@@ -15,53 +15,47 @@ This utility module works out the directories to be used in the
 project workspace.
 """
 
+import os
+
+from contextlib import contextmanager
+
 from couplet_composer.flags import FLAGS
 
-from support.values import ASSERTIONS, BUILD_VARIANTS
+from support.values import \
+    ASSERTIONS, \
+    BUILD_VARIANTS, \
+    DOWNLOAD_DIR, \
+    HOST_TARGET
+
+from util import shell
 
 
-def build_subdir_name():
+def source_dir(component):
     """
-    Creates the name for the build subdirectory.
+    Create an absolute path to the source directory of a
+    dependency.
     """
-    build_subdir = FLAGS["cmake-generator"].value.replace(" ", "_")
-
-    # NOTE: It is not possible to set assertions to SDL at least
-    # for now.
-    # sdl_build_dir_label = args.sdl_build_variant
-    ode_build_dir_label = BUILD_VARIANTS.ode
-    if ASSERTIONS.ode:
-        ode_build_dir_label += "Assert"
-
-    anthem_build_dir_label = BUILD_VARIANTS.anthem
-    if ASSERTIONS.anthem:
-        anthem_build_dir_label += "Assert"
-
-    # TODO It's currently impossible to use assertions in SDL
-    sdl_build_dir_label = BUILD_VARIANTS.sdl
-
-    if ode_build_dir_label == anthem_build_dir_label \
-            and ode_build_dir_label == sdl_build_dir_label:
-        build_subdir += "-" + ode_build_dir_label
-
-    elif ode_build_dir_label != anthem_build_dir_label \
-            and ode_build_dir_label == sdl_build_dir_label:
-        build_subdir += "-" + ode_build_dir_label
-        build_subdir += "+anthem-" + anthem_build_dir_label
-
-    elif ode_build_dir_label == anthem_build_dir_label \
-            and ode_build_dir_label != sdl_build_dir_label:
-        build_subdir += "-" + ode_build_dir_label
-        build_subdir += "+sdl-" + sdl_build_dir_label
-
-    elif sdl_build_dir_label == anthem_build_dir_label \
-            and ode_build_dir_label != sdl_build_dir_label:
-        build_subdir += "-" + anthem_build_dir_label
-        build_subdir += "+ode-" + ode_build_dir_label
-
+    if component.is_source:
+        target = "source"
     else:
-        build_subdir += "+ode-" + ode_build_dir_label
-        build_subdir += "+anthem-" + anthem_build_dir_label
-        build_subdir += "+sdl-" + sdl_build_dir_label
+        target = HOST_TARGET
+    return os.path.join(DOWNLOAD_DIR, component.key, component.version, target)
 
-    return build_subdir
+
+def temporary_dir(component):
+    """
+    Create an absolute path to the temporary directory of a
+    dependency.
+    """
+    return os.path.join(DOWNLOAD_DIR, component.key, "tmp")
+
+
+@contextmanager
+def clone_dir_context(component):
+    """Creates the directories for cloning a dependency."""
+    shell.rmtree(source_dir(component))
+    shell.rmtree(temporary_dir(component))
+    shell.makedirs(source_dir(component))
+    shell.makedirs(temporary_dir(component))
+    yield
+    shell.rmtree(temporary_dir(component))

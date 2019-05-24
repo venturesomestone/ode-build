@@ -31,7 +31,8 @@ __all__ = [
 
     # Constants
     "PROTOCOL",
-    "GITHUB_API_V4_ENDPOINT"
+    "GITHUB_API_V4_ENDPOINT",
+    "GITHUB_OAUTH_ENV_VARIABLES"
 ]
 
 
@@ -89,6 +90,10 @@ ANTHEM_NAME = _get_defaults()["anthem"]["name"]
 SDL_NAME = _get_dependencies()["sdl"]["name"]
 
 PROTOCOL = "https"
-GITHUB_API_V4_ENDPOINT = "https://api.github.com/graphql"
+
+# The names of the environment variables that Composer can use to
+# see if the GitHub OAuth token is set in an environment
+# variable.
+GITHUB_OAUTH_ENV_VARIABLES = ["ODE_GITHUB_OAUTH", "ANTHEM_GITHUB_OAUTH"]
 
 COVERAGE_TARGET_MARK = "c"

@@ -14,14 +14,16 @@
 
 from __future__ import print_function
 
+import json
 import os
+import re
 import sys
 
 from datetime import datetime
 
 from absl import app, logging
 
-from support import values
+from support import defaults
 
 from support.defaults import SCRIPT_NAME
 
@@ -34,10 +36,6 @@ from util import shell
 from util.date import date_difference, to_date_string
 
 from util.mapping import Mapping
-
-from util.target import host_target
-
-from util.workspace import build_subdir_name
 
 from . import _clone
 
@@ -55,7 +53,7 @@ def _run_preset():
         SCRIPT_NAME,
         ", ".join([
             "dry-run",
-            "debug",
+            "print-debug",
             "clean",
             "jobs",
             "auth-token-file",
@@ -101,8 +99,8 @@ def _run_preset():
 
     if FLAGS["dry-run"].value and FLAGS["dry-run"].present:
         build_script_args += ["--dry-run"]
-    if FLAGS.debug and FLAGS["debug"].present:
-        build_script_args += ["--debug"]
+    if FLAGS["print-debug"].value and FLAGS["print-debug"].present:
+        build_script_args += ["--print-debug"]
     if FLAGS.clean and FLAGS["clean"].present:
         build_script_args += ["--clean"]
     if FLAGS.jobs and FLAGS["jobs"].present:
@@ -144,46 +142,9 @@ def _run_build():
     logging.debug("%s was run in build mode", SCRIPT_NAME)
 
 
-def _set_values():
-    logging.debug("Setting the constant values for the run")
-
-    # Propagate the build variant
-    values.BUILD_VARIANTS.all = FLAGS["build-variant"].value
-    if FLAGS["debug-ode"].value:
-        values.BUILD_VARIANTS.ode = "Debug"
-    else:
-        values.BUILD_VARIANTS.ode = FLAGS["build-variant"].value
-    if FLAGS["debug-anthem"].value:
-        values.BUILD_VARIANTS.anthem = "Debug"
-    else:
-        values.BUILD_VARIANTS.anthem = FLAGS["build-variant"].value
-    if FLAGS["debug-sdl"].value:
-        values.BUILD_VARIANTS.sdl = "Debug"
-    else:
-        values.BUILD_VARIANTS.sdl = FLAGS["build-variant"].value
-
-    # Propagate the assertions
-    values.ASSERTIONS.all = FLAGS.assertions
-    if FLAGS["ode-assertions"].value:
-        values.ASSERTIONS.ode = True
-    else:
-        values.ASSERTIONS.ode = FLAGS.assertions
-    if FLAGS["anthem-assertions"].value:
-        values.ASSERTIONS.anthem = True
-    else:
-        values.ASSERTIONS.anthem = FLAGS.assertions
-
-    values.BUILD_SUBDIR = build_subdir_name()
-
-    logging.debug(
-        "Building the project files in %s",
-        os.path.join(values.BUILD_DIR, values.BUILD_SUBDIR)
-    )
-
-
 def main(argv):
     """Enters the program and runs it."""
-    if FLAGS.debug:
+    if FLAGS["print-debug"].value:
         logging.set_verbosity(logging.DEBUG)
     logging.debug("The non-flag arguments are %s", argv)
     if sys.version_info.major == 2:
@@ -200,7 +161,7 @@ def main(argv):
                 "You should really update to Python 3 to make the world a "
                 "better place!"
             )
-            # The date when Python 2 is no longer supported
+            # The end-of-life date of Python 2
             eol_date = datetime.strptime(
                 "2020-01-01 00:00:00",
                 "%Y-%m-%d %H:%M:%S"
@@ -221,15 +182,20 @@ def main(argv):
             "set the '$ODE_SOURCE_ROOT' environment variable?)"
         )
 
+    # The preset mode is the same for both bootstrap and build
+    # mode so it's checked for first.
     if _is_preset_mode():
         _run_preset()
     else:
-        _set_values()
         if sys.argv[1] == "bootstrap" or sys.argv[1] == "boot":
             _run_bootstrap()
         elif sys.argv[1] == "build" or sys.argv[1] == "compose":
             _run_build()
         else:
+            # Composer must have either bootstrap or build
+            # subcommand. However, this need should always be
+            # satisfied as Composer should only be run via the
+            # scripts that come with Obliging Ode.
             logging.fatal(
                 "%s wasn't in either bootstrap or build mode",
                 SCRIPT_NAME
@@ -241,10 +207,12 @@ def run():
     Runs the script if Couplet Composer is invoked through
     'run.py'.
     """
+    # The flag validators must be registered before running the
+    # app as the app runs the validators and parses the flags.
     register_flag_validators()
     app.run(main)
+    return 0
 
 
 if __name__ == "__main__":
-    register_flag_validators()
-    app.run(main)
+    sys.exit(run())

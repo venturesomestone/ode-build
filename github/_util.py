@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # ------------------------------------------------------------- #
 #                       Couplet Composer
 # ------------------------------------------------------------- #
@@ -12,15 +10,13 @@
 #
 # ------------------------------------------------------------- #
 
-"""
-Helper script that is used to run the project in development
-mode.
-"""
-
-import sys
-
-from couplet_composer import __main__
+"""This module contains miscellaneous GitHub helpers."""
 
 
-if __name__ == "__main__":
-    sys.exit(__main__.run())
+def create_github_version(component, github_data):
+    """Concatenate the full version for GitHub."""
+    if github_data.version_prefix:
+        ret = "{}{}".format(github_data.version_prefix, component.version)
+    else:
+        ret = component.version
+    return ret

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # ------------------------------------------------------------- #
 #                       Couplet Composer
 # ------------------------------------------------------------- #
@@ -13,14 +11,25 @@
 # ------------------------------------------------------------- #
 
 """
-Helper script that is used to run the project in development
-mode.
+This support module has the info necessary for downloading
+spdlog.
 """
 
-import sys
+from github import release
 
-from couplet_composer import __main__
+from util import workspace
+
+from util.mapping import Mapping
 
 
-if __name__ == "__main__":
-    sys.exit(__main__.run())
+SOURCE = True
+GITHUB_DATA = Mapping(
+    owner="gabime",
+    version_prefix="v"
+)
+
+
+def get_dependency(component):
+    """Downloads the dependency."""
+    with workspace.clone_dir_context(component):
+        release.basic_tag(component, GITHUB_DATA)

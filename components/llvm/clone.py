@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # ------------------------------------------------------------- #
 #                       Couplet Composer
 # ------------------------------------------------------------- #
@@ -13,14 +11,14 @@
 # ------------------------------------------------------------- #
 
 """
-Helper script that is used to run the project in development
-mode.
+This support module has the info necessary for downloading LLVM.
 """
 
-import sys
 
-from couplet_composer import __main__
+SOURCE = False
 
 
-if __name__ == "__main__":
-    sys.exit(__main__.run())
+def get_dependency(component):
+    """Downloads the dependency."""
+    # TODO
+    pass
