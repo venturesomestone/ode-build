@@ -5,19 +5,22 @@
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Couplet Composer project which
-# is part of the Obliging Ode and Unsung Anthem projects.
+# is part of the Obliging Ode and Unsung Anthem project.
 #
-# Copyright (C) 2019 Antti Kivi
-# All rights reserved
+# Copyright 2019 Antti Kivi
+# Licensed under the EUPL, version 1.2
 #
 # ------------------------------------------------------------- #
 
 import io
 import os
+import sys
 
 from glob import glob
 
-from setuptools import find_packages, setup
+from shutil import rmtree
+
+from setuptools import find_packages, setup, Command
 
 
 # Package metadata
@@ -25,13 +28,13 @@ NAME = "couplet-composer"
 DESCRIPTION = "Tool for building, testing, and preparing binary " \
     "distribution archives of Obliging Ode."
 URL = "https://github.com/anttikivi/couplet-composer"
-EMAIL = "antti@anttikivi.fi"
+EMAIL = "antti.kivi@visiosto.fi"
 AUTHOR = "Antti Kivi"
 REQUIRES_PYTHON = ">=2.7.11"
 VERSION = None
 
 # The packages that Couplet Composer needs
-REQUIRED = []
+REQUIRED = ["absl", "requests"]
 
 # The optional packages that Couplet Composer can use
 EXTRAS = {}
@@ -56,6 +59,45 @@ else:
     about["__version__"] = VERSION
 
 
+class UploadCommand(Command):
+    """Support setup.py upload."""
+
+    description = "Build and publish the package."
+    user_options = []
+
+    @staticmethod
+    def status(s):
+        """Prints things in bold."""
+        print("\033[1m{0}\033[0m".format(s))
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            self.status("Removing previous builds...")
+            rmtree(os.path.join(here, "dist"))
+        except OSError:
+            pass
+
+        self.status("Building Source and Wheel (universal) distribution...")
+        os.system("{0} setup.py sdist bdist_wheel --universal".format(
+            sys.executable
+        ))
+
+        self.status("Uploading the package to PyPI via Twine...")
+        os.system("twine upload dist/*")
+
+        self.status("Pushing git tags...")
+        os.system("git tag v{0}".format(about["__version__"]))
+        os.system("git push --tags")
+
+        sys.exit()
+
+
 setup(
     name=NAME,
     version=about["__version__"],
@@ -68,23 +110,23 @@ setup(
     url=URL,
     packages=find_packages(
         exclude=["tests", "*.tests", "*.tests.*", "tests.*"],
-        include=("*", "components")),
-    entry_points={
-        "console_scripts": ["couplet-composer=couplet_composer.__main__:main"]
-    },
+        include=["couplet_composer"]),
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
-    license="SEE LICENCE IN LICENCE",
+    license="EUPL-1.2",
     classifiers=[
-        # Trove classifiers
-        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
-        "License :: Other/Proprietary License",
+        "License :: OSI Approved :: European Union Public Licence 1.2 "
+        "(EUPL 1.2)",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy"
-    ]
+        "Programming Language :: Python :: Implementation :: PyPy",
+        "Operating System :: OS Independent"
+    ],
+    cmdclass={
+        "upload": UploadCommand,
+    }
 )
