@@ -37,9 +37,6 @@ VERSION = None
 with open("requirements.txt") as f:
     REQUIRED = f.read().splitlines()
 
-# The optional packages that Couplet Composer can use
-EXTRAS = {}
-
 here = os.path.abspath(os.path.dirname(__file__))
 
 # Import the README and use it as the long-description.
@@ -116,7 +113,6 @@ setup(
         "console_scripts": ["compose = couplet_composer.__main__:run"]
     },
     install_requires=REQUIRED,
-    extras_require=EXTRAS,
     include_package_data=True,
     license="EUPL-1.2",
     classifiers=[
