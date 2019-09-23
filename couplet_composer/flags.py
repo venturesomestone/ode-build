@@ -14,22 +14,35 @@
 
 from __future__ import print_function
 
+import json
 import multiprocessing
 import os
 
 from absl import flags
 
-from support import defaults
-
-from support.variables import ODE_BUILD_ROOT
-
-from util.target import host_target
+from support.variables import ODE_BUILD_ROOT, ODE_REPO_NAME, ODE_SOURCE_ROOT
 
 
 __all__ = ["FLAGS", "register_flag_validators"]
 
 
 FLAGS = flags.FLAGS
+
+
+def _get_defaults():
+    with open(os.path.join(
+        ODE_SOURCE_ROOT,
+        ODE_REPO_NAME,
+        "util",
+        "composer",
+        "defaults.json"
+    )) as f:
+        return json.load(f)
+
+
+ODE_VERSION = _get_defaults()["ode"]["version"]
+ANTHEM_VERSION = _get_defaults()["anthem"]["version"]
+
 
 # ------------------------------------------------------------- #
 # Top-level options
@@ -366,6 +379,8 @@ def register_flag_validators():
     """
     Registers the flag validators to be called before the app is
     run.
+
+    This functions is impure.
     """
     # TODO Currently these are ignored
     _mark_flag_as_preset_only("preset-files")
