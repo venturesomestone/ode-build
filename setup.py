@@ -34,7 +34,8 @@ REQUIRES_PYTHON = ">=2.7.11"
 VERSION = None
 
 # The packages that Couplet Composer needs
-REQUIRED = ["absl-py", "requests"]
+with open("requirements.txt") as f:
+    REQUIRED = f.read().splitlines()
 
 # The optional packages that Couplet Composer can use
 EXTRAS = {}
