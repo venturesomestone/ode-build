@@ -3,9 +3,9 @@
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Couplet Composer project which
-# is part of the Obliging Ode and Unsung Anthem projects.
+# is part of the Obliging Ode and Unsung Anthem project.
 #
-# Copyright (C) 2019 Antti Kivi
-# All rights reserved
+# Copyright 2019 Antti Kivi
+# Licensed under the EUPL, version 1.2
 #
 # ------------------------------------------------------------- #
