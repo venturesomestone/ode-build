@@ -3,10 +3,10 @@
 # ------------------------------------------------------------- #
 #
 # This source file is part of the Couplet Composer project which
-# is part of the Obliging Ode and Unsung Anthem projects.
+# is part of the Obliging Ode and Unsung Anthem project.
 #
-# Copyright (C) 2019 Antti Kivi
-# All rights reserved
+# Copyright 2019 Antti Kivi
+# Licensed under the EUPL, version 1.2
 #
 # ------------------------------------------------------------- #
 
@@ -32,10 +32,6 @@ def run():
     """
     # The flag validators must be registered before running the
     # app as the app runs the validators and parses the flags.
-    register_flag_validators()
+    # register_flag_validators()
     app.run(main)
     return 0
-
-
-if __name__ == "__main__":
-    sys.exit(run())

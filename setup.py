@@ -34,7 +34,7 @@ REQUIRES_PYTHON = ">=2.7.11"
 VERSION = None
 
 # The packages that Couplet Composer needs
-REQUIRED = ["absl", "requests"]
+REQUIRED = ["absl-py", "requests"]
 
 # The optional packages that Couplet Composer can use
 EXTRAS = {}
@@ -111,6 +111,9 @@ setup(
     packages=find_packages(
         exclude=["tests", "*.tests", "*.tests.*", "tests.*"],
         include=["couplet_composer"]),
+    entry_points={
+        "console_scripts": ["compose = couplet_composer.__main__:run"]
+    },
     install_requires=REQUIRED,
     extras_require=EXTRAS,
     include_package_data=True,
