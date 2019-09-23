@@ -27,8 +27,6 @@ def run():
     """
     Runs the script if Couplet Composer is invoked through
     'run.py'.
-
-    This functions is impure.
     """
     # The flag validators must be registered before running the
     # app as the app runs the validators and parses the flags.
