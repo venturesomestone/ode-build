@@ -18,6 +18,8 @@ import sys
 
 from absl import app, logging
 
+from .flags import register_flag_validators
+
 
 def main(argv):
     """Enters the program and runs it."""
@@ -30,6 +32,6 @@ def run():
     """
     # The flag validators must be registered before running the
     # app as the app runs the validators and parses the flags.
-    # register_flag_validators()
+    register_flag_validators()
     app.run(main)
     return 0
