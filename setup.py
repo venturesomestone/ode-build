@@ -106,11 +106,9 @@ setup(
     author_email=EMAIL,
     python_requires=REQUIRES_PYTHON,
     url=URL,
-    packages=find_packages(
-        exclude=["tests", "*.tests", "*.tests.*", "tests.*"],
-        include=["couplet_composer"]),
+    packages=find_packages(exclude=["test"]),
     entry_points={
-        "console_scripts": ["compose = couplet_composer.__main__:run"]
+        "console_scripts": ["composer = couplet_composer.__main__:run"]
     },
     install_requires=REQUIRED,
     include_package_data=True,
