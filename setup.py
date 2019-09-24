@@ -16,8 +16,6 @@ import io
 import os
 import sys
 
-from glob import glob
-
 from shutil import rmtree
 
 from setuptools import find_packages, setup, Command
