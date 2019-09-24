@@ -27,4 +27,4 @@ DEFAULTS_FILE_PATH = os.path.join("util", "composer", "defaults.json")
 
 # The path to the default file containing the presets, relative
 # to the Obliging Ode repository.
-PRESET_FILE_PATH = os.path.join("util", "presets.ini")
+PRESET_FILE_PATH = os.path.join("util", "composer-presets.ini")

@@ -60,8 +60,8 @@ def _run_preset():
     )
     if not FLAGS["preset-files"].value:
         preset_file_names = [
-            os.path.join(HOME, ".anthem-build-presets"),
-            os.path.join(HOME, ".ode-build-presets"),
+            os.path.join(HOME, ".anthem-composer-presets"),
+            os.path.join(HOME, ".ode-composer-presets"),
             os.path.join(ODE_SOURCE_ROOT, ODE_REPO_NAME, PRESET_FILE_PATH)
         ]
     else:
