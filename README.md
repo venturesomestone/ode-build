@@ -1,5 +1,7 @@
 # Couplet Composer
 
+![](https://github.com/anttikivi/couplet-composer/workflows/Main%20workflow/badge.svg)
+
 Couplet Composer is the build script for [Unsung Anthem](https://github.com/anttikivi/unsung-anthem) and [Obliging Ode](https://github.com/anttikivi/unsung-anthem).
 
 ## Contribute
