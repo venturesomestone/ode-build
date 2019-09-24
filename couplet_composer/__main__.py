@@ -12,6 +12,7 @@
 
 """The entry point of Couplet Composer."""
 
+import os
 import sys
 
 from datetime import datetime
@@ -20,9 +21,13 @@ from absl import app, logging
 
 from .flags import FLAGS, register_flag_validators
 
-from .support.values import NAME
+from .support.presets import get_all_preset_names, get_preset_options
 
-from .support.variables import ODE_SOURCE_ROOT
+from .support.values import NAME, PRESET_FILE_PATH
+
+from .support.variables import HOME, ODE_REPO_NAME, ODE_SOURCE_ROOT
+
+from .util import shell
 
 from .util.date import date_difference, to_date_string
 
@@ -33,6 +38,88 @@ def _is_preset_mode():
 
 def _run_preset():
     """Runs the composer in the preset mode."""
+
+    # TODO This might be removed in the future as the program
+    # checks if valid set of flags is given.
+    logging.debug(
+        "Running %s in preset mode and thus the only flags that aren't "
+        "ignored are: %s",
+        NAME,
+        ", ".join([
+            "dry-run",
+            "print-debug",
+            "clean",
+            "jobs",
+            # "auth-token-file",
+            # "auth-token",
+            "preset-files",
+            "preset",
+            "show-presets",
+            "expand-build-script-invocation"
+        ])
+    )
+    if not FLAGS["preset-files"].value:
+        preset_file_names = [
+            os.path.join(HOME, ".anthem-build-presets"),
+            os.path.join(HOME, ".ode-build-presets"),
+            os.path.join(ODE_SOURCE_ROOT, ODE_REPO_NAME, PRESET_FILE_PATH)
+        ]
+    else:
+        preset_file_names = FLAGS["preset-files"].value
+
+    logging.debug("The preset files are %s", ", ".join(preset_file_names))
+
+    if FLAGS["show-presets"].value:
+        logging.info("The available presets are:")
+        for name in sorted(
+            get_all_preset_names(preset_file_names),
+            key=str.lower
+        ):
+            print(name)
+        return
+
+    if not FLAGS.preset:
+        logging.fatal("Missing the '--preset' option")
+
+    preset_args = get_preset_options(None, preset_file_names, FLAGS.preset)
+
+    build_script_args = [sys.argv[0]]
+    build_script_args += [sys.argv[1]]
+
+    if FLAGS["dry-run"].value and FLAGS["dry-run"].present:
+        build_script_args += ["--dry-run"]
+    if FLAGS["print-debug"].value and FLAGS["print-debug"].present:
+        build_script_args += ["--print-debug"]
+    if FLAGS.clean and FLAGS["clean"].present:
+        build_script_args += ["--clean"]
+    if FLAGS.jobs and FLAGS["jobs"].present:
+        build_script_args += ["--jobs", str(FLAGS.jobs)]
+    # if FLAGS["auth-token-file"].value and FLAGS["auth-token-file"].present:
+    #     build_script_args += [
+    #         "--auth-token-file", str(FLAGS["auth-token-file"].value)
+    #     ]
+    # if FLAGS["auth-token"].value and FLAGS["auth-token"].present:
+    #     build_script_args += ["--auth-token", str(FLAGS["auth-token"].value)]
+
+    build_script_args += preset_args
+
+    logging.info("Using preset '{}', which expands to \n\n{}\n".format(
+        FLAGS.preset,
+        shell.quote_command(build_script_args)
+    ))
+    logging.debug(
+        "The script will have '{}' as the Python executable\n".format(
+            sys.executable
+        )
+    )
+
+    if FLAGS["expand-build-script-invocation"].value:
+        logging.debug("The build script invocation is printed")
+        return
+
+    command_to_run = [sys.executable] + build_script_args
+
+    shell.caffeinate(command_to_run)
 
 
 def _run_configure():
