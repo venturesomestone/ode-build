@@ -62,6 +62,15 @@ ODE_GRAPHQL_ROOT = os.environ.get(
 # variable is not set.
 ODE_REPO_NAME = os.environ.get("ODE_REPO_NAME", "unsung-anthem")
 
+# The download directory in the build root is the directory where
+# the dependencies needed to build the project are downloaded to.
+DOWNLOAD_DIR = os.path.join(ODE_BUILD_ROOT, "shared")
+
+# The download status file is a JSON file containing the versions
+# of the dependencies in order to determine whether to download
+# new versions of them.
+DOWNLOAD_STATUS_FILE = os.path.join(DOWNLOAD_DIR, "status")
+
 
 # Get the default values for the names of the projects from the
 # project repository.
@@ -73,4 +82,5 @@ def _get_defaults():
 
 
 ODE_NAME = os.environ.get("ODE_NAME", _get_defaults()["ode"]["name"])
+
 ANTHEM_NAME = os.environ.get("ANTHEM_NAME", _get_defaults()["anthem"]["name"])

@@ -31,6 +31,8 @@ from .util import shell
 
 from .util.date import date_difference, to_date_string
 
+from . import clone, set_up
+
 
 def _is_preset_mode():
     return FLAGS.preset or FLAGS["show-presets"].value
@@ -127,6 +129,8 @@ def _run_configure():
     Runs the composer in configuration mode and sets up the
     development and build environment.
     """
+    set_up.set_up()
+    clone.download_dependencies()
 
 
 def _run_compose():

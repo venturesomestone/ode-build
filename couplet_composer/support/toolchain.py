@@ -12,11 +12,14 @@
 
 """This support module handles the toolchain configuration."""
 
+import os
 import platform
 
 from functools import partial
 
 from absl import logging
+
+from .variables import ODE_BUILD_ROOT
 
 from ..util import xcrun
 
@@ -25,6 +28,20 @@ from ..util.mapping import Mapping
 from ..util.which import where, which
 
 from ..flags import FLAGS
+
+
+__all__ = ["write_toolchain", "read_toolchain", "host_toolchain"]
+
+
+def target_toolchain_file(target):
+    """
+    Calculates path to the file that contains the written
+    toolchain information for the given platform.
+    """
+    return os.path.join(
+        ODE_BUILD_ROOT,
+        "toolchain-{}-{}".format(FLAGS["ode-version"].value, target)
+    )
 
 
 def write_toolchain(toolchain, target):
@@ -90,36 +107,36 @@ def _find_tools(tools, target, json, func):
     return tool_mapping
 
 
-def mac_os(tools, target, json):
+def _mac_os(tools, target, json):
     """Finds the tools in the toolchain on macOS."""
     # NOTE: xcrun searches from developer tools directory *and* from PATH.
     # Relatively slow, but 'which' is not necessary for Darwin.
     return _find_tools(tools, target, json, partial(xcrun.find))
 
 
-def unix(tools, target, json):
+def _unix(tools, target, json):
     """
     Finds the tools in the toolchain on a generic Unix system.
     """
     return _find_tools(tools, target, json, which)
 
 
-def linux(tools, target, json):
+def _linux(tools, target, json):
     """Finds the tools in the toolchain on Linux."""
     return unix(tools, target, json)
 
 
-def free_bsd(tools, target, json):
+def _free_bsd(tools, target, json):
     """Finds the tools in the toolchain on FreeBSD."""
     return unix(tools, target, json)
 
 
-def cygwin(tools, target, json):
+def _cygwin(tools, target, json):
     """Finds the tools in the toolchain on Cygwin."""
     return unix(tools, target, json)
 
 
-def windows(tools, target, json):
+def _windows(tools, target, json):
     """Finds the tools in the toolchain on Windows."""
     def _find(cmd):
         found = where(cmd)
@@ -134,15 +151,15 @@ def host_toolchain(target, json):
     tools = _register_tools()
     sys = platform.system()
     if sys == "Darwin":
-        return mac_os(tools, target, json)
+        return _mac_os(tools, target, json)
     elif sys == "Linux":
-        return linux(tools, target, json)
+        return _linux(tools, target, json)
     elif sys == "FreeBSD":
-        return free_bsd(tools, target, json)
+        return _free_bsd(tools, target, json)
     elif sys.startswith("CYGWIN"):
-        return cygwin(tools, target, json)
+        return _cygwin(tools, target, json)
     elif sys == "Windows":
-        return windows(tools, target, json)
+        return _windows(tools, target, json)
     raise NotImplementedError(
         "The platform '{}' does not have a defined toolchain".format(sys)
     )

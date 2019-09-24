@@ -23,6 +23,8 @@ from .support.values import DEFAULTS_FILE_PATH
 from .support.variables import \
     ANTHEM_NAME, ODE_BUILD_ROOT, ODE_NAME, ODE_REPO_NAME, ODE_SOURCE_ROOT
 
+from .util.target import host_target
+
 
 __all__ = ["FLAGS"]
 
@@ -95,6 +97,22 @@ flags.DEFINE_string(
     "anthem-version",
     ANTHEM_VERSION,
     "Set the version of the built {} product.".format(ANTHEM_NAME)
+)
+
+
+# ------------------------------------------------------------- #
+# TODO Host and cross-compilation targets
+# ------------------------------------------------------------- #
+
+flags.DEFINE_string(
+    "host-target",
+    host_target().name,
+    "Build the project for the host target."
+)
+flags.DEFINE_list(
+    "cross-compile-hosts",
+    [],
+    "Cross-compile the project for the cross-compile targets."
 )
 
 
