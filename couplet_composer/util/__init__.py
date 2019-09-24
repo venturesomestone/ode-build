@@ -9,3 +9,9 @@
 # Licensed under the EUPL, version 1.2
 #
 # ------------------------------------------------------------- #
+
+"""
+The utilities are helpful modules that are required to run
+Couplet Composer. However, they must not depend on Couplet
+Composer.
+"""
