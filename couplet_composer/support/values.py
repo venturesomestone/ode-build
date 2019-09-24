@@ -18,6 +18,10 @@ build.
 import os
 
 
+# The name of the project.
+NAME = "Couplet Composer"
+
+
 # The path to the file containing the default values, relative to
 # the Obliging Ode repository.
 DEFAULTS_FILE_PATH = os.path.join("util", "composer", "defaults.json")

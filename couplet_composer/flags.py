@@ -52,6 +52,7 @@ flags.DEFINE_boolean(
     short_name="n"
 )
 flags.DEFINE_alias("just-print", "dry-run")
+flags.DEFINE_boolean("print-debug", False, "Produce debugging output.")
 flags.DEFINE_integer(
     "jobs",
     multiprocessing.cpu_count(),
@@ -78,6 +79,33 @@ flags.DEFINE_string(
     "anthem-version",
     ANTHEM_VERSION,
     "Set the version of the built {} product.".format(ANTHEM_NAME)
+)
+
+
+# ------------------------------------------------------------- #
+# Preset mode options
+# ------------------------------------------------------------- #
+
+flags.DEFINE_list(
+    "preset-files",
+    None,
+    "Search for build presets in the given files."
+)
+flags.DEFINE_string(
+    "preset",
+    None,
+    "Use the given build preset.",
+    short_name="P"
+)
+flags.DEFINE_boolean(
+    "show-presets",
+    False,
+    "Only list the presets in the preset files."
+)
+flags.DEFINE_boolean(
+    "expand-build-script-invocation",
+    False,
+    "Only show the command that the build would be called with."
 )
 
 
