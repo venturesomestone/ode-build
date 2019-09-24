@@ -123,17 +123,17 @@ def _unix(tools, target, json):
 
 def _linux(tools, target, json):
     """Finds the tools in the toolchain on Linux."""
-    return unix(tools, target, json)
+    return _unix(tools, target, json)
 
 
 def _free_bsd(tools, target, json):
     """Finds the tools in the toolchain on FreeBSD."""
-    return unix(tools, target, json)
+    return _unix(tools, target, json)
 
 
 def _cygwin(tools, target, json):
     """Finds the tools in the toolchain on Cygwin."""
-    return unix(tools, target, json)
+    return _unix(tools, target, json)
 
 
 def _windows(tools, target, json):
