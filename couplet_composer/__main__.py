@@ -175,11 +175,11 @@ def main(argv):
 
     if len(argv) <= 1:
         logging.fatal(
-            "No build mode is defined: please use either 'configure' or "
-            "'compose'"
+            "There aren't enough arguments to run the program. Please define "
+            "the wanted command: either 'configure' or 'compose'."
         )
 
-    # The preset mode is the same for both bootstrap and build
+    # The preset mode is the same for both configure and compose
     # mode so it's checked for first.
     if _is_preset_mode():
         _run_preset()
@@ -189,7 +189,7 @@ def main(argv):
         elif sys.argv[1] == "compose":
             _run_compose()
         else:
-            # Composer must have either bootstrap or build
+            # Composer must have either configure or compose
             # subcommand. However, this need should always be
             # satisfied as Composer should only be run via the
             # scripts that come with Obliging Ode.
