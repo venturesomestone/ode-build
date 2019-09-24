@@ -175,8 +175,8 @@ def main(argv):
 
     if len(argv) <= 1:
         logging.fatal(
-            "There aren't enough arguments to run the program. Please define "
-            "the wanted command: either 'configure' or 'compose'."
+            "There aren't enough arguments to run the program. Please specify "
+            "suitable command: either 'configure' or 'compose'."
         )
 
     # The preset mode is the same for both configure and compose
