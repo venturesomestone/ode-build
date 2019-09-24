@@ -173,12 +173,6 @@ def main(argv):
             "set the '$ODE_SOURCE_ROOT' environment variable?)"
         )
 
-    if len(argv) <= 1:
-        logging.fatal(
-            "There aren't enough arguments to run the program. Please specify "
-            "suitable command: either 'configure' or 'compose'."
-        )
-
     # The preset mode is the same for both configure and compose
     # mode so it's checked for first.
     if _is_preset_mode():
