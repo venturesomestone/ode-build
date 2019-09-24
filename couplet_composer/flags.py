@@ -44,6 +44,8 @@ ANTHEM_VERSION = _get_defaults()["anthem"]["version"]
 # ------------------------------------------------------------- #
 # Top-level options
 # ------------------------------------------------------------- #
+# These are allowed in both preset and normal modes
+# ------------------------------------------------------------- #
 
 flags.DEFINE_boolean(
     "dry-run",
@@ -58,6 +60,20 @@ flags.DEFINE_integer(
     multiprocessing.cpu_count(),
     "Specify the number of parallel build jobs to use.",
     short_name="j"
+)
+
+
+# ------------------------------------------------------------- #
+# Extra action options
+# ------------------------------------------------------------- #
+# These are allowed in both preset and normal modes
+# ------------------------------------------------------------- #
+
+flags.DEFINE_boolean(
+    "clean",
+    False,
+    "Delete the build files before build.",
+    short_name="c"
 )
 
 
