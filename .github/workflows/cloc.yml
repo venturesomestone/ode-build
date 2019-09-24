@@ -1,0 +1,17 @@
+name: Lines of code
+
+on: [push]
+
+jobs:
+  count:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        npm install cloc
+    - name: Count the lines of code
+      run: |
+        cloc .github couplet_composer tests setup.py
