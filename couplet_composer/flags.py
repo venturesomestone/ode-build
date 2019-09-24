@@ -12,15 +12,33 @@
 
 """The command line flags of Couplet Composer."""
 
+import json
 import multiprocessing
+import os
 
 from absl import flags
+
+from .support.values import DEFAULTS_FILE_PATH
+
+from .support.variables import \
+    ANTHEM_NAME, ODE_BUILD_ROOT, ODE_NAME, ODE_REPO_NAME, ODE_SOURCE_ROOT
 
 
 __all__ = ["FLAGS"]
 
 
 FLAGS = flags.FLAGS
+
+
+def _get_defaults():
+    with open(
+        os.path.join(ODE_SOURCE_ROOT, ODE_REPO_NAME, DEFAULTS_FILE_PATH)
+    ) as f:
+        return json.load(f)
+
+
+ODE_VERSION = _get_defaults()["ode"]["version"]
+ANTHEM_VERSION = _get_defaults()["anthem"]["version"]
 
 
 # ------------------------------------------------------------- #
@@ -34,7 +52,6 @@ flags.DEFINE_boolean(
     short_name="n"
 )
 flags.DEFINE_alias("just-print", "dry-run")
-flags.DEFINE_boolean("print-debug", False, "Produce debugging output.")
 flags.DEFINE_integer(
     "jobs",
     multiprocessing.cpu_count(),
@@ -44,9 +61,29 @@ flags.DEFINE_integer(
 
 
 # ------------------------------------------------------------- #
-# Flags validators
+# Common build options
 # ------------------------------------------------------------- #
 
+flags.DEFINE_string(
+    "install-prefix",
+    os.path.join(ODE_BUILD_ROOT, "local"),
+    "Install the final build products to the given path."
+)
+flags.DEFINE_string(
+    "ode-version",
+    ODE_VERSION,
+    "Set the version of the built {} product.".format(ODE_NAME)
+)
+flags.DEFINE_string(
+    "anthem-version",
+    ANTHEM_VERSION,
+    "Set the version of the built {} product.".format(ANTHEM_NAME)
+)
+
+
+# ------------------------------------------------------------- #
+# Flags validators
+# ------------------------------------------------------------- #
 
 def register_flag_validators():
     """
