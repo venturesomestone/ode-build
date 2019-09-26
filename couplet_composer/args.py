@@ -32,10 +32,7 @@ def _get_defaults():
         return json.load(f)
 
 
-def create_argument_parser():
-    """Creates the argument parser of the program."""
-    parser = argparse.ArgumentParser(description=_DESCRIPTION, epilog=_EPILOG)
-
+def _add_common_arguments(parser):
     # --------------------------------------------------------- #
     # Top-level options
 
@@ -60,6 +57,29 @@ def create_argument_parser():
         type=bool,
         help="clean up the build environment before build"
     )
+    parser.add_argument(
+        "--print-debug",
+        action="store_true",
+        type=bool,
+        help="print the debug-level logging output"
+    )
+
+    # --------------------------------------------------------- #
+    # Sub-commands
+
+    subparsers = parser.add_subparsers(required=True)
+
+    configure = subparsers.add_parser("configure")
+    compose = subparsers.add_parser("compose", aliases=["build"])
+
+    return parser, configure, compose
+
+
+def create_argument_parser():
+    """Creates the argument parser of the program."""
+    parser, configure, compose = _add_common_arguments(argparse.ArgumentParser(
+        description=_DESCRIPTION, epilog=_EPILOG
+    ))
 
     # --------------------------------------------------------- #
     # Common build options
@@ -102,42 +122,19 @@ def create_argument_parser():
 
 def create_preset_argument_parser():
     """Creates the argument parser of the preset mode."""
-    parser = argparse.ArgumentParser(
+    parser, configure, compose = _add_common_arguments(argparse.ArgumentParser(
         description="Builds {} and {} using a preset".format(
             ODE_NAME,
             ANTHEM_NAME
         )
-    )
-
-    # --------------------------------------------------------- #
-    # Top-level options
-
-    parser.add_argument(
-        "-n",
-        "--dry-run",
-        action="store_true",
-        type=bool,
-        help="don't actually run any commands; just print them"
-    )
-    parser.add_argument(
-        "-j",
-        "--jobs",
-        default=multiprocessing.cpu_count(),
-        type=int,
-        help="specify the number of parallel build jobs to use"
-    )
-    parser.add_argument(
-        "-c",
-        "--clean",
-        action="store_true",
-        type=bool,
-        help="clean up the build environment before build"
-    )
+    ))
 
     # --------------------------------------------------------- #
     # Preset options
 
-    parser.add_argument(
+    preset = parser.add_argument_group("Preset options")
+
+    preset.add_argument(
         "--preset-file",
         action="append",
         default=[],
@@ -145,17 +142,17 @@ def create_preset_argument_parser():
         metavar="PATH",
         dest="preset_file_names"
     )
-    parser.add_argument(
+    preset.add_argument(
         "--preset",
         help="use the given option preset",
         metavar="NAME"
     )
-    parser.add_argument(
+    preset.add_argument(
         "--show-presets",
         action="store_true",
         help="list all presets and exit"
     )
-    parser.add_argument(
+    preset.add_argument(
         "--expand-build-script-invocation",
         action="store_true",
         help="print the build-script invocation made by the preset, but don't "

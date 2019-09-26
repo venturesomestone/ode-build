@@ -12,14 +12,13 @@
 
 """The entry point of Couplet Composer."""
 
+from __future__ import print_function
+
+import logging
 import os
 import sys
 
 from datetime import datetime
-
-from absl import app, logging
-
-from .flags import FLAGS, register_flag_validators
 
 from .support.presets import get_all_preset_names, get_preset_options
 
@@ -31,47 +30,36 @@ from .util import shell
 
 from .util.date import date_difference, to_date_string
 
-from . import clone, set_up
+from . import args, clone, config, set_up
 
 
 def _is_preset_mode():
-    return FLAGS.preset or FLAGS["show-presets"].value
+    return any([(opt.startswith("--preset") or opt == "--show-presets")
+                for opt in sys.argv[1:]])
+
+
+def _is_configure_mode():
+    return any([opt == "configure" for opt in sys.argv[1:]])
+
+
+def _is_compose_mode():
+    return any([(opt == "compose" or opt == "build") for opt in sys.argv[1:]])
 
 
 def _run_preset():
     """Runs the composer in the preset mode."""
+    logging.debug("Parsing the preset mode")
 
-    # TODO This might be removed in the future as the program
-    # checks if valid set of flags is given.
-    logging.debug(
-        "Running %s in preset mode and thus the only flags that aren't "
-        "ignored are: %s",
-        NAME,
-        ", ".join([
-            "dry-run",
-            "print-debug",
-            "clean",
-            "jobs",
-            # "auth-token-file",
-            # "auth-token",
-            "preset-files",
-            "preset",
-            "show-presets",
-            "expand-build-script-invocation"
-        ])
-    )
-    if not FLAGS["preset-files"].value:
+    if not config.ARGS.preset_file_names:
         preset_file_names = [
             os.path.join(HOME, ".anthem-composer-presets"),
             os.path.join(HOME, ".ode-composer-presets"),
             os.path.join(ODE_SOURCE_ROOT, ODE_REPO_NAME, PRESET_FILE_PATH)
         ]
-    else:
-        preset_file_names = FLAGS["preset-files"].value
 
     logging.debug("The preset files are %s", ", ".join(preset_file_names))
 
-    if FLAGS["show-presets"].value:
+    if config.ARGS.show_presets:
         logging.info("The available presets are:")
         for name in sorted(
             get_all_preset_names(preset_file_names),
@@ -80,44 +68,49 @@ def _run_preset():
             print(name)
         return
 
-    if not FLAGS.preset:
-        logging.fatal("Missing the '--preset' option")
+    if not config.ARGS.preset:
+        logging.critical("Missing the '--preset' option")
 
-    preset_args = get_preset_options(None, preset_file_names, FLAGS.preset)
+    preset_args = get_preset_options(
+        None,
+        preset_file_names,
+        config.ARGS.preset
+    )
 
     build_script_args = [sys.argv[0]]
-    build_script_args += [sys.argv[1]]
 
-    if FLAGS["dry-run"].value and FLAGS["dry-run"].present:
+    # The sub-command before other arguments.
+    if _is_configure_mode():
+        build_script_args += ["configure"]
+    elif _is_compose_mode():
+        build_script_args += ["compose"]
+
+    if config.ARGS.dry_run:
         build_script_args += ["--dry-run"]
-    if FLAGS["print-debug"].value and FLAGS["print-debug"].present:
-        build_script_args += ["--print-debug"]
-    if FLAGS.clean and FLAGS["clean"].present:
+    # TODO Contemplate whether this should be able to be set from
+    # preset mode
+    if config.ARGS.jobs:
+        build_script_args += ["--jobs", str(config.ARGS.jobs)]
+    if config.ARGS.clean:
         build_script_args += ["--clean"]
-    if FLAGS.jobs and FLAGS["jobs"].present:
-        build_script_args += ["--jobs", str(FLAGS.jobs)]
-    # if FLAGS["auth-token-file"].value and FLAGS["auth-token-file"].present:
-    #     build_script_args += [
-    #         "--auth-token-file", str(FLAGS["auth-token-file"].value)
-    #     ]
-    # if FLAGS["auth-token"].value and FLAGS["auth-token"].present:
-    #     build_script_args += ["--auth-token", str(FLAGS["auth-token"].value)]
+    if config.ARGS.print_debug:
+        build_script_args += ["--print-debug"]
 
     build_script_args += preset_args
 
-    logging.info("Using preset '{}', which expands to \n\n{}\n".format(
-        FLAGS.preset,
+    logging.info(
+        "Using preset '%s', which expands to \n\n%s\n",
+        config.ARGS.preset,
         shell.quote_command(build_script_args)
-    ))
+    )
     logging.debug(
-        "The script will have '{}' as the Python executable\n".format(
-            sys.executable
-        )
+        "The script will have '%s' as the Python executable\n",
+        sys.executable
     )
 
-    if FLAGS["expand-build-script-invocation"].value:
+    if config.ARGS.expand_build_script_invocation:
         logging.debug("The build script invocation is printed")
-        return
+        return 0
 
     command_to_run = [sys.executable] + build_script_args
 
@@ -137,14 +130,27 @@ def _run_compose():
     """Runs the composer in build mode."""
 
 
-def main(argv):
+def _main():
     """Enters the program and runs it."""
-    if FLAGS["print-debug"].value:
-        logging.set_verbosity(logging.DEBUG)
-    logging.debug("The non-flag arguments are %s", argv)
+    if _is_preset_mode():
+        parser = args.create_preset_argument_parser()
+    else:
+        parser = args.create_argument_parser()
+
+    config.ARGS = parser.parse_args()
+
+    config.LOGGER = logging.getLogger("couplet-composer")
+
+    if config.ARGS.print_debug:
+        config.LOGGER.setLevel(logging.DEBUG)
+    else:
+        config.LOGGER.setLevel(logging.INFO)
+
+    # logging.debug("The non-flag arguments are %s", argv)
+
     if sys.version_info.major == 2:
         if sys.version_info.minor < 7:
-            logging.fatal(
+            logging.critical(
                 "You're using Python %s, and the smallest supported version "
                 "is %s",
                 sys.version,
@@ -172,38 +178,44 @@ def main(argv):
         logging.debug("You seem to have an excellent taste!")
 
     if not ODE_SOURCE_ROOT:
-        logging.fatal(
+        logging.critical(
             "Couldn't work out the source root directory (did you forget to "
             "set the '$ODE_SOURCE_ROOT' environment variable?)"
         )
 
+    # Check the sub-command separately before selecting the mode
+    # in which the script is run for clarity.
+    if not _is_configure_mode() and not _is_compose_mode():
+        # Composer must have either configure or compose
+        # subcommand. However, this need should always be
+        # satisfied as Composer should only be run via the
+        # scripts that come with Obliging Ode.
+        logging.critical("%s wasn't in either configure or compose mode", NAME)
+
     # The preset mode is the same for both configure and compose
     # mode so it's checked for first.
     if _is_preset_mode():
-        _run_preset()
+        return _run_preset()
     else:
-        if sys.argv[1] == "configure":
-            _run_configure()
-        elif sys.argv[1] == "compose":
-            _run_compose()
+        if _is_configure_mode():
+            return _run_configure()
+        elif _is_compose_mode():
+            return _run_compose()
         else:
             # Composer must have either configure or compose
             # subcommand. However, this need should always be
             # satisfied as Composer should only be run via the
             # scripts that come with Obliging Ode.
-            logging.fatal(
+            logging.critical(
                 "%s wasn't in either configure or compose mode",
                 NAME
             )
 
 
 def run():
-    """
-    Runs the script if Couplet Composer is invoked through
-    'run.py'.
-    """
-    # The flag validators must be registered before running the
-    # app as the app runs the validators and parses the flags.
-    register_flag_validators()
-    app.run(main)
-    return 0
+    """Runs the script when Couplet Composer is invoked."""
+    sys.exit(_main())
+
+
+if __name__ == "__main__":
+    sys.exit(_main())

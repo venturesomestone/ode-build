@@ -14,9 +14,11 @@
 This module contains the global variables of the program.
 """
 
+# The logger object of the run.
+LOGGER = None
 
-__all__ = ["TOOLCHAIN"]
-
+# The parsed command line arguments of the run.
+ARGS = None
 
 # The toolchain object of the run.
 TOOLCHAIN = None
