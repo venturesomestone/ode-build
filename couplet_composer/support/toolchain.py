@@ -26,6 +26,8 @@ from ..util.mapping import Mapping
 
 from ..util.which import where, which
 
+from .. import config
+
 
 __all__ = ["write_toolchain", "read_toolchain", "host_toolchain"]
 
@@ -37,7 +39,7 @@ def target_toolchain_file(target):
     """
     return os.path.join(
         ODE_BUILD_ROOT,
-        "toolchain-{}-{}".format(FLAGS["ode-version"].value, target)
+        "toolchain-{}-{}".format(config.ARGS.ode_version, target)
     )
 
 
@@ -78,8 +80,9 @@ def _register_tools():
     tools.cmake = "cmake"
     tools.git = "git"
     tools.make = "make"
-    if FLAGS.xvfb:
-        tools.xvfb_run = "xvfb-run"
+    # TODO
+    # if config.ARGS.xvfb:
+    #     tools.xvfb_run = "xvfb-run"
     return tools
 
 
