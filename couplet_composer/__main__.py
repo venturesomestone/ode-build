@@ -139,12 +139,10 @@ def _main():
 
     config.ARGS = parser.parse_args()
 
-    config.LOGGER = logging.getLogger("couplet-composer")
-
     if config.ARGS.print_debug:
-        config.LOGGER.setLevel(logging.DEBUG)
+        logging.basicConfig(level=logging.DEBUG)
     else:
-        config.LOGGER.setLevel(logging.INFO)
+        logging.basicConfig(level=logging.INFO)
 
     # logging.debug("The non-flag arguments are %s", argv)
 

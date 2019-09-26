@@ -13,9 +13,8 @@
 """This module downloads the dependecies of the project."""
 
 import json
+import logging
 import os
-
-from absl import logging
 
 from .support.variables import DOWNLOAD_STATUS_FILE
 

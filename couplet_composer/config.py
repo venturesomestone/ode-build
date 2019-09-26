@@ -14,9 +14,6 @@
 This module contains the global variables of the program.
 """
 
-# The logger object of the run.
-LOGGER = None
-
 # The parsed command line arguments of the run.
 ARGS = None
 

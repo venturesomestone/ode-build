@@ -14,13 +14,12 @@
 
 from __future__ import print_function
 
+import logging
 import os
 import pipes
 import platform
 import subprocess
 import sys
-
-from absl import logging
 
 
 DEVNULL = getattr(subprocess, "DEVNULL", subprocess.PIPE)
@@ -80,12 +79,12 @@ def call(command, stderr=None, env=None, dry_run=None, echo=None):
     try:
         subprocess.check_call(command, env=_env, stderr=stderr)
     except subprocess.CalledProcessError as e:
-        logging.fatal(
+        logging.critical(
             "Command ended with the status %d, stopping",
             e.returncode
         )
     except OSError as e:
-        logging.fatal(
+        logging.critical(
             "Couldn't run '%s': %s",
             quote_command(command),
             e.strerror
@@ -122,14 +121,14 @@ def capture(
             return e.output
         if optional:
             return None
-        logging.fatal(
+        logging.critical(
             "Command ended with the status %d, stopping",
             e.returncode
         )
     except OSError as e:
         if optional:
             return None
-        logging.fatal(
+        logging.critical(
             "Couldn't execute '%s': %s",
             quote_command(command),
             e.strerror

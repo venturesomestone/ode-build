@@ -19,8 +19,6 @@ import os
 
 from .support.toolchain import host_toolchain, target_toolchain_file
 
-from .flags import FLAGS
-
 from . import config
 
 

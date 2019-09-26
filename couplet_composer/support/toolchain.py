@@ -12,12 +12,11 @@
 
 """This support module handles the toolchain configuration."""
 
+import logging
 import os
 import platform
 
 from functools import partial
-
-from absl import logging
 
 from .variables import ODE_BUILD_ROOT
 
@@ -26,8 +25,6 @@ from ..util import xcrun
 from ..util.mapping import Mapping
 
 from ..util.which import where, which
-
-from ..flags import FLAGS
 
 
 __all__ = ["write_toolchain", "read_toolchain", "host_toolchain"]

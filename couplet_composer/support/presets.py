@@ -12,9 +12,8 @@
 
 """This support module parses presets of the scripts."""
 
+import logging
 import sys
-
-from absl import logging
 
 if sys.version_info.major == 2:
     import ConfigParser as configparser
@@ -29,7 +28,7 @@ def _load_preset_files_impl(preset_file_names, substitutions=None):
     # you should use ConfigParser.
     config = configparser.SafeConfigParser(substitutions, allow_no_value=True)
     if config.read(preset_file_names) == []:
-        logging.fatal(
+        logging.critical(
             "The preset file isn't found (tried %s)",
             preset_file_names
         )
@@ -96,9 +95,9 @@ def get_preset_options(substitutions, preset_file_names, preset_name):
     build_script_opts, build_script_impl_opts, missing_opts = \
         _get_preset_options_impl(config, substitutions, preset_name)
     if not build_script_opts and not build_script_impl_opts:
-        logging.fatal("Preset '%s' isn't found", preset_name)
+        logging.critical("Preset '%s' isn't found", preset_name)
     if missing_opts:
-        logging.fatal(
+        logging.critical(
             "Missing option(s) for preset '%s': %s",
             preset_name,
             ", ".join(missing_opts)
