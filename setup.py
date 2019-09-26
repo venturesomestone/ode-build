@@ -7,8 +7,8 @@
 # This source file is part of the Couplet Composer project which
 # is part of the Obliging Ode and Unsung Anthem project.
 #
-# Copyright 2019 Antti Kivi
-# Licensed under the EUPL, version 1.2
+# Copyright (c) 2019 Antti Kivi
+# Licensed under the MIT License
 #
 # ------------------------------------------------------------- #
 
@@ -110,10 +110,9 @@ setup(
     },
     install_requires=REQUIRED,
     include_package_data=True,
-    license="EUPL-1.2",
+    license="MIT",
     classifiers=[
-        "License :: OSI Approved :: European Union Public Licence 1.2 "
-        "(EUPL 1.2)",
+        "License :: OSI Approved :: MIT License"
         "Programming Language :: Python",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
