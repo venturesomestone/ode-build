@@ -40,7 +40,6 @@ def _add_common_arguments(parser):
         "-n",
         "--dry-run",
         action="store_true",
-        type=bool,
         help="don't actually run any commands; just print them"
     )
     parser.add_argument(
@@ -54,32 +53,34 @@ def _add_common_arguments(parser):
         "-c",
         "--clean",
         action="store_true",
-        type=bool,
         help="clean up the build environment before build"
     )
     parser.add_argument(
         "--print-debug",
         action="store_true",
-        type=bool,
         help="print the debug-level logging output"
     )
 
     # --------------------------------------------------------- #
     # Sub-commands
 
-    subparsers = parser.add_subparsers(required=True)
+    subparsers = parser.add_subparsers()
 
     configure = subparsers.add_parser("configure")
-    compose = subparsers.add_parser("compose", aliases=["build"])
+    compose = subparsers.add_parser("compose")
 
     return parser, configure, compose
 
 
 def create_argument_parser():
     """Creates the argument parser of the program."""
-    parser, configure, compose = _add_common_arguments(argparse.ArgumentParser(
-        description=_DESCRIPTION, epilog=_EPILOG
-    ))
+    initial_parser = argparse.ArgumentParser(
+        description=_DESCRIPTION,
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    parser, configure, compose = _add_common_arguments(initial_parser)
 
     # --------------------------------------------------------- #
     # Common build options
@@ -163,8 +164,8 @@ def create_preset_argument_parser():
 
 
 _DESCRIPTION = """
-Use this tool to build, test, and prepare binary distribution archives of {ode}
-and {anthem}.
+Use this tool to build, test, and prepare binary distribution archives of
+Obliging Ode and Unsung Anthem.
 """.format(ode=ODE_NAME, anthem=ANTHEM_NAME)
 
 _EPILOG = """
@@ -184,7 +185,7 @@ Environment variables
 
 This script respects a few environment variables if you set them:
 
-ODE_SOURCE_ROOT: a directory containing the source for {anthem}
+ODE_SOURCE_ROOT: a directory containing the source for Obliging Ode
 
 'build-script' expects the sources to be laid out in the following way:
 
@@ -195,8 +196,7 @@ ODE_BUILD_ROOT: a directory in which to create out-of-tree builds
 Preparing to run this script
 ----------------------------
 
-Run the bootstrap script and make sure that your system has C and C++
-compilers.
+Run the composer script and make sure that your system has C and C++ compilers.
 
 That's it; you're ready to go!
 
@@ -209,7 +209,7 @@ options come from the selected preset in 'utils/build-presets.ini'.
 
 If you have your own favourite set of options, you can create your own, local,
 preset. For example, let's create a preset called 'doo' (which stands for Debug
-{ode}):
+Obliging Ode):
 
   $ cat > ~/.ode-build-presets
   [preset: doo]
@@ -229,14 +229,14 @@ To use it, specify the '--preset=' argument:
 Philosophy
 ----------
 
-While one can invoke CMake directly to build {anthem}, this tool will
+While one can invoke CMake directly to build Unsung Anthem, this tool will
 save one's time by taking away the mechanical parts of the process, providing
 one the controls for the important options.
 
 For all automated build environments, this tool is regarded as *the* *only*
-way to build {anthem}.  This is not a technical limitation of the {anthem}
-build system.  It is a policy decision aimed at making the builds uniform
-across all environments and easily reproducible by engineers who are not
-familiar with the details of the setups of other systems or automated
+way to build Unsung Anthem.  This is not a technical limitation of the Unsung
+Anthem build system.  It is a policy decision aimed at making the builds
+uniform across all environments and easily reproducible by engineers who are
+not familiar with the details of the setups of other systems or automated
 environments.
 """.format(ode=ODE_NAME, anthem=ANTHEM_NAME)
