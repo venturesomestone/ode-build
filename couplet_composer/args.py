@@ -32,7 +32,22 @@ def _get_defaults():
         return json.load(f)
 
 
-def _add_common_arguments(parser):
+def create_argument_parser():
+    """Creates the argument parser of the program."""
+    parser = argparse.ArgumentParser(
+        description=_DESCRIPTION,
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    # --------------------------------------------------------- #
+    # Sub-commands
+
+    subparsers = parser.add_subparsers(dest="composer_mode")
+
+    configure = subparsers.add_parser("configure")
+    compose = subparsers.add_parser("compose")
+
     # --------------------------------------------------------- #
     # Top-level options
 
@@ -62,25 +77,34 @@ def _add_common_arguments(parser):
     )
 
     # --------------------------------------------------------- #
-    # Sub-commands
+    # Preset options
 
-    subparsers = parser.add_subparsers()
+    preset_group = parser.add_argument_group("Preset options")
 
-    configure = subparsers.add_parser("configure")
-    compose = subparsers.add_parser("compose")
-
-    return parser, configure, compose
-
-
-def create_argument_parser():
-    """Creates the argument parser of the program."""
-    initial_parser = argparse.ArgumentParser(
-        description=_DESCRIPTION,
-        epilog=_EPILOG,
-        formatter_class=argparse.RawDescriptionHelpFormatter
+    preset_group.add_argument(
+        "--preset-file",
+        action="append",
+        default=[],
+        help="load presets from the given file",
+        metavar="PATH",
+        dest="preset_file_names"
     )
-
-    parser, configure, compose = _add_common_arguments(initial_parser)
+    preset_group.add_argument(
+        "--preset",
+        help="use the given option preset",
+        metavar="NAME"
+    )
+    preset_group.add_argument(
+        "--show-presets",
+        action="store_true",
+        help="list all presets and exit"
+    )
+    preset_group.add_argument(
+        "--expand-build-script-invocation",
+        action="store_true",
+        help="print the build-script invocation made by the preset, but don't "
+             "run it"
+    )
 
     # --------------------------------------------------------- #
     # Common build options
@@ -101,63 +125,21 @@ def create_argument_parser():
     # --------------------------------------------------------- #
     # TODO Build target options
 
-    target = parser.add_argument_group(
+    target_group = parser.add_argument_group(
         "Build target options",
         "Please note that these option don't have any actual effect on the "
         "built binaries yet"
     )
 
-    target.add_argument(
+    target_group.add_argument(
         "--host-target",
         default=host_target(),
         help="set the main target for the build"
     )
-    target.add_argument(
+    target_group.add_argument(
         "--cross-compile-hosts",
         default=[],
         help="cross-compile the project for the given targets"
-    )
-
-    return parser
-
-
-def create_preset_argument_parser():
-    """Creates the argument parser of the preset mode."""
-    parser, configure, compose = _add_common_arguments(argparse.ArgumentParser(
-        description="Builds {} and {} using a preset".format(
-            ODE_NAME,
-            ANTHEM_NAME
-        )
-    ))
-
-    # --------------------------------------------------------- #
-    # Preset options
-
-    preset = parser.add_argument_group("Preset options")
-
-    preset.add_argument(
-        "--preset-file",
-        action="append",
-        default=[],
-        help="load presets from the given file",
-        metavar="PATH",
-        dest="preset_file_names"
-    )
-    preset.add_argument(
-        "--preset",
-        help="use the given option preset",
-        metavar="NAME"
-    )
-    preset.add_argument(
-        "--show-presets",
-        action="store_true",
-        help="list all presets and exit"
-    )
-    preset.add_argument(
-        "--expand-build-script-invocation",
-        action="store_true",
-        help="print the build-script invocation made by the preset, but don't "
-             "run it"
     )
 
     return parser
