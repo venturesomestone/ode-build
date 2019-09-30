@@ -37,10 +37,7 @@ def target_toolchain_file(target):
     Calculates path to the file that contains the written
     toolchain information for the given platform.
     """
-    return os.path.join(
-        ODE_BUILD_ROOT,
-        "toolchain-{}-{}".format(config.ARGS.ode_version, target)
-    )
+    return os.path.join(ODE_BUILD_ROOT, "toolchain-{}".format(target))
 
 
 def write_toolchain(toolchain, target):
