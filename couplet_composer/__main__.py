@@ -33,21 +33,9 @@ from .util.date import date_difference, to_date_string
 from . import args, clone, config, set_up
 
 
-def _is_preset_mode():
-    return any([(opt.startswith("--preset") or opt == "--show-presets")
-                for opt in sys.argv[1:]])
-
-
-def _is_configure_mode():
-    return any([opt == "configure" for opt in sys.argv[1:]])
-
-
-def _is_compose_mode():
-    return any([(opt == "compose" or opt == "build") for opt in sys.argv[1:]])
-
-
 def _run_preset():
     """Runs the composer in the preset mode."""
+    logging.debug("Running %s in preset mode", NAME)
     logging.debug("Parsing the preset mode")
 
     if not config.ARGS.preset_file_names:
@@ -79,10 +67,9 @@ def _run_preset():
 
     build_script_args = [sys.argv[0]]
 
-    # The sub-command before other arguments.
-    if _is_configure_mode():
+    if config.ARGS.preset_run_mode == "configure":
         build_script_args += ["configure"]
-    elif _is_compose_mode():
+    elif config.ARGS.preset_run_mode == "configure":
         build_script_args += ["compose"]
 
     if config.ARGS.dry_run:
@@ -132,19 +119,16 @@ def _run_compose():
 
 def _main():
     """Enters the program and runs it."""
-    if _is_preset_mode():
-        parser = args.create_preset_argument_parser()
-    else:
-        parser = args.create_argument_parser()
+    parser = args.create_argument_parser()
 
     config.ARGS = parser.parse_args()
 
+    # The logging level is the first thing to be set so it can be
+    # utilized throughout the rest of the run.
     if config.ARGS.print_debug:
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.INFO)
-
-    # logging.debug("The non-flag arguments are %s", argv)
 
     if sys.version_info.major == 2:
         if sys.version_info.minor < 7:
@@ -181,33 +165,14 @@ def _main():
             "set the '$ODE_SOURCE_ROOT' environment variable?)"
         )
 
-    # Check the sub-command separately before selecting the mode
-    # in which the script is run for clarity.
-    if not _is_configure_mode() and not _is_compose_mode():
-        # Composer must have either configure or compose
-        # subcommand. However, this need should always be
-        # satisfied as Composer should only be run via the
-        # scripts that come with Obliging Ode.
-        logging.critical("%s wasn't in either configure or compose mode", NAME)
-
-    # The preset mode is the same for both configure and compose
-    # mode so it's checked for first.
-    if _is_preset_mode():
+    if config.ARGS.composer_mode == "preset":
         return _run_preset()
-    else:
-        if _is_configure_mode():
-            return _run_configure()
-        elif _is_compose_mode():
-            return _run_compose()
-        else:
-            # Composer must have either configure or compose
-            # subcommand. However, this need should always be
-            # satisfied as Composer should only be run via the
-            # scripts that come with Obliging Ode.
-            logging.critical(
-                "%s wasn't in either configure or compose mode",
-                NAME
-            )
+    elif config.ARGS.composer_mode == "configure":
+        return _run_configure()
+    elif config.ARGS.composer_mode == "compose":
+        return _run_configure()
+
+    parser.error("{} wasn't in valid mode".format(NAME))
 
 
 def run():

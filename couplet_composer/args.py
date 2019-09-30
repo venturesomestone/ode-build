@@ -32,22 +32,10 @@ def _get_defaults():
         return json.load(f)
 
 
-def create_argument_parser():
-    """Creates the argument parser of the program."""
-    parser = argparse.ArgumentParser(
-        description=_DESCRIPTION,
-        epilog=_EPILOG,
-        formatter_class=argparse.RawDescriptionHelpFormatter
-    )
-
-    # --------------------------------------------------------- #
-    # Sub-commands
-
-    subparsers = parser.add_subparsers(dest="composer_mode")
-
-    configure = subparsers.add_parser("configure")
-    compose = subparsers.add_parser("compose")
-
+def _common_args(parser):
+    """
+    Adds the options common to all parsers to the given parser.
+    """
     # --------------------------------------------------------- #
     # Top-level options
 
@@ -76,52 +64,14 @@ def create_argument_parser():
         help="print the debug-level logging output"
     )
 
-    # --------------------------------------------------------- #
-    # Preset options
+    return parser
 
-    preset_group = parser.add_argument_group("Preset options")
 
-    preset_group.add_argument(
-        "--preset-file",
-        action="append",
-        default=[],
-        help="load presets from the given file",
-        metavar="PATH",
-        dest="preset_file_names"
-    )
-    preset_group.add_argument(
-        "--preset",
-        help="use the given option preset",
-        metavar="NAME"
-    )
-    preset_group.add_argument(
-        "--show-presets",
-        action="store_true",
-        help="list all presets and exit"
-    )
-    preset_group.add_argument(
-        "--expand-build-script-invocation",
-        action="store_true",
-        help="print the build-script invocation made by the preset, but don't "
-             "run it"
-    )
-
-    # --------------------------------------------------------- #
-    # Common build options
-
-    defaults_data = _get_defaults()
-
-    parser.add_argument(
-        "--ode-version",
-        default=defaults_data["ode"]["version"],
-        help="set the version of {}".format(ODE_NAME)
-    )
-    parser.add_argument(
-        "--anthem-version",
-        default=defaults_data["anthem"]["version"],
-        help="set the version of {}".format(ANTHEM_NAME)
-    )
-
+def _configure_compose_args(parser):
+    """
+    Adds the options common to configure and compose parsers to
+    the given parser.
+    """
     # --------------------------------------------------------- #
     # TODO Build target options
 
@@ -136,10 +86,95 @@ def create_argument_parser():
         default=host_target(),
         help="set the main target for the build"
     )
-    target_group.add_argument(
-        "--cross-compile-hosts",
+    # target_group.add_argument(
+    #     "--cross-compile-hosts",
+    #     default=[],
+    #     help="cross-compile the project for the given targets"
+    # )
+
+    return parser
+
+
+def create_argument_parser():
+    """Creates the argument parser of the program."""
+    parser = argparse.ArgumentParser(
+        description=_DESCRIPTION,
+        epilog=_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    # The common arguments are added to the base parser so the
+    # normal help command shows them
+    parser = _common_args(parser)
+
+    # --------------------------------------------------------- #
+    # Sub-commands
+
+    subparsers = parser.add_subparsers(dest="composer_mode")
+
+    preset = _common_args(subparsers.add_parser("preset"))
+    configure = _configure_compose_args(_common_args(
+        subparsers.add_parser("configure")
+    ))
+    compose = _configure_compose_args(_common_args(
+        subparsers.add_parser("compose")
+    ))
+
+    # --------------------------------------------------------- #
+    # Preset: Positional arguments
+
+    preset.add_argument(
+        "preset_run_mode",
+        choices=["configure", "compose"],
+        help="run preset invocation in the given mode"
+    )
+
+    # --------------------------------------------------------- #
+    # Preset: Preset options
+
+    preset_group = preset.add_argument_group("Preset options")
+
+    preset_group.add_argument(
+        "--file",
+        action="append",
         default=[],
-        help="cross-compile the project for the given targets"
+        help="load presets from the given file",
+        metavar="PATH",
+        dest="preset_file_names"
+    )
+    preset_group.add_argument(
+        "--name",
+        help="use the given option preset",
+        metavar="NAME",
+        dest="preset"
+    )
+    preset_group.add_argument(
+        "--show",
+        action="store_true",
+        help="list all presets and exit",
+        dest="show_presets"
+    )
+    preset_group.add_argument(
+        "--expand-build-script-invocation",
+        action="store_true",
+        help="print the build-script invocation made by the preset, but don't "
+             "run it"
+    )
+
+    # --------------------------------------------------------- #
+    # Compose: Common build options
+
+    defaults_data = _get_defaults()
+
+    compose.add_argument(
+        "--ode-version",
+        default=defaults_data["ode"]["version"],
+        help="set the version of {}".format(ODE_NAME)
+    )
+    compose.add_argument(
+        "--anthem-version",
+        default=defaults_data["anthem"]["version"],
+        help="set the version of {}".format(ANTHEM_NAME)
     )
 
     return parser
