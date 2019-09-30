@@ -27,13 +27,13 @@ def set_up():
 
     # Get the saved toolchain
     toolchain_data = None
-    toolchain_file = target_toolchain_file(config.ARGS.host_toolchain)
+    toolchain_file = target_toolchain_file(config.ARGS.host_target)
 
     if os.path.exists(toolchain_file):
         with open(toolchain_file) as json_file:
             toolchain_data = json.load(json_file)
 
     config.TOOLCHAIN = host_toolchain(
-        config.ARGS.host_toolchain,
+        config.ARGS.host_target,
         toolchain_data
     )
