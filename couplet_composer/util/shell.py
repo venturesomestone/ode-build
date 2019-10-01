@@ -37,17 +37,11 @@ def quote_command(args):
 
 
 def _coerce_dry_run(dry_run_override):
-    if dry_run_override is None:
-        return DRY_RUN
-    else:
-        return dry_run_override
+    return DRY_RUN if dry_run_override is None else dry_run_override
 
 
 def _coerce_echo(echo_override):
-    if echo_override is None:
-        return ECHO
-    else:
-        return echo_override
+    return ECHO if echo_override is None else echo_override
 
 
 def _echo_command(dry_run, command, env=None, prompt="+ "):

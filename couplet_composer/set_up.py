@@ -33,7 +33,4 @@ def set_up():
         with open(toolchain_file) as json_file:
             toolchain_data = json.load(json_file)
 
-    config.TOOLCHAIN = host_toolchain(
-        config.ARGS.host_target,
-        toolchain_data
-    )
+    config.TOOLCHAIN = host_toolchain(toolchain_data)

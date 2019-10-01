@@ -45,7 +45,7 @@ def to_date_string(s):
 
     s -- time in seconds
     """
-    (days, hours, minutes, seconds) = to_days(s)
+    days, hours, minutes, seconds = to_days(s)
 
     if days == 1:
         days_str = "1 day"
@@ -68,4 +68,5 @@ def to_date_string(s):
         seconds_str = "{} seconds".format(seconds)
 
     return "{}, {}, {}, and {}".format(
-        days_str, hours_str, minutes_str, seconds_str)
+        days_str, hours_str, minutes_str, seconds_str
+    )

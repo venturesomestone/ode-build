@@ -22,8 +22,6 @@ from .variables import ODE_BUILD_ROOT
 
 from ..util import xcrun
 
-from ..util.mapping import Mapping
-
 from ..util.which import where, which
 
 from .. import config
@@ -40,6 +38,7 @@ def target_toolchain_file(target):
     return os.path.join(ODE_BUILD_ROOT, "toolchain-{}".format(target))
 
 
+# TODO This function essentially does nothing
 def write_toolchain(toolchain, target):
     """
     Writes the toolchain to a JSON to be read later by the build.
@@ -51,6 +50,7 @@ def write_toolchain(toolchain, target):
     return ret
 
 
+# TODO This function essentially does nothing
 def read_toolchain(target, json):
     """Reads the toolchain from a JSON data."""
     toolchain = dict()
@@ -59,33 +59,23 @@ def read_toolchain(target, json):
     return toolchain
 
 
-def _register_tools():
-    tools = Mapping()
+def _register_tool_names():
+    """Registers the names for the tools for the search."""
     sys = platform.system()
-    # if args.search_cc is not None:
-    #     tools.cc = args.search_cc
-    # else:
-    #     tools.cc = "clang-cl" if sys == "Windows" else "clang"
-    tools.cc = "clang-cl" if sys == "Windows" else "clang"
-    # if args.search_cxx is not None:
-    #     tools.cxx = args.search_cxx
-    # else:
-    #     tools.cxx = "clang-cl" if sys == "Windows" else "clang++"
-    tools.cxx = "clang-cl" if sys == "Windows" else "clang++"
-    tools.msbuild = "msbuild"
-    tools.ninja = "ninja"
-    tools.cmake = "cmake"
-    tools.git = "git"
-    tools.make = "make"
-    # TODO
-    # if config.ARGS.xvfb:
-    #     tools.xvfb_run = "xvfb-run"
-    return tools
+    return {
+        "cc": "clang-cl" if sys == "Windows" else "clang",
+        "cxx": "clang-cl" if sys == "Windows" else "clang++",
+        "msbuild": "msbuild",
+        "ninja": "ninja",
+        "cmake": "cmake",
+        "git": "git",
+        "make": "make"
+    }
 
 
 def _find_tools(tools, target, json, func):
     """Finds the executables of the given tools."""
-    tool_mapping = Mapping()
+    tool_dict = {}
     for key, name in tools.items():
         logging.debug("Looking for %s", name)
         found = func(cmd=name)
@@ -97,11 +87,11 @@ def _find_tools(tools, target, json, func):
             found = json[target][key]
         if found is None:
             logging.debug("%s wasn't found", key)
-            tool_mapping[key] = None
+            tool_dict[key] = None
         else:
             logging.debug("Found %s", found)
-            tool_mapping[key] = found
-    return tool_mapping
+            tool_dict[key] = found
+    return tool_dict
 
 
 def _mac_os(tools, target, json):
@@ -143,20 +133,21 @@ def _windows(tools, target, json):
     return _find_tools(tools, target, json, _find)
 
 
-def host_toolchain(target, json):
+def host_toolchain(json):
     """Makes the toolchain for the current host platform."""
-    tools = _register_tools()
+    tool_names = _register_tool_names()
     sys = platform.system()
+    target = config.ARGS.host_target
     if sys == "Darwin":
-        return _mac_os(tools, target, json)
+        return _mac_os(tool_names, target, json)
     elif sys == "Linux":
-        return _linux(tools, target, json)
+        return _linux(tool_names, target, json)
     elif sys == "FreeBSD":
-        return _free_bsd(tools, target, json)
+        return _free_bsd(tool_names, target, json)
     elif sys.startswith("CYGWIN"):
-        return _cygwin(tools, target, json)
+        return _cygwin(tool_names, target, json)
     elif sys == "Windows":
-        return _windows(tools, target, json)
+        return _windows(tool_names, target, json)
     raise NotImplementedError(
         "The platform '{}' does not have a defined toolchain".format(sys)
     )

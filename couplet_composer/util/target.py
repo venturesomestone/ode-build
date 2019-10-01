@@ -17,20 +17,17 @@ should be built for.
 
 import platform
 
-from .mapping import Mapping
-
 
 def _create_target(system, arch):
     """
     Creates a dictionary representation of a target that Obliging
     Ode can run on.
     """
-    result = Mapping(
-        platform=system,
-        arch=arch,
-        name="{}-{}".format(system.name, arch)
-    )
-    return result
+    return {
+        "platform": system,
+        "arch": arch,
+        "name": "{}-{}".format(system.name, arch)
+    }
 
 
 def _create_platform(name, system, archs):
@@ -38,10 +35,10 @@ def _create_platform(name, system, archs):
     Creates a dictionary representation of a platform that
     Obliging Ode can run on.
     """
-    result = Mapping(name=name, system=system)
+    result = {"name": name, "system": system}
     result["targets"] = [_create_target(result, arch) for arch in archs]
-    for target in result.targets:
-        result[target.arch] = target
+    for target in result["targets"]:
+        result[target["arch"]] = target
     return result
 
 
@@ -88,7 +85,7 @@ def host_target():
         archs=["x86_64", "AMD64"]
     )
     known_platforms = [macos, linux, freebsd, cygwin, windows]
-    found_platform = [p for p in known_platforms if p.system == system]
+    found_platform = [p for p in known_platforms if p["system"] == system]
     if found_platform:
         found_target = [t for t in found_platform[0].targets
                         if t.arch == machine or _filter_armv(t)]
