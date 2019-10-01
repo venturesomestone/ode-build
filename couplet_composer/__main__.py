@@ -110,7 +110,7 @@ def _run_configure():
     development and build environment.
     """
     set_up.set_up()
-    clone.download_dependencies()
+    clone.clone_dependencies()
 
 
 def _run_compose():

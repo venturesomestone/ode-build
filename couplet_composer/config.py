@@ -19,3 +19,7 @@ ARGS = None
 
 # The toolchain object of the run.
 TOOLCHAIN = None
+
+# The tool dependencies of the program for downloading and
+# running.
+TOOLS = None

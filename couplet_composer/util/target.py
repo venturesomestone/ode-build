@@ -18,23 +18,18 @@ should be built for.
 import platform
 
 
-def _create_target(system, arch):
-    """
-    Creates a dictionary representation of a target that Obliging
-    Ode can run on.
-    """
-    return {
-        "platform": system,
-        "arch": arch,
-        "name": "{}-{}".format(system.name, arch)
-    }
-
-
 def _create_platform(name, system, archs):
     """
     Creates a dictionary representation of a platform that
     Obliging Ode can run on.
     """
+    def _create_target(system, arch):
+        return {
+            "platform": system,
+            "arch": arch,
+            "name": "{}-{}".format(system["name"], arch)
+        }
+
     result = {"name": name, "system": system}
     result["targets"] = [_create_target(result, arch) for arch in archs]
     for target in result["targets"]:
@@ -87,8 +82,8 @@ def host_target():
     known_platforms = [macos, linux, freebsd, cygwin, windows]
     found_platform = [p for p in known_platforms if p["system"] == system]
     if found_platform:
-        found_target = [t for t in found_platform[0].targets
-                        if t.arch == machine or _filter_armv(t)]
+        found_target = [t for t in found_platform[0]["targets"]
+                        if t["arch"] == machine or _filter_armv(t)]
         if found_target:
             return found_target[0]
     raise NotImplementedError(

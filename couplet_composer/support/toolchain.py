@@ -96,6 +96,7 @@ def _find_tools(tools, target, json, func):
 
 def _mac_os(tools, target, json):
     """Finds the tools in the toolchain on macOS."""
+    logging.debug("Creating toolchain for Darwin")
     # NOTE: xcrun searches from developer tools directory *and* from PATH.
     # Relatively slow, but 'which' is not necessary for Darwin.
     return _find_tools(tools, target, json, partial(xcrun.find))
@@ -105,26 +106,31 @@ def _unix(tools, target, json):
     """
     Finds the tools in the toolchain on a generic Unix system.
     """
+    logging.debug("Creating toolchain for Unix-like system")
     return _find_tools(tools, target, json, which)
 
 
 def _linux(tools, target, json):
     """Finds the tools in the toolchain on Linux."""
+    logging.debug("Creating toolchain for Linux")
     return _unix(tools, target, json)
 
 
 def _free_bsd(tools, target, json):
     """Finds the tools in the toolchain on FreeBSD."""
+    logging.debug("Creating toolchain for FreeBSD")
     return _unix(tools, target, json)
 
 
 def _cygwin(tools, target, json):
     """Finds the tools in the toolchain on Cygwin."""
+    logging.debug("Creating toolchain for Cygwin")
     return _unix(tools, target, json)
 
 
 def _windows(tools, target, json):
     """Finds the tools in the toolchain on Windows."""
+    logging.debug("Creating toolchain for Windows")
     def _find(cmd):
         found = where(cmd)
         if found is not None:

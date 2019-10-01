@@ -23,6 +23,10 @@ from .values import DEFAULTS_FILE_PATH
 # value it is expected to have.
 HOME = os.environ.get("HOME", "/")
 
+# The path the directory in which the installed build script
+# actually is.
+COMPOSER_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 def _get_default_source_root():
     # The script assumes the build is run with source root as the

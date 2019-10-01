@@ -21,22 +21,45 @@ from .support.variables import DOWNLOAD_STATUS_FILE
 from . import config
 
 
-def download_dependencies():
+def _clone_tools():
+    # The download of some dependencies is skipped if they're not
+    # needed.
+    def _skip_repositories():
+        logging.debug("The toolchain in clone is %s", config.TOOLCHAIN)
+        skip_list = []
+        if config.TOOLCHAIN["cmake"] is not None:
+            skip_list += ["cmake"]
+        if config.TOOLCHAIN["ninja"] is not None:
+            skip_list += ["ninja"]
+        return skip_list
+
+    skip_repository_list = _skip_repositories()
+
+    logging.debug(
+        "The cloning of the following repositories is to be skipped: %s",
+        skip_repository_list
+    )
+
+    for k, v in config.TOOLS.items():
+        logging.debug("Checking if %s needs to be cloned", v["name"])
+
+        if k in skip_repository_list:
+            logging.debug(
+                "%s is in the list of the repositories to be skipped, "
+                "continuing",
+                v["name"]
+            )
+            continue
+
+
+def clone_dependencies():
     """Downloads the dependecies of the project."""
-    logging.info("Downloading the dependencies")
+    logging.debug("Cloning the dependencies")
     if os.path.isfile(DOWNLOAD_STATUS_FILE):
         with open(DOWNLOAD_STATUS_FILE) as json_file:
             versions = json.load(json_file)
     else:
         versions = {}
 
-    # The download of some dependencies is skipped if they're not
-    # needed.
-    def _skip_repositories():
-        logging.debug("The toolchain in clone is %s", config.TOOLCHAIN)
-        skip_list = []
-        if config.TOOLCHAIN.cmake is not None:
-            skip_list += ["cmake"]
-        if config.TOOLCHAIN.ninja is not None:
-            skip_list += ["ninja"]
-        return skip_list
+    logging.info("Cloning the tools needed to build the project")
+    _clone_tools()

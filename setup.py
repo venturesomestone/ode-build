@@ -109,6 +109,7 @@ setup(
         "console_scripts": ["composer = couplet_composer.__main__:run"]
     },
     install_requires=REQUIRED,
+    package_data={"": ["*.json"]},
     include_package_data=True,
     license="MIT",
     classifiers=[
