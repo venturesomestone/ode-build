@@ -1,6 +1,10 @@
 {
   "cmake": {
-    "version": "2.8.12",
+    "version": {
+      "major": 2,
+      "minor": 8,
+      "patch": 12
+    },
     "name": "CMake"
   },
   "ninja": {

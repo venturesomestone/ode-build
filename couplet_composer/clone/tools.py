@@ -36,13 +36,15 @@ def clone_tools():
         skip_repository_list
     )
 
-    for k, v in config.TOOLS.items():
-        logging.debug("Checking if %s needs to be cloned", v["name"])
+    for tool_key, tool_data in config.TOOLS.items():
+        tool_name = tool_data["name"]
 
-        if k in skip_repository_list:
+        logging.debug("Checking if %s needs to be cloned", tool_name)
+
+        if tool_key in skip_repository_list:
             logging.debug(
                 "%s is in the list of the repositories to be skipped, "
                 "continuing",
-                v["name"]
+                tool_name
             )
             continue

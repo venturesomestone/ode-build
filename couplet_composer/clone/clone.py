@@ -16,11 +16,11 @@ import json
 import logging
 import os
 
-from .clone.tools import clone_tools
+from ..support.variables import DOWNLOAD_STATUS_FILE
 
-from .support.variables import DOWNLOAD_STATUS_FILE
+from .. import config
 
-from . import config
+from .tools import clone_tools
 
 
 def clone_dependencies():
