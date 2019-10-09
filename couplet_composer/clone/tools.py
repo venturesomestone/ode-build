@@ -17,19 +17,20 @@ import logging
 from .. import config
 
 
-def clone_tools():
-    # The download of some dependencies is skipped if they're not
-    # needed.
-    def _skip_repositories():
-        logging.debug("The toolchain in clone is %s", config.TOOLCHAIN)
-        skip_list = []
-        if config.TOOLCHAIN["cmake"] is not None:
-            skip_list += ["cmake"]
-        if config.TOOLCHAIN["ninja"] is not None:
-            skip_list += ["ninja"]
-        return skip_list
+def _resolve_repositories_for_skipping():
+    logging.debug("The toolchain in clone is %s", config.TOOLCHAIN)
+    skip_list = []
+    if config.TOOLCHAIN["cmake"] is not None:
+        skip_list += ["cmake"]
+    if config.TOOLCHAIN["ninja"] is not None:
+        skip_list += ["ninja"]
+    return skip_list
 
-    skip_repository_list = _skip_repositories()
+
+def clone_tools():
+    # The downloads of some dependencies are skipped if they're
+    # not needed.
+    skip_repository_list = _resolve_repositories_for_skipping()
 
     logging.debug(
         "The cloning of the following repositories is to be skipped: %s",
