@@ -18,6 +18,7 @@ import logging
 import os
 import pipes
 import platform
+import shutil
 import subprocess
 import sys
 
@@ -141,6 +142,32 @@ def makedirs(path, dry_run=None, echo=None):
         return
     if not os.path.isdir(path):
         os.makedirs(path)
+
+
+def rmtree(path, dry_run=None, echo=None):
+    """Removes a directory and its contents."""
+    dry_run = _coerce_dry_run(dry_run)
+    echo = _coerce_echo(echo)
+    if dry_run or echo:
+        _echo_command(dry_run, ["rm", "-rf", path])
+    if dry_run:
+        return
+    if os.path.exists(path):
+        shutil.rmtree(path, ignore_errors=True)
+
+
+def rm(file, dry_run=None, echo=None):
+    """Removes a file."""
+    dry_run = _coerce_dry_run(dry_run)
+    echo = _coerce_echo(echo)
+    if dry_run or echo:
+        _echo_command(dry_run, ["rm", "-f", file])
+    if dry_run:
+        return
+    if os.path.islink(file):
+        os.unlink(file)
+    if os.path.exists(file):
+        os.remove(file)
 
 
 def caffeinate(command, env=None, dry_run=False, echo=None):

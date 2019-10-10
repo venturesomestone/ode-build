@@ -15,4 +15,11 @@ from .product import Product
 
 class CMake(Product):
     """The type that represent the CMake product."""
-    pass
+    def __init__(self, version_data):
+        """Constructs the CMake product."""
+        super(CMake, self).__init__("{}.{}.{}".format(
+            version_data["major"],
+            version_data["minor"],
+            version_data["patch"]
+        ))
+        self.version_data = version_data

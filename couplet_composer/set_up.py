@@ -25,7 +25,9 @@ from .support.toolchain import host_toolchain, target_toolchain_file
 
 from .support.values import PACKAGE_NAME
 
-from .support.variables import COMPOSER_ROOT
+from .support.variables import COMPOSER_ROOT, DOWNLOAD_STATUS_FILE
+
+from .util import shell
 
 from . import config
 
@@ -35,10 +37,24 @@ def _set_up_tool_dependencies(json_data):
 
 
 def _create_products():
+    config.PRODUCTS = {}
+
     for product_key, product_data in config.TOOLS.items():
-        product_module = "{}.products.{}".format(PACKAGE_NAME, product_key)
-        importlib.import_module(product_module)
-        logging.debug("Imported module %s", product_module)
+        logging.debug(
+            "Creating the product for %s with data %s",
+            product_key,
+            product_data
+        )
+        product_module_name = "{}.products.{}".format(
+            PACKAGE_NAME,
+            product_key
+        )
+        product_module = importlib.import_module(product_module_name)
+        logging.debug("Imported module %s", product_module_name)
+        config.PRODUCTS[product_key] = getattr(
+            product_module,
+            product_data["class"]
+        )(product_data["version"])
 
 
 def _count_down_clean_delay():
@@ -59,6 +75,9 @@ def _clean():
     This function needs the dependency and product data to
     properly clean up the directories.
     """
+    shell.rm(DOWNLOAD_STATUS_FILE)
+    for product in config.PRODUCTS.values():
+        product.destroy_download_dir()
 
 
 def set_up():

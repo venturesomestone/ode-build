@@ -5,10 +5,12 @@
       "minor": 8,
       "patch": 12
     },
-    "name": "CMake"
+    "name": "CMake",
+    "class": "CMake"
   },
   "ninja": {
     "version": "1.9.0",
-    "name": "Ninja"
+    "name": "Ninja",
+    "class": "Ninja"
   }
 }

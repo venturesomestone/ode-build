@@ -10,6 +10,7 @@
 #
 # ------------------------------------------------------------- #
 
+import logging
 import os
 
 from ..support.variables import DOWNLOAD_DIR
@@ -22,6 +23,15 @@ class Product(object):
     The base type of types that represent the products that are
     required or built by the composer.
     """
+    def __init__(self, version):
+        """Constructs the product."""
+        self.version = version
+        logging.debug(
+            "Created the product %s with version %s",
+            self.get_product_key(),
+            self.version
+        )
+
     def resolve_download_root(self):
         """
         Resolves the directory where all the sources of the
@@ -29,12 +39,26 @@ class Product(object):
         """
         return os.path.join(DOWNLOAD_DIR, self.get_product_key())
 
-    def create_download_root(self):
+    def resolve_download_dir(self):
         """
-        Creates the directory where all the sources of the
-        different versions of the product are downloaded to.
+        Resolves the directory where the sources of the current
+        version of the product are downloaded to.
         """
-        shell.makedirs(self.resolve_download_root())
+        return os.path.join(self.resolve_download_root(), self.version)
+
+    def create_download_dir(self):
+        """
+        Creates the directory where the sources of the current
+        version of the product are downloaded to.
+        """
+        shell.makedirs(self.resolve_download_dir())
+
+    def destroy_download_dir(self):
+        """
+        Destroys the directory where the sources of the current
+        version of the product are downloaded to.
+        """
+        shell.rmtree(self.resolve_download_dir())
 
     @classmethod
     def get_product_key(cls):
