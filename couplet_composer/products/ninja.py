@@ -10,19 +10,9 @@
 #
 # ------------------------------------------------------------- #
 
-"""
-This module contains the global variables of the program.
-"""
+from .product import Product
 
-# The parsed command line arguments of the run.
-ARGS = None
 
-# The toolchain object of the run.
-TOOLCHAIN = None
-
-# The tool dependencies of the program for downloading and
-# running.
-TOOLS = None
-
-# The product objects of the current run.
-PRODUCTS = None
+class Ninja(Product):
+    """The type that represent the Ninja product."""
+    pass

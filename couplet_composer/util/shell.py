@@ -129,6 +129,20 @@ def capture(
         )
 
 
+def makedirs(path, dry_run=None, echo=None):
+    """
+    Creates the given directory and the in-between directories.
+    """
+    dry_run = _coerce_dry_run(dry_run)
+    echo = _coerce_echo(echo)
+    if dry_run or echo:
+        _echo_command(dry_run, ["mkdir", "-p", path])
+    if dry_run:
+        return
+    if not os.path.isdir(path):
+        os.makedirs(path)
+
+
 def caffeinate(command, env=None, dry_run=False, echo=None):
     """
     Runs a command during which system sleep is disabled. By
