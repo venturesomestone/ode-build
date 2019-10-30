@@ -19,8 +19,8 @@ def date_difference(first, second):
     """
     Calculate the time between two dates and times in seconds.
 
-    first -- the first datetime
-    second -- the second datetime
+    first       The earlier point in time.
+    second      The later point in time.
     """
     d = second - first
     return d.days * 24 * 3600 + d.seconds
@@ -28,9 +28,9 @@ def date_difference(first, second):
 
 def to_days(s):
     """
-    Converts seconds into days, hours, minutes, seconds.
+    Converts seconds into days, hours, minutes, and seconds.
 
-    s -- time in seconds
+    s           The time in seconds.
     """
     minutes, seconds = divmod(s, 60)
     hours, minutes = divmod(minutes, 60)
@@ -43,7 +43,7 @@ def to_date_string(s):
     Converts seconds into a string of days, hours, minutes, and
     seconds.
 
-    s -- time in seconds
+    s           The time in seconds.
     """
     days, hours, minutes, seconds = to_days(s)
 

@@ -20,44 +20,60 @@ import sys
 
 from datetime import datetime
 
-from .clone import clone
+from .support.environment import is_path_source_root
 
-from .support.presets import get_all_preset_names, get_preset_options
+from .support.mode_names import \
+    get_composing_mode_name, get_configuring_mode_name, get_preset_mode_name
 
-from .support.values import NAME, PRESET_FILE_PATH
-
-from .support.variables import HOME, ODE_REPO_NAME, ODE_SOURCE_ROOT
-
-from .util import shell
+from .support.values import get_project_name
 
 from .util.date import date_difference, to_date_string
 
-from . import args, config, set_up
+from . import args, modes
 
 
-def _parse_arguments_into_namespace():
+def _create_argument_parser():
     """
-    Creates the argument parser for the composer and parses the
-    arguments into a global namespace.
+    Creates the argument parser for the script and returns the
+    namespace containing the parsed arguments. This function
+    isn't pure but depends on the global Python variable
+    containing the command line arguments.
     """
-    argument_parser = args.create_argument_parser()
-    config.ARGS = argument_parser.parse_args()
-    return argument_parser
+    return args.create_argument_parser()
 
 
-def _set_logging_level():
+def _parse_arguments(parser):
     """
-    Sets the logging level according to the global arguments
-    namespace.
+    Creates the argument values for the script and returns the
+    namespace containing the parsed arguments. This function
+    isn't pure but depends on the global Python variable
+    containing the command line arguments.
+
+    parser      The argument parser that is used to parse the
+                arguments.
     """
-    if config.ARGS.print_debug:
+    return parser.parse_args()
+
+
+def _set_logging_level(print_debug):
+    """
+    Sets the logging level according to the given parameters.
+    This function isn't pure.
+
+    print_debug     Whether or not the debug-level logging should
+                    be allowed.
+    """
+    if print_debug:
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.INFO)
 
 
 def _check_and_print_python_version():
-    """Checks the current Python version and prints it."""
+    """
+    Checks the current Python version and prints it. This
+    function isn't pure.
+    """
     if sys.version_info.major == 2:
         if sys.version_info.minor < 7:
             logging.critical(
@@ -88,120 +104,66 @@ def _check_and_print_python_version():
         logging.debug("You seem to have an excellent taste!")
 
 
-def _check_source_root():
+def run_script(runner, arguments, source_root):
     """
-    Checks if the global source root variable is set correctly.
+    Runs the script with the given runner and arguments and
+    returns the end code of the program. This function isn't pure
+    as the functions called by it may modify the file system and
+    run other scripts.
+
+    runner          The function that runs the preferred mode of
+                    the script.
+    arguments       The namespace containing the parsed command
+                    line arguments of the script.
+    source_root     Path to the directory that is the root of the
+                    script run.
     """
-    if not ODE_SOURCE_ROOT:
-        logging.critical(
-            "Couldn't work out the source root directory (did you forget to "
-            "set the '$ODE_SOURCE_ROOT' environment variable?)"
-        )
-
-
-def _run_preset_mode():
-    """Runs the composer in the preset mode."""
-    logging.debug("Running %s in preset mode", NAME)
-    logging.debug("Parsing the preset mode")
-
-    if not config.ARGS.preset_file_names:
-        preset_file_names = [
-            os.path.join(HOME, ".anthem-composer-presets"),
-            os.path.join(HOME, ".ode-composer-presets"),
-            os.path.join(ODE_SOURCE_ROOT, ODE_REPO_NAME, PRESET_FILE_PATH)
-        ]
-
-    logging.debug("The preset files are %s", ", ".join(preset_file_names))
-
-    if config.ARGS.show_presets:
-        logging.info("The available presets are:")
-        for name in sorted(
-            get_all_preset_names(preset_file_names),
-            key=str.lower
-        ):
-            print(name)
-        return
-
-    if not config.ARGS.preset:
-        logging.critical("Missing the '--preset' option")
-
-    preset_args = get_preset_options(
-        None,
-        preset_file_names,
-        config.ARGS.preset
-    )
-
-    build_script_call_args = [sys.argv[0]]
-
-    if config.ARGS.preset_run_mode == "configure":
-        build_script_call_args += ["configure"]
-    elif config.ARGS.preset_run_mode == "configure":
-        build_script_call_args += ["compose"]
-
-    if config.ARGS.dry_run:
-        build_script_call_args += ["--dry-run"]
-    # TODO Contemplate whether this should be able to be set from
-    # preset mode
-    if config.ARGS.jobs:
-        build_script_call_args += ["--jobs", str(config.ARGS.jobs)]
-    if config.ARGS.clean:
-        build_script_call_args += ["--clean"]
-    if config.ARGS.print_debug:
-        build_script_call_args += ["--print-debug"]
-
-    build_script_call_args += preset_args
-
-    logging.info(
-        "Using preset '%s', which expands to \n\n%s\n",
-        config.ARGS.preset,
-        shell.quote_command(build_script_call_args)
-    )
-    logging.debug(
-        "The script will have '%s' as the Python executable\n",
-        sys.executable
-    )
-
-    if config.ARGS.expand_build_script_invocation:
-        logging.debug("The build script invocation is printed")
-        return 0
-
-    command_to_run = [sys.executable] + build_script_call_args
-
-    shell.caffeinate(command_to_run)
-
-
-def _run_configuring_mode():
-    """
-    Runs the composer in configuration mode and sets up the
-    development and build environment.
-    """
-    set_up.set_up()
-    clone.clone_dependencies()
-    # TODO Write the JSON file for toolchain here.
-
-
-def _run_composing_mode():
-    """Runs the composer in build mode."""
+    return runner(arguments=arguments, source_root=source_root)
 
 
 def _main():
-    """Enters the program and runs it."""
-    argument_parser = _parse_arguments_into_namespace()
+    """
+    Enters the program and runs it. This function isn't pure.
+    """
+    argument_parser = _create_argument_parser()
+    arguments = _parse_arguments(argument_parser)
 
     # The logging level is the first thing to be set so it can be
     # utilized throughout the rest of the run.
-    _set_logging_level()
+    _set_logging_level(print_debug=arguments.print_debug)
+
     _check_and_print_python_version()
-    _check_source_root()
 
-    if config.ARGS.composer_mode == "preset":
-        return _run_preset_mode()
-    elif config.ARGS.composer_mode == "configure":
-        return _run_configuring_mode()
-    elif config.ARGS.composer_mode == "compose":
-        return _run_composing_mode()
+    source_root = os.getenv("ODE_SOURCE_ROOT", os.getcwd())
 
-    argument_parser.error("{} wasn't in valid mode".format(NAME))
+    if not is_path_source_root(source_root):
+        logging.critical(
+            "The source root directory is invalid: %s",
+            source_root
+        )
+
+    def _resolve_mode(mode):
+        if mode == get_preset_mode_name():
+            return modes.run_in_preset_mode
+        elif mode == get_configuring_mode_name():
+            return modes.run_in_configuring_mode
+        elif mode == get_composing_mode_name():
+            return modes.run_in_composing_mode
+        else:
+            def _(_1, _2):
+                argument_parser.error("{} wasn't in valid mode".format(
+                    get_project_name()
+                ))
+                return 0
+            return _
+
+    mode_runner = _resolve_mode(mode=arguments.composer_mode)
+
+    return run_script(
+        runner=mode_runner,
+        arguments=arguments,
+        source_root=source_root
+    )
 
 
 def run():
@@ -209,5 +171,6 @@ def run():
     sys.exit(_main())
 
 
+# The script can also be invoked by calling this script
 if __name__ == "__main__":
     sys.exit(_main())

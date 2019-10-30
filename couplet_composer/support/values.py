@@ -18,8 +18,15 @@ build.
 import os
 
 
-# The name of the project.
-NAME = "Couplet Composer"
+def get_project_name():
+    """Gives the full name of the project."""
+    return "Couplet Composer"
+
+
+def get_ode_repository_name():
+    """Gives the name of the Ode repository directory."""
+    return "unsung-anthem"
+
 
 # The name of the package.
 PACKAGE_NAME = "couplet_composer"
@@ -28,6 +35,10 @@ PACKAGE_NAME = "couplet_composer"
 # the Obliging Ode repository.
 DEFAULTS_FILE_PATH = os.path.join("util", "composer", "defaults.json")
 
-# The path to the default file containing the presets, relative
-# to the Obliging Ode repository.
-PRESET_FILE_PATH = os.path.join("util", "composer-presets.ini")
+
+def get_preset_file_path():
+    """
+    Gives the path to the default build preset file relative to
+    the Ode repository.
+    """
+    return os.path.join("util", "composer-presets.ini")

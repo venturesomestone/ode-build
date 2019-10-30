@@ -11,7 +11,11 @@
 # ------------------------------------------------------------- #
 
 
-"""This support module sets essential variables for the build."""
+"""
+This support module sets essential variables for the build.
+
+This module is deprecated.
+"""
 
 import json
 import os

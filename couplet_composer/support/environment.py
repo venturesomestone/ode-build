@@ -10,19 +10,18 @@
 #
 # ------------------------------------------------------------- #
 
-"""
-This module contains the global variables of the program.
-"""
+"""This support module resolves the build environment values."""
 
-# The parsed command line arguments of the run.
-ARGS = None
+import os
 
-# The toolchain object of the run.
-TOOLCHAIN = None
 
-# The tool dependencies of the program for downloading and
-# running.
-TOOLS = None
+def is_path_source_root(path):
+    """
+    Checks if the given path is valid source root for the script.
 
-# The product objects of the current run.
-PRODUCTS = None
+    path        The path that is to be checked.
+    """
+    # The checkout has to have a CMake Listfile.
+    return os.path.exists(
+        os.path.join(path, "unsung-anthem", "CMakeLists.txt")
+    )
