@@ -10,7 +10,18 @@
 #
 # ------------------------------------------------------------- #
 
-"""The support module containing shell helpers."""
+"""
+This utility module contains several shell helpers.
+
+The functions in the module are intentionally and especially
+internally not functional-like as the shell functionalities do
+inherently not satisfy the requirements of functional-like code.
+The functions that do shell calls can also end the execution of
+the script on failure.
+
+Nevertheless, the basic principles are preserved, i.e. functions
+don't modify their parameters.
+"""
 
 from __future__ import print_function
 
@@ -22,10 +33,7 @@ import shutil
 import subprocess
 import sys
 
-
-DEVNULL = getattr(subprocess, "DEVNULL", subprocess.PIPE)
-DRY_RUN = False
-ECHO = False
+from ..support.platform_names import get_darwin_system_name
 
 
 def _quote(arg):
@@ -37,21 +45,17 @@ def quote_command(args):
     return " ".join([_quote(a) for a in args])
 
 
-def _coerce_dry_run(dry_run_override):
-    return DRY_RUN if dry_run_override is None else dry_run_override
-
-
-def _coerce_echo(echo_override):
-    return ECHO if echo_override is None else echo_override
-
-
 def _echo_command(dry_run, command, env=None, prompt="+ "):
+    """
+    Echoes a command to command line. Thus this function isn't
+    pure.
+    """
     output = []
     if env is not None:
-        output += ["env"] + [
+        output.extend(["env"] + [
             _quote("%s=%s" % (k, v)) for (k, v) in sorted(env.items())
-        ]
-    output += [_quote(arg) for arg in command]
+        ])
+    output.extend([_quote(arg) for arg in command])
     file = sys.stderr
     if dry_run:
         file = sys.stdout
@@ -61,8 +65,6 @@ def _echo_command(dry_run, command, env=None, prompt="+ "):
 
 def call(command, stderr=None, env=None, dry_run=None, echo=None):
     """Runs the given command."""
-    dry_run = _coerce_dry_run(dry_run)
-    echo = _coerce_echo(echo)
     if dry_run or echo:
         _echo_command(dry_run, command, env=env)
     if dry_run:
@@ -75,7 +77,7 @@ def call(command, stderr=None, env=None, dry_run=None, echo=None):
         subprocess.check_call(command, env=_env, stderr=stderr)
     except subprocess.CalledProcessError as e:
         logging.critical(
-            "Command ended with the status %d, stopping",
+            "Command ended with status %d, stopping",
             e.returncode
         )
     except OSError as e:
@@ -95,9 +97,7 @@ def capture(
     optional=False,
     allow_non_zero_exit=False
 ):
-    """Runs the given command and return its output."""
-    dry_run = _coerce_dry_run(dry_run)
-    echo = _coerce_echo(echo)
+    """Runs the given command and returns its output."""
     if dry_run or echo:
         _echo_command(dry_run, command, env=env)
     if dry_run:
@@ -117,7 +117,7 @@ def capture(
         if optional:
             return None
         logging.critical(
-            "Command ended with the status %d, stopping",
+            "Command ended with status %d, stopping",
             e.returncode
         )
     except OSError as e:
@@ -134,8 +134,6 @@ def makedirs(path, dry_run=None, echo=None):
     """
     Creates the given directory and the in-between directories.
     """
-    dry_run = _coerce_dry_run(dry_run)
-    echo = _coerce_echo(echo)
     if dry_run or echo:
         _echo_command(dry_run, ["mkdir", "-p", path])
     if dry_run:
@@ -146,20 +144,17 @@ def makedirs(path, dry_run=None, echo=None):
 
 def rmtree(path, dry_run=None, echo=None):
     """Removes a directory and its contents."""
-    dry_run = _coerce_dry_run(dry_run)
-    echo = _coerce_echo(echo)
     if dry_run or echo:
         _echo_command(dry_run, ["rm", "-rf", path])
     if dry_run:
         return
     if os.path.exists(path):
+        # TODO Find out if ignore_errors is required
         shutil.rmtree(path, ignore_errors=True)
 
 
 def rm(file, dry_run=None, echo=None):
     """Removes a file."""
-    dry_run = _coerce_dry_run(dry_run)
-    echo = _coerce_echo(echo)
     if dry_run or echo:
         _echo_command(dry_run, ["rm", "-f", file])
     if dry_run:
@@ -170,13 +165,10 @@ def rm(file, dry_run=None, echo=None):
         os.remove(file)
 
 
-def caffeinate(command, env=None, dry_run=False, echo=None):
-    """
-    Runs a command during which system sleep is disabled. By
-    default, this ignores the 'shell.dry_run' flag.
-    """
+def caffeinate(command, env=None, dry_run=None, echo=None):
+    """Runs a command during which system sleep is disabled."""
+    command_to_run = list(command)
     # Disable system sleep, if possible.
-    if platform.system() == "Darwin":
-        # Don't mutate the caller's copy of the arguments.
-        command = ["caffeinate"] + list(command)
-    call(command, env=env, dry_run=dry_run, echo=echo)
+    if platform.system() == get_darwin_system_name():
+        command_to_run = ["caffeinate"] + list(command)
+    call(command_to_run, env=env, dry_run=dry_run, echo=echo)
