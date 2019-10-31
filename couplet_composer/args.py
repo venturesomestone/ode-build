@@ -20,6 +20,8 @@ from .support.project_values import \
 
 from .util.cache import cached
 
+from .util.target import resolve_host_target
+
 
 def _add_common_arguments(parser):
     """
@@ -78,11 +80,13 @@ def _add_common_build_arguments(parser):
         "built binaries yet"
     )
 
-    # target_group.add_argument(
-    #     "--host-target",
-    #     default=host_target(),
-    #     help="set the main target for the build"
-    # )
+    target_group.add_argument(
+        "--host-target",
+        default=resolve_host_target(),
+        help="set the main target for the build (default: {})".format(
+            resolve_host_target()
+        )
+    )
     # target_group.add_argument(
     #     "--cross-compile-hosts",
     #     default=[],
