@@ -12,6 +12,22 @@
 
 """The version data of Couplet Composer."""
 
-VERSION = (0, 4, 0)
 
-__version__ = ".".join(map(str, VERSION)) + "-dev"
+def get_release_version():
+    """
+    Gives the current release version data of Couplet Composer
+    and, thus, returns three values: the major version number,
+    the minor version number, and the patch version number.
+    """
+    return 0, 4, 0
+
+
+def get_version():
+    """
+    Gives a string that represents the current version of Couplet
+    Composer.
+    """
+    return ".".join([str(n) for n in get_release_version()]) + "-dev"
+
+
+__version__ = get_version()
