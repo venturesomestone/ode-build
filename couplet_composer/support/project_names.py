@@ -10,18 +10,14 @@
 #
 # ------------------------------------------------------------- #
 
-"""This support module resolves the build environment values."""
-
-import os
+"""This support module contains various name constants."""
 
 
-def is_path_source_root(path):
-    """
-    Checks if the given path is valid source root for the script.
+def get_project_name():
+    """Gives the full name of the project."""
+    return "Couplet Composer"
 
-    path -- The path that is to be checked.
-    """
-    # The checkout has to have a CMake Listfile.
-    return os.path.exists(
-        os.path.join(path, "unsung-anthem", "CMakeLists.txt")
-    )
+
+def get_ode_repository_name():
+    """Gives the name of the Ode repository directory."""
+    return "unsung-anthem"

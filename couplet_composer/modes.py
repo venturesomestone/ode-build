@@ -20,8 +20,9 @@ import logging
 import os
 import sys
 
-from .support.values import \
-    get_ode_repository_name, get_preset_file_path, get_project_name
+from .support.file_paths import get_preset_file_path
+
+from .support.project_names import get_ode_repository_name, get_project_name
 
 from .util import shell
 
@@ -35,10 +36,11 @@ def run_in_preset_mode(arguments, source_root):
     as the functions called by it may modify the file system and
     run other scripts.
 
-    arguments       The namespace containing the parsed command
-                    line arguments of the script.
-    source_root     Path to the directory that is the root of the
-                    script run.
+    arguments -- The namespace containing the parsed command line
+    arguments of the script.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
     """
     logging.debug("Running %s in preset mode", get_project_name())
 
@@ -83,10 +85,11 @@ def run_in_configuring_mode():
     as the functions called by it may modify the file system and
     run other scripts.
 
-    arguments       The namespace containing the parsed command
-                    line arguments of the script.
-    source_root     Path to the directory that is the root of the
-                    script run.
+    arguments -- The namespace containing the parsed command line
+    arguments of the script.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
     """
     # set_up.set_up()
     # clone.clone_dependencies()
@@ -99,8 +102,9 @@ def run_in_composing_mode():
     the functions called by it may modify the file system and run
     other scripts.
 
-    arguments       The namespace containing the parsed command
-                    line arguments of the script.
-    source_root     Path to the directory that is the root of the
-                    script run.
+    arguments -- The namespace containing the parsed command line
+    arguments of the script.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
     """

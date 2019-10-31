@@ -12,6 +12,5 @@
 
 """
 The utilities are helpful modules that are required to run
-Couplet Composer. However, they must not depend on Couplet
-Composer.
+Couplet Composer.
 """

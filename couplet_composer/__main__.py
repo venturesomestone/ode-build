@@ -25,7 +25,7 @@ from .support.environment import is_path_source_root
 from .support.mode_names import \
     get_composing_mode_name, get_configuring_mode_name, get_preset_mode_name
 
-from .support.values import get_project_name
+from .support.project_names import get_project_name
 
 from .util.date import date_difference, to_date_string
 
@@ -49,8 +49,8 @@ def _parse_arguments(parser):
     isn't pure but depends on the global Python variable
     containing the command line arguments.
 
-    parser      The argument parser that is used to parse the
-                arguments.
+    parser -- The argument parser that is used to parse the
+    arguments.
     """
     return parser.parse_args()
 
@@ -60,8 +60,8 @@ def _set_logging_level(print_debug):
     Sets the logging level according to the given parameters.
     This function isn't pure.
 
-    print_debug     Whether or not the debug-level logging should
-                    be allowed.
+    print_debug -- Whether or not the debug-level logging should
+    be allowed.
     """
     if print_debug:
         logging.basicConfig(level=logging.DEBUG)
@@ -111,12 +111,14 @@ def run_script(runner, arguments, source_root):
     as the functions called by it may modify the file system and
     run other scripts.
 
-    runner          The function that runs the preferred mode of
-                    the script.
-    arguments       The namespace containing the parsed command
-                    line arguments of the script.
-    source_root     Path to the directory that is the root of the
-                    script run.
+    runner -- The function that runs the preferred mode of the
+    script.
+
+    arguments -- The namespace containing the parsed command line
+    arguments of the script.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
     """
     return runner(arguments=arguments, source_root=source_root)
 

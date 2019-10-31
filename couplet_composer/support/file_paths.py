@@ -10,18 +10,14 @@
 #
 # ------------------------------------------------------------- #
 
-"""This support module resolves the build environment values."""
+"""This support module contains path constants."""
 
 import os
 
 
-def is_path_source_root(path):
+def get_preset_file_path():
     """
-    Checks if the given path is valid source root for the script.
-
-    path -- The path that is to be checked.
+    Gives the path to the default build preset file relative to
+    the Ode repository.
     """
-    # The checkout has to have a CMake Listfile.
-    return os.path.exists(
-        os.path.join(path, "unsung-anthem", "CMakeLists.txt")
-    )
+    return os.path.join("util", "composer-presets.ini")
