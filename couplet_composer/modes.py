@@ -18,13 +18,15 @@ different modes of the script.
 
 import logging
 import os
+import sys
 
 from .support.values import \
-    get_ode_repository_name, \
-    get_preset_file_path, \
-    get_project_name
+    get_ode_repository_name, get_preset_file_path, get_project_name
 
-from .preset_mode import compose_preset_call, show_presets
+from .util import shell
+
+from .preset_mode import \
+    compose_preset_call, print_script_invocation, show_presets
 
 
 def run_in_preset_mode(arguments, source_root):
@@ -59,21 +61,17 @@ def run_in_preset_mode(arguments, source_root):
         file_names=preset_file_names
     )
 
-    logging.info(
-        "Using preset '%s', which expands to \n\n%s\n",
-        arguments.preset,
-        shell.quote_command(build_call)
-    )
-    logging.debug(
-        "The script will have '%s' as the Python executable\n",
-        sys.executable
+    print_script_invocation(
+        build_call=build_call,
+        preset_name=arguments.preset,
+        executable=sys.executable
     )
 
-    if config.ARGS.expand_build_script_invocation:
+    if arguments.expand_script_invocation:
         logging.debug("The build script invocation is printed")
         return 0
 
-    command_to_run = [sys.executable] + build_script_call_args
+    command_to_run = [sys.executable] + build_call
 
     shell.caffeinate(command_to_run)
 
@@ -90,8 +88,8 @@ def run_in_configuring_mode():
     source_root     Path to the directory that is the root of the
                     script run.
     """
-    set_up.set_up()
-    clone.clone_dependencies()
+    # set_up.set_up()
+    # clone.clone_dependencies()
     # TODO Write the JSON file for toolchain here.
 
 

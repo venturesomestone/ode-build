@@ -26,6 +26,8 @@ from .support.presets import get_all_preset_names, get_preset_options
 from .support.mode_names import \
     get_composing_mode_name, get_configuring_mode_name
 
+from .util import shell
+
 
 def show_presets(file_names):
     """
@@ -104,3 +106,28 @@ def compose_preset_call(arguments, file_names):
     build_call.extend(preset_arguments_after_end)
 
     return build_call
+
+
+def print_script_invocation(build_call, preset_name, executable):
+    """
+    Prints the script invocation that is expanded from a preset.
+    This function isn't pure as its purpose is to print the
+    invocation.
+
+    build_call -- The script call that is expanded from the
+    preset.
+
+    preset_name -- Name of the preset that was used.
+
+    executable -- The Python executable that will be used.
+    """
+    logging.info(
+        "Using preset '%s', which expands to \n\n%s\n",
+        preset_name,
+        shell.quote_command(build_call)
+    )
+
+    logging.debug(
+        "The script will use '%s' as the Python executable\n",
+        executable
+    )

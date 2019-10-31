@@ -155,7 +155,7 @@ def create_argument_parser():
         dest="show_presets"
     )
     preset_group.add_argument(
-        "--expand-build-script-invocation",
+        "--expand-script-invocation",
         action="store_true",
         help="print the build-script invocation made by the preset, but don't "
              "run it"
