@@ -21,10 +21,11 @@ from .support.project_values import \
 from .util.cache import cached
 
 
-def _common_args(parser):
+def _add_common_arguments(parser):
     """
     Adds the options common to all parsers to the given parser.
     This function isn't pure as it modifies the given parser.
+    Returns the parser that contains the added arguments.
 
     parser -- The parser to which the arguments are added.
     """
@@ -59,11 +60,12 @@ def _common_args(parser):
     return parser
 
 
-def _configure_compose_args(parser):
+def _add_common_build_arguments(parser):
     """
     Adds the options common to configure and compose parsers to
     the given parser. This function isn't pure as it modifies the
-    given parser.
+    given parser. Returns the parser that contains the added
+    arguments.
 
     parser -- The parser to which the arguments are added.
     """
@@ -105,18 +107,18 @@ def create_argument_parser(source_root):
 
     # The common arguments are added to the base parser so the
     # normal help command shows them
-    parser = _common_args(parser)
+    parser = _add_common_arguments(parser)
 
     # --------------------------------------------------------- #
     # Sub-commands
 
     subparsers = parser.add_subparsers(dest="composer_mode")
 
-    preset = _common_args(subparsers.add_parser("preset"))
-    configure = _configure_compose_args(_common_args(
+    preset = _add_common_arguments(subparsers.add_parser("preset"))
+    configure = _add_common_build_arguments(_add_common_arguments(
         subparsers.add_parser("configure")
     ))
-    compose = _configure_compose_args(_common_args(
+    compose = _add_common_build_arguments(_add_common_arguments(
         subparsers.add_parser("compose")
     ))
 
