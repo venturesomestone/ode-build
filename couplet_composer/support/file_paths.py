@@ -21,3 +21,11 @@ def get_preset_file_path():
     the Ode repository.
     """
     return os.path.join("util", "composer-presets.ini")
+
+
+def get_project_values_file_path():
+    """
+    Gives the path to the file that contains constants of the
+    project this script acts on relative to the Ode repository.
+    """
+    return os.path.join("util", "composer", "values.json")

@@ -32,14 +32,17 @@ from .util.date import date_difference, to_date_string
 from . import args, modes
 
 
-def _create_argument_parser():
+def _create_argument_parser(source_root):
     """
     Creates the argument parser for the script and returns the
     namespace containing the parsed arguments. This function
     isn't pure but depends on the global Python variable
     containing the command line arguments.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
     """
-    return args.create_argument_parser()
+    return args.create_argument_parser(source_root=source_root)
 
 
 def _parse_arguments(parser):
@@ -127,15 +130,6 @@ def _main():
     """
     Enters the program and runs it. This function isn't pure.
     """
-    argument_parser = _create_argument_parser()
-    arguments = _parse_arguments(argument_parser)
-
-    # The logging level is the first thing to be set so it can be
-    # utilized throughout the rest of the run.
-    _set_logging_level(print_debug=arguments.print_debug)
-
-    _check_and_print_python_version()
-
     source_root = os.getenv("ODE_SOURCE_ROOT", os.getcwd())
 
     if not is_path_source_root(source_root):
@@ -143,6 +137,15 @@ def _main():
             "The source root directory is invalid: %s",
             source_root
         )
+
+    argument_parser = _create_argument_parser(source_root=source_root)
+    arguments = _parse_arguments(argument_parser)
+
+    # The logging level is the first thing to be set so it can be
+    # utilized throughout the rest of the run.
+    _set_logging_level(print_debug=arguments.print_debug)
+
+    _check_and_print_python_version()
 
     def _resolve_mode(mode):
         if mode == get_preset_mode_name():
