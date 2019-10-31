@@ -75,10 +75,10 @@ def run_in_preset_mode(arguments, source_root):
 
     command_to_run = [sys.executable] + build_call
 
-    shell.caffeinate(command_to_run)
+    shell.caffeinate(command_to_run, dry_run=False, echo=True)
 
 
-def run_in_configuring_mode():
+def run_in_configuring_mode(arguments, source_root):
     """
     Runs the script in configuration mode and sets up the
     development and build environment. This function isn't pure
@@ -96,7 +96,7 @@ def run_in_configuring_mode():
     # TODO Write the JSON file for toolchain here.
 
 
-def run_in_composing_mode():
+def run_in_composing_mode(arguments, source_root):
     """
     Runs the script in build mode. This function isn't pure as
     the functions called by it may modify the file system and run
