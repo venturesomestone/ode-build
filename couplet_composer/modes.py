@@ -20,6 +20,8 @@ import logging
 import os
 import sys
 
+from .clone import clone
+
 from .support.file_paths import get_preset_file_path
 
 from .support.project_names import get_ode_repository_name, get_project_name
@@ -92,7 +94,7 @@ def run_in_configuring_mode(arguments, source_root):
     script run.
     """
     # set_up.set_up()
-    # clone.clone_dependencies()
+    clone.clone_dependencies()
     # TODO Write the JSON file for toolchain here.
 
 
