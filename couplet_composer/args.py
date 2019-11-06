@@ -93,6 +93,32 @@ def _add_common_build_arguments(parser):
     #     help="cross-compile the project for the given targets"
     # )
 
+    # --------------------------------------------------------- #
+    # TODO Build generator options
+    generator_group = parser.add_mutually_exclusive_group(
+        "Build generator options"
+    )
+
+    parser.set_defaults(cmake_generator="Ninja")
+
+    generator_group.add_argument(
+        "-G",
+        "--cmake-generator",
+        default="Ninja",
+        choices=["Ninja", "Unix Makefiles"],
+        help="generate the build files using the selected CMake generator",
+        dest="cmake_generator"
+    )
+    generator_group.add_argument(
+        "-m",
+        "--make",
+        action="store_const",
+        const="Unix Makefiles",
+        help="generate the build files using the CMake generator for Unix "
+             "Makefiles",
+        dest="cmake_generator"
+    )
+
     return parser
 
 
