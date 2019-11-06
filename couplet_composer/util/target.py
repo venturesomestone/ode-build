@@ -116,3 +116,8 @@ def resolve_host_target():
             platform.machine()
         )
     )
+
+
+def parse_target_from_argument_string(target):
+    """Creates an object representation of the given target."""
+    return Target(system=target.split("-")[0], machine=target.split("-")[1])
