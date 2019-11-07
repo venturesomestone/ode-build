@@ -15,6 +15,10 @@
 import argparse
 import multiprocessing
 
+from .support.cmake_generators import \
+    get_cmake_generator_names, get_make_cmake_generator_name, \
+    get_ninja_cmake_generator_name
+
 from .support.project_values import \
     get_anthem_name, get_anthem_version, get_ode_name, get_ode_version
 
@@ -95,17 +99,17 @@ def _add_common_build_arguments(parser):
 
     # --------------------------------------------------------- #
     # TODO Build generator options
-    generator_group = parser.add_mutually_exclusive_group(
-        "Build generator options"
-    )
+    generator_group = parser.add_mutually_exclusive_group(required=False)
 
-    parser.set_defaults(cmake_generator="Ninja")
+    default_cmake_generator = get_ninja_cmake_generator_name()
+
+    parser.set_defaults(cmake_generator=default_cmake_generator)
 
     generator_group.add_argument(
         "-G",
         "--cmake-generator",
-        default="Ninja",
-        choices=["Ninja", "Unix Makefiles"],
+        default=default_cmake_generator,
+        choices=get_cmake_generator_names(),
         help="generate the build files using the selected CMake generator",
         dest="cmake_generator"
     )
@@ -113,7 +117,7 @@ def _add_common_build_arguments(parser):
         "-m",
         "--make",
         action="store_const",
-        const="Unix Makefiles",
+        const=get_make_cmake_generator_name(),
         help="generate the build files using the CMake generator for Unix "
              "Makefiles",
         dest="cmake_generator"
