@@ -16,9 +16,12 @@ This module contains helper for finding executables on Windows.
 
 import sys
 
+from .cache import cached
+
 from . import shell
 
 
+@cached
 def where(command):
     """
     Returns path to an executable which would be run if the given

@@ -14,9 +14,12 @@
 
 import sys
 
+from .cache import cached
+
 from . import shell
 
 
+@cached
 def which(command):
     """
     Returns path to an executable which would be run if the given
