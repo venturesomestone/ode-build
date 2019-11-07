@@ -18,18 +18,25 @@ different modes of the script.
 
 import logging
 import os
+import platform
 import sys
-
-from .clone import clone
 
 from .support.file_paths import get_preset_file_path
 
 from .support.project_names import get_ode_repository_name, get_project_name
 
+from .support import tooldata
+
+from .util.target import parse_target_from_argument_string
+
 from .util import shell
+
+from .configuring_mode import create_build_root, create_tools_root
 
 from .preset_mode import \
     compose_preset_call, print_script_invocation, show_presets
+
+from .toolchain import construct_tools_data, create_toolchain
 
 
 def run_in_preset_mode(arguments, source_root):
@@ -94,8 +101,30 @@ def run_in_configuring_mode(arguments, source_root):
     script run.
     """
     # set_up.set_up()
-    clone.clone_dependencies()
+    # clone.clone_dependencies()
     # TODO Write the JSON file for toolchain here.
+
+    build_target = parse_target_from_argument_string(arguments.host_target)
+
+    # Check the directories.
+    # build_root = create_build_root(source_root=source_root)
+    tools_root = create_tools_root(
+        source_root=source_root,
+        target=build_target
+    )
+
+    toolchain = create_toolchain(
+        tools_data=construct_tools_data({
+            "clang": tooldata.create_clang_tool_data,
+            "clang++": tooldata.create_clangxx_tool_data,
+            "cmake": tooldata.create_cmake_tool_data,
+            "ninja": tooldata.create_ninja_tool_data
+        }),
+        cmake_generator=arguments.cmake_generator,
+        target=build_target,
+        host_system=platform.system(),
+        tools_root=tools_root
+    )
 
 
 def run_in_composing_mode(arguments, source_root):

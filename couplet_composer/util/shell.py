@@ -35,6 +35,16 @@ import sys
 
 from ..support.platform_names import get_darwin_system_name
 
+from .cache import cached
+
+
+@cached
+def get_dev_null():
+    """
+    Gives the pipe to which the ignored shell output is put to.
+    """
+    return getattr(subprocess, "DEVNULL", subprocess.PIPE)
+
 
 def _quote(arg):
     return pipes.quote(str(arg))

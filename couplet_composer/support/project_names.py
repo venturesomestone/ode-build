@@ -18,6 +18,11 @@ def get_project_name():
     return "Couplet Composer"
 
 
+def get_project_package_name():
+    """Gives the name of the package where the project is."""
+    return "couplet_composer"
+
+
 def get_ode_repository_name():
     """Gives the name of the Ode repository directory."""
     return "unsung-anthem"
