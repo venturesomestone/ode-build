@@ -111,3 +111,21 @@ def get_local_executable(tools_root, version, target, host_system):
         version=version,
         system=host_system
     )
+
+
+@cached
+def install_tool(tools_root, version, target, host_system):
+    """
+    Installs the tool by downloading and possibly building it.
+    Returns the path to the built tool executable.
+
+    tools_root -- The root directory of the tools for the current
+    build target.
+
+    version -- The full version number of the tool.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    host_system -- The system this script is run on.
+    """

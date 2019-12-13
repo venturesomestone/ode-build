@@ -24,6 +24,8 @@ import os
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
+from .support.tooldata import list_tool_types
+
 from .util.where import where
 
 from .util.which import which
@@ -42,7 +44,7 @@ from .util import xcrun
 #
 # build_system -- The build system that CMake generates the
 # scripts for, e.g. Ninja or Make.
-Toolchain = namedtuple("Toolchain", ["cc", "cxx", "cmake", "build_system"])
+Toolchain = namedtuple("Toolchain", list_tool_types())
 
 
 def construct_tools_data(tools):
@@ -138,6 +140,55 @@ def _find_tool(tool, host_system):
         return None
 
 
+def _install_missing_tool(tool, tools_root, target, host_system):
+    """
+    Installs the given tool and returns the path to the installed
+    tool executable.
+
+    tool -- The tool to install.
+
+    tools_root -- The root directory of the tools for the current
+    build target.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    host_system -- The name of the system this script is run on.
+    """
+    version = tool.get_required_local_version(
+        target=target,
+        host_system=host_system
+    )
+    if tool.install_tool is not None:
+        tool_path = tool.install_tool(
+            tools_root=tools_root,
+            version=version,
+            target=target,
+            host_system=host_system
+        )
+        return tool_path
+    else:
+        return None
+
+
+def _construct_toolchain(found_tools):
+    """
+    Creates a toolchain object from the found tools for the run.
+
+    found_tools -- A dictionary containing the found tools. The
+    key is the type of the tool that matches the type in the
+    toolchain and the value is the path to the executable of the
+    tool.
+    """
+    tool_dictionary = {}
+
+    for key in list_tool_types():
+        tool_dictionary[key] = None if key not in found_tools \
+            else found_tools[key]
+
+    return Toolchain(**tool_dictionary)
+
+
 def create_toolchain(
     tools_data,
     cmake_generator,
@@ -175,7 +226,8 @@ def create_toolchain(
     build target.
     """
     # The function contains internal non-pure element as this
-    # dictionary is modified when new tools are resolved.
+    # dictionary is modified when new tools are resolved. It's
+    # done this way for simplicity.
     found_tools = {}
 
     # Start by checking if a correct local copy of the tool
@@ -210,5 +262,16 @@ def create_toolchain(
             missing_tools.append(tool)
 
     # Download the missing tools.
+    for tool in missing_tools:
+        installed_tool = _install_missing_tool(
+            tool=tool,
+            tools_root=tools_root,
+            target=target,
+            host_system=host_system
+        )
+        if installed_tool:
+            found_tools.update({tool.get_tool_type(): installed_tool})
+        else:
+            found_tools.update({tool.get_tool_type(): None})
 
-    return None  # Toolchain()
+    return _construct_toolchain(found_tools=found_tools)

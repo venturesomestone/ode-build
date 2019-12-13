@@ -126,6 +126,8 @@ def run_in_configuring_mode(arguments, source_root):
         tools_root=tools_root
     )
 
+    logging.debug("The created toolchain is %s", toolchain)
+
 
 def run_in_composing_mode(arguments, source_root):
     """

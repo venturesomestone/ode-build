@@ -23,6 +23,8 @@ from collections import namedtuple
 
 from .project_names import get_project_package_name
 
+from ..util.cache import cached
+
 
 # The type 'ToolData' represent the data to construct a tool.
 # Thus, the tuple contains various functions that the toolchain
@@ -44,12 +46,26 @@ from .project_names import get_project_package_name
 # the tool. Returns None if the tool can't be installed locally.
 # The parameters for the function are: tools_root, version,
 # target, host_system
+#
+# install_tool -- Installs the tool if it wasn't found on the
+# system. The tool is downloaded and possibly built. The function
+# ought to return path to the installed tool. The parameters for
+# the function are: tools_root, version, target, host_system
 ToolData = namedtuple("ToolData", [
     "get_tool_type",
     "get_searched_tool",
     "get_required_local_version",
-    "get_local_executable"
+    "get_local_executable",
+    "install_tool"
 ])
+
+
+@cached
+def list_tool_types():
+    """
+    Creates a list of the possible tool types for the toolchain.
+    """
+    return ["cc", "cxx", "cmake", "build_system"]
 
 
 def _create_tool_data(module_name):
@@ -70,7 +86,8 @@ def _create_tool_data(module_name):
         get_tool_type=getattr(tool_module, "get_tool_type"),
         get_searched_tool=lambda: module_name,
         get_required_local_version=getattr(tool_module, "get_version"),
-        get_local_executable=getattr(tool_module, "get_local_executable")
+        get_local_executable=getattr(tool_module, "get_local_executable"),
+        install_tool=getattr(tool_module, "install_tool")
     )
 
 
@@ -80,7 +97,8 @@ def create_clang_tool_data():
         get_tool_type=lambda: "cc",
         get_searched_tool=lambda: "clang",
         get_required_local_version=None,
-        get_local_executable=None
+        get_local_executable=None,
+        install_tool=None
     )
 
 
@@ -90,7 +108,8 @@ def create_clangxx_tool_data():
         get_tool_type=lambda: "cxx",
         get_searched_tool=lambda: "clang++",
         get_required_local_version=None,
-        get_local_executable=None
+        get_local_executable=None,
+        install_tool=None
     )
 
 
