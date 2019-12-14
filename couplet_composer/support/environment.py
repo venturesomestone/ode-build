@@ -58,3 +58,16 @@ def get_tools_directory(build_root, target):
         "tools",
         "{}-{}".format(target.system, target.machine)
     )
+
+
+@cached
+def get_temporary_directory(build_root):
+    """
+    Gives the path to the temporary directory in the build
+    directory that this script uses for all files that are not
+    permanent, for example when installing dependencies.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+    """
+    return os.path.join(build_root, "tmp")

@@ -50,7 +50,8 @@ from ..util.cache import cached
 # install_tool -- Installs the tool if it wasn't found on the
 # system. The tool is downloaded and possibly built. The function
 # ought to return path to the installed tool. The parameters for
-# the function are: tools_root, version, target, host_system
+# the function are: build_root, tools_root, version, target,
+# host_system, dry_run, print_debug
 ToolData = namedtuple("ToolData", [
     "get_tool_type",
     "get_searched_tool",

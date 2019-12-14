@@ -21,6 +21,8 @@ import os
 import platform
 import sys
 
+from .support.environment import get_build_root
+
 from .support.file_paths import get_preset_file_path
 
 from .support.project_names import get_ode_repository_name, get_project_name
@@ -123,7 +125,10 @@ def run_in_configuring_mode(arguments, source_root):
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
-        tools_root=tools_root
+        tools_root=tools_root,
+        build_root=get_build_root(source_root=source_root),
+        dry_run=arguments.dry_run,
+        print_debug=arguments.print_debug
     )
 
     logging.debug("The created toolchain is %s", toolchain)

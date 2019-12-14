@@ -140,12 +140,23 @@ def _find_tool(tool, host_system):
         return None
 
 
-def _install_missing_tool(tool, tools_root, target, host_system):
+def _install_missing_tool(
+    tool,
+    build_root,
+    tools_root,
+    target,
+    host_system,
+    dry_run,
+    print_debug
+):
     """
     Installs the given tool and returns the path to the installed
     tool executable.
 
     tool -- The tool to install.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
 
     tools_root -- The root directory of the tools for the current
     build target.
@@ -154,6 +165,11 @@ def _install_missing_tool(tool, tools_root, target, host_system):
     Target.
 
     host_system -- The name of the system this script is run on.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
     """
     version = tool.get_required_local_version(
         target=target,
@@ -161,10 +177,13 @@ def _install_missing_tool(tool, tools_root, target, host_system):
     )
     if tool.install_tool is not None:
         tool_path = tool.install_tool(
+            build_root=build_root,
             tools_root=tools_root,
             version=version,
             target=target,
-            host_system=host_system
+            host_system=host_system,
+            dry_run=dry_run,
+            print_debug=print_debug
         )
         return tool_path
     else:
@@ -194,7 +213,10 @@ def create_toolchain(
     cmake_generator,
     target,
     host_system,
-    tools_root
+    tools_root,
+    build_root,
+    dry_run,
+    print_debug
 ):
     """
     Creates the toolchain for this run. This function isn't pure
@@ -224,6 +246,14 @@ def create_toolchain(
 
     tools_root -- The root directory of the tools for the current
     build target.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
     """
     # The function contains internal non-pure element as this
     # dictionary is modified when new tools are resolved. It's
@@ -265,9 +295,12 @@ def create_toolchain(
     for tool in missing_tools:
         installed_tool = _install_missing_tool(
             tool=tool,
+            build_root=build_root,
             tools_root=tools_root,
             target=target,
-            host_system=host_system
+            host_system=host_system,
+            dry_run=dry_run,
+            print_debug=print_debug
         )
         if installed_tool:
             found_tools.update({tool.get_tool_type(): installed_tool})

@@ -32,6 +32,10 @@ import platform
 import shutil
 import subprocess
 import sys
+import tarfile
+import zipfile
+
+from contextlib import contextmanager
 
 from ..support.platform_names import get_darwin_system_name
 
@@ -140,6 +144,21 @@ def capture(
         )
 
 
+@contextmanager
+def pushd(path, dry_run=None, echo=None):
+    """Pushes the directory to the top of the directory stack."""
+    old_dir = os.getcwd()
+    if dry_run or echo:
+        _echo_command(dry_run, ["pushd", path])
+    if not dry_run:
+        os.chdir(path)
+    yield
+    if dry_run or echo:
+        _echo_command(dry_run, ["popd"])
+    if not dry_run:
+        os.chdir(old_dir)
+
+
 def makedirs(path, dry_run=None, echo=None):
     """
     Creates the given directory and the in-between directories.
@@ -173,6 +192,55 @@ def rm(file, dry_run=None, echo=None):
         os.unlink(file)
     if os.path.exists(file):
         os.remove(file)
+
+
+def tar(path, dest=None, dry_run=None, echo=None):
+    """Extracts an archive."""
+    if dry_run or echo:
+        if dest:
+            _echo_command(dry_run, ["tar", "-xf", path, "-C", dest])
+        else:
+            _echo_command(dry_run, ["tar", "-xf", path])
+    if dry_run:
+        return
+    if path.endswith(".zip"):
+        with zipfile.ZipFile(path, "r") as archive:
+            if dest:
+                archive.extractall(dest)
+            else:
+                archive.extractall()
+    else:
+        if path.endswith(".tar") or path.endswith(".tar.gz"):
+            with tarfile.open(path) as archive:
+                if dest:
+                    archive.extractall(dest)
+                else:
+                    archive.extractall()
+        else:
+            if sys.version_info.major == 2:
+                # TODO Use different command for Windows.
+                with pushd(os.path.dirname(path)):
+                    if dest:
+                        call(
+                            ["tar", "-xf", os.path.split(path)[1], "-C", dest])
+                    else:
+                        call(["tar", "-xf", os.path.split(path)[1]])
+            else:
+                with tarfile.open(path) as archive:
+                    if dest:
+                        archive.extractall(dest)
+                    else:
+                        archive.extractall()
+
+
+def curl(url, dest, env=None, dry_run=None, echo=None):
+    """Downloads a file."""
+    call(
+        ["curl", "-o", dest, "--create-dirs", url],
+        env=env,
+        dry_run=dry_run,
+        echo=echo
+    )
 
 
 def caffeinate(command, env=None, dry_run=None, echo=None):
