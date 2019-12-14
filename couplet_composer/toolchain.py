@@ -274,8 +274,12 @@ def create_toolchain(
     for tool in found_local_tools:
         found_tools.update({tool.get_tool_type(): tool.get_local_executable(
             tools_root=tools_root,
-            version=tool.get_required_local_version(target=target),
-            target=target
+            version=tool.get_required_local_version(
+                target=target,
+                host_system=host_system
+            ),
+            target=target,
+            host_system=host_system
         )})
 
     missing_tools = []

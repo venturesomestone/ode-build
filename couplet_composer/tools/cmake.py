@@ -16,6 +16,7 @@ This support module contains the functions related to the
 building and finding CMake.
 """
 
+import logging
 import os
 
 from ..support.environment import get_temporary_directory
@@ -46,6 +47,22 @@ def get_required_cmake_version():
 
 
 @cached
+def _get_local_cmake_directory(tools_root, version, system):
+    """
+    Gives the path of the directory containing the local CMake
+    files.
+
+    tools_root -- The root directory of the tools for the current
+    build target.
+
+    version -- The full CMake version number.
+
+    system -- The system for which the wanted CMake build is for.
+    """
+    return os.path.join(tools_root, "cmake", version, system)
+
+
+@cached
 def get_local_cmake_executable(tools_root, version, system):
     """
     Gives the path to the local CMake executable.
@@ -57,24 +74,41 @@ def get_local_cmake_executable(tools_root, version, system):
 
     system -- The system for which the wanted CMake build is for.
     """
-    def _resolve_executable():
+    def _darwin_app_name(path):
+        return "CMake.app" \
+            if not os.path.isdir(path) \
+            else [file for file in os.listdir(path)
+                  if file.endswith(".app")][0]
+
+    def _resolve_executable(path):
         if system == get_darwin_system_name():
-            return os.path.join("CMake.app", "Contents", "bin", "cmake")
+            app_name = _darwin_app_name(path)
+            return None if not app_name else os.path.join(
+                _darwin_app_name(path),
+                "Contents",
+                "bin",
+                "cmake"
+            )
         elif system == get_linux_system_name():
             return os.path.join("bin", "cmake")
         elif system == get_windows_system_name():
             return os.path.join("bin", "cmake.exe")
         raise NotImplementedError
 
-    return os.path.join(
-        tools_root,
-        "cmake",
-        version,
-        system,
-        _resolve_executable()
+    path = _get_local_cmake_directory(
+        tools_root=tools_root,
+        version=version,
+        system=system
     )
 
+    logging.debug("Looking for the CMake executable from %s", path)
 
+    exec_path = _resolve_executable(path)
+
+    return None if not exec_path else os.path.join(path, exec_path)
+
+
+@cached
 def _resolve_cmake_download_target(version, system):
     """
     Gives the target used in the name of the CMake archive
@@ -228,3 +262,35 @@ def install_tool(
         print_debug=print_debug
     )
     shell.tar(dest, tool_temp_dir)
+
+    subdir = "cmake-{version}-{target}".format(
+        version=version,
+        target=_resolve_cmake_download_target(
+            version=version,
+            system=host_system
+        )
+    )
+
+    local_dir = _get_local_cmake_directory(
+        tools_root=tools_root,
+        version=version,
+        system=host_system
+    )
+
+    if os.path.isdir(local_dir):
+        shell.rmtree(local_dir, dry_run=dry_run, echo=print_debug)
+
+    shell.copytree(
+        os.path.join(tool_temp_dir, subdir),
+        local_dir,
+        dry_run=dry_run,
+        echo=print_debug
+    )
+    shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
+
+    return get_local_executable(
+        tools_root=tools_root,
+        version=version,
+        target=target,
+        host_system=host_system
+    )

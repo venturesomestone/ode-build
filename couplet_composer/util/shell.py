@@ -171,6 +171,38 @@ def makedirs(path, dry_run=None, echo=None):
         os.makedirs(path)
 
 
+def copytree(src, dest, dry_run=None, echo=None):
+    """Copies a directory and its contents."""
+    if dry_run or echo:
+        _echo_command(dry_run, ["cp", "-r", src, dest])
+    if dry_run:
+        return
+    # A workaround
+    if os.path.isdir(dest):  # and data.build.ci:
+        for item in os.listdir(src):
+            s = os.path.join(src, item)
+            d = os.path.join(dest, item)
+            if os.path.isdir(s):
+                shutil.copytree(s, d)  # , symlinks, ignore)
+            else:
+                shutil.copy2(s, d)
+    else:
+        shutil.copytree(src, dest)
+
+
+def copy(src, dest, dry_run=None, echo=None):
+    """Copies a file."""
+    if dry_run or echo:
+        _echo_command(dry_run, ["cp", "-p", src, dest])
+    if dry_run:
+        return
+    if os.path.islink(src):
+        link = os.readlink(src)
+        os.symlink(link, dest)
+    else:
+        shutil.copy2(src, dest)
+
+
 def rmtree(path, dry_run=None, echo=None):
     """Removes a directory and its contents."""
     if dry_run or echo:
