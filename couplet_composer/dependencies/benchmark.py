@@ -26,6 +26,8 @@ from ..support.github_data import GitHubData
 from ..support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
+from ..util.cache import cached
+
 from ..util import shell
 
 
@@ -34,6 +36,7 @@ from ..util import shell
 ################################################################
 
 
+@cached
 def should_install(dependencies_root, version, target, host_system):
     """
     Tells whether the build of the dependency should be skipped.
@@ -51,7 +54,7 @@ def should_install(dependencies_root, version, target, host_system):
     if host_system == get_windows_system_name():
         return False
 
-    return os.path.exists(os.path.join(
+    return not os.path.exists(os.path.join(
         dependencies_root,
         "lib",
         "libbenchmark.a"
@@ -59,6 +62,7 @@ def should_install(dependencies_root, version, target, host_system):
 
 
 def install_dependency(
+    toolchain,
     build_root,
     dependencies_root,
     version,
@@ -72,6 +76,8 @@ def install_dependency(
     """
     Installs the dependency by downloading and possibly building
     it. Returns the path to the built dependency.
+
+    toolchain -- The toolchain object of the run.
 
     build_root -- The path to the root directory that is used for
     all created files and directories.
@@ -98,17 +104,18 @@ def install_dependency(
     print_debug -- Whether debug output should be printed.
     """
     temp_dir = get_temporary_directory(build_root=build_root)
-    dependency_temp_dir = os.path.join(temp_dir, "benchmark")
+    # dependency_temp_dir = os.path.join(temp_dir, "benchmark")
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
-    shell.makedirs(dependency_temp_dir, dry_run=dry_run, echo=print_debug)
+    # shell.makedirs(dependency_temp_dir, dry_run=dry_run, echo=print_debug)
 
-    asset_path = release.download_asset(
-        path=dependency_temp_dir,
+    asset_path = release.download_tag(
+        path=temp_dir,
+        git=toolchain.git,
         github_data=GitHubData(
-            owner=None,
-            name=None,
-            tag_name=None,
+            owner="google",
+            name="benchmark",
+            tag_name="v{}".format(version),
             asset_name=None
         ),
         user_agent=github_user_agent,
@@ -118,4 +125,4 @@ def install_dependency(
         print_debug=print_debug
     )
 
-    shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
+    # shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)

@@ -1,2 +1,4 @@
 include README.md
 include LICENCE
+include couplet_composer/github/graphql/github_asset.graphql
+include couplet_composer/github/graphql/github_tag.graphql

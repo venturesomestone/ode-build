@@ -16,6 +16,7 @@ version 4 of the GitHub API.
 """
 
 import json
+import logging
 
 import requests
 
@@ -40,6 +41,11 @@ def make_api_call(query, user_agent, api_token):
     api_token -- The GitHub API token that is used to access the
     API.
     """
+    logging.debug(
+        "Making GitHub API call with the following query:\n%s",
+        query
+    )
+
     response = requests.post(
         url=_get_api_endpoint(),
         data=json.dumps({"query": query}),
@@ -48,6 +54,12 @@ def make_api_call(query, user_agent, api_token):
             "Accept": "application/json",
             "Authorization": "bearer {}".format(api_token)
         })
+
+    logging.debug(
+        "The returned value from the API is the following:\n%s",
+        response
+    )
+
     return response.json()
 
 

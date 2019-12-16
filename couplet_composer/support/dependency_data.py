@@ -30,6 +30,7 @@ from .project_names import get_project_package_name
 #
 # get_required_version -- Returns a string that represents the
 # version of the dependency that is required by the project.
+# Parameters: target, host_system
 #
 # should_install -- Tells whether or not the dependency should be
 # built. Parameters: dependencies_root, version, target,
@@ -38,10 +39,11 @@ from .project_names import get_project_package_name
 # install_dependency -- Installs the dependency if it wasn't
 # found on the system. The dependency is downloaded and possibly
 # built. The function ought to return path to the installed
-# dependency. The parameters for the function are: build_root,
-# dependencies_root, version, target, host_system,
+# dependency. The parameters for the function are: toolchain,
+# build_root, dependencies_root, version, target, host_system,
 # github_user_agent, github_api_token, dry_run, print_debug
 DependencyData = namedtuple("DependencyData", [
+    "get_name",
     "get_required_version",
     "should_install",
     "install_dependency"
@@ -66,7 +68,8 @@ def create_dependency_data(module_name, data_node):
     )
     dependency_module = importlib.import_module(package_name)
     return DependencyData(
-        get_required_version=lambda: data_node["version"],
+        get_name=lambda: data_node["name"],
+        get_required_version=lambda target, host_system: data_node["version"],
         should_install=getattr(dependency_module, "should_install"),
         install_dependency=getattr(dependency_module, "install_dependency")
     )

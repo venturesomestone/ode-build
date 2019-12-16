@@ -17,6 +17,7 @@ script acts on.
 """
 
 import json
+import logging
 
 from .support.dependency_data import create_dependency_data
 
@@ -38,6 +39,57 @@ def construct_dependencies_data(data_file):
         json_data = json.load(f)
     return [create_dependency_data(key, node)
             for key, node in json_data.items()]
+
+
+def _resolve_dependencies_to_install(
+    dependencies_data,
+    target,
+    host_system,
+    dependencies_root
+):
+    """
+    Checks whether or not the dependencies required by the
+    project are installed and returns two lists: the first one
+    contains the dependencies not requiring installation and the
+    second ones requiring.
+
+    dependencies_data -- List of objects of type DependencyData
+    that contain the functions for checking and building the
+    dependencies.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    host_system -- The system this script is run on.
+
+    dependencies_root -- The root directory of the dependencies
+    for the current build target.
+    """
+    accumulated_not_to_install = [
+        data for data in dependencies_data
+        if data.should_install is None or not data.should_install(
+            dependencies_root=dependencies_root,
+            version=data.get_required_version(
+                target=target,
+                host_system=host_system
+            ),
+            target=target,
+            host_system=host_system
+        )
+    ]
+    accumulated_to_install = [
+        data for data in dependencies_data
+        if data.should_install is not None and data.should_install(
+            dependencies_root=dependencies_root,
+            version=data.get_required_version(
+                target=target,
+                host_system=host_system
+            ),
+            target=target,
+            host_system=host_system
+        )
+    ]
+    return accumulated_not_to_install, accumulated_to_install
 
 
 def install_dependencies(
@@ -89,3 +141,31 @@ def install_dependencies(
 
     print_debug -- Whether debug output should be printed.
     """
+    not_to_install, to_install = _resolve_dependencies_to_install(
+        dependencies_data=dependencies_data,
+        target=target,
+        host_system=host_system,
+        dependencies_root=dependencies_root
+    )
+
+    logging.debug(
+        "The dependencies that aren't being installed are: %s",
+        ", ".join([data.get_name() for data in not_to_install])
+    )
+
+    for dependency in to_install:
+        dependency.install_dependency(
+            toolchain=toolchain,
+            build_root=build_root,
+            dependencies_root=dependencies_root,
+            version=dependency.get_required_version(
+                target=target,
+                host_system=host_system
+            ),
+            target=target,
+            host_system=host_system,
+            github_user_agent=github_user_agent,
+            github_api_token=github_api_token,
+            dry_run=dry_run,
+            print_debug=print_debug
+        )
