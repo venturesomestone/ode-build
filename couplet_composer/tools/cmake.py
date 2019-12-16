@@ -34,7 +34,7 @@ def _get_cmake_version_info():
     Gives a tuple containing the version information of CMake,
     i.e. (major, minor, patch).
     """
-    return 2, 8, 12
+    return 3, 15, 6
 
 
 @cached
