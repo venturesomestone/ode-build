@@ -46,6 +46,8 @@ def install_dependencies(
     cmake_generator,
     target,
     host_system,
+    github_user_agent,
+    github_api_token,
     dependencies_root,
     build_root,
     dry_run,
@@ -69,6 +71,12 @@ def install_dependencies(
     Target.
 
     host_system -- The system this script is run on.
+
+    github_user_agent -- The user agent used when accessing the
+    GitHub API.
+
+    github_api_token -- The GitHub API token that is used to
+    access the API.
 
     dependencies_root -- The root directory of the dependencies
     for the current build target.

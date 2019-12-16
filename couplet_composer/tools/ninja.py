@@ -113,11 +113,23 @@ def get_local_executable(tools_root, version, target, host_system):
     )
 
 
-@cached
-def install_tool(tools_root, version, target, host_system):
+def install_tool(
+    build_root,
+    tools_root,
+    version,
+    target,
+    host_system,
+    github_user_agent,
+    github_api_token,
+    dry_run=None,
+    print_debug=None
+):
     """
     Installs the tool by downloading and possibly building it.
     Returns the path to the built tool executable.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
 
     tools_root -- The root directory of the tools for the current
     build target.
@@ -128,4 +140,15 @@ def install_tool(tools_root, version, target, host_system):
     Target.
 
     host_system -- The system this script is run on.
+
+    github_user_agent -- The user agent used when accessing the
+    GitHub API.
+
+    github_api_token -- The GitHub API token that is used to
+    access the API.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
     """

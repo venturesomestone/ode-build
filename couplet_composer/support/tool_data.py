@@ -51,7 +51,8 @@ from ..util.cache import cached
 # system. The tool is downloaded and possibly built. The function
 # ought to return path to the installed tool. The parameters for
 # the function are: build_root, tools_root, version, target,
-# host_system, dry_run, print_debug
+# host_system, github_user_agent, github_api_token, dry_run,
+# print_debug
 ToolData = namedtuple("ToolData", [
     "get_tool_type",
     "get_searched_tool",

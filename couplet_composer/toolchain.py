@@ -213,6 +213,8 @@ def create_toolchain(
     cmake_generator,
     target,
     host_system,
+    github_user_agent,
+    github_api_token,
     tools_root,
     build_root,
     dry_run,
@@ -243,6 +245,12 @@ def create_toolchain(
     Target.
 
     host_system -- The system this script is run on.
+
+    github_user_agent -- The user agent used when accessing the
+    GitHub API.
+
+    github_api_token -- The GitHub API token that is used to
+    access the API.
 
     tools_root -- The root directory of the tools for the current
     build target.

@@ -131,6 +131,10 @@ def run_in_configuring_mode(arguments, source_root):
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
+        # TODO Use the actual user agent.
+        github_user_agent=None,
+        # TODO Use the actual token.
+        github_api_token=None,
         tools_root=tools_root,
         build_root=get_build_root(source_root=source_root),
         dry_run=arguments.dry_run,
@@ -158,6 +162,10 @@ def run_in_configuring_mode(arguments, source_root):
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
+        # TODO Use the actual user agent.
+        github_user_agent=None,
+        # TODO Use the actual token.
+        github_api_token=None,
         dependencies_root=dependencies_root,
         build_root=get_build_root(source_root=source_root),
         dry_run=arguments.dry_run,

@@ -201,6 +201,8 @@ def install_tool(
     version,
     target,
     host_system,
+    github_user_agent,
+    github_api_token,
     dry_run=None,
     print_debug=None
 ):
@@ -221,17 +223,22 @@ def install_tool(
 
     host_system -- The system this script is run on.
 
+    github_user_agent -- The user agent used when accessing the
+    GitHub API.
+
+    github_api_token -- The GitHub API token that is used to
+    access the API.
+
     dry_run -- Whether the commands are only printed instead of
     running them.
 
     print_debug -- Whether debug output should be printed.
     """
-
     temp_dir = get_temporary_directory(build_root=build_root)
     tool_temp_dir = os.path.join(temp_dir, "cmake")
 
-    shell.makedirs(temp_dir)
-    shell.makedirs(tool_temp_dir)
+    shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
+    shell.makedirs(tool_temp_dir, dry_run=dry_run, echo=print_debug)
 
     major_version, minor_version, patch_version = tuple(map(
         int,
@@ -261,7 +268,7 @@ def install_tool(
         dry_run=dry_run,
         print_debug=print_debug
     )
-    shell.tar(dest, tool_temp_dir)
+    shell.tar(dest, tool_temp_dir, dry_run=dry_run, echo=print_debug)
 
     subdir = "cmake-{version}-{target}".format(
         version=version,
