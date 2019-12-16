@@ -29,3 +29,12 @@ def get_project_values_file_path():
     project this script acts on relative to the Ode repository.
     """
     return os.path.join("util", "composer", "values.json")
+
+
+def get_project_dependencies_file_path():
+    """
+    Gives the path to the file that contains constants of the
+    dependencies of the project this script acts on relative to
+    the Ode repository.
+    """
+    return os.path.join("util", "composer", "dependencies.json")

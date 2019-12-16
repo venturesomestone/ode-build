@@ -26,7 +26,7 @@ from .project_names import get_project_package_name
 from ..util.cache import cached
 
 
-# The type 'ToolData' represent the data to construct a tool.
+# The type 'ToolData' represents the data to construct a tool.
 # Thus, the tuple contains various functions that the toolchain
 # utilizes when it constructs itself.
 #

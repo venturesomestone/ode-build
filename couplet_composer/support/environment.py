@@ -30,6 +30,18 @@ def is_path_source_root(path):
 
 
 @cached
+def get_project_root(source_root):
+    """
+    Gives the path to the root directory of the project this
+    script acts on.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+    """
+    return os.path.join(source_root, "unsung-anthem")
+
+
+@cached
 def get_build_root(source_root):
     """
     Gives the path to the root directory that this script uses
@@ -56,6 +68,25 @@ def get_tools_directory(build_root, target):
     return os.path.join(
         build_root,
         "tools",
+        "{}-{}".format(target.system, target.machine)
+    )
+
+
+@cached
+def get_dependencies_directory(build_root, target):
+    """
+    Gives the path to the directory in the build directory that
+    this script uses for all local tools.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+    """
+    return os.path.join(
+        build_root,
+        "lib",
         "{}-{}".format(target.system, target.machine)
     )
 

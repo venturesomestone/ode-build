@@ -23,17 +23,21 @@ import sys
 
 from .support.environment import get_build_root
 
-from .support.file_paths import get_preset_file_path
+from .support.file_paths import \
+    get_preset_file_path, get_project_dependencies_file_path
 
 from .support.project_names import get_ode_repository_name, get_project_name
 
-from .support import tooldata
+from .support import tool_data
 
 from .util.target import parse_target_from_argument_string
 
 from .util import shell
 
-from .configuring_mode import create_build_root, create_tools_root
+from .configuring_mode import \
+    create_build_root, create_dependencies_root, create_tools_root
+
+from .dependency_set import construct_dependencies_data, install_dependencies
 
 from .preset_mode import \
     compose_preset_call, print_script_invocation, show_presets
@@ -115,12 +119,14 @@ def run_in_configuring_mode(arguments, source_root):
         target=build_target
     )
 
+    logging.debug("Creating the toolchain for the run")
+
     toolchain = create_toolchain(
         tools_data=construct_tools_data({
-            "clang": tooldata.create_clang_tool_data,
-            "clang++": tooldata.create_clangxx_tool_data,
-            "cmake": tooldata.create_cmake_tool_data,
-            "ninja": tooldata.create_ninja_tool_data
+            "clang": tool_data.create_clang_tool_data,
+            "clang++": tool_data.create_clangxx_tool_data,
+            "cmake": tool_data.create_cmake_tool_data,
+            "ninja": tool_data.create_ninja_tool_data
         }),
         cmake_generator=arguments.cmake_generator,
         target=build_target,
@@ -132,6 +138,31 @@ def run_in_configuring_mode(arguments, source_root):
     )
 
     logging.debug("The created toolchain is %s", toolchain)
+
+    logging.debug("Starting to install the dependencies of the project")
+
+    dependencies_root = create_dependencies_root(
+        source_root=source_root,
+        target=build_target
+    )
+
+    install_dependencies(
+        dependencies_data=construct_dependencies_data(
+            data_file=os.path.join(
+                source_root,
+                "unsung-anthem",
+                get_project_dependencies_file_path()
+            )
+        ),
+        toolchain=toolchain,
+        cmake_generator=arguments.cmake_generator,
+        target=build_target,
+        host_system=platform.system(),
+        dependencies_root=dependencies_root,
+        build_root=get_build_root(source_root=source_root),
+        dry_run=arguments.dry_run,
+        print_debug=arguments.print_debug
+    )
 
 
 def run_in_composing_mode(arguments, source_root):

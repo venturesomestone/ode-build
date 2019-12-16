@@ -18,7 +18,8 @@ configuration mode of the script.
 
 import os
 
-from .support.environment import get_build_root, get_tools_directory
+from .support.environment import \
+    get_build_root, get_dependencies_directory, get_tools_directory
 
 from .util import shell
 
@@ -57,3 +58,24 @@ def create_tools_root(source_root, target):
     if not os.path.exists(tools_root):
         shell.makedirs(path=tools_root)
     return tools_root
+
+
+def create_dependencies_root(source_root, target):
+    """
+    Checks if the directory for the dependencies exists and
+    creates it if it doesn't exist. Returns the path to the
+    dependecies directory.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+
+    target -- The target system of the build represented by a
+    Target.
+    """
+    dependencies_root = get_dependencies_directory(
+        build_root=get_build_root(source_root=source_root),
+        target=target
+    )
+    if not os.path.exists(dependencies_root):
+        shell.makedirs(path=dependencies_root)
+    return dependencies_root

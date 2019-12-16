@@ -24,7 +24,7 @@ import os
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
-from .support.tooldata import list_tool_types
+from .support.tool_data import list_tool_types
 
 from .util.where import where
 
