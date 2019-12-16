@@ -67,7 +67,7 @@ def list_tool_types():
     """
     Creates a list of the possible tool types for the toolchain.
     """
-    return ["cc", "cxx", "cmake", "build_system"]
+    return ["cc", "cxx", "cmake", "build_system", "git"]
 
 
 def _create_tool_data(module_name):
@@ -109,6 +109,17 @@ def create_clangxx_tool_data():
     return ToolData(
         get_tool_type=lambda: "cxx",
         get_searched_tool=lambda: "clang++",
+        get_required_local_version=None,
+        get_local_executable=None,
+        install_tool=None
+    )
+
+
+def create_git_tool_data():
+    """Creates the ToolData object of Git for toolchain."""
+    return ToolData(
+        get_tool_type=lambda: "git",
+        get_searched_tool=lambda: "git",
         get_required_local_version=None,
         get_local_executable=None,
         install_tool=None

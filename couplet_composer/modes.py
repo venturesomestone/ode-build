@@ -134,7 +134,8 @@ def run_in_configuring_mode(arguments, source_root):
             "clang": tool_data.create_clang_tool_data,
             "clang++": tool_data.create_clangxx_tool_data,
             "cmake": tool_data.create_cmake_tool_data,
-            "ninja": tool_data.create_ninja_tool_data
+            "ninja": tool_data.create_ninja_tool_data,
+            "git": tool_data.create_git_tool_data
         }),
         cmake_generator=arguments.cmake_generator,
         target=build_target,
