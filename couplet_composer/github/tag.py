@@ -122,7 +122,7 @@ def _clone_by_api_v4(
         print_debug=print_debug
     )
 
-    return os.path.join(path, github_data)
+    return os.path.join(path, github_data.name)
 
 
 def download(
