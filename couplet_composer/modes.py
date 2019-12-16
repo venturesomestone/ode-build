@@ -121,6 +121,14 @@ def run_in_configuring_mode(arguments, source_root):
 
     logging.debug("Creating the toolchain for the run")
 
+    # TODO Allow reading the user agent from some file on the
+    # system
+    github_user_agent = arguments.github_user_agent
+
+    # TODO Allow reading the API token from some file on the
+    # system
+    github_api_token = arguments.github_api_token
+
     toolchain = create_toolchain(
         tools_data=construct_tools_data({
             "clang": tool_data.create_clang_tool_data,
@@ -131,10 +139,8 @@ def run_in_configuring_mode(arguments, source_root):
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
-        # TODO Use the actual user agent.
-        github_user_agent=None,
-        # TODO Use the actual token.
-        github_api_token=None,
+        github_user_agent=github_user_agent,
+        github_api_token=github_api_token,
         tools_root=tools_root,
         build_root=get_build_root(source_root=source_root),
         dry_run=arguments.dry_run,
@@ -162,10 +168,8 @@ def run_in_configuring_mode(arguments, source_root):
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
-        # TODO Use the actual user agent.
-        github_user_agent=None,
-        # TODO Use the actual token.
-        github_api_token=None,
+        github_user_agent=github_user_agent,
+        github_api_token=github_api_token,
         dependencies_root=dependencies_root,
         build_root=get_build_root(source_root=source_root),
         dry_run=arguments.dry_run,

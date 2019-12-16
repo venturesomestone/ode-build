@@ -63,6 +63,24 @@ def _add_common_arguments(parser):
         help="print the debug-level logging output"
     )
 
+    # --------------------------------------------------------- #
+    # GitHub options
+
+    github_group = parser.add_argument_group("GitHub options")
+
+    github_group.add_argument(
+        "--github-user-agent",
+        default=None,
+        help="set the user agent used when accessing the GitHub API "
+             "(default: {})".format(None)
+    )
+    github_group.add_argument(
+        "--github-api-token",
+        default=None,
+        help="set the API token used when accessing the GitHub API "
+             "(default: {})".format(None)
+    )
+
     return parser
 
 

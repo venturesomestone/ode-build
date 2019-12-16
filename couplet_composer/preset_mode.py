@@ -95,6 +95,16 @@ def compose_preset_call(arguments, file_names):
         build_call.append("--clean")
     if arguments.print_debug:
         build_call.append("--print-debug")
+    if arguments.github_user_agent:
+        build_call.extend([
+            "--github-user-agent",
+            str(arguments.github_user_agent)
+        ])
+    if arguments.github_api_token:
+        build_call.extend([
+            "--github-api-token",
+            str(arguments.github_api_token)
+        ])
 
     preset_arguments = _compose_preset_option_list(preset_options)
     preset_arguments_after_end = _compose_preset_option_list(
