@@ -40,8 +40,9 @@ from .project_names import get_project_package_name
 # found on the system. The dependency is downloaded and possibly
 # built. The function ought to return path to the installed
 # dependency. The parameters for the function are: toolchain,
-# build_root, dependencies_root, version, target, host_system,
-# github_user_agent, github_api_token, dry_run, print_debug
+# cmake_generator, build_root, dependencies_root, version,
+# target, host_system, github_user_agent, github_api_token,
+# dry_run, print_debug
 DependencyData = namedtuple("DependencyData", [
     "get_name",
     "get_required_version",

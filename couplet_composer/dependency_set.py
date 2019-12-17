@@ -116,8 +116,7 @@ def install_dependencies(
 
     cmake_generator -- The name of the generator that CMake
     should use as the build system for which the build scripts
-    are generated. It's used to determine which build system is
-    checked for and built if necessary.
+    are generated.
 
     target -- The target system of the build represented by a
     Target.
@@ -156,6 +155,7 @@ def install_dependencies(
     for dependency in to_install:
         dependency.install_dependency(
             toolchain=toolchain,
+            cmake_generator=cmake_generator,
             build_root=build_root,
             dependencies_root=dependencies_root,
             version=dependency.get_required_version(

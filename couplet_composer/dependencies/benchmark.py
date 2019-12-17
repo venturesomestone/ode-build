@@ -26,6 +26,8 @@ from ..support.github_data import GitHubData
 from ..support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
+from ..util.build_util import build_with_cmake
+
 from ..util.cache import cached
 
 from ..util import shell
@@ -63,6 +65,7 @@ def should_install(dependencies_root, version, target, host_system):
 
 def install_dependency(
     toolchain,
+    cmake_generator,
     build_root,
     dependencies_root,
     version,
@@ -78,6 +81,10 @@ def install_dependency(
     it. Returns the path to the built dependency.
 
     toolchain -- The toolchain object of the run.
+
+    cmake_generator -- The name of the generator that CMake
+    should use as the build system for which the build scripts
+    are generated.
 
     build_root -- The path to the root directory that is used for
     all created files and directories.
@@ -104,10 +111,8 @@ def install_dependency(
     print_debug -- Whether debug output should be printed.
     """
     temp_dir = get_temporary_directory(build_root=build_root)
-    # dependency_temp_dir = os.path.join(temp_dir, "benchmark")
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
-    # shell.makedirs(dependency_temp_dir, dry_run=dry_run, echo=print_debug)
 
     asset_path = release.download_tag(
         path=temp_dir,
@@ -125,4 +130,17 @@ def install_dependency(
         print_debug=print_debug
     )
 
-    # shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
+    build_with_cmake(
+        toolchain=toolchain,
+        cmake_generator=cmake_generator,
+        source_directory=asset_path,
+        temporary_root=temp_dir,
+        dependencies_root=dependencies_root,
+        target=target,
+        host_system=host_system,
+        cmake_options={"BENCHMARK_ENABLE_GTEST_TESTS": False},
+        dry_run=dry_run,
+        print_debug=print_debug
+    )
+
+    shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
