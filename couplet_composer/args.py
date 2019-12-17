@@ -132,6 +132,14 @@ def _add_common_build_arguments(parser):
         dest="cmake_generator"
     )
     generator_group.add_argument(
+        "-N",
+        "--ninja",
+        action="store_const",
+        const=get_ninja_cmake_generator_name(),
+        help="generate the build files using the CMake generator for Ninja",
+        dest="cmake_generator"
+    )
+    generator_group.add_argument(
         "-m",
         "--make",
         action="store_const",

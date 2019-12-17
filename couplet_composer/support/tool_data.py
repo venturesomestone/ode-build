@@ -115,6 +115,17 @@ def create_clangxx_tool_data():
     )
 
 
+def create_make_tool_data():
+    """Creates the ToolData object of Make for toolchain."""
+    return ToolData(
+        get_tool_type=lambda: "build_system",
+        get_searched_tool=lambda: "make",
+        get_required_local_version=None,
+        get_local_executable=None,
+        install_tool=None
+    )
+
+
 def create_git_tool_data():
     """Creates the ToolData object of Git for toolchain."""
     return ToolData(

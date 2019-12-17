@@ -21,6 +21,9 @@ from collections import namedtuple
 
 import os
 
+from .support.cmake_generators import \
+    get_make_cmake_generator_name, get_ninja_cmake_generator_name
+
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
@@ -146,6 +149,8 @@ def _install_missing_tool(
     tools_root,
     target,
     host_system,
+    github_user_agent,
+    github_api_token,
     dry_run,
     print_debug
 ):
@@ -166,6 +171,12 @@ def _install_missing_tool(
 
     host_system -- The name of the system this script is run on.
 
+    github_user_agent -- The user agent used when accessing the
+    GitHub API.
+
+    github_api_token -- The GitHub API token that is used to
+    access the API.
+
     dry_run -- Whether the commands are only printed instead of
     running them.
 
@@ -182,6 +193,8 @@ def _install_missing_tool(
             version=version,
             target=target,
             host_system=host_system,
+            github_user_agent=github_user_agent,
+            github_api_token=github_api_token,
             dry_run=dry_run,
             print_debug=print_debug
         )
@@ -268,6 +281,19 @@ def create_toolchain(
     # done this way for simplicity.
     found_tools = {}
 
+    # Start by removing the tool data for the build systems that
+    # aren't selected.
+    def _filter_build_system(data):
+        if data.get_tool_type() == "build_system":
+            if cmake_generator == get_make_cmake_generator_name() \
+                    and data.get_searched_tool() != "make":
+                return False
+            elif cmake_generator == get_ninja_cmake_generator_name() \
+                    and data.get_searched_tool() != "ninja":
+                return False
+        return True
+    tools_data[:] = [x for x in tools_data if _filter_build_system(x)]
+
     # Start by checking if a correct local copy of the tool
     # exists.
     found_local_tools, missing_local_tools = _resolve_local_tools(
@@ -311,6 +337,8 @@ def create_toolchain(
             tools_root=tools_root,
             target=target,
             host_system=host_system,
+            github_user_agent=github_user_agent,
+            github_api_token=github_api_token,
             dry_run=dry_run,
             print_debug=print_debug
         )
