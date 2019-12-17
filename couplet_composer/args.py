@@ -20,7 +20,8 @@ from .support.cmake_generators import \
     get_ninja_cmake_generator_name
 
 from .support.project_values import \
-    get_anthem_name, get_anthem_version, get_ode_name, get_ode_version
+    get_anthem_name, get_anthem_version, get_ode_name, get_ode_version, \
+    get_opengl_version
 
 from .util.cache import cached
 
@@ -84,7 +85,7 @@ def _add_common_arguments(parser):
     return parser
 
 
-def _add_common_build_arguments(parser):
+def _add_common_build_arguments(parser, source_root):
     """
     Adds the options common to configure and compose parsers to
     the given parser. This function isn't pure as it modifies the
@@ -92,6 +93,9 @@ def _add_common_build_arguments(parser):
     arguments.
 
     parser -- The parser to which the arguments are added.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
     """
     # --------------------------------------------------------- #
     # TODO Build target options
@@ -116,7 +120,19 @@ def _add_common_build_arguments(parser):
     # )
 
     # --------------------------------------------------------- #
+    # OpenGL options
+
+    opengl_group = parser.add_argument_group("OpenGL options")
+
+    opengl_group.add_argument(
+        "--opengl-version",
+        default=get_opengl_version(source_root=source_root),
+        help="set the version of OpenGL"
+    )
+
+    # --------------------------------------------------------- #
     # TODO Build generator options
+
     generator_group = parser.add_mutually_exclusive_group(required=False)
 
     default_cmake_generator = get_ninja_cmake_generator_name()
@@ -175,12 +191,18 @@ def create_argument_parser(source_root):
     subparsers = parser.add_subparsers(dest="composer_mode")
 
     preset = _add_common_arguments(subparsers.add_parser("preset"))
-    configure = _add_common_build_arguments(_add_common_arguments(
-        subparsers.add_parser("configure")
-    ))
-    compose = _add_common_build_arguments(_add_common_arguments(
-        subparsers.add_parser("compose")
-    ))
+    configure = _add_common_build_arguments(
+        _add_common_arguments(
+            subparsers.add_parser("configure")
+        ),
+        source_root=source_root
+    )
+    compose = _add_common_build_arguments(
+        _add_common_arguments(
+            subparsers.add_parser("compose")
+        ),
+        source_root=source_root
+    )
 
     # --------------------------------------------------------- #
     # Preset: Positional arguments

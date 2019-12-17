@@ -59,6 +59,10 @@ def make_api_call(query, user_agent, api_token):
         "The returned value from the API is the following:\n%s",
         response
     )
+    logging.debug(
+        "The returned JSON data from the API is the following:\n%s",
+        response.json()
+    )
 
     return response.json()
 

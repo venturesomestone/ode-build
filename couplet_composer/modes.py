@@ -172,6 +172,7 @@ def run_in_configuring_mode(arguments, source_root):
         host_system=platform.system(),
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
+        opengl_version=arguments.opengl_version,
         dependencies_root=dependencies_root,
         build_root=get_build_root(source_root=source_root),
         dry_run=arguments.dry_run,

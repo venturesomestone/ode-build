@@ -42,7 +42,7 @@ from .project_names import get_project_package_name
 # dependency. The parameters for the function are: toolchain,
 # cmake_generator, build_root, dependencies_root, version,
 # target, host_system, github_user_agent, github_api_token,
-# dry_run, print_debug
+# opengl_version, dry_run, print_debug
 DependencyData = namedtuple("DependencyData", [
     "get_name",
     "get_required_version",

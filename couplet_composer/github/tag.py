@@ -46,7 +46,7 @@ def _checkout_tag(
         )
 
 
-def _clone_by_api_v4(
+def _clone_release_tag_by_api_v4(
     path,
     git,
     github_data,
@@ -57,8 +57,8 @@ def _clone_by_api_v4(
     print_debug=None
 ):
     """
-    Downloads a tag from GitHub using the version 4 of the
-    GitHub API.
+    Downloads a release tag from GitHub using the version 4 of
+    the GitHub API.
 
     path -- Path to the directory where the downloaded files are
     put.
@@ -125,7 +125,7 @@ def _clone_by_api_v4(
     return os.path.join(path, github_data.name)
 
 
-def download(
+def _clone_tag_by_api_v4(
     path,
     git,
     github_data,
@@ -136,7 +136,128 @@ def download(
     print_debug=None
 ):
     """
-    Downloads a tag from GitHub according to release data and
+    Downloads a tag from GitHub using the version 4 of the GitHub
+    API.
+
+    path -- Path to the directory where the downloaded files are
+    put.
+
+    git -- Path to the Git executable from the toolchain.
+
+    github_data -- The object containing the data required to
+    download the tag from GitHub.
+
+    user_agent -- The user agent used when accessing the GitHub
+    API.
+
+    api_token -- The GitHub API token that is used to access the
+    API.
+
+    host_system -- The system this script is run on.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
+    """
+    graph_ql_call = None
+    with open(os.path.join(
+        os.path.dirname(__file__),
+        "graphql",
+        "github_repository.graphql"
+    )) as f:
+        graph_ql_call = str(f.read()).replace(
+            "{OWNER}",
+            github_data.owner
+        ).replace(
+            "{REPOSITORY_NAME}",
+            github_data.name
+        )
+    api_response = make_api_call(
+        query=graph_ql_call,
+        user_agent=user_agent,
+        api_token=api_token
+    )
+    repository_url = api_response["data"]["repository"]["url"]
+
+    with shell.pushd(path):
+        shell.call(
+            [git, "clone", "{}.git".format(repository_url)],
+            dry_run=dry_run,
+            echo=print_debug
+        )
+
+    _checkout_tag(
+        path=path,
+        git=git,
+        github_data=github_data,
+        tag_name=github_data.tag_name,
+        dry_run=dry_run,
+        print_debug=print_debug
+    )
+
+    return os.path.join(path, github_data.name)
+
+
+def download_release_tag(
+    path,
+    git,
+    github_data,
+    user_agent,
+    api_token,
+    host_system,
+    dry_run=None,
+    print_debug=None
+):
+    """
+    Downloads a release tag from GitHub according to release data
+    and returns path to the downloaded tag.
+
+    path -- Path to the directory where the downloaded files are
+    put.
+
+    git -- Path to the Git executable from the toolchain.
+
+    github_data -- The object containing the data required to
+    download the tag from GitHub.
+
+    user_agent -- The user agent used when accessing the GitHub
+    API.
+
+    api_token -- The GitHub API token that is used to access the
+    API.
+
+    host_system -- The system this script is run on.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
+    """
+    return _clone_release_tag_by_api_v4(
+        path=path,
+        git=git,
+        github_data=github_data,
+        user_agent=user_agent,
+        api_token=api_token,
+        host_system=host_system,
+        dry_run=dry_run,
+        print_debug=print_debug
+    )
+
+
+def download_tag(
+    path,
+    git,
+    github_data,
+    user_agent,
+    api_token,
+    host_system,
+    dry_run=None,
+    print_debug=None
+):
+    """
+    Downloads a tag from GitHub according to repository data and
     returns path to the downloaded tag.
 
     path -- Path to the directory where the downloaded files are
@@ -160,7 +281,7 @@ def download(
 
     print_debug -- Whether debug output should be printed.
     """
-    return _clone_by_api_v4(
+    return _clone_tag_by_api_v4(
         path=path,
         git=git,
         github_data=github_data,

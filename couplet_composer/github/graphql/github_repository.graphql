@@ -1,5 +1,5 @@
 {
-  repository(owner: "{REPOSITORY_OWNER}", name: "{REPOSITORY_NAME}") {
+  repository(owner: "{OWNER}", name: "{REPOSITORY_NAME}") {
     url
   }
 }

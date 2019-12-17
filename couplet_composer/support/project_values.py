@@ -94,3 +94,14 @@ def get_anthem_version(source_root):
     script run.
     """
     return _get_project_values(source_root=source_root)["anthem"]["version"]
+
+
+@cached
+def get_opengl_version(source_root):
+    """
+    Gives the default version of OpenGL.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+    """
+    return _get_project_values(source_root=source_root)["opengl"]["version"]

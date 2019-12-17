@@ -132,7 +132,7 @@ def download_tag(
 
     print_debug -- Whether debug output should be printed.
     """
-    return tag.download(
+    return tag.download_release_tag(
         path=path,
         git=git,
         github_data=github_data,

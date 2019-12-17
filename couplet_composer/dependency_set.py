@@ -100,6 +100,7 @@ def install_dependencies(
     host_system,
     github_user_agent,
     github_api_token,
+    opengl_version,
     dependencies_root,
     build_root,
     dry_run,
@@ -128,6 +129,8 @@ def install_dependencies(
 
     github_api_token -- The GitHub API token that is used to
     access the API.
+
+    opengl_version -- The version of OpenGL that is used.
 
     dependencies_root -- The root directory of the dependencies
     for the current build target.
@@ -166,6 +169,7 @@ def install_dependencies(
             host_system=host_system,
             github_user_agent=github_user_agent,
             github_api_token=github_api_token,
+            opengl_version=opengl_version,
             dry_run=dry_run,
             print_debug=print_debug
         )

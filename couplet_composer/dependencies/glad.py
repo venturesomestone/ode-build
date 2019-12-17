@@ -12,12 +12,13 @@
 
 """
 This support module contains the functions related to the
-building and finding Google Benchmark.
+building and finding Glad.
 """
 
 import os
+import sys
 
-from ..github import release
+from ..github import tag
 
 from ..support.environment import get_temporary_directory
 
@@ -53,14 +54,7 @@ def should_install(dependencies_root, version, target, host_system):
 
     host_system -- The system this script is run on.
     """
-    if host_system == get_windows_system_name():
-        return False
-
-    return not os.path.exists(os.path.join(
-        dependencies_root,
-        "lib",
-        "libbenchmark.a"
-    ))
+    return not os.path.exists(os.path.join(dependencies_root, "src", "glad.c"))
 
 
 def install_dependency(
@@ -117,12 +111,12 @@ def install_dependency(
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
 
-    asset_path = release.download_tag(
+    asset_path = tag.download_tag(
         path=temp_dir,
         git=toolchain.git,
         github_data=GitHubData(
-            owner="google",
-            name="benchmark",
+            owner="Dav1dde",
+            name="glad",
             tag_name="v{}".format(version),
             asset_name=None
         ),
@@ -133,17 +127,20 @@ def install_dependency(
         print_debug=print_debug
     )
 
-    build_with_cmake(
-        toolchain=toolchain,
-        cmake_generator=cmake_generator,
-        source_directory=asset_path,
-        temporary_root=temp_dir,
-        dependencies_root=dependencies_root,
-        target=target,
-        host_system=host_system,
-        cmake_options={"BENCHMARK_ENABLE_GTEST_TESTS": False},
-        dry_run=dry_run,
-        print_debug=print_debug
-    )
+    with shell.pushd(asset_path, dry_run=dry_run, echo=print_debug):
+        shell.call(
+            [
+                sys.executable,
+                "-m",
+                "glad",
+                "--profile=core",
+                "--api=gl={}".format(opengl_version),
+                "--generator=c-debug",
+                "--spec=gl",
+                "--out-path={}".format(dependencies_root)
+            ],
+            dry_run=dry_run,
+            echo=print_debug
+        )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
