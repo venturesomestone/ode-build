@@ -129,12 +129,22 @@ def install_dependency(
     )
 
     if not os.path.isdir(os.path.join(dependencies_root, "include")):
-        shell.makedirs(os.path.join(dependencies_root, "include"))
+        shell.makedirs(
+            os.path.join(dependencies_root, "include"),
+            dry_run=dry_run,
+            echo=print_debug
+        )
     if os.path.isdir(os.path.join(dependencies_root, "include", "spdlog")):
-        shell.rmtree(os.path.join(dependencies_root, "include", "spdlog"))
+        shell.rmtree(
+            os.path.join(dependencies_root, "include", "spdlog"),
+            dry_run=dry_run,
+            echo=print_debug
+        )
     shell.copytree(
         os.path.join(asset_path, "include", "spdlog"),
-        os.path.join(dependencies_root, "include", "spdlog")
+        os.path.join(dependencies_root, "include", "spdlog"),
+        dry_run=dry_run,
+        echo=print_debug
     )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)

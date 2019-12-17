@@ -146,25 +146,42 @@ def install_dependency(
 
     if host_system == get_windows_system_name():
         if not os.path.isdir(os.path.join(dependencies_root, "include")):
-            shell.makedirs(os.path.join(dependencies_root, "include"))
+            shell.makedirs(
+                os.path.join(dependencies_root, "include"),
+                dry_run=dry_run,
+                echo=print_debug
+            )
         include_dir = os.path.join(dependencies_root, "include", "SDL2")
         if os.path.isdir(include_dir):
-            shell.rmtree(include_dir)
-        shell.copytree(os.path.join(subdir, "include"), include_dir)
+            shell.rmtree(include_dir, dry_run=dry_run, echo=print_debug)
+        shell.copytree(
+            os.path.join(subdir, "include"),
+            include_dir,
+            dry_run=dry_run,
+            echo=print_debug
+        )
         if not os.path.isdir(os.path.join(dependencies_root, "lib")):
-            shell.makedirs(os.path.join(dependencies_root, "lib"))
+            shell.makedirs(
+                os.path.join(dependencies_root, "lib"),
+                dry_run=dry_run,
+                echo=print_debug
+            )
         for lib_file in os.listdir(os.path.join(
             dependencies_root,
             "lib"
         )):
             if "SDL" in lib_file:
                 shell.rm(
-                    os.path.join(dependencies_root, "lib", lib_file)
+                    os.path.join(dependencies_root, "lib", lib_file),
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
         for lib_file in os.listdir(os.path.join(subdir, "lib", "x86")):
             shell.copy(
                 os.path.join(subdir, "lib", "x86", lib_file),
-                os.path.join(dependencies_root, "lib", lib_file)
+                os.path.join(dependencies_root, "lib", lib_file),
+                dry_run=dry_run,
+                echo=print_debug
             )
     else:
         build_with_cmake(

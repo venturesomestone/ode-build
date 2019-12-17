@@ -93,7 +93,7 @@ def _create_cxx_header(dependencies_root, dry_run, print_debug):
         )
     cxx_header = os.path.join(dependencies_root, "include", "lua.hpp")
     if os.path.exists(cxx_header):
-        shell.rm(cxx_header)
+        shell.rm(cxx_header, dry_run=dry_run, echo=print_debug)
     with open(cxx_header, "w+") as outfile:
         outfile.write("// lua.hpp\n")
         outfile.write("// Lua header files for C++\n")
@@ -212,7 +212,7 @@ def install_dependency(
 
     subdir = os.path.join(dependency_temp_dir, "lua-{}".format(version))
 
-    with shell.pushd(subdir):
+    with shell.pushd(subdir, dry_run=dry_run, echo=print_debug):
         if cmake_generator == get_make_cmake_generator_name() \
                 and host_system != get_windows_system_name():
             _build_with_make(
@@ -229,7 +229,9 @@ def install_dependency(
                     "lua",
                     "CMakeLists.txt"
                 ),
-                os.path.join(subdir, "CMakeLists.txt")
+                os.path.join(subdir, "CMakeLists.txt"),
+                dry_run=dry_run,
+                echo=print_debug
             )
             build_with_cmake(
                 toolchain=toolchain,
@@ -251,39 +253,63 @@ def install_dependency(
             if host_system == get_windows_system_name():
                 build_dir = os.path.join(temp_dir, "build")
                 if not os.path.isdir(os.path.join(dependencies_root, "lib")):
-                    shell.makedirs(os.path.join(dependencies_root, "lib"))
+                    shell.makedirs(
+                        os.path.join(dependencies_root, "lib"),
+                        dry_run=dry_run,
+                        echo=print_debug
+                    )
                 lib_file = os.path.join(dependencies_root, "lib", "lua.lib")
                 if os.path.exists(lib_file):
-                    shell.rm(lib_file)
+                    shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
                 shell.copy(
                     os.path.join(build_dir, "Debug", "lua.lib"),
-                    lib_file
-                )
-                shell.rm(os.path.join(dependencies_root, "include", "lua.h"))
-                shell.rm(
-                    os.path.join(dependencies_root, "include", "lualib.h")
+                    lib_file,
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
                 shell.rm(
-                    os.path.join(dependencies_root, "include", "lauxlib.h")
+                    os.path.join(dependencies_root, "include", "lua.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
                 shell.rm(
-                    os.path.join(dependencies_root, "include", "luaconf.h")
+                    os.path.join(dependencies_root, "include", "lualib.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
+                )
+                shell.rm(
+                    os.path.join(dependencies_root, "include", "lauxlib.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
+                )
+                shell.rm(
+                    os.path.join(dependencies_root, "include", "luaconf.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
                 shell.copy(
                     os.path.join(dependency_temp_dir, "src", "lua.h"),
-                    os.path.join(dependencies_root, "include", "lua.h")
+                    os.path.join(dependencies_root, "include", "lua.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
                 shell.copy(
                     os.path.join(dependency_temp_dir, "src", "lualib.h"),
-                    os.path.join(dependencies_root, "include", "lualib.h")
+                    os.path.join(dependencies_root, "include", "lualib.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
                 shell.copy(
                     os.path.join(dependency_temp_dir, "src", "lauxlib.h"),
-                    os.path.join(dependencies_root, "include", "lauxlib.h")
+                    os.path.join(dependencies_root, "include", "lauxlib.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
                 shell.copy(
                     os.path.join(dependency_temp_dir, "src", "luaconf.h"),
-                    os.path.join(dependencies_root, "include", "luaconf.h")
+                    os.path.join(dependencies_root, "include", "luaconf.h"),
+                    dry_run=dry_run,
+                    echo=print_debug
                 )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
