@@ -106,10 +106,6 @@ def run_in_configuring_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    # set_up.set_up()
-    # clone.clone_dependencies()
-    # TODO Write the JSON file for toolchain here.
-
     build_target = parse_target_from_argument_string(arguments.host_target)
 
     # Check the directories.
@@ -145,6 +141,7 @@ def run_in_configuring_mode(arguments, source_root):
         github_api_token=github_api_token,
         tools_root=tools_root,
         build_root=get_build_root(source_root=source_root),
+        read_only=False,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
     )
@@ -192,3 +189,49 @@ def run_in_composing_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
+    build_target = parse_target_from_argument_string(arguments.host_target)
+
+    # Check the directories.
+    # build_root = create_build_root(source_root=source_root)
+    tools_root = create_tools_root(
+        source_root=source_root,
+        target=build_target
+    )
+
+    logging.debug("Creating the toolchain for the run")
+
+    # TODO Allow reading the user agent from some file on the
+    # system
+    github_user_agent = arguments.github_user_agent
+
+    # TODO Allow reading the API token from some file on the
+    # system
+    github_api_token = arguments.github_api_token
+
+    toolchain = create_toolchain(
+        tools_data=construct_tools_data({
+            "clang": tool_data.create_clang_tool_data,
+            "clang++": tool_data.create_clangxx_tool_data,
+            "cmake": tool_data.create_cmake_tool_data,
+            "ninja": tool_data.create_ninja_tool_data,
+            "make": tool_data.create_make_tool_data,
+            "git": tool_data.create_git_tool_data
+        }),
+        cmake_generator=arguments.cmake_generator,
+        target=build_target,
+        host_system=platform.system(),
+        github_user_agent=github_user_agent,
+        github_api_token=github_api_token,
+        tools_root=tools_root,
+        build_root=get_build_root(source_root=source_root),
+        read_only=True,
+        dry_run=arguments.dry_run,
+        print_debug=arguments.print_debug
+    )
+
+    logging.debug("The created toolchain is %s", toolchain)
+
+    dependencies_root = create_dependencies_root(
+        source_root=source_root,
+        target=build_target
+    )

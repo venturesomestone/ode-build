@@ -230,6 +230,7 @@ def create_toolchain(
     github_api_token,
     tools_root,
     build_root,
+    read_only,
     dry_run,
     print_debug
 ):
@@ -270,6 +271,10 @@ def create_toolchain(
 
     build_root -- The path to the root directory that is used for
     all created files and directories.
+
+    read_only -- Whether the creation of the toolchain is read
+    only. It's read only when the script is run in composing mode
+    instead of configuring mode.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
@@ -330,21 +335,22 @@ def create_toolchain(
             missing_tools.append(tool)
 
     # Download the missing tools.
-    for tool in missing_tools:
-        installed_tool = _install_missing_tool(
-            tool=tool,
-            build_root=build_root,
-            tools_root=tools_root,
-            target=target,
-            host_system=host_system,
-            github_user_agent=github_user_agent,
-            github_api_token=github_api_token,
-            dry_run=dry_run,
-            print_debug=print_debug
-        )
-        if installed_tool:
-            found_tools.update({tool.get_tool_type(): installed_tool})
-        else:
-            found_tools.update({tool.get_tool_type(): None})
+    if not read_only:
+        for tool in missing_tools:
+            installed_tool = _install_missing_tool(
+                tool=tool,
+                build_root=build_root,
+                tools_root=tools_root,
+                target=target,
+                host_system=host_system,
+                github_user_agent=github_user_agent,
+                github_api_token=github_api_token,
+                dry_run=dry_run,
+                print_debug=print_debug
+            )
+            if installed_tool:
+                found_tools.update({tool.get_tool_type(): installed_tool})
+            else:
+                found_tools.update({tool.get_tool_type(): None})
 
     return _construct_toolchain(found_tools=found_tools)
