@@ -31,6 +31,7 @@ def build_with_cmake(
     target,
     host_system,
     cmake_options=None,
+    do_install=True,
     dry_run=None,
     print_debug=None
 ):
@@ -58,6 +59,9 @@ def build_with_cmake(
     host_system -- The system this script is run on.
 
     cmake_options -- Additional options passed to CMake.
+
+    do_install -- Whether or not the install command should be
+    called after building the project.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
@@ -103,8 +107,9 @@ def build_with_cmake(
             echo=print_debug
         )
         shell.call([toolchain.build_system], dry_run=dry_run, echo=print_debug)
-        shell.call(
-            [toolchain.build_system, "install"],
-            dry_run=dry_run,
-            echo=print_debug
-        )
+        if do_install:
+            shell.call(
+                [toolchain.build_system, "install"],
+                dry_run=dry_run,
+                echo=print_debug
+            )
