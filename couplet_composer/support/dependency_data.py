@@ -35,8 +35,8 @@ from .project_names import get_project_package_name
 # Parameters: target, host_system
 #
 # should_install -- Tells whether or not the dependency should be
-# built. Parameters: dependencies_root, version, target,
-# host_system
+# built. Parameters: build_test, dependencies_root, version,
+# target, host_system
 #
 # install_dependency -- Installs the dependency if it wasn't
 # found on the system. The dependency is downloaded and possibly

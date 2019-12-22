@@ -86,6 +86,7 @@ def _resolve_dependencies_to_install(
     accumulated_to_install = [
         data for data in dependencies_data
         if data.should_install is not None and data.should_install(
+            build_test=build_test,
             dependencies_root=dependencies_root,
             version=data.get_required_version(
                 target=target,
@@ -156,7 +157,8 @@ def install_dependencies(
         dependencies_data=dependencies_data,
         target=target,
         host_system=host_system,
-        dependencies_root=dependencies_root
+        dependencies_root=dependencies_root,
+        build_test=build_test
     )
 
     logging.debug(
