@@ -21,7 +21,9 @@ import os
 import platform
 import sys
 
-from .support.environment import get_build_root
+from functools import partial
+
+from .support.environment import get_build_root, get_project_root
 
 from .support.file_paths import \
     get_preset_file_path, get_project_dependencies_file_path
@@ -33,6 +35,9 @@ from .support import tool_data
 from .util.target import parse_target_from_argument_string
 
 from .util import shell
+
+from .composing_mode import \
+    compose_project, create_composing_root, create_destination_root
 
 from .configuring_mode import \
     create_build_root, create_dependencies_root, create_tools_root
@@ -93,6 +98,38 @@ def run_in_preset_mode(arguments, source_root):
     shell.caffeinate(command_to_run, dry_run=False, echo=True)
 
 
+def _construct_tool_data_construction_info(arguments):
+    """
+    Constructs the dictionary containing the required information
+    for creating the ToolData object for the toolchain.
+
+    arguments -- The namespace containing the parsed command line
+    arguments of the script.
+    """
+    return {
+        "clang": partial(
+            tool_data.create_clang_tool_data,
+            version=arguments.compiler_version
+        ),
+        "clang++": partial(
+            tool_data.create_clangxx_tool_data,
+            version=arguments.compiler_version
+        ),
+        "gcc": partial(
+            tool_data.create_gcc_tool_data,
+            version=arguments.compiler_version
+        ),
+        "g++": partial(
+            tool_data.create_gxx_tool_data,
+            version=arguments.compiler_version
+        ),
+        "cmake": tool_data.create_cmake_tool_data,
+        "ninja": tool_data.create_ninja_tool_data,
+        "make": tool_data.create_make_tool_data,
+        "git": tool_data.create_git_tool_data
+    }
+
+
 def run_in_configuring_mode(arguments, source_root):
     """
     Runs the script in configuration mode and sets up the
@@ -126,14 +163,10 @@ def run_in_configuring_mode(arguments, source_root):
     github_api_token = arguments.github_api_token
 
     toolchain = create_toolchain(
-        tools_data=construct_tools_data({
-            "clang": tool_data.create_clang_tool_data,
-            "clang++": tool_data.create_clangxx_tool_data,
-            "cmake": tool_data.create_cmake_tool_data,
-            "ninja": tool_data.create_ninja_tool_data,
-            "make": tool_data.create_make_tool_data,
-            "git": tool_data.create_git_tool_data
-        }),
+        tools_data=construct_tools_data(
+            _construct_tool_data_construction_info(arguments=arguments)
+        ),
+        compiler_toolchain=arguments.compiler_toolchain,
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
@@ -209,14 +242,10 @@ def run_in_composing_mode(arguments, source_root):
     github_api_token = arguments.github_api_token
 
     toolchain = create_toolchain(
-        tools_data=construct_tools_data({
-            "clang": tool_data.create_clang_tool_data,
-            "clang++": tool_data.create_clangxx_tool_data,
-            "cmake": tool_data.create_cmake_tool_data,
-            "ninja": tool_data.create_ninja_tool_data,
-            "make": tool_data.create_make_tool_data,
-            "git": tool_data.create_git_tool_data
-        }),
+        tools_data=construct_tools_data(
+            _construct_tool_data_construction_info(arguments=arguments)
+        ),
+        compiler_toolchain=arguments.compiler_toolchain,
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
@@ -231,7 +260,21 @@ def run_in_composing_mode(arguments, source_root):
 
     logging.debug("The created toolchain is %s", toolchain)
 
-    dependencies_root = create_dependencies_root(
-        source_root=source_root,
-        target=build_target
+    compose_project(
+        toolchain=toolchain,
+        arguments=arguments,
+        project_root=get_project_root(source_root=source_root),
+        build_root=get_build_root(source_root=source_root),
+        composing_root=create_composing_root(
+            source_root=source_root,
+            target=build_target
+        ),
+        destination_root=create_destination_root(
+            source_root=source_root,
+            target=build_target
+        ),
+        dependencies_root=create_dependencies_root(
+            source_root=source_root,
+            target=build_target
+        )
     )

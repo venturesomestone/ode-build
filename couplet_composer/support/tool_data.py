@@ -93,25 +93,76 @@ def _create_tool_data(module_name):
     )
 
 
-def create_clang_tool_data():
-    """Creates the ToolData object of Clang for toolchain."""
+def create_compiler_tool_data(tool_type, tool_name, version=None):
+    """
+    Creates the ToolData object of a generic compiler tool.
+
+    tool_type -- The type of the tool.
+
+    tool_name -- The name of the tool.
+
+    version -- The version of compiler tool to search for.
+    """
     return ToolData(
-        get_tool_type=lambda: "cc",
-        get_searched_tool=lambda: "clang",
+        get_tool_type=lambda: tool_type,
+        get_searched_tool=(lambda: tool_name)
+        if not version
+        else (lambda: "{}-{}".format(tool_name, version)),
         get_required_local_version=None,
         get_local_executable=None,
         install_tool=None
     )
 
 
-def create_clangxx_tool_data():
-    """Creates the ToolData object of Clang++ for toolchain."""
-    return ToolData(
-        get_tool_type=lambda: "cxx",
-        get_searched_tool=lambda: "clang++",
-        get_required_local_version=None,
-        get_local_executable=None,
-        install_tool=None
+def create_clang_tool_data(version=None):
+    """
+    Creates the ToolData object of Clang for toolchain.
+
+    version -- The version of Clang to search for.
+    """
+    return create_compiler_tool_data(
+        tool_type="cc",
+        tool_name="clang",
+        version=version
+    )
+
+
+def create_clangxx_tool_data(version=None):
+    """
+    Creates the ToolData object of Clang++ for toolchain.
+
+    version -- The version of Clang to search for.
+    """
+    return create_compiler_tool_data(
+        tool_type="cxx",
+        tool_name="clang++",
+        version=version
+    )
+
+
+def create_gcc_tool_data(version=None):
+    """
+    Creates the ToolData object of GCC for toolchain.
+
+    version -- The version of GCC to search for.
+    """
+    return create_compiler_tool_data(
+        tool_type="cc",
+        tool_name="gcc",
+        version=version
+    )
+
+
+def create_gxx_tool_data(version=None):
+    """
+    Creates the ToolData object of G++ for toolchain.
+
+    version -- The version of GCC to search for.
+    """
+    return create_compiler_tool_data(
+        tool_type="cxx",
+        tool_name="g++",
+        version=version
     )
 
 

@@ -19,6 +19,10 @@ from .support.cmake_generators import \
     get_cmake_generator_names, get_make_cmake_generator_name, \
     get_ninja_cmake_generator_name
 
+from .support.compiler_toolchains import \
+    get_gcc_toolchain_name, get_clang_toolchain_name, \
+    get_compiler_toolchain_names
+
 from .support.project_values import \
     get_anthem_name, get_anthem_version, get_ode_name, get_ode_version, \
     get_opengl_version
@@ -118,6 +122,49 @@ def _add_common_build_arguments(parser, source_root):
     #     default=[],
     #     help="cross-compile the project for the given targets"
     # )
+
+    # --------------------------------------------------------- #
+    # Compiling options
+
+    compiler_group = parser.add_argument_group("Compiling options")
+
+    compiler_selection_group = compiler_group.add_mutually_exclusive_group(
+        required=False
+    )
+
+    default_compiler_toolchain = get_clang_toolchain_name()
+
+    parser.set_defaults(compiler_toolchain=default_compiler_toolchain)
+
+    compiler_selection_group.add_argument(
+        "-C",
+        "--compiler-toolchain",
+        default=default_compiler_toolchain,
+        choices=get_compiler_toolchain_names(),
+        help="use the selected compiler toolchain for building the project "
+             "(default: {})".format(default_compiler_toolchain),
+        dest="compiler_toolchain"
+    )
+    compiler_selection_group.add_argument(
+        "--clang",
+        action="store_const",
+        const=get_clang_toolchain_name(),
+        help="use the Clang compiler toolchain for building the project",
+        dest="compiler_toolchain"
+    )
+    compiler_selection_group.add_argument(
+        "--gcc",
+        action="store_const",
+        const=get_gcc_toolchain_name(),
+        help="use the GCC compiler toolchain for building the project",
+        dest="compiler_toolchain"
+    )
+
+    compiler_group.add_argument(
+        "--compiler-version",
+        default=None,
+        help="use the given version for the set compiler toolchain"
+    )
 
     # --------------------------------------------------------- #
     # OpenGL options

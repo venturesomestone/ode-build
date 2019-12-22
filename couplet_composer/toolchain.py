@@ -21,6 +21,9 @@ from collections import namedtuple
 
 import os
 
+from .support.compiler_toolchains import \
+    get_gcc_toolchain_name, get_clang_toolchain_name
+
 from .support.cmake_generators import \
     get_make_cmake_generator_name, get_ninja_cmake_generator_name
 
@@ -223,6 +226,7 @@ def _construct_toolchain(found_tools):
 
 def create_toolchain(
     tools_data,
+    compiler_toolchain,
     cmake_generator,
     target,
     host_system,
@@ -249,6 +253,8 @@ def create_toolchain(
 
     tools_data -- List of objects of type ToolData that contain
     the functions for checking and building the tools.
+
+    compiler_toolchain -- The name of the compiler toolchain.
 
     cmake_generator -- The name of the generator that CMake
     should use as the build system for which the build scripts
@@ -285,6 +291,26 @@ def create_toolchain(
     # dictionary is modified when new tools are resolved. It's
     # done this way for simplicity.
     found_tools = {}
+
+    # Start by removing the tool data for the compiler tools that
+    # aren't selected.
+    def _filter_compiler_tools(data):
+        if data.get_tool_type() == "cc":
+            if compiler_toolchain == get_clang_toolchain_name() \
+                    and "clang" not in data.get_searched_tool():
+                return False
+            elif compiler_toolchain == get_gcc_toolchain_name() \
+                    and "gcc" not in data.get_searched_tool():
+                return False
+        elif data.get_tool_type() == "cxx":
+            if compiler_toolchain == get_clang_toolchain_name() \
+                    and "clang" not in data.get_searched_tool():
+                return False
+            elif compiler_toolchain == get_gcc_toolchain_name() \
+                    and "g++" not in data.get_searched_tool():
+                return False
+        return True
+    tools_data[:] = [x for x in tools_data if _filter_compiler_tools(x)]
 
     # Start by removing the tool data for the build systems that
     # aren't selected.

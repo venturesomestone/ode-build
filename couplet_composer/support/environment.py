@@ -54,6 +54,44 @@ def get_build_root(source_root):
 
 
 @cached
+def get_composing_directory(build_root, target):
+    """
+    Gives the path to the directory in the build directory that
+    is used for the build of the project.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+    """
+    return os.path.join(
+        build_root,
+        "build",
+        "{}-{}".format(target.system, target.machine)
+    )
+
+
+@cached
+def get_destination_directory(build_root, target):
+    """
+    Gives the path to the directory where the built project is
+    placed.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+    """
+    return os.path.join(
+        build_root,
+        "dest",
+        "{}-{}".format(target.system, target.machine)
+    )
+
+
+@cached
 def get_tools_directory(build_root, target):
     """
     Gives the path to the directory in the build directory that
