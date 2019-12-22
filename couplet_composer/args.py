@@ -15,6 +15,10 @@
 import argparse
 import multiprocessing
 
+from .support.build_variant import \
+    get_build_variant_names, get_debug_variant_name, \
+    get_release_variant_name, get_release_with_debuginfo_variant_name
+
 from .support.cmake_generators import \
     get_cmake_generator_names, get_make_cmake_generator_name, \
     get_ninja_cmake_generator_name
@@ -107,6 +111,53 @@ def _add_common_build_arguments(parser, source_root):
         action="store_true",
         help="build the tests",
         dest="build_test"
+    )
+
+    # --------------------------------------------------------- #
+    # Build variant options
+
+    variant_group = parser.add_argument_group("Build variant options")
+
+    variant_selection_group = variant_group.add_mutually_exclusive_group(
+        required=False
+    )
+
+    default_build_variant = get_debug_variant_name()
+
+    parser.set_defaults(build_variant=default_build_variant)
+
+    variant_selection_group.add_argument(
+        "--build-variant",
+        default=default_build_variant,
+        choices=get_compiler_toolchain_names(),
+        help="use the selected build variant (default: {})".format(
+            default_build_variant
+        ),
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-d",
+        "--debug",
+        action="store_const",
+        const=get_debug_variant_name(),
+        help="build the project using the Debug variant",
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-r",
+        "--release-debuginfo",
+        action="store_const",
+        const=get_release_with_debuginfo_variant_name(),
+        help="build the project using the RelWithDebInfo variant",
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-R",
+        "--release",
+        action="store_const",
+        const=get_release_variant_name(),
+        help="build the project using the Release variant",
+        dest="build_variant"
     )
 
     # --------------------------------------------------------- #

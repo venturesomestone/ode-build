@@ -103,6 +103,7 @@ def compose_project(
         project_root,
         "-G",
         arguments.cmake_generator,
+        "-DCMAKE_BUILD_TYPE={}".format(arguments.build_variant),
         "-DCMAKE_C_COMPILER={}".format(toolchain.cc),
         "-DCMAKE_CXX_COMPILER={}".format(toolchain.cxx),
         "-DCMAKE_INSTALL_PREFIX={}".format(destination_root),
