@@ -101,6 +101,14 @@ def _add_common_build_arguments(parser, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
+    parser.add_argument(
+        "-t",
+        "--test",
+        action="store_true",
+        help="build the tests",
+        dest="build_test"
+    )
+
     # --------------------------------------------------------- #
     # TODO Build target options
 

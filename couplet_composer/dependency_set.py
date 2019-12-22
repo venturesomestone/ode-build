@@ -37,15 +37,18 @@ def construct_dependencies_data(data_file):
     json_data = None
     with open(data_file) as f:
         json_data = json.load(f)
-    return [create_dependency_data(key, node)
-            for key, node in json_data.items()]
+    return [create_dependency_data(
+        module_name=key,
+        data_node=node
+        ) for key, node in json_data.items()]
 
 
 def _resolve_dependencies_to_install(
     dependencies_data,
     target,
     host_system,
-    dependencies_root
+    dependencies_root,
+    build_test
 ):
     """
     Checks whether or not the dependencies required by the
@@ -64,10 +67,13 @@ def _resolve_dependencies_to_install(
 
     dependencies_root -- The root directory of the dependencies
     for the current build target.
+
+    build_test -- Whether or not the tests should be built.
     """
     accumulated_not_to_install = [
         data for data in dependencies_data
         if data.should_install is None or not data.should_install(
+            build_test=build_test,
             dependencies_root=dependencies_root,
             version=data.get_required_version(
                 target=target,
@@ -103,6 +109,7 @@ def install_dependencies(
     opengl_version,
     dependencies_root,
     build_root,
+    build_test,
     dry_run,
     print_debug
 ):
@@ -137,6 +144,8 @@ def install_dependencies(
 
     build_root -- The path to the root directory that is used for
     all created files and directories.
+
+    build_test -- Whether or not the tests should be built.
 
     dry_run -- Whether the commands are only printed instead of
     running them.

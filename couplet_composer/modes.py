@@ -205,6 +205,7 @@ def run_in_configuring_mode(arguments, source_root):
         opengl_version=arguments.opengl_version,
         dependencies_root=dependencies_root,
         build_root=get_build_root(source_root=source_root),
+        build_test=arguments.build_test,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
     )

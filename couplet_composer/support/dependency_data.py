@@ -21,6 +21,8 @@ import importlib
 
 from collections import namedtuple
 
+from functools import partial
+
 from .project_names import get_project_package_name
 
 
@@ -51,6 +53,46 @@ DependencyData = namedtuple("DependencyData", [
 ])
 
 
+def _should_install_dependency(
+    module,
+    data_node,
+    build_test,
+    dependencies_root,
+    version,
+    target,
+    host_system
+):
+    """
+    Tells whether the build of the dependency should be skipped.
+
+    module -- The module from which the various functions are
+    got.
+
+    data_node -- The entry in the dependency JSON file containing
+    the data for the dependency in question.
+
+    build_test -- Whether or not the tests should be built.
+
+    dependencies_root -- The root directory of the dependencies
+    for the current build target.
+
+    version -- The full version number of the dependency.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    host_system -- The system this script is run on.
+    """
+    if data_node["testonly"] and not build_test:
+        return False
+    return getattr(module, "should_install")(
+        dependencies_root=dependencies_root,
+        version=version,
+        target=target,
+        host_system=host_system
+    )
+
+
 def create_dependency_data(module_name, data_node):
     """
     Creates a common DependencyData object of a dependency. This
@@ -71,6 +113,10 @@ def create_dependency_data(module_name, data_node):
     return DependencyData(
         get_name=lambda: data_node["name"],
         get_required_version=lambda target, host_system: data_node["version"],
-        should_install=getattr(dependency_module, "should_install"),
+        should_install=partial(
+            _should_install_dependency,
+            module=dependency_module,
+            data_node=data_node
+        ),
         install_dependency=getattr(dependency_module, "install_dependency")
     )

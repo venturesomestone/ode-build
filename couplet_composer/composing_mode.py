@@ -106,6 +106,7 @@ def compose_project(
         "-DCMAKE_C_COMPILER={}".format(toolchain.cc),
         "-DCMAKE_CXX_COMPILER={}".format(toolchain.cxx),
         "-DCMAKE_INSTALL_PREFIX={}".format(destination_root),
+        "-DODE_BUILD_TEST={}".format("ON" if arguments.build_test else "OFF"),
         # TODO
         "-DODE_CXX_VERSION={}".format("c++17"),
         "-DODE_DEPENDENCY_PREFIX={}".format(dependencies_root),
