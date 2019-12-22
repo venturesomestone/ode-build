@@ -19,6 +19,7 @@ script acts on.
 
 from collections import namedtuple
 
+import logging
 import os
 
 from .support.compiler_toolchains import \
@@ -298,17 +299,42 @@ def create_toolchain(
         if data.get_tool_type() == "cc":
             if compiler_toolchain == get_clang_toolchain_name() \
                     and "clang" not in data.get_searched_tool():
+                logging.debug(
+                    "Removing %s from the tools to search for the "
+                    "toolchain as it isn't the selected C compiler",
+                    data.get_searched_tool()
+                )
                 return False
             elif compiler_toolchain == get_gcc_toolchain_name() \
                     and "gcc" not in data.get_searched_tool():
+                logging.debug(
+                    "Removing %s from the tools to search for the "
+                    "toolchain as it isn't the selected C compiler",
+                    data.get_searched_tool()
+                )
                 return False
         elif data.get_tool_type() == "cxx":
             if compiler_toolchain == get_clang_toolchain_name() \
                     and "clang" not in data.get_searched_tool():
+                logging.debug(
+                    "Removing %s from the tools to search for the "
+                    "toolchain as it isn't the selected C++ compiler",
+                    data.get_searched_tool()
+                )
                 return False
             elif compiler_toolchain == get_gcc_toolchain_name() \
                     and "g++" not in data.get_searched_tool():
+                logging.debug(
+                    "Removing %s from the tools to search for the "
+                    "toolchain as it isn't the selected C++ compiler",
+                    data.get_searched_tool()
+                )
                 return False
+        logging.debug(
+            "%s is preserved in the toolchain for search after filtering it "
+            "as compiler toolchain",
+            data.get_searched_tool()
+        )
         return True
     tools_data[:] = [x for x in tools_data if _filter_compiler_tools(x)]
 
@@ -318,10 +344,25 @@ def create_toolchain(
         if data.get_tool_type() == "build_system":
             if cmake_generator == get_make_cmake_generator_name() \
                     and data.get_searched_tool() != "make":
+                logging.debug(
+                    "Removing %s from the tools to search for the toolchain "
+                    "as it isn't the selected build system",
+                    data.get_searched_tool()
+                )
                 return False
             elif cmake_generator == get_ninja_cmake_generator_name() \
                     and data.get_searched_tool() != "ninja":
+                logging.debug(
+                    "Removing %s from the tools to search for the toolchain "
+                    "as it isn't the selected build system",
+                    data.get_searched_tool()
+                )
                 return False
+        logging.debug(
+            "%s is preserved in the toolchain for search after filtering it "
+            "as build system",
+            data.get_searched_tool()
+        )
         return True
     tools_data[:] = [x for x in tools_data if _filter_build_system(x)]
 
@@ -335,8 +376,11 @@ def create_toolchain(
         tools_root=tools_root
     )
 
+    logging.debug("The tools found locally are:")
+
     # Add the found tools to the dictionary.
     for tool in found_local_tools:
+        logging.debug("%s", tool.get_searched_tool())
         found_tools.update({tool.get_tool_type(): tool.get_local_executable(
             tools_root=tools_root,
             version=tool.get_required_local_version(
@@ -351,13 +395,16 @@ def create_toolchain(
 
     # If a tool is missing, look for it from the host system.
     for tool in missing_local_tools:
+        logging.debug("Looking for %s on the system", tool.get_searched_tool())
         found_tool = _find_tool(
             tool=tool.get_searched_tool(),
             host_system=host_system
         )
         if found_tool:
+            logging.debug("Found %s", found_tool)
             found_tools.update({tool.get_tool_type(): found_tool})
         else:
+            logging.debug("%s wasn't found", tool.get_searched_tool())
             missing_tools.append(tool)
 
     # Download the missing tools.
