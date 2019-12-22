@@ -28,8 +28,7 @@ from .support.compiler_toolchains import \
     get_compiler_toolchain_names
 
 from .support.project_values import \
-    get_anthem_name, get_anthem_version, get_ode_name, get_ode_version, \
-    get_opengl_version
+    get_anthem_name, get_anthem_version, get_default_anthem_logger_name, get_default_ode_logger_name, get_default_anthem_window_name, get_default_ode_window_name, get_ode_name, get_ode_version, get_opengl_version
 
 from .util.cache import cached
 
@@ -365,6 +364,38 @@ def create_argument_parser(source_root):
         "--anthem-version",
         default=get_anthem_version(source_root=source_root),
         help="set the version of {}".format(get_anthem_name(
+            source_root=source_root
+        ))
+    )
+
+    # --------------------------------------------------------- #
+    # Compose: Feature options
+
+    compose.add_argument(
+        "--ode-window-name",
+        default=get_default_ode_window_name(source_root=source_root),
+        help="set name of the default window of {}".format(get_ode_name(
+            source_root=source_root
+        ))
+    )
+    compose.add_argument(
+        "--anthem-window-name",
+        default=get_default_anthem_window_name(source_root=source_root),
+        help="set name of the default window of {}".format(get_anthem_name(
+            source_root=source_root
+        ))
+    )
+    compose.add_argument(
+        "--ode-logger-name",
+        default=get_default_ode_logger_name(source_root=source_root),
+        help="set name of the default logger of {}".format(get_ode_name(
+            source_root=source_root
+        ))
+    )
+    compose.add_argument(
+        "--anthem-logger-name",
+        default=get_default_anthem_logger_name(source_root=source_root),
+        help="set name of the default logger of {}".format(get_anthem_name(
             source_root=source_root
         ))
     )

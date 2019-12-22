@@ -105,3 +105,47 @@ def get_opengl_version(source_root):
     script run.
     """
     return _get_project_values(source_root=source_root)["opengl"]["version"]
+
+
+@cached
+def get_default_ode_window_name(source_root):
+    """
+    Gives the default name of the window of Obliging Ode.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+    """
+    return "ode-window"
+
+
+@cached
+def get_default_anthem_window_name(source_root):
+    """
+    Gives the default name of the window of Unsung Anthem.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+    """
+    return get_anthem_name(source_root=source_root)
+
+
+@cached
+def get_default_ode_logger_name(source_root):
+    """
+    Gives the default name of the logger of Obliging Ode.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+    """
+    return "ode"
+
+
+@cached
+def get_default_anthem_logger_name(source_root):
+    """
+    Gives the default name of the logger of Unsung Anthem.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+    """
+    return get_anthem_name(source_root=source_root)

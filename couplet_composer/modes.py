@@ -264,6 +264,7 @@ def run_in_composing_mode(arguments, source_root):
     compose_project(
         toolchain=toolchain,
         arguments=arguments,
+        host_system=platform.system(),
         project_root=get_project_root(source_root=source_root),
         build_root=get_build_root(source_root=source_root),
         composing_root=create_composing_root(

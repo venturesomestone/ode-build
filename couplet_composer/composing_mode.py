@@ -23,6 +23,9 @@ from .support.cmake_generators import get_ninja_cmake_generator_name
 from .support.environment import \
     get_build_root, get_composing_directory, get_destination_directory
 
+from .support.platform_names import \
+    get_darwin_system_name, get_linux_system_name
+
 from .util import shell
 
 
@@ -71,6 +74,7 @@ def create_destination_root(source_root, target):
 def compose_project(
     toolchain,
     arguments,
+    host_system,
     project_root,
     build_root,
     composing_root,
@@ -83,6 +87,8 @@ def compose_project(
     toolchain -- The toolchain object of the run.
 
     arguments -- The parsed command line arguments of the run.
+
+    host_system -- The system this script is run on.
 
     project_root -- The root directory of the project this script
     acts on.
@@ -119,16 +125,21 @@ def compose_project(
         "-DODE_OPENGL_VERSION_MINOR={}".format(
             arguments.opengl_version.split(".")[1]
         ),
-        "-DODE_LOGGER_NAME={}".format("TODO"),
-        "-DODE_WINDOW_NAME={}".format("TODO"),
-        "-DANTHEM_LOGGER_NAME={}".format("TODO"),
-        "-DANTHEM_WINDOW_NAME={}".format("TODO")
+        "-DODE_LOGGER_NAME={}".format(arguments.ode_logger_name),
+        "-DODE_WINDOW_NAME={}".format(arguments.ode_window_name),
+        "-DANTHEM_LOGGER_NAME={}".format(arguments.anthem_logger_name),
+        "-DANTHEM_WINDOW_NAME={}".format(arguments.anthem_window_name)
     ]
 
     if arguments.cmake_generator == get_ninja_cmake_generator_name():
         cmake_call.extend(
             ["-DCMAKE_MAKE_PROGRAM={}".format(toolchain.build_system)]
         )
+
+    if host_system == get_darwin_system_name():
+        cmake_call.extend(["-DODE_RPATH=@loader_path"])
+    elif host_system == get_linux_system_name():
+        cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
     cmake_env = {"CC": toolchain.cc, "CXX": toolchain.cxx}
 
