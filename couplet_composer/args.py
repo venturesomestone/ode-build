@@ -434,6 +434,13 @@ def create_argument_parser(source_root):
         ))
     )
 
+    compose.add_argument(
+        "-D",
+        "--developer-build",
+        action="store_true",
+        help="enable developer features in the built executables"
+    )
+
     return parser
 
 
