@@ -255,7 +255,9 @@ def create_toolchain(
     tools_data -- List of objects of type ToolData that contain
     the functions for checking and building the tools.
 
-    compiler_toolchain -- The name of the compiler toolchain.
+    compiler_toolchain -- Either the name of the compiler
+    toolchain or a tuple containing the host C compiler and the
+    host C++ compiler.
 
     cmake_generator -- The name of the generator that CMake
     should use as the build system for which the build scripts
@@ -293,10 +295,24 @@ def create_toolchain(
     # done this way for simplicity.
     found_tools = {}
 
-    # Start by removing the tool data for the compiler tools that
-    # aren't selected.
+    use_host_tools = isinstance(compiler_toolchain, tuple) \
+        and compiler_toolchain[0] and compiler_toolchain[1]
+
+    if use_host_tools:
+        found_tools["cc"] = compiler_toolchain[0]
+        found_tools["cxx"] = compiler_toolchain[1]
+
+    # Remove the tool data for the compiler tools that aren't
+    # selected.
     def _filter_compiler_tools(data):
         if data.get_tool_type() == "cc":
+            if use_host_tools:
+                logging.debug(
+                    "Removing %s from the tools to search for the toolchain "
+                    "as the path to the C compiler is given manually",
+                    data.get_searched_tool()
+                )
+                return False
             if compiler_toolchain == get_clang_toolchain_name() \
                     and "clang" not in data.get_searched_tool():
                 logging.debug(
@@ -314,6 +330,13 @@ def create_toolchain(
                 )
                 return False
         elif data.get_tool_type() == "cxx":
+            if use_host_tools:
+                logging.debug(
+                    "Removing %s from the tools to search for the toolchain "
+                    "as the path to the C++ compiler is given manually",
+                    data.get_searched_tool()
+                )
+                return False
             if compiler_toolchain == get_clang_toolchain_name() \
                     and "clang" not in data.get_searched_tool():
                 logging.debug(
@@ -338,8 +361,8 @@ def create_toolchain(
         return True
     tools_data[:] = [x for x in tools_data if _filter_compiler_tools(x)]
 
-    # Start by removing the tool data for the build systems that
-    # aren't selected.
+    # Remove the tool data for the build systems that aren't
+    # selected.
     def _filter_build_system(data):
         if data.get_tool_type() == "build_system":
             if cmake_generator == get_make_cmake_generator_name() \

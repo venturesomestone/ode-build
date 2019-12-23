@@ -130,6 +130,18 @@ def _construct_tool_data_construction_info(arguments):
     }
 
 
+def _use_compiler_path_arguments(arguments):
+    """
+    Tells whether or not the options '--host-cc' and '--host-cxx'
+    should be used instead of finding the toolchains
+    automatically.
+
+    arguments -- The namespace containing the parsed command line
+    arguments of the script.
+    """
+    return arguments.host_cc and arguments.host_cxx
+
+
 def run_in_configuring_mode(arguments, source_root):
     """
     Runs the script in configuration mode and sets up the
@@ -166,7 +178,9 @@ def run_in_configuring_mode(arguments, source_root):
         tools_data=construct_tools_data(
             _construct_tool_data_construction_info(arguments=arguments)
         ),
-        compiler_toolchain=arguments.compiler_toolchain,
+        compiler_toolchain=(arguments.host_cc, arguments.host_cxx)
+        if _use_compiler_path_arguments(arguments=arguments)
+        else arguments.compiler_toolchain,
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
@@ -246,7 +260,9 @@ def run_in_composing_mode(arguments, source_root):
         tools_data=construct_tools_data(
             _construct_tool_data_construction_info(arguments=arguments)
         ),
-        compiler_toolchain=arguments.compiler_toolchain,
+        compiler_toolchain=(arguments.host_cc, arguments.host_cxx)
+        if _use_compiler_path_arguments(arguments=arguments)
+        else arguments.compiler_toolchain,
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),

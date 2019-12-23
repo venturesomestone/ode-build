@@ -196,36 +196,52 @@ def _add_common_build_arguments(parser, source_root):
 
     default_compiler_toolchain = get_clang_toolchain_name()
 
-    parser.set_defaults(compiler_toolchain=default_compiler_toolchain)
-
     toolchain_selection_group.add_argument(
         "-C",
         "--compiler-toolchain",
         default=default_compiler_toolchain,
         choices=get_compiler_toolchain_names(),
-        help="use the selected compiler toolchain for building the project "
-             "(default: {})".format(default_compiler_toolchain),
+        help="resolve paths to the selected compiler toolchain for building "
+             "the project if no path is given with '--host-cc' and "
+             "'--host-cxx' (default: {})".format(default_compiler_toolchain),
         dest="compiler_toolchain"
     )
     toolchain_selection_group.add_argument(
         "--clang",
         action="store_const",
         const=get_clang_toolchain_name(),
-        help="use the Clang compiler toolchain for building the project",
+        help="resolve paths to the Clang compiler toolchain for building the "
+             "project if no path is given with '--host-cc' and '--host-cxx'",
         dest="compiler_toolchain"
     )
     toolchain_selection_group.add_argument(
         "--gcc",
         action="store_const",
         const=get_gcc_toolchain_name(),
-        help="use the GCC compiler toolchain for building the project",
+        help="resolve paths to the GCC compiler toolchain for building the "
+             "project if no path is given with '--host-cc' and '--host-cxx'",
         dest="compiler_toolchain"
     )
 
     toolchain_group.add_argument(
         "--compiler-version",
         default=None,
-        help="use the given version for the set compiler toolchain"
+        help="use the given version for the set compiler toolchain if the "
+             "compiler toolchain is resolved by the script and not given "
+             "manually"
+    )
+
+    toolchain_group.add_argument(
+        "--host-cc",
+        default=None,
+        help="give the path to the C compiler for the host platform and use "
+             "it instead of the automatically resolved C compiler"
+    )
+    toolchain_group.add_argument(
+        "--host-cxx",
+        default=None,
+        help="give the path to the C++ compiler for the host platform and use "
+             "it instead of the automatically resolved C++ compiler"
     )
 
     # --------------------------------------------------------- #
