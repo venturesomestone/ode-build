@@ -128,7 +128,8 @@ def compose_project(
         "-DODE_LOGGER_NAME={}".format(arguments.ode_logger_name),
         "-DODE_WINDOW_NAME={}".format(arguments.ode_window_name),
         "-DANTHEM_LOGGER_NAME={}".format(arguments.anthem_logger_name),
-        "-DANTHEM_WINDOW_NAME={}".format(arguments.anthem_window_name)
+        "-DANTHEM_WINDOW_NAME={}".format(arguments.anthem_window_name),
+        "-DANTHEM_NAME={}".format(arguments.anthem_binaries_name)
     ]
 
     if arguments.cmake_generator == get_ninja_cmake_generator_name():
