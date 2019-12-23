@@ -186,11 +186,11 @@ def _add_common_build_arguments(parser, source_root):
     # )
 
     # --------------------------------------------------------- #
-    # Compiling options
+    # Toolchain options
 
-    compiler_group = parser.add_argument_group("Compiling options")
+    toolchain_group = parser.add_argument_group("Toolchain options")
 
-    compiler_selection_group = compiler_group.add_mutually_exclusive_group(
+    toolchain_selection_group = toolchain_group.add_mutually_exclusive_group(
         required=False
     )
 
@@ -198,7 +198,7 @@ def _add_common_build_arguments(parser, source_root):
 
     parser.set_defaults(compiler_toolchain=default_compiler_toolchain)
 
-    compiler_selection_group.add_argument(
+    toolchain_selection_group.add_argument(
         "-C",
         "--compiler-toolchain",
         default=default_compiler_toolchain,
@@ -207,14 +207,14 @@ def _add_common_build_arguments(parser, source_root):
              "(default: {})".format(default_compiler_toolchain),
         dest="compiler_toolchain"
     )
-    compiler_selection_group.add_argument(
+    toolchain_selection_group.add_argument(
         "--clang",
         action="store_const",
         const=get_clang_toolchain_name(),
         help="use the Clang compiler toolchain for building the project",
         dest="compiler_toolchain"
     )
-    compiler_selection_group.add_argument(
+    toolchain_selection_group.add_argument(
         "--gcc",
         action="store_const",
         const=get_gcc_toolchain_name(),
@@ -222,7 +222,7 @@ def _add_common_build_arguments(parser, source_root):
         dest="compiler_toolchain"
     )
 
-    compiler_group.add_argument(
+    toolchain_group.add_argument(
         "--compiler-version",
         default=None,
         help="use the given version for the set compiler toolchain"
