@@ -21,7 +21,9 @@ from __future__ import print_function
 import logging
 import sys
 
-from .support.presets import get_all_preset_names, get_preset_options
+from .support.presets import \
+    get_all_preset_names, get_composing_preset_prefix, \
+    get_configuration_preset_prefix, get_preset_options
 
 from .support.mode_names import \
     get_composing_mode_name, get_configuring_mode_name
@@ -39,8 +41,26 @@ def show_presets(file_names):
     names are read.
     """
     logging.info("The available presets are:")
-    for name in sorted(get_all_preset_names(file_names), key=str.lower):
+
+    all_preset_names = get_all_preset_names(file_names)
+    preset_names = []
+
+    for name in all_preset_names:
+        stripped_name = None
+
+        if name.startswith(get_configuration_preset_prefix()):
+            stripped_name = name[len(get_configuration_preset_prefix()):]
+        elif name.startswith(get_composing_preset_prefix()):
+            stripped_name = name[len(get_composing_preset_prefix()):]
+        else:
+            stripped_name = name
+
+        if stripped_name not in preset_names:
+            preset_names.append(stripped_name)
+
+    for name in sorted(preset_names, key=str.lower):
         print(name)
+
     return 0
 
 

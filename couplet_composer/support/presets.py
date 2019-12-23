@@ -21,6 +21,22 @@ else:
     import configparser
 
 
+def get_configuration_preset_prefix():
+    """
+    Gives the prefix used in front of the prefix portions used
+    only in the configuration mode.
+    """
+    return "conf: "
+
+
+def get_composing_preset_prefix():
+    """
+    Gives the prefix used in front of the prefix portions used
+    only in the composing mode.
+    """
+    return "comp: "
+
+
 def _create_configuration_parser(substitutions=None):
     """
     Creates the configuration parser for parsing the preset
