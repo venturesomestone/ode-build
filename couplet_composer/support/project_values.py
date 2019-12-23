@@ -48,8 +48,11 @@ def _get_project_values(source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    with open(_get_project_values_file(source_root=source_root)) as f:
-        return json.load(f)
+    try:
+        with open(_get_project_values_file(source_root=source_root)) as f:
+            return json.load(f)
+    except Exception:
+        return None
 
 
 @cached
@@ -60,7 +63,11 @@ def get_ode_name(source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    return _get_project_values(source_root=source_root)["ode"]["name"]
+    project_values = _get_project_values(source_root=source_root)
+    if project_values:
+        return project_values["ode"]["name"]
+    else:
+        return "ode-name-file-not-found"
 
 
 @cached
@@ -71,7 +78,11 @@ def get_anthem_name(source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    return _get_project_values(source_root=source_root)["anthem"]["name"]
+    project_values = _get_project_values(source_root=source_root)
+    if project_values:
+        return project_values["anthem"]["name"]
+    else:
+        return "anthem-name-file-not-found"
 
 
 @cached
@@ -82,7 +93,11 @@ def get_ode_version(source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    return _get_project_values(source_root=source_root)["ode"]["version"]
+    project_values = _get_project_values(source_root=source_root)
+    if project_values:
+        return project_values["ode"]["version"]
+    else:
+        return "ode-version-file-not-found"
 
 
 @cached
@@ -93,7 +108,11 @@ def get_anthem_version(source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    return _get_project_values(source_root=source_root)["anthem"]["version"]
+    project_values = _get_project_values(source_root=source_root)
+    if project_values:
+        return project_values["anthem"]["version"]
+    else:
+        return "anthem-version-file-not-found"
 
 
 @cached
@@ -104,7 +123,11 @@ def get_opengl_version(source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    return _get_project_values(source_root=source_root)["opengl"]["version"]
+    project_values = _get_project_values(source_root=source_root)
+    if project_values:
+        return project_values["opengl"]["version"]
+    else:
+        return "3.2"
 
 
 @cached
