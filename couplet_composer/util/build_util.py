@@ -30,6 +30,7 @@ def build_with_cmake(
     dependencies_root,
     target,
     host_system,
+    build_variant,
     cmake_options=None,
     do_install=True,
     dry_run=None,
@@ -58,6 +59,8 @@ def build_with_cmake(
 
     host_system -- The system this script is run on.
 
+    build_variant -- The build variant used to build the project.
+
     cmake_options -- Additional options passed to CMake.
 
     do_install -- Whether or not the install command should be
@@ -71,7 +74,8 @@ def build_with_cmake(
     cmake_call = [
         toolchain.cmake,
         source_directory,
-        "-DCMAKE_INSTALL_PREFIX={}".format(dependencies_root)
+        "-DCMAKE_INSTALL_PREFIX={}".format(dependencies_root),
+        "-DCMAKE_BUILD_TYPE={}".format(build_variant)
     ]
 
     if cmake_generator == get_ninja_cmake_generator_name():

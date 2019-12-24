@@ -88,6 +88,7 @@ def install_dependency(
     version,
     target,
     host_system,
+    build_variant,
     github_user_agent,
     github_api_token,
     opengl_version,
@@ -116,6 +117,8 @@ def install_dependency(
     Target.
 
     host_system -- The system this script is run on.
+
+    build_variant -- The build variant used to build the project.
 
     github_user_agent -- The user agent used when accessing the
     GitHub API.
@@ -205,6 +208,7 @@ def install_dependency(
             dependencies_root=dependencies_root,
             target=target,
             host_system=host_system,
+            build_variant=build_variant,
             dry_run=dry_run,
             print_debug=print_debug
         )
