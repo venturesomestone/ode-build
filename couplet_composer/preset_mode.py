@@ -95,6 +95,7 @@ def compose_preset_call(arguments, file_names):
     preset_options, preset_options_after_end = get_preset_options(
         preset_file_names=file_names,
         preset_name=arguments.preset,
+        run_mode=arguments.preset_run_mode,
         substitutions=None
     )
 
