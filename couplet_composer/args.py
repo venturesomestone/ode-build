@@ -454,7 +454,8 @@ def _get_description(source_root):
     """
     return """
 Use this tool to build, test, and prepare binary distribution archives of
-Obliging Ode and Unsung Anthem.
+{ode} and {anthem}.  This tool contains configuration mode that is used prepare
+the build environment and composing mode that builds the project.
 """.format(
         ode=get_ode_name(source_root=source_root),
         anthem=get_anthem_name(source_root=source_root)
@@ -472,9 +473,11 @@ def _get_epilog(source_root):
     return """
 Using option presets:
 
-  --preset-file=PATH    load presets from the specified file
+  preset                use the option preset mode by specifying this argument
 
-  --preset=NAME         use the specified option preset
+  --file=PATH           load presets from the specified file
+
+  --name=NAME         use the specified option preset
 
   You cannot use the preset mode with other options.  It is not possible to add
   ad hoc customizations to a preset.  If you want to customize a preset, you
@@ -484,61 +487,109 @@ Using option presets:
 Environment variables
 ---------------------
 
-This script respects a few environment variables if you set them:
+This script respects the following environment variables if you set them:
 
-ODE_SOURCE_ROOT: a directory containing the source for Obliging Ode
+ODE_SOURCE_ROOT: a directory containing the source for {ode}
 
-'build-script' expects the sources to be laid out in the following way:
+Couplet Composer expects the sources to be laid out in the following way:
 
-   $ODE_SOURCE_ROOT/unsung-anthem (the directory name does not matter)
+   $ODE_SOURCE_ROOT/unsung-anthem
+                   /build           (created automatically)
+                   /composer        (created automatically)
 
-ODE_BUILD_ROOT: a directory in which to create out-of-tree builds
+The directory '$ODE_SOURCE_ROOT/composer' is created only if the script is run
+by using the scripts in the repository of {ode} and {anthem}, which
+is the recommended way.
 
 Preparing to run this script
 ----------------------------
 
-Run the composer script and make sure that your system has C and C++ compilers.
+Make sure that your system has C and C++ compilers and Git.
 
 That's it; you're ready to go!
 
-Preset mode in build-script
----------------------------
+Configuring mode
+----------------
 
-All buildbots and automated environments use 'build-script' in *preset mode*.
-In preset mode, the command line only specifies the preset name.  The actual
-options come from the selected preset in 'utils/build-presets.ini'.
+Before you can build the project by using so called composing mode, you need to
+set up the build environment by using configuring mode of the script.  The you
+can invoke configuring mode with the following command:
+
+  [~/src/s]$ ./unsung-anthem/util/configure
+
+You must run the configuring mode only once per one set of command line
+options.  After that you can build the project without building the
+dependencies every time.
+
+Examples
+--------
+
+Given the above layout of sources, the simplest invocation of Couplet Composer
+is just:
+
+  [~/src/s]$ ./unsung-anthem/util/configure
+  [~/src/s]$ ./unsung-anthem/util/compose
+
+This builds {ode} and {anthem} in debug mode.  All builds are
+incremental.  To incrementally build changed files, repeat the same command.
+
+Typical uses of Couplet Composer
+--------------------------------
+
+To build everything with optimization without debug information:
+
+  [~/src/s]$ ./unsung-anthem/util/compose -R
+
+To run tests, add '-t':
+
+  [~/src/s]$ ./unsung-anthem/util/compose -R -t
+
+To build the libraries of the project to write add-ons:
+
+  [~/src/s]$ ./unsung-anthem/util/compose --build-libs
+
+To use 'make' instead of 'ninja', use '-m':
+
+  [~/src/s]$ ./unsung-anthem/util/compose -m
+
+Preset mode in Couplet Composer
+-------------------------------
+
+All automated environments use Couplet Composer in preset mode.  In preset
+mode, the command line only specifies the preset name.  The actual options come
+from the selected preset in 'util/composer-presets.ini'.
 
 If you have your own favourite set of options, you can create your own, local,
-preset. For example, let's create a preset called 'doo' (which stands for Debug
-Obliging Ode):
+preset.  For example, let's create a preset called 'release':
 
   $ cat > ~/.ode-build-presets
-  [preset: doo]
+  [release]
   release
-  debug-ode
   test
-  build-subdir=doo
 
-To use it, specify the '--preset=' argument:
+To use it, invoke the script with the 'preset' command and specify the preset
+to expand with the '--name=' argument:
 
-  [~/src/s]$ ./unsung-anthem/utils/build-script --preset=doo
-  ./unsung-anthem/utils/build-script: using preset 'doo', which expands to
-  ./unsung-anthem/utils/build-script --release --debug-ode --test \
---build-subdir=doo --
+  [~/src/s]$ ./unsung-anthem/util/configure preset --name=release
+  Using preset 'release', which expands to
+
+  composer --release --test --
   ...
+
+You can find the existing presets in 'utils/build-presets.ini'
 
 Philosophy
 ----------
 
-While one can invoke CMake directly to build Unsung Anthem, this tool will
-save one's time by taking away the mechanical parts of the process, providing
-one the controls for the important options.
+While one can invoke CMake directly to build {anthem}, this tool will save
+one's time by taking away the mechanical parts of the process, providing one
+the controls for the important options.
 
-For all automated build environments, this tool is regarded as *the* *only*
-way to build Unsung Anthem.  This is not a technical limitation of the Unsung
-Anthem build system.  It is a policy decision aimed at making the builds
-uniform across all environments and easily reproducible by engineers who are
-not familiar with the details of the setups of other systems or automated
+For all automated build environments, this tool is regarded as the only way to
+build {anthem}.  This is not a technical limitation of the {anthem}
+build system.  It is a policy decision aimed at making the builds uniform
+across all environments and easily reproducible by engineers who are not
+familiar with the details of the setups of other systems or automated
 environments.
 """.format(
         ode=get_ode_name(source_root=source_root),
