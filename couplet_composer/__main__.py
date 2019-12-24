@@ -66,10 +66,11 @@ def _set_logging_level(print_debug):
     print_debug -- Whether or not the debug-level logging should
     be allowed.
     """
+    log_format = "%(message)s"
     if print_debug:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(format=log_format, level=logging.DEBUG)
     else:
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(format=log_format, level=logging.INFO)
 
 
 def _check_and_print_python_version():
