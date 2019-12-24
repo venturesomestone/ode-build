@@ -15,12 +15,12 @@
 import logging
 import sys
 
+from .mode_names import get_composing_mode_name, get_configuring_mode_name
+
 if sys.version_info.major == 2:
     import ConfigParser as configparser
 else:
     import configparser
-
-from .mode_names import get_composing_mode_name, get_configuring_mode_name
 
 
 def get_configuration_preset_prefix():
