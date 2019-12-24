@@ -48,7 +48,8 @@ def _resolve_dependencies_to_install(
     target,
     host_system,
     dependencies_root,
-    build_test
+    build_test,
+    version_data
 ):
     """
     Checks whether or not the dependencies required by the
@@ -69,6 +70,9 @@ def _resolve_dependencies_to_install(
     for the current build target.
 
     build_test -- Whether or not the tests should be built.
+
+    version_data -- The dictionary read from the JSON file containing the
+    versions of the currently installed dependencies.
     """
     accumulated_not_to_install = [
         data for data in dependencies_data
@@ -80,7 +84,9 @@ def _resolve_dependencies_to_install(
                 host_system=host_system
             ),
             target=target,
-            host_system=host_system
+            host_system=host_system,
+            installed_version=version_data[data.get_name()]
+            if version_data else None
         )
     ]
     accumulated_to_install = [
@@ -93,7 +99,9 @@ def _resolve_dependencies_to_install(
                 host_system=host_system
             ),
             target=target,
-            host_system=host_system
+            host_system=host_system,
+            installed_version=version_data[data.get_name()]
+            if version_data else None
         )
     ]
     return accumulated_not_to_install, accumulated_to_install
@@ -110,6 +118,7 @@ def install_dependencies(
     opengl_version,
     dependencies_root,
     build_root,
+    version_data_file,
     build_test,
     dry_run,
     print_debug
@@ -146,6 +155,9 @@ def install_dependencies(
     build_root -- The path to the root directory that is used for
     all created files and directories.
 
+    version_data_file -- Path to the JSON file that contains the
+    currently installed versions of the dependencies.
+
     build_test -- Whether or not the tests should be built.
 
     dry_run -- Whether the commands are only printed instead of
@@ -153,12 +165,24 @@ def install_dependencies(
 
     print_debug -- Whether debug output should be printed.
     """
+    version_data = {}
+
+    try:
+        with open(version_data_file) as json_file:
+            version_data = json.load(json_file)
+    except Exception:
+        logging.debug(
+            "The version data file for dependencies was found from path %s",
+            version_data_file
+        )
+
     not_to_install, to_install = _resolve_dependencies_to_install(
         dependencies_data=dependencies_data,
         target=target,
         host_system=host_system,
         dependencies_root=dependencies_root,
-        build_test=build_test
+        build_test=build_test,
+        version_data=version_data
     )
 
     logging.debug(
@@ -184,3 +208,12 @@ def install_dependencies(
             dry_run=dry_run,
             print_debug=print_debug
         )
+        version_data.update({
+            dependency.get_name(): dependency.get_required_version(
+                target=target,
+                host_system=host_system
+            )
+        })
+
+    with open(version_data_file, "w") as json_file:
+        json.dump(version_data, json_file)

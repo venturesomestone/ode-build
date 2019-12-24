@@ -36,7 +36,7 @@ from .project_names import get_project_package_name
 #
 # should_install -- Tells whether or not the dependency should be
 # built. Parameters: build_test, dependencies_root, version,
-# target, host_system
+# target, host_system, installed_version
 #
 # install_dependency -- Installs the dependency if it wasn't
 # found on the system. The dependency is downloaded and possibly
@@ -60,7 +60,8 @@ def _should_install_dependency(
     dependencies_root,
     version,
     target,
-    host_system
+    host_system,
+    installed_version
 ):
     """
     Tells whether the build of the dependency should be skipped.
@@ -82,6 +83,10 @@ def _should_install_dependency(
     Target.
 
     host_system -- The system this script is run on.
+
+    installed_version -- The version of the dependecy that is
+    written to the JSON file containing the currently installed
+    versions of the dependencies.
     """
     if data_node["testonly"] and not build_test:
         return False
@@ -89,7 +94,8 @@ def _should_install_dependency(
         dependencies_root=dependencies_root,
         version=version,
         target=target,
-        host_system=host_system
+        host_system=host_system,
+        installed_version=installed_version
     )
 
 

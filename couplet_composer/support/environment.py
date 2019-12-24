@@ -130,6 +130,24 @@ def get_dependencies_directory(build_root, target):
 
 
 @cached
+def get_dependency_version_data_file(build_root, target):
+    """
+    Gives path to the file in the build directory containing the
+    currently installed versions of the dependencies.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+    """
+    return os.path.join(
+        build_root,
+        "versions-{}-{}".format(target.system, target.machine)
+    )
+
+
+@cached
 def get_temporary_directory(build_root):
     """
     Gives the path to the temporary directory in the build

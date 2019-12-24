@@ -39,7 +39,13 @@ from ..util import shell
 
 
 @cached
-def should_install(dependencies_root, version, target, host_system):
+def should_install(
+    dependencies_root,
+    version,
+    target,
+    host_system,
+    installed_version
+):
     """
     Tells whether the build of the dependency should be skipped.
 
@@ -52,7 +58,14 @@ def should_install(dependencies_root, version, target, host_system):
     Target.
 
     host_system -- The system this script is run on.
+
+    installed_version -- The version of the dependecy that is
+    written to the JSON file containing the currently installed
+    versions of the dependencies.
     """
+    if not installed_version or version != installed_version:
+        return True
+
     return not os.path.exists(
         os.path.join(dependencies_root, "include", "spdlog")
     )

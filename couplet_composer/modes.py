@@ -23,7 +23,8 @@ import sys
 
 from functools import partial
 
-from .support.environment import get_build_root, get_project_root
+from .support.environment import \
+    get_build_root, get_dependency_version_data_file, get_project_root
 
 from .support.file_paths import \
     get_preset_file_path, get_project_dependencies_file_path
@@ -219,6 +220,10 @@ def run_in_configuring_mode(arguments, source_root):
         opengl_version=arguments.opengl_version,
         dependencies_root=dependencies_root,
         build_root=get_build_root(source_root=source_root),
+        version_data_file=get_dependency_version_data_file(
+            build_root=get_build_root(source_root=source_root),
+            target=build_target
+        ),
         build_test=arguments.build_test,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
