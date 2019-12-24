@@ -29,7 +29,7 @@ from .support.platform_names import \
 from .util import shell
 
 
-def create_composing_root(source_root, target):
+def create_composing_root(source_root, target, build_variant, assertions):
     """
     Checks if the directory for the actual build of the project
     exists and creates it if it doesn't exist. Returns the path
@@ -40,17 +40,30 @@ def create_composing_root(source_root, target):
 
     target -- The target system of the build represented by a
     Target.
+
+    build_variant -- The build variant used to build the project.
+
+    assertions -- Whether the assertions are enabled in the
+    project.
     """
     composing_root = get_composing_directory(
         build_root=get_build_root(source_root=source_root),
-        target=target
+        target=target,
+        build_variant=build_variant,
+        assertions=assertions
     )
     if not os.path.exists(composing_root):
         shell.makedirs(path=composing_root)
     return composing_root
 
 
-def create_destination_root(source_root, target):
+def create_destination_root(
+    source_root,
+    target,
+    build_variant,
+    assertions,
+    version
+):
     """
     Checks if the directory for the built products of the project
     exists and creates it if it doesn't exist. Returns the path
@@ -61,10 +74,20 @@ def create_destination_root(source_root, target):
 
     target -- The target system of the build represented by a
     Target.
+
+    build_variant -- The build variant used to build the project.
+
+    assertions -- Whether the assertions are enabled in the
+    project.
+
+    version -- The version number of the project.
     """
     destination_root = get_destination_directory(
         build_root=get_build_root(source_root=source_root),
-        target=target
+        target=target,
+        build_variant=build_variant,
+        assertions=assertions,
+        version=version
     )
     if not os.path.exists(destination_root):
         shell.makedirs(path=destination_root)

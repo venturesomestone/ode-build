@@ -24,7 +24,8 @@ import sys
 from functools import partial
 
 from .support.environment import \
-    get_build_root, get_dependency_version_data_file, get_project_root
+    get_build_root, get_dependency_version_data_file, get_project_root, \
+    get_tools_directory
 
 from .support.file_paths import \
     get_preset_file_path, get_project_dependencies_file_path
@@ -200,7 +201,8 @@ def run_in_configuring_mode(arguments, source_root):
 
     dependencies_root = create_dependencies_root(
         source_root=source_root,
-        target=build_target
+        target=build_target,
+        build_variant=arguments.build_variant
     )
 
     install_dependencies(
@@ -222,7 +224,8 @@ def run_in_configuring_mode(arguments, source_root):
         build_root=get_build_root(source_root=source_root),
         version_data_file=get_dependency_version_data_file(
             build_root=get_build_root(source_root=source_root),
-            target=build_target
+            target=build_target,
+            build_variant=arguments.build_variant
         ),
         build_test=arguments.build_test,
         dry_run=arguments.dry_run,
@@ -246,8 +249,8 @@ def run_in_composing_mode(arguments, source_root):
 
     # Check the directories.
     # build_root = create_build_root(source_root=source_root)
-    tools_root = create_tools_root(
-        source_root=source_root,
+    tools_root = get_tools_directory(
+        build_root=get_build_root(source_root=source_root),
         target=build_target
     )
 
@@ -290,14 +293,20 @@ def run_in_composing_mode(arguments, source_root):
         build_root=get_build_root(source_root=source_root),
         composing_root=create_composing_root(
             source_root=source_root,
-            target=build_target
+            target=build_target,
+            build_variant=arguments.build_variant,
+            assertions=arguments.assertions
         ),
         destination_root=create_destination_root(
             source_root=source_root,
-            target=build_target
+            target=build_target,
+            build_variant=arguments.build_variant,
+            assertions=arguments.assertions,
+            version=arguments.anthem_version
         ),
         dependencies_root=create_dependencies_root(
             source_root=source_root,
-            target=build_target
+            target=build_target,
+            build_variant=arguments.build_variant
         )
     )

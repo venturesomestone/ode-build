@@ -54,7 +54,7 @@ def get_build_root(source_root):
 
 
 @cached
-def get_composing_directory(build_root, target):
+def get_composing_directory(build_root, target, build_variant, assertions):
     """
     Gives the path to the directory in the build directory that
     is used for the build of the project.
@@ -64,16 +64,38 @@ def get_composing_directory(build_root, target):
 
     target -- The target system of the build represented by a
     Target.
+
+    build_variant -- The build variant used to build the project.
+
+    assertions -- Whether the assertions are enabled in the
+    project.
     """
-    return os.path.join(
-        build_root,
-        "build",
-        "{}-{}".format(target.system, target.machine)
-    )
+    if assertions:
+        return os.path.join(
+            build_root,
+            "build",
+            "{}-{}-{}-Assert".format(
+                target.system,
+                target.machine,
+                build_variant
+            )
+        )
+    else:
+        return os.path.join(
+            build_root,
+            "build",
+            "{}-{}-{}".format(target.system, target.machine, build_variant)
+        )
 
 
 @cached
-def get_destination_directory(build_root, target):
+def get_destination_directory(
+    build_root,
+    target,
+    build_variant,
+    assertions,
+    version
+):
     """
     Gives the path to the directory where the built project is
     placed.
@@ -83,12 +105,32 @@ def get_destination_directory(build_root, target):
 
     target -- The target system of the build represented by a
     Target.
+
+    build_variant -- The build variant used to build the project.
+
+    assertions -- Whether the assertions are enabled in the
+    project.
+
+    version -- The version number of the project.
     """
-    return os.path.join(
-        build_root,
-        "dest",
-        "{}-{}".format(target.system, target.machine)
-    )
+    if assertions:
+        return os.path.join(
+            build_root,
+            "dest",
+            version,
+            "{}-{}-{}-Assert".format(
+                target.system,
+                target.machine,
+                build_variant
+            )
+        )
+    else:
+        return os.path.join(
+            build_root,
+            "dest",
+            version,
+            "{}-{}-{}".format(target.system, target.machine, build_variant)
+        )
 
 
 @cached
@@ -111,7 +153,7 @@ def get_tools_directory(build_root, target):
 
 
 @cached
-def get_dependencies_directory(build_root, target):
+def get_dependencies_directory(build_root, target, build_variant):
     """
     Gives the path to the directory in the build directory that
     this script uses for all local tools.
@@ -121,16 +163,18 @@ def get_dependencies_directory(build_root, target):
 
     target -- The target system of the build represented by a
     Target.
+
+    build_variant -- The build variant used to build the project.
     """
     return os.path.join(
         build_root,
         "lib",
-        "{}-{}".format(target.system, target.machine)
+        "{}-{}-{}".format(target.system, target.machine, build_variant)
     )
 
 
 @cached
-def get_dependency_version_data_file(build_root, target):
+def get_dependency_version_data_file(build_root, target, build_variant):
     """
     Gives path to the file in the build directory containing the
     currently installed versions of the dependencies.
@@ -140,10 +184,16 @@ def get_dependency_version_data_file(build_root, target):
 
     target -- The target system of the build represented by a
     Target.
+
+    build_variant -- The build variant used to build the project.
     """
     return os.path.join(
         build_root,
-        "versions-{}-{}".format(target.system, target.machine)
+        "versions-{}-{}-{}".format(
+            target.system,
+            target.machine,
+            build_variant
+        )
     )
 
 

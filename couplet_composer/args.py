@@ -434,6 +434,25 @@ def create_argument_parser(source_root):
         ))
     )
 
+    assertions_group = compose.add_mutually_exclusive_group()
+
+    assertions_group.set_defaults(assertions=True)
+
+    assertions_group.add_argument(
+        "-a",
+        "--assertions",
+        action="store_true",
+        help="enable assertions",
+        dest="assertions"
+    )
+    assertions_group.add_argument(
+        "-A",
+        "--no-assertions",
+        action="store_false",
+        help="disable assertions",
+        dest="assertions"
+    )
+
     compose.add_argument(
         "-D",
         "--developer-build",

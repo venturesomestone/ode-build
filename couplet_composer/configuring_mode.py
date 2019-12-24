@@ -60,7 +60,7 @@ def create_tools_root(source_root, target):
     return tools_root
 
 
-def create_dependencies_root(source_root, target):
+def create_dependencies_root(source_root, target, build_variant):
     """
     Checks if the directory for the dependencies exists and
     creates it if it doesn't exist. Returns the path to the
@@ -71,10 +71,13 @@ def create_dependencies_root(source_root, target):
 
     target -- The target system of the build represented by a
     Target.
+
+    build_variant -- The build variant used to build the project.
     """
     dependencies_root = get_dependencies_directory(
         build_root=get_build_root(source_root=source_root),
-        target=target
+        target=target,
+        build_variant=build_variant
     )
     if not os.path.exists(dependencies_root):
         shell.makedirs(path=dependencies_root)
