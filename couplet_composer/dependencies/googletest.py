@@ -77,7 +77,7 @@ def should_install(
             dependencies_root,
             "lib",
             "libgtest.a"
-        )) or not os.path.exists(os.path.join(
+        )) and not os.path.exists(os.path.join(
             dependencies_root,
             "lib",
             "libgtestd.a"
