@@ -10,7 +10,6 @@
 #
 # ------------------------------------------------------------- #
 
-
 """
 This support module contains the functions related to the
 building and finding Ninja.
@@ -18,10 +17,18 @@ building and finding Ninja.
 
 import os
 
+from ..github import release
+
+from ..support.environment import get_temporary_directory
+
+from ..support.github_data import GitHubData
+
 from ..support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
 from ..util.cache import cached
+
+from ..util import shell
 
 
 def _get_ninja_version_info():
@@ -152,3 +159,61 @@ def install_tool(
 
     print_debug -- Whether debug output should be printed.
     """
+    temp_dir = get_temporary_directory(build_root=build_root)
+    tool_temp_dir = os.path.join(temp_dir, "ninja")
+
+    shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
+    shell.makedirs(tool_temp_dir, dry_run=dry_run, echo=print_debug)
+
+    def _asset_name(host_system):
+        if host_system == get_darwin_system_name():
+            return "ninja-mac.zip"
+        elif host_system == get_linux_system_name():
+            return "ninja-linux.zip"
+        elif host_system == get_windows_system_name():
+            return "ninja-windows.zip"
+
+    asset_path = release.download_asset(
+        path=temp_dir,
+        github_data=GitHubData(
+            owner="ninja-build",
+            name="ninja",
+            tag_name="v{}".format(version),
+            asset_name=_asset_name(host_system)
+        ),
+        user_agent=github_user_agent,
+        api_token=github_api_token,
+        host_system=host_system,
+        dry_run=dry_run,
+        print_debug=print_debug
+    )
+
+    shell.tar(asset_path, tool_temp_dir, dry_run=dry_run, echo=print_debug)
+
+    dest_dir = os.path.dirname(get_local_ninja_executable(
+        tools_root=tools_root,
+        version=version,
+        system=host_system
+    ))
+
+    if os.path.isdir(dest_dir):
+        shell.rmtree(dest_dir, dry_run=dry_run, echo=print_debug)
+
+    shell.copy(
+        os.path.join(
+            tool_temp_dir,
+            "ninja.exe"
+            if host_system == get_windows_system_name() else "ninja"
+        ),
+        dest_dir,
+        dry_run=dry_run,
+        echo=print_debug
+    )
+
+    shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
+
+    return get_local_ninja_executable(
+        tools_root=tools_root,
+        version=version,
+        system=host_system
+    )

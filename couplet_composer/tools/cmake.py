@@ -10,7 +10,6 @@
 #
 # ------------------------------------------------------------- #
 
-
 """
 This support module contains the functions related to the
 building and finding CMake.
