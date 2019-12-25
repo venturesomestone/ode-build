@@ -116,6 +116,13 @@ def _add_common_build_arguments(parser, source_root):
         help="build the tests",
         dest="build_test"
     )
+    parser.add_argument(
+        "-b",
+        "--benchmark",
+        action="store_true",
+        help="build the benchmarks",
+        dest="build_benchmark"
+    )
 
     # --------------------------------------------------------- #
     # Build variant options
