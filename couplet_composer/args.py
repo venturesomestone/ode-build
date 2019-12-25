@@ -438,6 +438,35 @@ def create_argument_parser(source_root):
     )
 
     # --------------------------------------------------------- #
+    # Compose: C++ standard options
+
+    std_group = compose.add_mutually_exclusive_group(required=False)
+
+    default_std = "c++17"
+
+    std_group.add_argument(
+        "--std",
+        default=default_std,
+        choices=["c++17", "c++20"],
+        help="use the given C++ standard (default: {})".format(default_std),
+        dest="std"
+    )
+    std_group.add_argument(
+        "--c++17",
+        action="store_const",
+        const="c++17",
+        help="use C++17 standard",
+        dest="std"
+    )
+    std_group.add_argument(
+        "--c++20",
+        action="store_const",
+        const="c++20",
+        help="use C++20 standard",
+        dest="std"
+    )
+
+    # --------------------------------------------------------- #
     # Compose: Feature options
 
     compose.add_argument(

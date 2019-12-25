@@ -172,8 +172,7 @@ def compose_project(
         "-DODE_DEVELOPER={}".format(
             "ON" if arguments.developer_build else "OFF"
         ),
-        # TODO
-        "-DODE_CXX_VERSION={}".format("c++17"),
+        "-DODE_CXX_VERSION={}".format(arguments.std),
         "-DODE_DEPENDENCY_PREFIX={}".format(dependencies_root),
         "-DODE_VERSION={}".format(arguments.ode_version),
         "-DANTHEM_VERSION={}".format(arguments.anthem_version),
