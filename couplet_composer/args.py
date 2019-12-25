@@ -39,6 +39,8 @@ from .util.cache import cached
 
 from .util.target import resolve_host_target
 
+from . import __version__
+
 
 def _add_common_arguments(parser):
     """
@@ -48,6 +50,16 @@ def _add_common_arguments(parser):
 
     parser -- The parser to which the arguments are added.
     """
+    # --------------------------------------------------------- #
+    # Special options
+
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=__version__.get_version()
+    )
+
     # --------------------------------------------------------- #
     # Top-level options
 
