@@ -106,7 +106,7 @@ setup(
     url=URL,
     packages=find_packages(exclude=["tests"]),
     entry_points={
-        "console_scripts": ["composer = couplet_composer.__main__:run"]
+        "console_scripts": ["couplet-composer = couplet_composer.__main__:run"]
     },
     install_requires=REQUIRED,
     package_data={"": ["*.json"]},
