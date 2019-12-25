@@ -27,7 +27,7 @@ def get_version():
     Gives a string that represents the current version of Couplet
     Composer.
     """
-    return ".".join([str(n) for n in get_release_version()]) + "-rc.3"
+    return ".".join([str(n) for n in get_release_version()]) + "-rc.4"
 
 
 __version__ = get_version()
