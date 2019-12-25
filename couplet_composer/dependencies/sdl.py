@@ -77,6 +77,10 @@ def should_install(
             dependencies_root,
             "lib",
             "libSDL2.a"
+        )) and not os.path.exists(os.path.join(
+            dependencies_root,
+            "lib",
+            "libSDL2d.a"
         ))
 
 
