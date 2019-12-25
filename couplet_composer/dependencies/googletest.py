@@ -77,6 +77,10 @@ def should_install(
             dependencies_root,
             "lib",
             "libgtest.a"
+        )) or not os.path.exists(os.path.join(
+            dependencies_root,
+            "lib",
+            "libgtestd.a"
         ))
 
 
@@ -162,6 +166,7 @@ def install_dependency(
         target=target,
         host_system=host_system,
         build_variant=build_variant,
+        cmake_options={"BUILD_GMOCK": False},
         dry_run=dry_run,
         print_debug=print_debug
     )
