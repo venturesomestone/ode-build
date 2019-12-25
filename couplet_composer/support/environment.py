@@ -54,7 +54,13 @@ def get_build_root(source_root):
 
 
 @cached
-def get_composing_directory(build_root, target, build_variant, assertions):
+def get_composing_directory(
+    build_root,
+    target,
+    cmake_generator,
+    build_variant,
+    assertions
+):
     """
     Gives the path to the directory in the build directory that
     is used for the build of the project.
@@ -65,6 +71,8 @@ def get_composing_directory(build_root, target, build_variant, assertions):
     target -- The target system of the build represented by a
     Target.
 
+    cmake_generator -- The CMake generator that is used.
+
     build_variant -- The build variant used to build the project.
 
     assertions -- Whether the assertions are enabled in the
@@ -74,17 +82,23 @@ def get_composing_directory(build_root, target, build_variant, assertions):
         return os.path.join(
             build_root,
             "build",
-            "{}-{}-{}-Assert".format(
+            "{}-{}-{}-{}-Assert".format(
                 target.system,
                 target.machine,
-                build_variant
+                build_variant,
+                cmake_generator
             )
         )
     else:
         return os.path.join(
             build_root,
             "build",
-            "{}-{}-{}".format(target.system, target.machine, build_variant)
+            "{}-{}-{}-{}".format(
+                target.system,
+                target.machine,
+                build_variant,
+                cmake_generator
+            )
         )
 
 
@@ -92,6 +106,7 @@ def get_composing_directory(build_root, target, build_variant, assertions):
 def get_destination_directory(
     build_root,
     target,
+    cmake_generator,
     build_variant,
     assertions,
     version
@@ -106,6 +121,8 @@ def get_destination_directory(
     target -- The target system of the build represented by a
     Target.
 
+    cmake_generator -- The CMake generator that is used.
+
     build_variant -- The build variant used to build the project.
 
     assertions -- Whether the assertions are enabled in the
@@ -118,10 +135,11 @@ def get_destination_directory(
             build_root,
             "dest",
             version,
-            "{}-{}-{}-Assert".format(
+            "{}-{}-{}-{}-Assert".format(
                 target.system,
                 target.machine,
-                build_variant
+                build_variant,
+                cmake_generator.replace(" ", "_")
             )
         )
     else:
@@ -129,7 +147,12 @@ def get_destination_directory(
             build_root,
             "dest",
             version,
-            "{}-{}-{}".format(target.system, target.machine, build_variant)
+            "{}-{}-{}-{}".format(
+                target.system,
+                target.machine,
+                build_variant,
+                cmake_generator.replace(" ", "_")
+            )
         )
 
 

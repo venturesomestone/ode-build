@@ -29,7 +29,13 @@ from .support.platform_names import \
 from .util import shell
 
 
-def create_composing_root(source_root, target, build_variant, assertions):
+def create_composing_root(
+    source_root,
+    target,
+    cmake_generator,
+    build_variant,
+    assertions
+):
     """
     Checks if the directory for the actual build of the project
     exists and creates it if it doesn't exist. Returns the path
@@ -41,6 +47,8 @@ def create_composing_root(source_root, target, build_variant, assertions):
     target -- The target system of the build represented by a
     Target.
 
+    cmake_generator -- The CMake generator that is used.
+
     build_variant -- The build variant used to build the project.
 
     assertions -- Whether the assertions are enabled in the
@@ -49,6 +57,7 @@ def create_composing_root(source_root, target, build_variant, assertions):
     composing_root = get_composing_directory(
         build_root=get_build_root(source_root=source_root),
         target=target,
+        cmake_generator=cmake_generator,
         build_variant=build_variant,
         assertions=assertions
     )
@@ -60,6 +69,7 @@ def create_composing_root(source_root, target, build_variant, assertions):
 def create_destination_root(
     source_root,
     target,
+    cmake_generator,
     build_variant,
     assertions,
     version
@@ -75,6 +85,8 @@ def create_destination_root(
     target -- The target system of the build represented by a
     Target.
 
+    cmake_generator -- The CMake generator that is used.
+
     build_variant -- The build variant used to build the project.
 
     assertions -- Whether the assertions are enabled in the
@@ -85,6 +97,7 @@ def create_destination_root(
     destination_root = get_destination_directory(
         build_root=get_build_root(source_root=source_root),
         target=target,
+        cmake_generator=cmake_generator,
         build_variant=build_variant,
         assertions=assertions,
         version=version
