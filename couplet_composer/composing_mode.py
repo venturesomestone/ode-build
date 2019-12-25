@@ -155,18 +155,16 @@ def compose_project(
         "-DCMAKE_INSTALL_PREFIX={}".format(destination_root),
         "-DODE_BUILD_TEST={}".format("ON" if arguments.build_test else "OFF"),
         "-DODE_BUILD_STATIC={}".format(
-            "ON" if get_ode_static_name() in arguments.libs_to_build else "OFF"
+            "ON" if arguments.build_ode_static_lib else "OFF"
         ),
         "-DODE_BUILD_SHARED={}".format(
-            "ON" if get_ode_shared_name() in arguments.libs_to_build else "OFF"
+            "ON" if arguments.build_ode_shared_lib else "OFF"
         ),
         "-DANTHEM_BUILD_STATIC={}".format(
-            "ON" if get_anthem_static_name() in arguments.libs_to_build
-            else "OFF"
+            "ON" if arguments.build_anthem_static_lib else "OFF"
         ),
         "-DANTHEM_BUILD_SHARED={}".format(
-            "ON" if get_anthem_shared_name() in arguments.libs_to_build
-            else "OFF"
+            "ON" if arguments.build_anthem_shared_lib else "OFF"
         ),
         "-DODE_DEVELOPER={}".format(
             "ON" if arguments.developer_build else "OFF"
