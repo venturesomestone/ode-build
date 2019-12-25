@@ -28,6 +28,10 @@ from .support.compiler_toolchains import \
     get_gcc_toolchain_name, get_clang_toolchain_name, \
     get_compiler_toolchain_names
 
+from .support.project_libraries import \
+    get_all_project_library_names, get_anthem_shared_name, \
+    get_anthem_static_name, get_ode_shared_name, get_ode_static_name
+
 from .support.project_values import \
     get_anthem_binaries_base_name, get_anthem_name, get_anthem_version, \
     get_default_anthem_logger_name, get_default_ode_logger_name, \
@@ -395,6 +399,19 @@ def create_argument_parser(source_root):
         help="set the version of {}".format(get_anthem_name(
             source_root=source_root
         ))
+    )
+
+    compose.set_defaults(libs_to_build=[])
+
+    compose.add_argument(
+        "--build-libs",
+        action="store_const",
+        const=get_all_project_library_names(),
+        help="build both the static and shared libraries of {} and {}".format(
+            get_ode_name(source_root=source_root),
+            get_anthem_name(source_root=source_root)
+        ),
+        dest="libs_to_build"
     )
 
     # --------------------------------------------------------- #

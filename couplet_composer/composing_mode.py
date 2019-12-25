@@ -26,6 +26,10 @@ from .support.environment import \
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name
 
+from .support.project_libraries import \
+    get_anthem_shared_name, get_anthem_static_name, get_ode_shared_name, \
+    get_ode_static_name
+
 from .util import shell
 
 
@@ -150,6 +154,20 @@ def compose_project(
         "-DCMAKE_CXX_COMPILER={}".format(toolchain.cxx),
         "-DCMAKE_INSTALL_PREFIX={}".format(destination_root),
         "-DODE_BUILD_TEST={}".format("ON" if arguments.build_test else "OFF"),
+        "-DODE_BUILD_STATIC={}".format(
+            "ON" if get_ode_static_name() in arguments.libs_to_build else "OFF"
+        ),
+        "-DODE_BUILD_SHARED={}".format(
+            "ON" if get_ode_shared_name() in arguments.libs_to_build else "OFF"
+        ),
+        "-DANTHEM_BUILD_STATIC={}".format(
+            "ON" if get_anthem_static_name() in arguments.libs_to_build
+            else "OFF"
+        ),
+        "-DANTHEM_BUILD_SHARED={}".format(
+            "ON" if get_anthem_shared_name() in arguments.libs_to_build
+            else "OFF"
+        ),
         "-DODE_DEVELOPER={}".format(
             "ON" if arguments.developer_build else "OFF"
         ),
