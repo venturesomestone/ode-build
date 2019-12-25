@@ -199,6 +199,8 @@ def install_tool(
     if os.path.isdir(dest_dir):
         shell.rmtree(dest_dir, dry_run=dry_run, echo=print_debug)
 
+    shell.makedirs(dest_dir, dry_run=dry_run, echo=print_debug)
+
     shell.copy(
         os.path.join(
             tool_temp_dir,
