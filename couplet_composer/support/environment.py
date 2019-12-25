@@ -58,8 +58,7 @@ def get_composing_directory(
     build_root,
     target,
     cmake_generator,
-    build_variant,
-    assertions
+    build_variant
 ):
     """
     Gives the path to the directory in the build directory that
@@ -74,32 +73,17 @@ def get_composing_directory(
     cmake_generator -- The CMake generator that is used.
 
     build_variant -- The build variant used to build the project.
-
-    assertions -- Whether the assertions are enabled in the
-    project.
     """
-    if assertions:
-        return os.path.join(
-            build_root,
-            "build",
-            "{}-{}-{}-{}-Assert".format(
-                target.system,
-                target.machine,
-                build_variant,
-                cmake_generator
-            )
+    return os.path.join(
+        build_root,
+        "build",
+        "{}-{}-{}-{}".format(
+            target.system,
+            target.machine,
+            build_variant,
+            cmake_generator
         )
-    else:
-        return os.path.join(
-            build_root,
-            "build",
-            "{}-{}-{}-{}".format(
-                target.system,
-                target.machine,
-                build_variant,
-                cmake_generator
-            )
-        )
+    )
 
 
 @cached
@@ -108,7 +92,6 @@ def get_destination_directory(
     target,
     cmake_generator,
     build_variant,
-    assertions,
     version
 ):
     """
@@ -125,35 +108,19 @@ def get_destination_directory(
 
     build_variant -- The build variant used to build the project.
 
-    assertions -- Whether the assertions are enabled in the
-    project.
-
     version -- The version number of the project.
     """
-    if assertions:
-        return os.path.join(
-            build_root,
-            "dest",
-            version,
-            "{}-{}-{}-{}-Assert".format(
-                target.system,
-                target.machine,
-                build_variant,
-                cmake_generator.replace(" ", "_")
-            )
+    return os.path.join(
+        build_root,
+        "dest",
+        version,
+        "{}-{}-{}-{}".format(
+            target.system,
+            target.machine,
+            build_variant,
+            cmake_generator.replace(" ", "_")
         )
-    else:
-        return os.path.join(
-            build_root,
-            "dest",
-            version,
-            "{}-{}-{}-{}".format(
-                target.system,
-                target.machine,
-                build_variant,
-                cmake_generator.replace(" ", "_")
-            )
-        )
+    )
 
 
 @cached

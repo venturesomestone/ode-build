@@ -124,6 +124,21 @@ def _add_common_build_arguments(parser, source_root):
         dest="build_benchmark"
     )
 
+    parser.add_argument(
+        "--ode-version",
+        default=get_ode_version(source_root=source_root),
+        help="set the version of {}".format(get_ode_name(
+            source_root=source_root
+        ))
+    )
+    parser.add_argument(
+        "--anthem-version",
+        default=get_anthem_version(source_root=source_root),
+        help="set the version of {}".format(get_anthem_name(
+            source_root=source_root
+        ))
+    )
+
     # --------------------------------------------------------- #
     # Build variant options
 
@@ -388,21 +403,6 @@ def create_argument_parser(source_root):
 
     # --------------------------------------------------------- #
     # Compose: Common build options
-
-    compose.add_argument(
-        "--ode-version",
-        default=get_ode_version(source_root=source_root),
-        help="set the version of {}".format(get_ode_name(
-            source_root=source_root
-        ))
-    )
-    compose.add_argument(
-        "--anthem-version",
-        default=get_anthem_version(source_root=source_root),
-        help="set the version of {}".format(get_anthem_name(
-            source_root=source_root
-        ))
-    )
 
     compose.add_argument(
         "--ode-static-lib",

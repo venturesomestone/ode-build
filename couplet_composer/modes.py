@@ -16,19 +16,23 @@ This support module contains the functions for running the
 different modes of the script.
 """
 
+from __future__ import print_function
+
 import logging
 import os
 import platform
 import sys
+import time
 
 from functools import partial
 
 from .support.environment import \
-    get_build_root, get_dependency_version_data_file, get_project_root, \
-    get_tools_directory
+    get_build_root, get_composing_directory, get_dependencies_directory, get_dependency_version_data_file, get_destination_directory, get_project_root, get_tools_directory
 
 from .support.file_paths import \
     get_preset_file_path, get_project_dependencies_file_path
+
+from .support.mode_names import get_configuring_mode_name
 
 from .support.project_names import get_ode_repository_name, get_project_name
 
@@ -100,6 +104,85 @@ def run_in_preset_mode(arguments, source_root):
     shell.caffeinate(command_to_run, dry_run=False, echo=True)
 
 
+def _clean(arguments, source_root):
+    """
+    Cleans the directories and files before building when clean
+    build is invoked.
+
+    arguments -- The namespace containing the parsed command line
+    arguments of the script.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+    """
+    # Two spaces are required at the end of the first line as the
+    # counter uses backspace characters.
+    sys.stdout.write("\033[31mStarting a clean build in  \033[0m")
+    for i in reversed(range(0, 4)):
+        sys.stdout.write("\033[31m\b{!s}\033[0m".format(i))
+        sys.stdout.flush()
+        time.sleep(1)
+    print("\033[31m\b\b\b\bnow.\033[0m")
+
+    build_target = parse_target_from_argument_string(arguments.host_target)
+    build_root = get_build_root(source_root=source_root)
+
+    composing_root = get_composing_directory(
+        build_root=build_root,
+        target=build_target,
+        cmake_generator=arguments.cmake_generator,
+        build_variant=arguments.build_variant
+    )
+    destination_root = get_destination_directory(
+        build_root=build_root,
+        target=build_target,
+        cmake_generator=arguments.cmake_generator,
+        build_variant=arguments.build_variant,
+        version=arguments.anthem_version
+    )
+    tools_root = get_tools_directory(
+        build_root=build_root,
+        target=build_target
+    )
+    dependencies_root = get_dependencies_directory(
+        build_root=build_root,
+        target=build_target,
+        build_variant=arguments.build_variant
+    )
+    version_data_file = get_dependency_version_data_file(
+            build_root=build_root,
+            target=build_target,
+            build_variant=arguments.build_variant
+        )
+
+    if arguments.composer_mode == get_configuring_mode_name():
+        shell.rmtree(
+            tools_root,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+        shell.rmtree(
+            dependencies_root,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+        shell.rm(
+            version_data_file,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+    shell.rmtree(
+        composing_root,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+    shell.rmtree(
+        destination_root,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+
+
 def _construct_tool_data_construction_info(arguments):
     """
     Constructs the dictionary containing the required information
@@ -157,6 +240,9 @@ def run_in_configuring_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
+    if arguments.clean:
+        _clean(arguments=arguments, source_root=source_root)
+
     build_target = parse_target_from_argument_string(arguments.host_target)
 
     # Check the directories.
@@ -217,6 +303,7 @@ def run_in_configuring_mode(arguments, source_root):
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
+        build_variant=arguments.build_variant,
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         opengl_version=arguments.opengl_version,
@@ -245,6 +332,9 @@ def run_in_composing_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
+    if arguments.clean:
+        _clean(arguments=arguments, source_root=source_root)
+
     build_target = parse_target_from_argument_string(arguments.host_target)
 
     # Check the directories.
@@ -295,15 +385,13 @@ def run_in_composing_mode(arguments, source_root):
             source_root=source_root,
             target=build_target,
             cmake_generator=arguments.cmake_generator,
-            build_variant=arguments.build_variant,
-            assertions=arguments.assertions
+            build_variant=arguments.build_variant
         ),
         destination_root=create_destination_root(
             source_root=source_root,
             target=build_target,
             cmake_generator=arguments.cmake_generator,
             build_variant=arguments.build_variant,
-            assertions=arguments.assertions,
             version=arguments.anthem_version
         ),
         dependencies_root=create_dependencies_root(

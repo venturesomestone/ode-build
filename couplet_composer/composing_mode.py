@@ -26,20 +26,10 @@ from .support.environment import \
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name
 
-from .support.project_libraries import \
-    get_anthem_shared_name, get_anthem_static_name, get_ode_shared_name, \
-    get_ode_static_name
-
 from .util import shell
 
 
-def create_composing_root(
-    source_root,
-    target,
-    cmake_generator,
-    build_variant,
-    assertions
-):
+def create_composing_root(source_root, target, cmake_generator, build_variant):
     """
     Checks if the directory for the actual build of the project
     exists and creates it if it doesn't exist. Returns the path
@@ -54,16 +44,12 @@ def create_composing_root(
     cmake_generator -- The CMake generator that is used.
 
     build_variant -- The build variant used to build the project.
-
-    assertions -- Whether the assertions are enabled in the
-    project.
     """
     composing_root = get_composing_directory(
         build_root=get_build_root(source_root=source_root),
         target=target,
         cmake_generator=cmake_generator,
-        build_variant=build_variant,
-        assertions=assertions
+        build_variant=build_variant
     )
     if not os.path.exists(composing_root):
         shell.makedirs(path=composing_root)
@@ -75,7 +61,6 @@ def create_destination_root(
     target,
     cmake_generator,
     build_variant,
-    assertions,
     version
 ):
     """
@@ -93,9 +78,6 @@ def create_destination_root(
 
     build_variant -- The build variant used to build the project.
 
-    assertions -- Whether the assertions are enabled in the
-    project.
-
     version -- The version number of the project.
     """
     destination_root = get_destination_directory(
@@ -103,7 +85,6 @@ def create_destination_root(
         target=target,
         cmake_generator=cmake_generator,
         build_variant=build_variant,
-        assertions=assertions,
         version=version
     )
     if not os.path.exists(destination_root):

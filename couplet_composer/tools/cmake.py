@@ -75,10 +75,13 @@ def get_local_cmake_executable(tools_root, version, system):
     system -- The system for which the wanted CMake build is for.
     """
     def _darwin_app_name(path):
-        return "CMake.app" \
-            if not os.path.isdir(path) \
-            else [file for file in os.listdir(path)
-                  if file.endswith(".app")][0]
+        if not os.path.isdir(path):
+            return "CMake.app"
+        # This is a workaround to check if there's actually files
+        # in the CMake tool directory
+        if [f for f in os.listdir(path) if not f.startswith(".")] == []:
+            return "CMake.app"
+        return [f for f in os.listdir(path) if f.endswith(".app")][0]
 
     def _resolve_executable(path):
         if system == get_darwin_system_name():
