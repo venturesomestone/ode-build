@@ -200,3 +200,24 @@ def compose_project(
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
+
+    if host_system == get_darwin_system_name() \
+            or host_system == get_linux_system_name():
+        sdl_dynamic_lib_name = "libSDL2-2.0d.dylib"
+        sdl_dynamic_lib = os.path.join(
+            destination_root,
+            "bin",
+            sdl_dynamic_lib_name
+        )
+        if os.path.exists(sdl_dynamic_lib):
+            shell.rm(
+                sdl_dynamic_lib,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        shell.copy(
+            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name),
+            os.path.join(destination_root, "bin"),
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
