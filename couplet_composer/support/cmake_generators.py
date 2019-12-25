@@ -1,0 +1,37 @@
+# ------------------------------------------------------------- #
+#                       Couplet Composer
+# ------------------------------------------------------------- #
+#
+# This source file is part of the Couplet Composer project which
+# is part of the Obliging Ode and Unsung Anthem project.
+#
+# Copyright (c) 2019 Antti Kivi
+# Licensed under the MIT License
+#
+# ------------------------------------------------------------- #
+
+"""
+This support module contains the names of the possible CMake
+generators for the project this script acts on.
+"""
+
+
+def get_ninja_cmake_generator_name():
+    """
+    Gives the name of the CMake generator that creates build
+    scripts for Ninja.
+    """
+    return "Ninja"
+
+
+def get_make_cmake_generator_name():
+    """
+    Gives the name of the CMake generator that creates build
+    scripts for Make.
+    """
+    return "Unix Makefiles"
+
+
+def get_cmake_generator_names():
+    """Gives the names of the possible CMake generators."""
+    return [get_ninja_cmake_generator_name(), get_make_cmake_generator_name()]
