@@ -423,7 +423,7 @@ def create_argument_parser(source_root):
     compose.add_argument(
         "--anthem-static-lib",
         action="store_true",
-        help="build the static library of {}".format(
+        help="build the static library of {} instead of the executable".format(
             get_anthem_name(source_root=source_root)
         ),
         dest="build_anthem_static_lib"
@@ -431,7 +431,7 @@ def create_argument_parser(source_root):
     compose.add_argument(
         "--anthem-shared-lib",
         action="store_true",
-        help="build the shared library of {}".format(
+        help="build the shared library of {} instead of the executable".format(
             get_anthem_name(source_root=source_root)
         ),
         dest="build_anthem_shared_lib"
