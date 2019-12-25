@@ -17,7 +17,8 @@ import multiprocessing
 
 from .support.build_variant import \
     get_build_variant_names, get_debug_variant_name, \
-    get_release_variant_name, get_release_with_debuginfo_variant_name
+    get_minimum_size_release_variant_name, get_release_variant_name, \
+    get_release_with_debuginfo_variant_name
 
 from .support.cmake_generators import \
     get_cmake_generator_names, get_make_cmake_generator_name, \
@@ -160,6 +161,14 @@ def _add_common_build_arguments(parser, source_root):
         action="store_const",
         const=get_release_variant_name(),
         help="build the project using the Release variant",
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-M",
+        "--minsize-release",
+        action="store_const",
+        const=get_minimum_size_release_variant_name(),
+        help="build the project using the MinSizeRel variant",
         dest="build_variant"
     )
 

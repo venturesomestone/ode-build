@@ -31,6 +31,13 @@ def get_release_variant_name():
     return "Release"
 
 
+def get_minimum_size_release_variant_name():
+    """
+    Gives the name of the minimum size release build variant.
+    """
+    return "MinSizeRel"
+
+
 def get_build_variant_names():
     """Gives the names of the possible build variants."""
     return [
