@@ -27,7 +27,9 @@ import time
 from functools import partial
 
 from .support.environment import \
-    get_build_root, get_composing_directory, get_dependencies_directory, get_dependency_version_data_file, get_destination_directory, get_project_root, get_tools_directory
+    get_build_root, get_composing_directory, get_dependencies_directory, \
+    get_dependency_version_data_file, get_destination_directory, \
+    get_project_root, get_tools_directory
 
 from .support.file_paths import \
     get_preset_file_path, get_project_dependencies_file_path
@@ -102,6 +104,8 @@ def run_in_preset_mode(arguments, source_root):
     command_to_run = [sys.executable] + build_call
 
     shell.caffeinate(command_to_run, dry_run=False, echo=True)
+
+    return 0
 
 
 def _clean(arguments, source_root):
@@ -319,6 +323,8 @@ def run_in_configuring_mode(arguments, source_root):
         print_debug=arguments.print_debug
     )
 
+    return 0
+
 
 def run_in_composing_mode(arguments, source_root):
     """
@@ -400,3 +406,5 @@ def run_in_composing_mode(arguments, source_root):
             build_variant=arguments.build_variant
         )
     )
+
+    return 0

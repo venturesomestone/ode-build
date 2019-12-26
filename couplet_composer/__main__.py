@@ -138,6 +138,7 @@ def _main():
             "The source root directory is invalid: %s",
             source_root
         )
+        sys.exit(1)
 
     argument_parser = _create_argument_parser(source_root=source_root)
     arguments = _parse_arguments(argument_parser)
@@ -160,7 +161,7 @@ def _main():
                 argument_parser.error("{} wasn't in valid mode".format(
                     get_project_name()
                 ))
-                return 0
+                return 1
             return _
 
     mode_runner = _resolve_mode(mode=arguments.composer_mode)
