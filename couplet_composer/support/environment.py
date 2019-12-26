@@ -218,6 +218,51 @@ def get_dependency_version_data_file(build_root, target, build_variant):
 
 
 @cached
+def get_data_directory(build_root, target, build_variant):
+    """
+    Gives the path to the directory in the build directory that
+    contains helpful data files for the build process.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+    """
+    return os.path.join(
+        build_root,
+        "data",
+        "{}-{}-{}".format(target.system, target.machine, build_variant)
+    )
+
+
+@cached
+def get_sdl_shared_data_file(build_root, target, build_variant):
+    """
+    Gives path to the file in the build directory containing
+    the version of the installed shared SDL library.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+    """
+    return os.path.join(
+        get_data_directory(
+            build_root=build_root,
+            target=target,
+            build_variant=build_variant
+        ),
+        "linux-shared-sdl"
+    )
+
+
+@cached
 def get_latest_install_path_file(build_root):
     """
     Gives path to the file in the build directory containing
