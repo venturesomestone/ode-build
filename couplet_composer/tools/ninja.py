@@ -16,6 +16,7 @@ building and finding Ninja.
 """
 
 import os
+import stat
 
 from ..github import release
 
@@ -213,6 +214,16 @@ def install_tool(
     )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
+
+    if host_system == get_darwin_system_name() \
+            or host_system == get_linux_system_name():
+        dest_file = get_local_ninja_executable(
+            tools_root=tools_root,
+            version=version,
+            system=host_system
+        )
+        mode = os.stat(dest_file).st_mode
+        os.chmod(dest_file, mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
     return get_local_ninja_executable(
         tools_root=tools_root,
