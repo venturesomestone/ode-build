@@ -27,7 +27,9 @@ import time
 from functools import partial
 
 from .support.environment import \
-    get_build_root, get_composing_directory, get_dependencies_directory, get_dependency_version_data_file, get_destination_directory, get_project_root, get_tools_directory
+    get_build_root, get_composing_directory, get_dependencies_directory, \
+    get_dependency_version_data_file, get_destination_directory, \
+    get_project_root, get_tools_directory
 
 from .support.file_paths import \
     get_preset_file_path, get_project_dependencies_file_path
