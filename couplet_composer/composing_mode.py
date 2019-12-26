@@ -207,24 +207,8 @@ def compose_project(
 
     build_target = parse_target_from_argument_string(arguments.host_target)
 
-    if host_system == get_darwin_system_name() \
-            or host_system == get_linux_system_name():
-
-        def _get_shared_version():
-            shared_version_file = get_sdl_shared_data_file(
-                build_root=build_root,
-                target=build_target,
-                build_variant=arguments.build_variant
-            )
-            if os.path.exists(shared_version_file):
-                with open(shared_version_file) as f:
-                    return f.read()
-            else:
-                return "0"
-
-        sdl_dynamic_lib_name = "libSDL2-2.0d.dylib" \
-            if host_system == get_darwin_system_name() \
-            else "libSDL2-2.0d.so.{}".format(_get_shared_version())
+    if host_system == get_darwin_system_name():
+        sdl_dynamic_lib_name = "libSDL2-2.0d.dylib"
         sdl_dynamic_lib = os.path.join(
             destination_root,
             "bin",
@@ -242,6 +226,39 @@ def compose_project(
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
+    elif host_system == get_linux_system_name():
+        def _copy_linux_sdl(name):
+            dynamic_lib = os.path.join(destination_root, "bin", name)
+            if os.path.exists(dynamic_lib):
+                shell.rm(
+                    dynamic_lib,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+            shell.copy(
+                os.path.join(dependencies_root, "lib", name),
+                os.path.join(destination_root, "bin"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+
+        shared_version_file = get_sdl_shared_data_file(
+            build_root=build_root,
+            target=build_target,
+            build_variant=arguments.build_variant
+        )
+        if os.path.exists(shared_version_file):
+            with open(shared_version_file) as f:
+                shared_version = f.read()
+        else:
+            shared_version = "0.0.0"
+
+        version_data = shared_version.split(".")
+
+        _copy_linux_sdl("libSDL2-2.0d.so.{}".format(shared_version))
+        _copy_linux_sdl("libSDL2-2.0d.so.{}".format(version_data[1]))
+        _copy_linux_sdl("libSDL2-2.0d.so")
+        _copy_linux_sdl("libSDL2d.so")
 
     latest_path_file = get_latest_install_path_file(build_root=build_root)
 
