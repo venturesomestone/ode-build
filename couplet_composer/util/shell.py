@@ -230,6 +230,15 @@ def rm(file, dry_run=None, echo=None):
         os.remove(file)
 
 
+def link(src, dest, dry_run=None, echo=None):
+    """Creates a symbolic link."""
+    if dry_run or echo:
+        _echo_command(dry_run, ["ln", "-s", src, dest])
+    if dry_run:
+        return
+    os.symlink(src, dest)
+
+
 def tar(path, dest=None, dry_run=None, echo=None):
     """Extracts an archive."""
     if dry_run or echo:
