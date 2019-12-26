@@ -21,10 +21,14 @@ import os
 from .support.cmake_generators import get_ninja_cmake_generator_name
 
 from .support.environment import \
-    get_build_root, get_composing_directory, get_destination_directory
+    get_build_root, get_composing_directory, get_destination_directory, \
+    get_latest_install_path_file, get_latest_install_version_file, \
+    get_relative_destination_directory
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name
+
+from .util.target import parse_target_from_argument_string
 
 from .util import shell
 
@@ -222,3 +226,28 @@ def compose_project(
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
+
+    build_target = parse_target_from_argument_string(arguments.host_target)
+
+    latest_path_file = get_latest_install_path_file(build_root=build_root)
+
+    if os.path.exists(latest_path_file):
+        shell.rm(latest_path_file)
+
+    with open(latest_path_file, "w") as f:
+        f.write(str(get_relative_destination_directory(
+            target=build_target,
+            cmake_generator=arguments.cmake_generator,
+            build_variant=arguments.build_variant,
+            version=arguments.anthem_version)
+        ))
+
+    latest_version_file = get_latest_install_version_file(
+        build_root=build_root
+    )
+
+    if os.path.exists(latest_version_file):
+        shell.rm(latest_version_file)
+
+    with open(latest_version_file, "w") as f:
+        f.write(arguments.anthem_version)
