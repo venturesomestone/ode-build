@@ -295,6 +295,13 @@ def create_toolchain(
     # done this way for simplicity.
     found_tools = {}
 
+    # Store the tool data for Make separately as it's also set
+    # separately to its own tool as it's required by some
+    # dependencies.
+    make_data = [
+        data for data in tools_data if data.get_searched_tool() == "make"
+    ][0]
+
     use_host_tools = isinstance(compiler_toolchain, tuple) \
         and compiler_toolchain[0] and compiler_toolchain[1]
 
@@ -429,6 +436,26 @@ def create_toolchain(
         else:
             logging.debug("%s wasn't found", tool.get_searched_tool())
             missing_tools.append(tool)
+
+    # Manually look for the special Make tool.
+    logging.debug(
+        "Looking for %s on the system",
+        make_data.get_searched_tool()
+    )
+    found_make = _find_tool(
+        tool=make_data.get_searched_tool(),
+        host_system=host_system
+    )
+    if found_make:
+        logging.debug("Found %s", found_make)
+        found_tools.update({make_data.get_tool_type(): found_make})
+    else:
+        logging.debug(
+            "%s wasn't found, so it'll be set to %s",
+            make_data.get_searched_tool(),
+            "make"
+        )
+        found_tools.update({make_data.get_tool_type(): "make"})
 
     # Download the missing tools.
     if not read_only:

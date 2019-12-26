@@ -67,7 +67,7 @@ def list_tool_types():
     """
     Creates a list of the possible tool types for the toolchain.
     """
-    return ["cc", "cxx", "cmake", "build_system", "git"]
+    return ["cc", "cxx", "cmake", "build_system", "git", "make"]
 
 
 def _create_tool_data(module_name):
