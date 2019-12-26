@@ -103,6 +103,8 @@ def run_in_preset_mode(arguments, source_root):
 
     shell.caffeinate(command_to_run, dry_run=False, echo=True)
 
+    return 0
+
 
 def _clean(arguments, source_root):
     """
@@ -319,6 +321,8 @@ def run_in_configuring_mode(arguments, source_root):
         print_debug=arguments.print_debug
     )
 
+    return 0
+
 
 def run_in_composing_mode(arguments, source_root):
     """
@@ -400,3 +404,5 @@ def run_in_composing_mode(arguments, source_root):
             build_variant=arguments.build_variant
         )
     )
+
+    return 0
