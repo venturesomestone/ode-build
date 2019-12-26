@@ -256,7 +256,7 @@ def compose_project(
         version_data = shared_version.split(".")
 
         _copy_linux_sdl("libSDL2-2.0d.so.{}".format(shared_version))
-        _copy_linux_sdl("libSDL2-2.0d.so.{}".format(version_data[1]))
+        _copy_linux_sdl("libSDL2-2.0d.so.{}".format(version_data[0]))
         _copy_linux_sdl("libSDL2-2.0d.so")
         _copy_linux_sdl("libSDL2d.so")
 
