@@ -19,7 +19,7 @@ def get_release_version():
     and, thus, returns three values: the major version number,
     the minor version number, and the patch version number.
     """
-    return 0, 4, 0
+    return 0, 5, 0
 
 
 def get_version():
@@ -27,7 +27,7 @@ def get_version():
     Gives a string that represents the current version of Couplet
     Composer.
     """
-    return ".".join([str(n) for n in get_release_version()]) + "-dev.2"
+    return ".".join([str(n) for n in get_release_version()]) + "-dev.1"
 
 
 __version__ = get_version()
