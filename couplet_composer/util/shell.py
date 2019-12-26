@@ -94,12 +94,14 @@ def call(command, stderr=None, env=None, dry_run=None, echo=None):
             "Command ended with status %d, stopping",
             e.returncode
         )
+        sys.exit(e.returncode)
     except OSError as e:
         logging.critical(
             "Couldn't run '%s': %s",
             quote_command(command),
             e.strerror
         )
+        sys.exit(1)
 
 
 def capture(
@@ -134,6 +136,7 @@ def capture(
             "Command ended with status %d, stopping",
             e.returncode
         )
+        sys.exit(e.returncode)
     except OSError as e:
         if optional:
             return None
@@ -142,6 +145,7 @@ def capture(
             quote_command(command),
             e.strerror
         )
+        sys.exit(1)
 
 
 @contextmanager
@@ -254,7 +258,8 @@ def tar(path, dest=None, dry_run=None, echo=None):
                 with pushd(os.path.dirname(path)):
                     if dest:
                         call(
-                            ["tar", "-xf", os.path.split(path)[1], "-C", dest])
+                            ["tar", "-xf", os.path.split(path)[1], "-C", dest]
+                        )
                     else:
                         call(["tar", "-xf", os.path.split(path)[1]])
             else:
