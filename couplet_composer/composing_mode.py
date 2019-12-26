@@ -256,9 +256,32 @@ def compose_project(
         version_data = shared_version.split(".")
 
         _copy_linux_sdl("libSDL2-2.0d.so.{}".format(shared_version))
-        _copy_linux_sdl("libSDL2-2.0d.so.{}".format(version_data[0]))
-        _copy_linux_sdl("libSDL2-2.0d.so")
-        _copy_linux_sdl("libSDL2d.so")
+
+        def _link_linux_sdl(name, src):
+            new_link = os.path.join(destination_root, "bin", name)
+            if os.path.exists(new_link):
+                shell.rm(
+                    new_link,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+            original = os.path.join(destination_root, "bin", src)
+            shell.link(
+                original,
+                new_link,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+
+        _link_linux_sdl(
+            name="libSDL2-2.0d.so.{}".format(version_data[0]),
+            src="libSDL2-2.0d.so.{}".format(shared_version)
+        )
+        _link_linux_sdl(
+            name="libSDL2-2.0d.so",
+            src="libSDL2-2.0d.so.{}".format(version_data[0])
+        )
+        _link_linux_sdl(name="libSDL2d.so", src="libSDL2-2.0d.so")
 
     latest_path_file = get_latest_install_path_file(build_root=build_root)
 
