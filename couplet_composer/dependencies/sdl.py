@@ -19,7 +19,8 @@ import os
 
 from ..github import release
 
-from ..support.environment import get_temporary_directory
+from ..support.environment import \
+    get_data_directory, get_sdl_shared_data_file, get_temporary_directory
 
 from ..support.github_data import GitHubData
 
@@ -218,3 +219,23 @@ def install_dependency(
         )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
+
+    # Linux requires to use the correct version of the shared SDL
+    # library
+    if host_system == get_linux_system_name():
+        data_file = get_sdl_shared_data_file(
+            build_root=build_root,
+            target=target,
+            build_variant=build_variant
+        )
+        if os.path.exists(data_file):
+            shell.rm(data_file, dry_run=dry_run, echo=print_debug)
+        data_dir = get_data_directory(
+            build_root=build_root,
+            target=target,
+            build_variant=build_variant
+        )
+        shell.makedirs(data_dir, dry_run=dry_run, echo=print_debug)
+        (_, minor, patch) = version.split(".")
+        with open(data_file, "w") as f:
+            f.write("{}.{}.0".format(minor, patch))
