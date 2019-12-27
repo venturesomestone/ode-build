@@ -217,7 +217,7 @@ def compose_project(
                 print(f)
 
     if host_system == get_darwin_system_name():
-        sdl_dynamic_lib_name = "libSDL2-2.0d.dylib"
+        sdl_dynamic_lib_name = "libSDL2-2.0.0.dylib"
         sdl_dynamic_lib = os.path.join(
             destination_root,
             "bin",
