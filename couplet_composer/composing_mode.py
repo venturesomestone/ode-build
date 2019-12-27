@@ -16,6 +16,9 @@ This support module contains the functions for running the
 composing mode of the script.
 """
 
+from __future__ import print_function
+
+import logging
 import os
 
 from .support.cmake_generators import get_ninja_cmake_generator_name
@@ -26,7 +29,7 @@ from .support.environment import \
     get_relative_destination_directory, get_sdl_shared_data_file
 
 from .support.platform_names import \
-    get_darwin_system_name, get_linux_system_name
+    get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
 from .util.target import parse_target_from_argument_string
 
@@ -207,6 +210,12 @@ def compose_project(
 
     build_target = parse_target_from_argument_string(arguments.host_target)
 
+    if host_system != get_windows_system_name() and arguments.print_debug:
+        logging.debug("Found the following SDL libraries:")
+        for f in os.listdir(os.path.join(dependencies_root, "lib")):
+            if "libSDL" in f:
+                print(f)
+
     if host_system == get_darwin_system_name():
         sdl_dynamic_lib_name = "libSDL2-2.0d.dylib"
         sdl_dynamic_lib = os.path.join(
@@ -255,7 +264,7 @@ def compose_project(
 
         version_data = shared_version.split(".")
 
-        _copy_linux_sdl("libSDL2-2.0d.so.{}".format(shared_version))
+        _copy_linux_sdl("libSDL2-2.0.so.{}".format(shared_version))
 
         def _link_linux_sdl(name, src):
             new_link = os.path.join(destination_root, "bin", name)
@@ -274,14 +283,14 @@ def compose_project(
             )
 
         _link_linux_sdl(
-            name="libSDL2-2.0d.so.{}".format(version_data[0]),
-            src="libSDL2-2.0d.so.{}".format(shared_version)
+            name="libSDL2-2.0.so.{}".format(version_data[0]),
+            src="libSDL2-2.0.so.{}".format(shared_version)
         )
         _link_linux_sdl(
-            name="libSDL2-2.0d.so",
-            src="libSDL2-2.0d.so.{}".format(version_data[0])
+            name="libSDL2-2.0.so",
+            src="libSDL2-2.0.so.{}".format(version_data[0])
         )
-        _link_linux_sdl(name="libSDL2d.so", src="libSDL2-2.0d.so")
+        _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
 
     latest_path_file = get_latest_install_path_file(build_root=build_root)
 
