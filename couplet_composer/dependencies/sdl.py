@@ -94,6 +94,7 @@ def install_dependency(
     target,
     host_system,
     build_variant,
+    system_directories,
     github_user_agent,
     github_api_token,
     opengl_version,
@@ -124,6 +125,9 @@ def install_dependency(
     host_system -- The system this script is run on.
 
     build_variant -- The build variant used to build the project.
+
+    system_directories -- Whether to install the dependency to
+    the default system directory.
 
     github_user_agent -- The user agent used when accessing the
     GitHub API.
@@ -205,10 +209,10 @@ def install_dependency(
                 echo=print_debug
             )
     else:
-        config_call = [
-            os.path.join(subdir, "configure"),
-            "--prefix={}".format(dependencies_root)
-        ]
+        config_call = [os.path.join(subdir, "configure")]
+
+        if not system_directories:
+            config_call.append("--prefix={}".format(dependencies_root))
 
         build_directory = os.path.join(temp_dir, "build")
 

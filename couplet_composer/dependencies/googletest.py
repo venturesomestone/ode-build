@@ -93,6 +93,7 @@ def install_dependency(
     target,
     host_system,
     build_variant,
+    system_directories,
     github_user_agent,
     github_api_token,
     opengl_version,
@@ -123,6 +124,9 @@ def install_dependency(
     host_system -- The system this script is run on.
 
     build_variant -- The build variant used to build the project.
+
+    system_directories -- Whether to install the dependency to
+    the default system directory.
 
     github_user_agent -- The user agent used when accessing the
     GitHub API.
@@ -166,6 +170,7 @@ def install_dependency(
         target=target,
         host_system=host_system,
         build_variant=build_variant,
+        system_directories=system_directories,
         cmake_options={"BUILD_GMOCK": False},
         dry_run=dry_run,
         print_debug=print_debug

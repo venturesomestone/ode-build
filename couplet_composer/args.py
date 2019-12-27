@@ -137,6 +137,15 @@ def _add_common_build_arguments(parser, source_root):
     )
 
     parser.add_argument(
+        "--system-directories",
+        action="store_true",
+        help="install libraries to and search dependencies from system "
+             "directories and not local build directories (only for the "
+             "dependencies that support this). This option is mostly useful "
+             "in automated environments"
+    )
+
+    parser.add_argument(
         "--ode-version",
         default=get_ode_version(source_root=source_root),
         help="set the version of {}".format(get_ode_name(

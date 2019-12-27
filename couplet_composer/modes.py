@@ -308,6 +308,7 @@ def run_in_configuring_mode(arguments, source_root):
         target=build_target,
         host_system=platform.system(),
         build_variant=arguments.build_variant,
+        system_directories=arguments.system_directories,
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         opengl_version=arguments.opengl_version,
