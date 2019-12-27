@@ -214,6 +214,8 @@ def install_dependency(
         if not system_directories:
             config_call.append("--prefix={}".format(dependencies_root))
 
+        config_call.append("--enable-shared=false")
+
         build_directory = os.path.join(temp_dir, "build")
 
         shell.makedirs(build_directory, dry_run=dry_run, echo=print_debug)
