@@ -186,7 +186,7 @@ def compose_project(
     if host_system == get_darwin_system_name():
         cmake_call.extend(["-DODE_RPATH=@loader_path"])
     elif host_system == get_linux_system_name():
-        cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
+        pass  # cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
     cmake_env = {"CC": toolchain.cc, "CXX": toolchain.cxx}
 
