@@ -448,14 +448,14 @@ def create_toolchain(
     )
     if found_make:
         logging.debug("Found %s", found_make)
-        found_tools.update({make_data.get_tool_type(): found_make})
+        found_tools.update({"make": found_make})
     else:
         logging.debug(
             "%s wasn't found, so it'll be set to %s",
             make_data.get_searched_tool(),
             "make"
         )
-        found_tools.update({make_data.get_tool_type(): "make"})
+        found_tools.update({"make": "make"})
 
     # Download the missing tools.
     if not read_only:
