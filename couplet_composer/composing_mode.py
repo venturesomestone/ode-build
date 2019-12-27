@@ -16,8 +16,6 @@ This support module contains the functions for running the
 composing mode of the script.
 """
 
-from __future__ import print_function
-
 import logging
 import os
 
@@ -210,11 +208,17 @@ def compose_project(
 
     build_target = parse_target_from_argument_string(arguments.host_target)
 
-    if host_system != get_windows_system_name() and arguments.print_debug:
-        logging.debug("Found the following SDL libraries:")
-        for f in os.listdir(os.path.join(dependencies_root, "lib")):
-            if "libSDL" in f:
-                print(f)
+    if host_system != get_windows_system_name():
+        logging.debug(
+            "Found the following SDL libraries:\n\n{}".format(
+                "\n".join(
+                    [f for f in os.listdir(os.path.join(
+                        dependencies_root,
+                        "lib"
+                    )) if "libSDL" in f]
+                )
+            )
+        )
 
     if host_system == get_darwin_system_name():
         sdl_dynamic_lib_name = "libSDL2-2.0.0.dylib"
