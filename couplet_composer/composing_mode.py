@@ -158,6 +158,14 @@ def compose_project(
         "-DODE_DEVELOPER={}".format(
             "ON" if arguments.developer_build else "OFF"
         ),
+        # TODO Maybe have some more sophisticated way to set this
+        # option
+        "-DODE_DISABLE_GL_CALLS={}".format(
+            "ON" if host_system == get_linux_system_name() and os.getenv(
+                "GITHUB_ACTIONS",
+                None
+            ) else "OFF"
+        ),
         "-DODE_CXX_VERSION={}".format(arguments.std),
         "-DODE_DEPENDENCY_PREFIX={}".format(dependencies_root),
         "-DODE_VERSION={}".format(arguments.ode_version),
