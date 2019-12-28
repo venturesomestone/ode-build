@@ -34,7 +34,13 @@ from .util.target import parse_target_from_argument_string
 from .util import shell
 
 
-def create_composing_root(source_root, target, cmake_generator, build_variant):
+def create_composing_root(
+    source_root,
+    in_tree_build,
+    target,
+    cmake_generator,
+    build_variant
+):
     """
     Checks if the directory for the actual build of the project
     exists and creates it if it doesn't exist. Returns the path
@@ -42,6 +48,8 @@ def create_composing_root(source_root, target, cmake_generator, build_variant):
 
     source_root -- Path to the directory that is the root of the
     script run.
+
+    in_tree_build -- Whether the build files are created in-tree.
 
     target -- The target system of the build represented by a
     Target.
@@ -51,7 +59,10 @@ def create_composing_root(source_root, target, cmake_generator, build_variant):
     build_variant -- The build variant used to build the project.
     """
     composing_root = get_composing_directory(
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=in_tree_build
+        ),
         target=target,
         cmake_generator=cmake_generator,
         build_variant=build_variant
@@ -63,6 +74,7 @@ def create_composing_root(source_root, target, cmake_generator, build_variant):
 
 def create_destination_root(
     source_root,
+    in_tree_build,
     target,
     cmake_generator,
     build_variant,
@@ -76,6 +88,8 @@ def create_destination_root(
     source_root -- Path to the directory that is the root of the
     script run.
 
+    in_tree_build -- Whether the build files are created in-tree.
+
     target -- The target system of the build represented by a
     Target.
 
@@ -86,7 +100,10 @@ def create_destination_root(
     version -- The version number of the project.
     """
     destination_root = get_destination_directory(
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=in_tree_build
+        ),
         target=target,
         cmake_generator=cmake_generator,
         build_variant=build_variant,

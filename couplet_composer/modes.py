@@ -130,7 +130,10 @@ def _clean(arguments, source_root):
     print("\033[31m\b\b\b\bnow.\033[0m")
 
     build_target = parse_target_from_argument_string(arguments.host_target)
-    build_root = get_build_root(source_root=source_root)
+    build_root = get_build_root(
+        source_root=source_root,
+        in_tree_build=arguments.in_tree_build
+    )
 
     composing_root = get_composing_directory(
         build_root=build_root,
@@ -245,9 +248,6 @@ def run_in_configuring_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    if arguments.in_tree_build:
-        source_root = os.path.join(source_root, "unsung-anthem")
-
     if arguments.clean:
         _clean(arguments=arguments, source_root=source_root)
 
@@ -257,6 +257,7 @@ def run_in_configuring_mode(arguments, source_root):
     # build_root = create_build_root(source_root=source_root)
     tools_root = create_tools_root(
         source_root=source_root,
+        in_tree_build=arguments.in_tree_build,
         target=build_target
     )
 
@@ -283,7 +284,10 @@ def run_in_configuring_mode(arguments, source_root):
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         tools_root=tools_root,
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
         read_only=False,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
@@ -295,6 +299,7 @@ def run_in_configuring_mode(arguments, source_root):
 
     dependencies_root = create_dependencies_root(
         source_root=source_root,
+        in_tree_build=arguments.in_tree_build,
         target=build_target,
         build_variant=arguments.build_variant
     )
@@ -317,9 +322,15 @@ def run_in_configuring_mode(arguments, source_root):
         github_api_token=github_api_token,
         opengl_version=arguments.opengl_version,
         dependencies_root=dependencies_root,
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
         version_data_file=get_dependency_version_data_file(
-            build_root=get_build_root(source_root=source_root),
+            build_root=get_build_root(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            ),
             target=build_target,
             build_variant=arguments.build_variant
         ),
@@ -343,9 +354,6 @@ def run_in_composing_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
-    if arguments.in_tree_build:
-        source_root = os.path.join(source_root, "unsung-anthem")
-
     if arguments.clean:
         _clean(arguments=arguments, source_root=source_root)
 
@@ -354,7 +362,10 @@ def run_in_composing_mode(arguments, source_root):
     # Check the directories.
     # build_root = create_build_root(source_root=source_root)
     tools_root = get_tools_directory(
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
         target=build_target
     )
 
@@ -381,7 +392,10 @@ def run_in_composing_mode(arguments, source_root):
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         tools_root=tools_root,
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
         read_only=True,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
@@ -394,7 +408,10 @@ def run_in_composing_mode(arguments, source_root):
         arguments=arguments,
         host_system=platform.system(),
         project_root=get_project_root(source_root=source_root),
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
         composing_root=create_composing_root(
             source_root=source_root,
             target=build_target,
@@ -410,6 +427,7 @@ def run_in_composing_mode(arguments, source_root):
         ),
         dependencies_root=create_dependencies_root(
             source_root=source_root,
+            in_tree_build=arguments.in_tree_build,
             target=build_target,
             build_variant=arguments.build_variant
         )
