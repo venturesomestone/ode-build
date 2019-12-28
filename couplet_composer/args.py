@@ -137,12 +137,9 @@ def _add_common_build_arguments(parser, source_root):
     )
 
     parser.add_argument(
-        "--system-directories",
+        "--in-tree-build",
         action="store_true",
-        help="install libraries to and search dependencies from system "
-             "directories and not local build directories (only for the "
-             "dependencies that support this). This option is mostly useful "
-             "in automated environments"
+        help="create the build directory in-tree"
     )
 
     parser.add_argument(

@@ -245,6 +245,9 @@ def run_in_configuring_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
+    if arguments.in_tree_build:
+        source_root = os.path.join(source_root, "unsung-anthem")
+
     if arguments.clean:
         _clean(arguments=arguments, source_root=source_root)
 
@@ -340,6 +343,9 @@ def run_in_composing_mode(arguments, source_root):
     source_root -- Path to the directory that is the root of the
     script run.
     """
+    if arguments.in_tree_build:
+        source_root = os.path.join(source_root, "unsung-anthem")
+
     if arguments.clean:
         _clean(arguments=arguments, source_root=source_root)
 
