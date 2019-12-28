@@ -133,12 +133,16 @@ def _main():
     """
     source_root = os.getenv("ODE_SOURCE_ROOT", os.getcwd())
 
-    if not is_path_source_root(source_root):
-        logging.critical(
-            "The source root directory is invalid: %s",
-            source_root
-        )
-        sys.exit(1)
+    # if not is_path_source_root(source_root):
+    #     logging.critical(
+    #         "The source root directory is invalid: %s",
+    #         source_root
+    #     )
+    #     logging.warning(
+    #         "The script didn't find the required file '%s'",
+    #         os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+    #     )
+    #     sys.exit(1)
 
     argument_parser = _create_argument_parser(source_root=source_root)
     arguments = _parse_arguments(argument_parser)
