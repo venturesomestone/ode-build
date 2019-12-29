@@ -245,82 +245,81 @@ def compose_project(
             )
         )
 
-    if not arguments.system_directories:
-        if host_system == get_darwin_system_name():
-            sdl_dynamic_lib_name = "libSDL2-2.0.0.dylib"
-            sdl_dynamic_lib = os.path.join(
-                destination_root,
-                "bin",
-                sdl_dynamic_lib_name
+    if host_system == get_darwin_system_name():
+        sdl_dynamic_lib_name = "libSDL2-2.0.0.dylib"
+        sdl_dynamic_lib = os.path.join(
+            destination_root,
+            "bin",
+            sdl_dynamic_lib_name
+        )
+        if os.path.exists(sdl_dynamic_lib):
+            shell.rm(
+                sdl_dynamic_lib,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
             )
-            if os.path.exists(sdl_dynamic_lib):
+        shell.copy(
+            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name),
+            os.path.join(destination_root, "bin"),
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+    elif host_system == get_linux_system_name():
+        def _copy_linux_sdl(name):
+            dynamic_lib = os.path.join(destination_root, "bin", name)
+            if os.path.exists(dynamic_lib):
                 shell.rm(
-                    sdl_dynamic_lib,
+                    dynamic_lib,
                     dry_run=arguments.dry_run,
                     echo=arguments.print_debug
                 )
             shell.copy(
-                os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name),
+                os.path.join(dependencies_root, "lib", name),
                 os.path.join(destination_root, "bin"),
                 dry_run=arguments.dry_run,
                 echo=arguments.print_debug
             )
-        elif host_system == get_linux_system_name():
-            def _copy_linux_sdl(name):
-                dynamic_lib = os.path.join(destination_root, "bin", name)
-                if os.path.exists(dynamic_lib):
-                    shell.rm(
-                        dynamic_lib,
-                        dry_run=arguments.dry_run,
-                        echo=arguments.print_debug
-                    )
-                shell.copy(
-                    os.path.join(dependencies_root, "lib", name),
-                    os.path.join(destination_root, "bin"),
-                    dry_run=arguments.dry_run,
-                    echo=arguments.print_debug
-                )
 
-            shared_version_file = get_sdl_shared_data_file(
-                build_root=build_root,
-                target=build_target,
-                build_variant=arguments.build_variant
-            )
-            if os.path.exists(shared_version_file):
-                with open(shared_version_file) as f:
-                    shared_version = f.read()
-            else:
-                shared_version = "0.0.0"
+        shared_version_file = get_sdl_shared_data_file(
+            build_root=build_root,
+            target=build_target,
+            build_variant=arguments.build_variant
+        )
+        if os.path.exists(shared_version_file):
+            with open(shared_version_file) as f:
+                shared_version = f.read()
+        else:
+            shared_version = "0.0.0"
 
-            version_data = shared_version.split(".")
+        version_data = shared_version.split(".")
 
-            _copy_linux_sdl("libSDL2-2.0.so.{}".format(shared_version))
+        _copy_linux_sdl("libSDL2-2.0.so.{}".format(shared_version))
 
-            def _link_linux_sdl(name, src):
-                new_link = os.path.join(destination_root, "bin", name)
-                if os.path.exists(new_link):
-                    shell.rm(
-                        new_link,
-                        dry_run=arguments.dry_run,
-                        echo=arguments.print_debug
-                    )
-                original = os.path.join(destination_root, "bin", src)
-                shell.link(
-                    original,
+        def _link_linux_sdl(name, src):
+            new_link = os.path.join(destination_root, "bin", name)
+            if os.path.exists(new_link):
+                shell.rm(
                     new_link,
                     dry_run=arguments.dry_run,
                     echo=arguments.print_debug
                 )
+            original = os.path.join(destination_root, "bin", src)
+            shell.link(
+                original,
+                new_link,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
 
-            _link_linux_sdl(
-                name="libSDL2-2.0.so.{}".format(version_data[0]),
-                src="libSDL2-2.0.so.{}".format(shared_version)
-            )
-            _link_linux_sdl(
-                name="libSDL2-2.0.so",
-                src="libSDL2-2.0.so.{}".format(version_data[0])
-            )
-            _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
+        _link_linux_sdl(
+            name="libSDL2-2.0.so.{}".format(version_data[0]),
+            src="libSDL2-2.0.so.{}".format(shared_version)
+        )
+        _link_linux_sdl(
+            name="libSDL2-2.0.so",
+            src="libSDL2-2.0.so.{}".format(version_data[0])
+        )
+        _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
 
     latest_path_file = get_latest_install_path_file(build_root=build_root)
 
