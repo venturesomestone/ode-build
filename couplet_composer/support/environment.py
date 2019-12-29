@@ -170,7 +170,8 @@ def get_tools_directory(build_root, target):
     """
     return os.path.join(
         build_root,
-        "tools",
+        "local",
+        "bin",
         "{}-{}".format(target.system, target.machine)
     )
 
@@ -191,6 +192,7 @@ def get_dependencies_directory(build_root, target, build_variant):
     """
     return os.path.join(
         build_root,
+        "local",
         "lib",
         "{}-{}-{}".format(target.system, target.machine, build_variant)
     )
@@ -212,6 +214,7 @@ def get_dependency_version_data_file(build_root, target, build_variant):
     """
     return os.path.join(
         build_root,
+        "local",
         "versions-{}-{}-{}".format(
             target.system,
             target.machine,
@@ -236,6 +239,7 @@ def get_data_directory(build_root, target, build_variant):
     """
     return os.path.join(
         build_root,
+        "local",
         "data",
         "{}-{}-{}".format(target.system, target.machine, build_variant)
     )
