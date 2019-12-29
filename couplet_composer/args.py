@@ -271,7 +271,7 @@ def _add_common_build_arguments(parser, source_root):
         dest="compiler_toolchain"
     )
     toolchain_selection_group.add_argument(
-        "--cl",
+        "--msvc",
         action="store_const",
         const=get_msvc_toolchain_name(),
         help="resolve paths to the MSVC compiler toolchain for building the "
