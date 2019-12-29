@@ -87,6 +87,11 @@ def _add_common_arguments(parser):
         action="store_true",
         help="print the debug-level logging output"
     )
+    parser.add_argument(
+        "--in-tree-build",
+        action="store_true",
+        help="create the build directory in-tree"
+    )
 
     # --------------------------------------------------------- #
     # GitHub options
@@ -134,12 +139,6 @@ def _add_common_build_arguments(parser, source_root):
         action="store_true",
         help="build the benchmarks",
         dest="build_benchmark"
-    )
-
-    parser.add_argument(
-        "--in-tree-build",
-        action="store_true",
-        help="create the build directory in-tree"
     )
 
     parser.add_argument(
