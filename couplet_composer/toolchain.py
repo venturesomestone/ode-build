@@ -406,11 +406,16 @@ def create_toolchain(
         tools_root=tools_root
     )
 
-    logging.debug("The tools found locally are:")
+    if found_local_tools:
+        logging.debug(
+            "The tools found locally are:\n%s",
+            "\n".join([tool.get_searched_tool() for tool in found_local_tools])
+        )
+    else:
+        logging.debug("No tools were found locally")
 
     # Add the found tools to the dictionary.
     for tool in found_local_tools:
-        logging.debug("%s", tool.get_searched_tool())
         found_tools.update({tool.get_tool_type(): tool.get_local_executable(
             tools_root=tools_root,
             version=tool.get_required_local_version(
@@ -460,6 +465,7 @@ def create_toolchain(
     # Download the missing tools.
     if not read_only:
         for tool in missing_tools:
+            logging.debug("Installing %s", tool.get_searched_tool())
             installed_tool = _install_missing_tool(
                 tool=tool,
                 build_root=build_root,
