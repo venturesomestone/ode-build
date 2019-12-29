@@ -22,7 +22,7 @@ from .support.build_variant import \
 
 from .support.cmake_generators import \
     get_cmake_generator_names, get_make_cmake_generator_name, \
-    get_ninja_cmake_generator_name
+    get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
 from .support.compiler_toolchains import \
     get_gcc_toolchain_name, get_clang_toolchain_name, \
@@ -335,6 +335,14 @@ def _add_common_build_arguments(parser, source_root):
         const=get_make_cmake_generator_name(),
         help="generate the build files using the CMake generator for Unix "
              "Makefiles",
+        dest="cmake_generator"
+    )
+    generator_group.add_argument(
+        "--visual-studio-16",
+        action="store_const",
+        const=get_visual_studio_16_cmake_generator_name(),
+        help="generate the build files using the CMake generator for Visual "
+             "Studio 2019",
         dest="cmake_generator"
     )
 

@@ -219,6 +219,7 @@ def _construct_tool_data_construction_info(arguments):
         "cmake": tool_data.create_cmake_tool_data,
         "ninja": tool_data.create_ninja_tool_data,
         "make": tool_data.create_make_tool_data,
+        "msbuild": tool_data.create_msbuild_tool_data,
         "git": tool_data.create_git_tool_data
     }
 

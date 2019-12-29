@@ -26,7 +26,8 @@ from .support.compiler_toolchains import \
     get_gcc_toolchain_name, get_clang_toolchain_name
 
 from .support.cmake_generators import \
-    get_make_cmake_generator_name, get_ninja_cmake_generator_name
+    get_make_cmake_generator_name, get_ninja_cmake_generator_name, \
+    get_visual_studio_16_cmake_generator_name
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
@@ -382,6 +383,15 @@ def create_toolchain(
                 return False
             elif cmake_generator == get_ninja_cmake_generator_name() \
                     and data.get_searched_tool() != "ninja":
+                logging.debug(
+                    "Removing %s from the tools to search for the toolchain "
+                    "as it isn't the selected build system",
+                    data.get_searched_tool()
+                )
+                return False
+            elif cmake_generator \
+                    == get_visual_studio_16_cmake_generator_name() \
+                    and data.get_searched_tool() != "msbuild":
                 logging.debug(
                     "Removing %s from the tools to search for the toolchain "
                     "as it isn't the selected build system",
