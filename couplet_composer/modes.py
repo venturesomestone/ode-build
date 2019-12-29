@@ -216,6 +216,10 @@ def _construct_tool_data_construction_info(arguments):
             tool_data.create_gxx_tool_data,
             version=arguments.compiler_version
         ),
+        "msvc": partial(
+            tool_data.create_msvc_tool_data,
+            version=arguments.compiler_version
+        ),
         "cmake": tool_data.create_cmake_tool_data,
         "ninja": tool_data.create_ninja_tool_data,
         "make": tool_data.create_make_tool_data,

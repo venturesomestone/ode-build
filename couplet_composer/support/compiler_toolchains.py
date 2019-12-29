@@ -26,6 +26,15 @@ def get_gcc_toolchain_name():
     return "gcc"
 
 
+def get_msvc_toolchain_name():
+    """Gives the name of the MSVC compiler toolchain."""
+    return "cl"
+
+
 def get_compiler_toolchain_names():
     """Gives the names of the possible compiler toolchains."""
-    return [get_clang_toolchain_name(), get_gcc_toolchain_name()]
+    return [
+        get_clang_toolchain_name(),
+        get_gcc_toolchain_name(),
+        get_msvc_toolchain_name()
+    ]

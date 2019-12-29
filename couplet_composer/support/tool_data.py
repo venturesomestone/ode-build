@@ -166,6 +166,19 @@ def create_gxx_tool_data(version=None):
     )
 
 
+def create_msvc_tool_data(version=None):
+    """
+    Creates the ToolData object of MSVC compiler.
+
+    version -- The version of GCC to search for.
+    """
+    return create_compiler_tool_data(
+        tool_type="cc",
+        tool_name="cl",
+        version=version
+    )
+
+
 def create_make_tool_data():
     """Creates the ToolData object of Make for toolchain."""
     return ToolData(

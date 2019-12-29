@@ -26,7 +26,7 @@ from .support.cmake_generators import \
 
 from .support.compiler_toolchains import \
     get_gcc_toolchain_name, get_clang_toolchain_name, \
-    get_compiler_toolchain_names
+    get_compiler_toolchain_names, get_msvc_toolchain_name
 
 from .support.project_values import \
     get_anthem_binaries_base_name, get_anthem_name, get_anthem_version, \
@@ -267,6 +267,14 @@ def _add_common_build_arguments(parser, source_root):
         action="store_const",
         const=get_gcc_toolchain_name(),
         help="resolve paths to the GCC compiler toolchain for building the "
+             "project if no path is given with '--host-cc' and '--host-cxx'",
+        dest="compiler_toolchain"
+    )
+    toolchain_selection_group.add_argument(
+        "--cl",
+        action="store_const",
+        const=get_msvc_toolchain_name(),
+        help="resolve paths to the MSVC compiler toolchain for building the "
              "project if no path is given with '--host-cc' and '--host-cxx'",
         dest="compiler_toolchain"
     )

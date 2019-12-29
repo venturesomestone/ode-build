@@ -23,7 +23,7 @@ import logging
 import os
 
 from .support.compiler_toolchains import \
-    get_gcc_toolchain_name, get_clang_toolchain_name
+    get_gcc_toolchain_name, get_clang_toolchain_name, get_msvc_toolchain_name
 
 from .support.cmake_generators import \
     get_make_cmake_generator_name, get_ninja_cmake_generator_name, \
@@ -337,6 +337,14 @@ def create_toolchain(
                     data.get_searched_tool()
                 )
                 return False
+            elif compiler_toolchain == get_msvc_toolchain_name() \
+                    and "cl" not in data.get_searched_tool():
+                logging.debug(
+                    "Removing %s from the tools to search for the "
+                    "toolchain as it isn't the selected C compiler",
+                    data.get_searched_tool()
+                )
+                return False
         elif data.get_tool_type() == "cxx":
             if use_host_tools:
                 logging.debug(
@@ -355,6 +363,14 @@ def create_toolchain(
                 return False
             elif compiler_toolchain == get_gcc_toolchain_name() \
                     and "g++" not in data.get_searched_tool():
+                logging.debug(
+                    "Removing %s from the tools to search for the "
+                    "toolchain as it isn't the selected C++ compiler",
+                    data.get_searched_tool()
+                )
+                return False
+            elif compiler_toolchain == get_msvc_toolchain_name() \
+                    and "cl" not in data.get_searched_tool():
                 logging.debug(
                     "Removing %s from the tools to search for the "
                     "toolchain as it isn't the selected C++ compiler",
@@ -451,6 +467,11 @@ def create_toolchain(
         else:
             logging.debug("%s wasn't found", tool.get_searched_tool())
             missing_tools.append(tool)
+
+    # Fill in the missing MSVC compiler entry.
+    if compiler_toolchain == get_msvc_toolchain_name():
+        if "cxx" not in found_tools:
+            found_tools.update({"cxx": found_tools["cc"]})
 
     # Manually look for the special Make tool.
     logging.debug(
