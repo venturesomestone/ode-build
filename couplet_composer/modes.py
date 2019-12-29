@@ -413,12 +413,14 @@ def run_in_composing_mode(arguments, source_root):
         ),
         composing_root=create_composing_root(
             source_root=source_root,
+            in_tree_build=arguments.in_tree_build,
             target=build_target,
             cmake_generator=arguments.cmake_generator,
             build_variant=arguments.build_variant
         ),
         destination_root=create_destination_root(
             source_root=source_root,
+            in_tree_build=arguments.in_tree_build,
             target=build_target,
             cmake_generator=arguments.cmake_generator,
             build_variant=arguments.build_variant,
