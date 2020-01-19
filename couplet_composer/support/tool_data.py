@@ -39,7 +39,7 @@ from ..util.cache import cached
 # Parameters
 #
 # get_required_local_version -- Returns a string that represents
-# version of the tool that is donwloaded when the tool isn't
+# version of the tool that is downloaded when the tool isn't
 # found. Returns None if the tool can't be installed locally. The
 # parameters for the function are: target, host_system
 #
