@@ -36,6 +36,8 @@ from .support.file_paths import \
 
 from .support.mode_names import get_configuring_mode_name
 
+from .support.platform_names import get_windows_system_name
+
 from .support.project_names import get_ode_repository_name, get_project_name
 
 from .support import tool_data
@@ -191,41 +193,51 @@ def _clean(arguments, source_root):
     )
 
 
-def _construct_tool_data_construction_info(arguments):
+def _construct_tool_data_construction_info(arguments, host_system):
     """
     Constructs the dictionary containing the required information
-    for creating the ToolData object for the toolchain.
+    for creating the ToolData object for the toolchain for the
+    current host system.
 
     arguments -- The namespace containing the parsed command line
     arguments of the script.
+
+    host_system -- The system this script is run on.
     """
-    return {
-        "clang": partial(
-            tool_data.create_clang_tool_data,
-            version=arguments.compiler_version
-        ),
-        "clang++": partial(
-            tool_data.create_clangxx_tool_data,
-            version=arguments.compiler_version
-        ),
-        "gcc": partial(
-            tool_data.create_gcc_tool_data,
-            version=arguments.compiler_version
-        ),
-        "g++": partial(
-            tool_data.create_gxx_tool_data,
-            version=arguments.compiler_version
-        ),
-        "msvc": partial(
-            tool_data.create_msvc_tool_data,
-            version=arguments.compiler_version
-        ),
-        "cmake": tool_data.create_cmake_tool_data,
-        "ninja": tool_data.create_ninja_tool_data,
-        "make": tool_data.create_make_tool_data,
-        "msbuild": tool_data.create_msbuild_tool_data,
-        "git": tool_data.create_git_tool_data
-    }
+    # TODO: Take into account whether Clang or GCC is selected
+    if host_system == get_windows_system_name():
+        return {
+            "msvc": partial(
+                tool_data.create_msvc_tool_data,
+                version=arguments.compiler_version
+            ),
+            "cmake": tool_data.create_cmake_tool_data,
+            "msbuild": tool_data.create_msbuild_tool_data,
+            "git": tool_data.create_git_tool_data
+        }
+    else:
+        return {
+            "clang": partial(
+                tool_data.create_clang_tool_data,
+                version=arguments.compiler_version
+            ),
+            "clang++": partial(
+                tool_data.create_clangxx_tool_data,
+                version=arguments.compiler_version
+            ),
+            "gcc": partial(
+                tool_data.create_gcc_tool_data,
+                version=arguments.compiler_version
+            ),
+            "g++": partial(
+                tool_data.create_gxx_tool_data,
+                version=arguments.compiler_version
+            ),
+            "cmake": tool_data.create_cmake_tool_data,
+            "ninja": tool_data.create_ninja_tool_data,
+            "make": tool_data.create_make_tool_data,
+            "git": tool_data.create_git_tool_data
+        }
 
 
 def _use_compiler_path_arguments(arguments):

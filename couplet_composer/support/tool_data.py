@@ -30,8 +30,9 @@ from ..util.cache import cached
 # Thus, the tuple contains various functions that the toolchain
 # utilizes when it constructs itself.
 #
-# get_tool_type -- Returns the type of the tool for the
-# toolchain, e.g. 'cc' or 'cxx'
+# get_tool_key -- Returns the simple lower-case name of the tool.
+#
+# get_tool_name -- Returns the name of the tool.
 #
 # get_searched_tool -- Returns a string that represents the name
 # that is used if the tool is looked for from the system. TODO:
@@ -54,7 +55,8 @@ from ..util.cache import cached
 # host_system, github_user_agent, github_api_token, dry_run,
 # print_debug
 ToolData = namedtuple("ToolData", [
-    "get_tool_type",
+    "get_tool_key",
+    "get_tool_name",
     "get_searched_tool",
     "get_required_local_version",
     "get_local_executable",
@@ -62,12 +64,17 @@ ToolData = namedtuple("ToolData", [
 ])
 
 
+# The type 'CompilerToolPair' represents data of a compiler on a
+# system that has separate executables for C and C++.
+CompilerToolPair = namedtuple("CompilerToolPair", ["cc", "cxx"])
+
+
 @cached
 def list_tool_types():
     """
     Creates a list of the possible tool types for the toolchain.
     """
-    return ["cc", "cxx", "cmake", "build_system", "git", "make"]
+    return ["compiler", "cmake", "build_system", "scm", "make"]
 
 
 def _create_tool_data(module_name):
