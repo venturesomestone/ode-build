@@ -99,9 +99,9 @@ def _check_and_print_python_version():
             )
             now = datetime.now()
             logging.warning(
-                "Also, the end of life of Python 2.7 is in %s, on 1 January, "
-                "2020",
-                to_date_string(date_difference(now, python2_end_of_life))
+                "Also, the end of life of Python 2.7 was %s ago, on 1 "
+                "January, 2020",
+                to_date_string(date_difference(python2_end_of_life, now))
             )
     else:
         logging.debug("You're using Python %s", sys.version)
