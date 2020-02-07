@@ -14,6 +14,7 @@
 
 import argparse
 import multiprocessing
+import platform
 
 from .support.build_variant import \
     get_build_variant_names, get_debug_variant_name, \
@@ -27,6 +28,8 @@ from .support.cmake_generators import \
 from .support.compiler_toolchains import \
     get_gcc_toolchain_name, get_clang_toolchain_name, \
     get_compiler_toolchain_names, get_msvc_toolchain_name
+
+from .support.platform_names import get_windows_system_name
 
 from .support.project_values import \
     get_anthem_binaries_base_name, get_anthem_name, get_anthem_version, \
@@ -242,7 +245,9 @@ def _add_common_build_arguments(parser, source_root):
         required=False
     )
 
-    default_compiler_toolchain = get_clang_toolchain_name()
+    default_compiler_toolchain = get_clang_toolchain_name() \
+        if platform.system() != get_windows_system_name() \
+        else get_msvc_toolchain_name()
 
     toolchain_selection_group.add_argument(
         "-C",
@@ -299,6 +304,13 @@ def _add_common_build_arguments(parser, source_root):
         help="give the path to the C++ compiler for the host platform and use "
              "it instead of the automatically resolved C++ compiler"
     )
+    toolchain_group.add_argument(
+        "--host-compiler",
+        default=None,
+        help="give the path to the compiler for the host platform and use it "
+             "instead of the automatically resolved compiler and also "
+             "override the '--host-cc' and '--host-cxx' options"
+    )
 
     # --------------------------------------------------------- #
     # OpenGL options
@@ -316,7 +328,9 @@ def _add_common_build_arguments(parser, source_root):
 
     generator_group = parser.add_mutually_exclusive_group(required=False)
 
-    default_cmake_generator = get_ninja_cmake_generator_name()
+    default_cmake_generator = get_ninja_cmake_generator_name() \
+        if platform.system() != get_windows_system_name() \
+        else get_visual_studio_16_cmake_generator_name()
 
     parser.set_defaults(cmake_generator=default_cmake_generator)
 
