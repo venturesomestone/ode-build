@@ -256,7 +256,9 @@ def _add_common_build_arguments(parser, source_root):
         choices=get_compiler_toolchain_names(),
         help="resolve paths to the selected compiler toolchain for building "
              "the project if no path is given with '--host-cc' and "
-             "'--host-cxx' (default: {})".format(default_compiler_toolchain),
+             "'--host-cxx' or '--host-compiler' (default: {})".format(
+                 default_compiler_toolchain
+             ),
         dest="compiler_toolchain"
     )
     toolchain_selection_group.add_argument(
