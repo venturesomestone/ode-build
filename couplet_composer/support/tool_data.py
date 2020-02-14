@@ -70,8 +70,9 @@ ToolData = namedtuple("ToolData", [
 
 
 # The type 'CompilerToolPair' represents data of a compiler on a
-# system that has separate executables for C and C++.
-CompilerToolPair = namedtuple("CompilerToolPair", ["cc", "cxx"])
+# system that has separate executables for C and C++. It also
+# contains a name for the whole compiler toolchain.
+CompilerToolPair = namedtuple("CompilerToolPair", ["name", "cc", "cxx"])
 
 
 @cached
@@ -157,6 +158,7 @@ def create_unix_compiler_tool_data(
         )
 
     return CompilerToolPair(
+        name=tool_name,
         cc=_create_compiler_tool_data(tool_key=cc_name) if not cc_path
         else _create_compiler_tool_data_with_path(
             tool_key=cc_name,
@@ -201,12 +203,16 @@ def create_windows_compiler_tool_data(
     )
 
 
-def create_clang_tool_data(version=None):
+def create_clang_tool_data(version=None, cc_path=None, cxx_path=None):
     """
     Creates the ToolData objects of Clang for toolchain. Returns
     a named tuple of type 'CompilerToolPair'.
 
     version -- The version of Clang to search for.
+
+    cc_path -- An optional predefined path to the C compiler.
+
+    cxx_path -- An optional predefined path to the C++ compiler.
     """
     return create_unix_compiler_tool_data(
         cc_name="clang",
@@ -216,12 +222,16 @@ def create_clang_tool_data(version=None):
     )
 
 
-def create_gcc_tool_data(version=None):
+def create_gcc_tool_data(version=None, cc_path=None, cxx_path=None):
     """
     Creates the ToolData objects of GCC for toolchain. Returns
     a named tuple of type 'CompilerToolPair'.
 
     version -- The version of GCC to search for.
+
+    cc_path -- An optional predefined path to the C compiler.
+
+    cxx_path -- An optional predefined path to the C++ compiler.
     """
     return create_unix_compiler_tool_data(
         cc_name="gcc",
