@@ -10,7 +10,10 @@
 #
 # ------------------------------------------------------------- #
 
-"""The version data of Couplet Composer."""
+"""
+The version data of Couplet Composer. The version number is given
+according to Semantic Versioning.
+"""
 
 
 def get_release_version():
