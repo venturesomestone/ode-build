@@ -99,8 +99,8 @@ def build_with_cmake(
 
     if isinstance(toolchain.compiler, dict):
         cmake_env = {
-            "CC": toolchain.compiler.cc,
-            "CXX": toolchain.compiler.cxx
+            "CC": toolchain.compiler["cc"],
+            "CXX": toolchain.compiler["cxx"]
         }
     else:
         cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
