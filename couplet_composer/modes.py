@@ -230,9 +230,18 @@ def _construct_tool_data(arguments, host_system):
             command line arguments of the script.
             """
             if arguments.host_compiler:
+                logging.debug(
+                    "Going to use single compiler tool as only one is given "
+                    "in command line options"
+                )
                 return False
             elif arguments.compiler_toolchain == get_msvc_toolchain_name():
+                logging.debug(
+                    "Going to use single compiler tool as the selected "
+                    "compiler is MSVC"
+                )
                 return False
+            logging.debug("Going to use separate C and C++ compilers")
             return True
 
         if _should_use_separate_compilers(arguments=arguments):
