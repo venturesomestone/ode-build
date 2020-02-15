@@ -50,7 +50,7 @@ from .support.project_names import get_ode_repository_name, get_project_name
 from .support.tool_data import \
     create_clang_tool_data, create_cmake_tool_data, create_gcc_tool_data, \
     create_git_tool_data, create_make_tool_data, create_msbuild_tool_data, \
-    create_ninja_tool_data
+    create_msvc_tool_data, create_ninja_tool_data
 
 from .util.target import parse_target_from_argument_string
 
@@ -230,9 +230,18 @@ def _construct_tool_data(arguments, host_system):
             command line arguments of the script.
             """
             if arguments.host_compiler:
+                logging.debug(
+                    "Going to use single compiler tool as only one is given "
+                    "in command line options"
+                )
                 return False
             elif arguments.compiler_toolchain == get_msvc_toolchain_name():
+                logging.debug(
+                    "Going to use single compiler tool as the selected "
+                    "compiler is MSVC"
+                )
                 return False
+            logging.debug("Going to use separate C and C++ compilers")
             return True
 
         if _should_use_separate_compilers(arguments=arguments):
@@ -258,8 +267,20 @@ def _construct_tool_data(arguments, host_system):
                     return create_gcc_tool_data(
                         version=arguments.compiler_version
                     )
+                else:
+                    return None
         else:
-            pass
+            if arguments.host_compiler:
+                if "msvc" in arguments.host_compiler.lower() \
+                        or "cl.exe" in arguments.host_compiler.lower():
+                    return create_msvc_tool_data(
+                        tool_path=arguments.host_compiler
+                    )
+            else:
+                if arguments.compiler_toolchain == get_msvc_toolchain_name():
+                    return create_msvc_tool_data()
+                else:
+                    return None
 
     def _create_build_system_data(arguments):
         """
