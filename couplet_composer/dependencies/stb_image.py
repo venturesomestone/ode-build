@@ -130,7 +130,7 @@ def install_dependency(
 
     asset_path = repository.clone(
         path=temp_dir,
-        git=toolchain.git,
+        git=toolchain.scm,
         github_data=GitHubData(
             owner="nothings",
             name="stb",
