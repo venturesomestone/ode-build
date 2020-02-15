@@ -271,17 +271,32 @@ def create_make_tool_data():
     )
 
 
-def create_msbuild_tool_data():
-    """Creates the ToolData object of MSBuild for toolchain."""
-    return ToolData(
-        get_tool_key=lambda: "msbuild",
-        get_tool_name=lambda: "MSBuild",
-        get_searched_tool=lambda: "MSBuild",
-        use_predefined_path=lambda: False,
-        get_required_local_version=None,
-        get_local_executable=None,
-        install_tool=None
-    )
+def create_msbuild_tool_data(tool_path=None):
+    """
+    Creates the ToolData object of MSBuild for toolchain.
+
+    tool_path -- An optional predefined path to MSBuild.
+    """
+    if tool_path:
+        return ToolData(
+            get_tool_key=lambda: "msbuild",
+            get_tool_name=lambda: "MSBuild",
+            get_searched_tool=lambda: tool_path,
+            use_predefined_path=lambda: True,
+            get_required_local_version=None,
+            get_local_executable=None,
+            install_tool=None
+        )
+    else:
+        return ToolData(
+            get_tool_key=lambda: "msbuild",
+            get_tool_name=lambda: "MSBuild",
+            get_searched_tool=lambda: "msbuild",
+            use_predefined_path=lambda: False,
+            get_required_local_version=None,
+            get_local_executable=None,
+            install_tool=None
+        )
 
 
 def create_git_tool_data():
