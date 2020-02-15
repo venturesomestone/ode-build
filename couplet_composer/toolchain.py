@@ -125,7 +125,7 @@ def _resolve_tools_on_system(tools_data, host_system):
                     "%s toolchain wasn't found",
                     tool_data.get_tool_name()
                 )
-                missing.update(key, tool_data)
+                missing.update({key: tool_data})
 
         else:
             logging.debug(
@@ -149,7 +149,7 @@ def _resolve_tools_on_system(tools_data, host_system):
                 found.update({key: found_tool})
             else:
                 logging.debug("%s wasn't found", tool_data.get_searched_tool())
-                missing.update(key, tool_data)
+                missing.update({key: tool_data})
 
     return found, missing
 
@@ -240,7 +240,7 @@ def _resolve_local_tools(
                     "%s toolchain wasn't found",
                     tool_data.get_tool_name()
                 )
-                missing.update(key, tool_data)
+                missing.update({key: tool_data})
 
         else:
             logging.debug(
@@ -268,7 +268,7 @@ def _resolve_local_tools(
                 found.update({key: found_tool})
             else:
                 logging.debug("%s wasn't found", tool_data.get_searched_tool())
-                missing.update(key, tool_data)
+                missing.update({key: tool_data})
 
     return found, missing
 
@@ -423,7 +423,7 @@ def _install_missing_tools(
                     "%s toolchain wasn't installed",
                     tool_data.get_tool_name()
                 )
-                missing.update(key, tool_data)
+                missing.update({key: tool_data})
 
         else:
             logging.debug("Installing %s", tool_data.get_tool_name())
@@ -445,7 +445,7 @@ def _install_missing_tools(
                 installed.update({key: installed_tool})
             else:
                 logging.debug("%s wasn't installed", tool_data.get_tool_name())
-                missing.update(key, tool_data)
+                missing.update({key: tool_data})
 
     return installed, missing
 
