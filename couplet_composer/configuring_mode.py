@@ -39,7 +39,7 @@ def create_build_root(source_root):
     return build_root
 
 
-def create_tools_root(source_root, target):
+def create_tools_root(source_root, in_tree_build, target):
     """
     Checks if the directory for the local tools exists and
     creates it if it doesn't exist. Returns the path to the tools
@@ -48,11 +48,16 @@ def create_tools_root(source_root, target):
     source_root -- Path to the directory that is the root of the
     script run.
 
+    in_tree_build -- Whether the build files are created in-tree.
+
     target -- The target system of the build represented by a
     Target.
     """
     tools_root = get_tools_directory(
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=in_tree_build
+        ),
         target=target
     )
     if not os.path.exists(tools_root):
@@ -60,7 +65,12 @@ def create_tools_root(source_root, target):
     return tools_root
 
 
-def create_dependencies_root(source_root, target, build_variant):
+def create_dependencies_root(
+    source_root,
+    in_tree_build,
+    target,
+    build_variant
+):
     """
     Checks if the directory for the dependencies exists and
     creates it if it doesn't exist. Returns the path to the
@@ -69,13 +79,18 @@ def create_dependencies_root(source_root, target, build_variant):
     source_root -- Path to the directory that is the root of the
     script run.
 
+    in_tree_build -- Whether the build files are created in-tree.
+
     target -- The target system of the build represented by a
     Target.
 
     build_variant -- The build variant used to build the project.
     """
     dependencies_root = get_dependencies_directory(
-        build_root=get_build_root(source_root=source_root),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=in_tree_build
+        ),
         target=target,
         build_variant=build_variant
     )

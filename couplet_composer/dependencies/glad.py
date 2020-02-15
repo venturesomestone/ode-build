@@ -129,7 +129,7 @@ def install_dependency(
 
     asset_path = tag.download_tag(
         path=temp_dir,
-        git=toolchain.git,
+        git=toolchain.scm,
         github_data=GitHubData(
             owner="Dav1dde",
             name="glad",

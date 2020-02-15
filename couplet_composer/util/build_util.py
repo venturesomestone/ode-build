@@ -74,8 +74,8 @@ def build_with_cmake(
     cmake_call = [
         toolchain.cmake,
         source_directory,
-        "-DCMAKE_INSTALL_PREFIX={}".format(dependencies_root),
-        "-DCMAKE_BUILD_TYPE={}".format(build_variant)
+        "-DCMAKE_BUILD_TYPE={}".format(build_variant),
+        "-DCMAKE_INSTALL_PREFIX={}".format(dependencies_root)
     ]
 
     if cmake_generator == get_ninja_cmake_generator_name():
@@ -97,7 +97,13 @@ def build_with_cmake(
         else:
             cmake_call += cmake_options
 
-    cmake_env = {"CC": toolchain.cc, "CXX": toolchain.cxx}
+    if isinstance(toolchain.compiler, dict):
+        cmake_env = {
+            "CC": toolchain.compiler["cc"],
+            "CXX": toolchain.compiler["cxx"]
+        }
+    else:
+        cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
 
     build_directory = os.path.join(temporary_root, "build")
 

@@ -205,18 +205,23 @@ def install_dependency(
                 echo=print_debug
             )
     else:
-        build_with_cmake(
-            toolchain=toolchain,
-            cmake_generator=cmake_generator,
-            source_directory=subdir,
-            temporary_root=temp_dir,
-            dependencies_root=dependencies_root,
-            target=target,
-            host_system=host_system,
-            build_variant=build_variant,
-            dry_run=dry_run,
-            print_debug=print_debug
-        )
+        config_call = [
+            os.path.join(subdir, "configure"),
+            "--prefix={}".format(dependencies_root)
+        ]
+
+        build_directory = os.path.join(temp_dir, "build")
+
+        shell.makedirs(build_directory, dry_run=dry_run, echo=print_debug)
+
+        with shell.pushd(build_directory):
+            shell.call(config_call, dry_run=dry_run, echo=print_debug)
+            shell.call([toolchain.make], dry_run=dry_run, echo=print_debug)
+            shell.call(
+                [toolchain.make, "install"],
+                dry_run=dry_run,
+                echo=print_debug
+            )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
 

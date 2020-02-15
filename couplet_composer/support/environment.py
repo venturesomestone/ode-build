@@ -42,15 +42,18 @@ def get_project_root(source_root):
 
 
 @cached
-def get_build_root(source_root):
+def get_build_root(source_root, in_tree_build):
     """
     Gives the path to the root directory that this script uses
     for all created files and directories.
 
     source_root -- Path to the directory that is the root of the
     script run.
+
+    in_tree_build -- Whether the build files are created in-tree.
     """
-    return os.path.join(source_root, "build")
+    return os.path.join(source_root, "build") if not in_tree_build \
+        else os.path.join(source_root, "unsung-anthem", "build")
 
 
 @cached
@@ -167,7 +170,8 @@ def get_tools_directory(build_root, target):
     """
     return os.path.join(
         build_root,
-        "tools",
+        "local",
+        "bin",
         "{}-{}".format(target.system, target.machine)
     )
 
@@ -188,6 +192,7 @@ def get_dependencies_directory(build_root, target, build_variant):
     """
     return os.path.join(
         build_root,
+        "local",
         "lib",
         "{}-{}-{}".format(target.system, target.machine, build_variant)
     )
@@ -209,6 +214,7 @@ def get_dependency_version_data_file(build_root, target, build_variant):
     """
     return os.path.join(
         build_root,
+        "local",
         "versions-{}-{}-{}".format(
             target.system,
             target.machine,
@@ -233,6 +239,7 @@ def get_data_directory(build_root, target, build_variant):
     """
     return os.path.join(
         build_root,
+        "local",
         "data",
         "{}-{}-{}".format(target.system, target.machine, build_variant)
     )

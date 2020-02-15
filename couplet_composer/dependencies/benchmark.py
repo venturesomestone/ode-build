@@ -135,7 +135,7 @@ def install_dependency(
 
     asset_path = release.download_tag(
         path=temp_dir,
-        git=toolchain.git,
+        git=toolchain.scm,
         github_data=GitHubData(
             owner="google",
             name="benchmark",
