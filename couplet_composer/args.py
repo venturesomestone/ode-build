@@ -314,6 +314,13 @@ def _add_common_build_arguments(parser, source_root):
              "override the '--host-cc' and '--host-cxx' options"
     )
 
+    toolchain_group.add_argument(
+        "--host-msbuild",
+        default=None,
+        help="give the path to MSBuild on the host platform and use it "
+             "instead of the automatically resolved MSBuild"
+    )
+
     # --------------------------------------------------------- #
     # OpenGL options
 
