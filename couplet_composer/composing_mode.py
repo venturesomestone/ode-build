@@ -153,8 +153,14 @@ def compose_project(
         "-G",
         arguments.cmake_generator,
         "-DCMAKE_BUILD_TYPE={}".format(arguments.build_variant),
-        "-DCMAKE_C_COMPILER={}".format(toolchain.cc),
-        "-DCMAKE_CXX_COMPILER={}".format(toolchain.cxx),
+        "-DCMAKE_C_COMPILER={}".format(
+            toolchain.compiler["cc"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        ),
+        "-DCMAKE_CXX_COMPILER={}".format(
+            toolchain.compiler["cxx"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        ),
         "-DCMAKE_INSTALL_PREFIX={}".format(destination_root),
         "-DODE_BUILD_TEST={}".format("ON" if arguments.build_test else "OFF"),
         "-DODE_TEST_BENCHMARKING={}".format(
