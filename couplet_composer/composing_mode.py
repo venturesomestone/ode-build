@@ -217,7 +217,13 @@ def compose_project(
     elif host_system == get_linux_system_name():
         cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
-    cmake_env = {"CC": toolchain.cc, "CXX": toolchain.cxx}
+    if isinstance(toolchain.compiler, dict):
+        cmake_env = {
+            "CC": toolchain.compiler["cc"],
+            "CXX": toolchain.compiler["cxx"]
+        }
+    else:
+        cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
 
     with shell.pushd(composing_root):
         shell.call(
