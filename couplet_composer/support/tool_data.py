@@ -72,7 +72,11 @@ ToolData = namedtuple("ToolData", [
 # The type 'CompilerToolPair' represents data of a compiler on a
 # system that has separate executables for C and C++. It also
 # contains a name for the whole compiler toolchain.
-CompilerToolPair = namedtuple("CompilerToolPair", ["name", "cc", "cxx"])
+CompilerToolPair = namedtuple("CompilerToolPair", [
+    "get_tool_name",
+    "cc",
+    "cxx"
+])
 
 
 @cached
@@ -158,7 +162,7 @@ def create_unix_compiler_tool_data(
         )
 
     return CompilerToolPair(
-        name=tool_name,
+        get_tool_name=lambda: tool_name,
         cc=_create_compiler_tool_data(tool_key=cc_name) if not cc_path
         else _create_compiler_tool_data_with_path(
             tool_key=cc_name,

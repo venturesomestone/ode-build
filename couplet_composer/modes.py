@@ -26,6 +26,13 @@ import time
 
 from functools import partial
 
+from .support.cmake_generators import \
+    get_make_cmake_generator_name, get_ninja_cmake_generator_name, \
+    get_visual_studio_16_cmake_generator_name
+
+from .support.compiler_toolchains import \
+    get_clang_toolchain_name, get_gcc_toolchain_name, get_msvc_toolchain_name
+
 from .support.environment import \
     get_build_root, get_composing_directory, get_dependencies_directory, \
     get_dependency_version_data_file, get_destination_directory, \
@@ -40,7 +47,10 @@ from .support.platform_names import get_windows_system_name
 
 from .support.project_names import get_ode_repository_name, get_project_name
 
-from .support import tool_data
+from .support.tool_data import \
+    create_clang_tool_data, create_cmake_tool_data, create_gcc_tool_data, \
+    create_git_tool_data, create_make_tool_data, create_msbuild_tool_data, \
+    create_ninja_tool_data
 
 from .util.target import parse_target_from_argument_string
 
@@ -193,63 +203,87 @@ def _clean(arguments, source_root):
     )
 
 
-def _construct_tool_data_construction_info(arguments, host_system):
+def _construct_tool_data(arguments, host_system):
     """
-    Constructs the dictionary containing the required information
-    for creating the ToolData object for the toolchain for the
-    current host system.
+    Constructs a dictionary containing the required ToolData
+    objects for the toolchain for the current host system.
 
     arguments -- The namespace containing the parsed command line
     arguments of the script.
 
     host_system -- The system this script is run on.
     """
-    # TODO: Take into account whether Clang or GCC is selected
-    if host_system == get_windows_system_name():
-        return {
-            "msvc": partial(
-                tool_data.create_msvc_tool_data,
-                version=arguments.compiler_version
-            ),
-            "cmake": tool_data.create_cmake_tool_data,
-            "msbuild": tool_data.create_msbuild_tool_data,
-            "git": tool_data.create_git_tool_data
-        }
-    else:
-        return {
-            "clang": partial(
-                tool_data.create_clang_tool_data,
-                version=arguments.compiler_version
-            ),
-            "clang++": partial(
-                tool_data.create_clangxx_tool_data,
-                version=arguments.compiler_version
-            ),
-            "gcc": partial(
-                tool_data.create_gcc_tool_data,
-                version=arguments.compiler_version
-            ),
-            "g++": partial(
-                tool_data.create_gxx_tool_data,
-                version=arguments.compiler_version
-            ),
-            "cmake": tool_data.create_cmake_tool_data,
-            "ninja": tool_data.create_ninja_tool_data,
-            "make": tool_data.create_make_tool_data,
-            "git": tool_data.create_git_tool_data
-        }
+    def _create_compiler_data(arguments):
+        """
+        Returns the tool data or tool data pair representing the
+        compiler for the script.
 
+        arguments -- The namespace containing the parsed command
+        line arguments of the script.
+        """
+        def _should_use_separate_compilers(arguments):
+            """
+            Returns whether or not the script should use separate
+            C and C++ compilers in the current configuration.
 
-def _use_compiler_path_arguments(arguments):
-    """
-    Tells whether or not the options '--host-cc' and '--host-cxx'
-    should be used instead of finding the toolchains
-    automatically.
+            arguments -- The namespace containing the parsed
+            command line arguments of the script.
+            """
+            if arguments.host_compiler:
+                return False
+            elif arguments.compiler_toolchain == get_msvc_toolchain_name():
+                return False
+            return True
 
-    arguments -- The namespace containing the parsed command line
-    arguments of the script.
-    """
-    return arguments.host_cc and arguments.host_cxx
+        if _should_use_separate_compilers(arguments=arguments):
+            if arguments.host_cc and arguments.host_cxx:
+                if "clang" in arguments.host_cc:
+                    return create_clang_tool_data(
+                        cc_path=arguments.host_cc,
+                        cxx_path=arguments.host_cxx
+                    )
+                elif "gcc" in arguments.host_cc:
+                    return create_gcc_tool_data(
+                        cc_path=arguments.host_cc,
+                        cxx_path=arguments.host_cxx
+                    )
+                else:
+                    return None
+            else:
+                if arguments.compiler_toolchain == get_clang_toolchain_name():
+                    return create_clang_tool_data(
+                        version=arguments.compiler_version
+                    )
+                elif arguments.compiler_toolchain == get_gcc_toolchain_name():
+                    return create_gcc_tool_data(
+                        version=arguments.compiler_version
+                    )
+        else:
+            pass
+
+    def _create_build_system_data(arguments):
+        """
+        Returns the tool data representing the build system for
+        the script.
+
+        arguments -- The namespace containing the parsed command
+        line arguments of the script.
+        """
+        generator = arguments.cmake_generator
+        if generator == get_ninja_cmake_generator_name():
+            return create_ninja_tool_data()
+        elif generator == get_make_cmake_generator_name():
+            return create_make_tool_data()
+        elif generator == get_visual_studio_16_cmake_generator_name():
+            return create_msbuild_tool_data()
+
+    return {
+        "compiler": _create_compiler_data(arguments=arguments),
+        "cmake": create_cmake_tool_data(),
+        "build_system": _create_build_system_data(arguments=arguments),
+        "scm": create_git_tool_data(),
+        "make": create_make_tool_data()
+    }
 
 
 def run_in_configuring_mode(arguments, source_root):
@@ -289,12 +323,10 @@ def run_in_configuring_mode(arguments, source_root):
     github_api_token = arguments.github_api_token
 
     toolchain = create_toolchain(
-        tools_data=construct_tools_data(
-            _construct_tool_data_construction_info(arguments=arguments)
+        tools_data=_construct_tool_data(
+            arguments=arguments,
+            host_system=platform.system()
         ),
-        compiler_toolchain=(arguments.host_cc, arguments.host_cxx)
-        if _use_compiler_path_arguments(arguments=arguments)
-        else arguments.compiler_toolchain,
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
