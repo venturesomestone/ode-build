@@ -303,7 +303,6 @@ def _construct_tool_data(arguments, host_system):
             else:
                 return create_msbuild_tool_data()
 
-
     return {
         "compiler": _create_compiler_data(arguments=arguments),
         "cmake": create_cmake_tool_data(),
