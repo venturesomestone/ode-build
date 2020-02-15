@@ -548,7 +548,7 @@ def create_toolchain(
     if found_local_tools:
         logging.debug(
             "The tools found locally are:\n%s",
-            "\n".join([tool.get_tool_name() for tool in found_local_tools])
+            "\n".join([tool for tool in found_local_tools.values()])
         )
     else:
         logging.debug("No tools were found locally")
