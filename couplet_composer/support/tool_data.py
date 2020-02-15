@@ -276,7 +276,7 @@ def create_msbuild_tool_data():
     return ToolData(
         get_tool_key=lambda: "msbuild",
         get_tool_name=lambda: "MSBuild",
-        get_searched_tool=lambda: "msbuild",
+        get_searched_tool=lambda: "MSBuild",
         use_predefined_path=lambda: False,
         get_required_local_version=None,
         get_local_executable=None,
