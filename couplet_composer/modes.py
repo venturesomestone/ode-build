@@ -67,7 +67,7 @@ from .dependency_set import construct_dependencies_data, install_dependencies
 from .preset_mode import \
     compose_preset_call, print_script_invocation, show_presets
 
-from .toolchain import construct_tools_data, create_toolchain
+from .toolchain import create_toolchain
 
 
 def run_in_preset_mode(arguments, source_root):
@@ -428,12 +428,10 @@ def run_in_composing_mode(arguments, source_root):
     github_api_token = arguments.github_api_token
 
     toolchain = create_toolchain(
-        tools_data=construct_tools_data(
-            _construct_tool_data_construction_info(arguments=arguments)
+        tools_data=_construct_tool_data(
+            arguments=arguments,
+            host_system=platform.system()
         ),
-        compiler_toolchain=(arguments.host_cc, arguments.host_cxx)
-        if _use_compiler_path_arguments(arguments=arguments)
-        else arguments.compiler_toolchain,
         cmake_generator=arguments.cmake_generator,
         target=build_target,
         host_system=platform.system(),
