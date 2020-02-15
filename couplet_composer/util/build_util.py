@@ -97,7 +97,13 @@ def build_with_cmake(
         else:
             cmake_call += cmake_options
 
-    cmake_env = {"CC": toolchain.cc, "CXX": toolchain.cxx}
+    if isinstance(toolchain.compiler, dict):
+        cmake_env = {
+            "CC": toolchain.compiler.cc,
+            "CXX": toolchain.compiler.cxx
+        }
+    else:
+        cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
 
     build_directory = os.path.join(temporary_root, "build")
 
