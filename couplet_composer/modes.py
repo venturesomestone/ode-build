@@ -296,7 +296,13 @@ def _construct_tool_data(arguments, host_system):
         elif generator == get_make_cmake_generator_name():
             return create_make_tool_data()
         elif generator == get_visual_studio_16_cmake_generator_name():
-            return create_msbuild_tool_data()
+            if arguments.host_msbuild:
+                return create_msbuild_tool_data(
+                    tool_path=arguments.host_msbuild
+                )
+            else:
+                return create_msbuild_tool_data()
+
 
     return {
         "compiler": _create_compiler_data(arguments=arguments),
