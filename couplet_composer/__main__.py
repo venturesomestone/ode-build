@@ -143,6 +143,12 @@ def _main():
             os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
         )
         sys.exit(1)
+    else:
+        logging.debug(
+            "The source root '%s' is valid and the required file '%s' exists",
+            source_root,
+            os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+        )
 
     argument_parser = _create_argument_parser(source_root=source_root)
     arguments = _parse_arguments(argument_parser)
