@@ -130,10 +130,9 @@ def build_with_cmake(
             if print_debug:
                 logging.debug(
                     "The build directory contains the following files and "
-                    "directories:"
+                    "directories:\n%s",
+                    "\n".join([f for f in os.listdir(build_directory)])
                 )
-                for f in os.listdir(build_directory):
-                    print(f)
             build_call = [toolchain.build_system]
             if solution_name:
                 build_call.extend(["{}.sln".format(solution_name)])
