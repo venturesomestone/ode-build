@@ -305,25 +305,25 @@ def install_dependency(
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(temp_dir, "src", "lua.h"),
+                    os.path.join(subdir, "src", "lua.h"),
                     os.path.join(dependencies_root, "include", "lua.h"),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(temp_dir, "src", "lualib.h"),
+                    os.path.join(subdir, "src", "lualib.h"),
                     os.path.join(dependencies_root, "include", "lualib.h"),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(temp_dir, "src", "lauxlib.h"),
+                    os.path.join(subdir, "src", "lauxlib.h"),
                     os.path.join(dependencies_root, "include", "lauxlib.h"),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(temp_dir, "src", "luaconf.h"),
+                    os.path.join(subdir, "src", "luaconf.h"),
                     os.path.join(dependencies_root, "include", "luaconf.h"),
                     dry_run=dry_run,
                     echo=print_debug
