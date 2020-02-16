@@ -15,8 +15,7 @@ This support module contains helpers for making build calls for
 the dependencies.
 """
 
-from __future__ import print_function
-
+import glob
 import logging
 import os
 
@@ -127,12 +126,11 @@ def build_with_cmake(
         # Have different call for Visual Studio as MSBuild is
         # used.
         if cmake_generator == get_visual_studio_16_cmake_generator_name():
-            if print_debug:
-                logging.debug(
-                    "The build directory contains the following files and "
-                    "directories:\n%s",
-                    "\n".join([f for f in os.listdir(build_directory)])
-                )
+            logging.debug(
+                "The build directory contains the following files and "
+                "directories:\n%s",
+                "\n".join([f for f in os.listdir(build_directory)])
+            )
             build_call = [toolchain.build_system]
             if msbuild_target:
                 build_call.extend(["{}".format(msbuild_target)])
@@ -140,6 +138,12 @@ def build_with_cmake(
                 ["/property:Configuration={}".format(build_variant)]
             )
             shell.call(build_call, dry_run=dry_run, echo=print_debug)
+            logging.debug(
+                "The build library files are:\n%s",
+                "\n".join(
+                    glob.glob(os.path.join(build_directory, "**", "*.lib"))
+                )
+            )
         else:
             shell.call(
                 [toolchain.build_system],
