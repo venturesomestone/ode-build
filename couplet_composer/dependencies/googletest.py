@@ -15,6 +15,8 @@ This support module contains the functions related to the
 building and finding Google Test.
 """
 
+import glob
+import logging
 import os
 
 from ..github import release
@@ -173,6 +175,13 @@ def install_dependency(
         msbuild_target="ALL_BUILD.vcxproj",
         dry_run=dry_run,
         print_debug=print_debug
+    )
+
+    logging.debug(
+        "The files in the temporary directory are:\n%s",
+        "\n".join(
+            glob.iglob(os.path.join(temp_dir, "**", "*"), recursive=True)
+        )
     )
 
     if cmake_generator == get_visual_studio_16_cmake_generator_name():
