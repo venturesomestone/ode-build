@@ -29,7 +29,7 @@ from .support.project_names import get_project_name
 
 from .util.date import date_difference, to_date_string
 
-from __version__ import get_version
+from .__version__ import get_version
 
 from . import args, modes
 
