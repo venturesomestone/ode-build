@@ -15,6 +15,9 @@ This support module contains helpers for making build calls for
 the dependencies.
 """
 
+from __future__ import print_function
+
+import logging
 import os
 
 from ..support.cmake_generators import \
@@ -124,6 +127,13 @@ def build_with_cmake(
         # Have different call for Visual Studio as MSBuild is
         # used.
         if cmake_generator == get_visual_studio_16_cmake_generator_name():
+            if print_debug:
+                logging.debug(
+                    "The build directory contains the following files and "
+                    "directories:"
+                )
+                for f in os.listdir(build_directory):
+                    print(f)
             build_call = [toolchain.build_system]
             if solution_name:
                 build_call.extend(["{}.sln".format(solution_name)])
