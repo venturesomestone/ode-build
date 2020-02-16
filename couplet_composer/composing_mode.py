@@ -161,7 +161,10 @@ def compose_project(
             toolchain.compiler["cxx"]
             if isinstance(toolchain.compiler, dict) else toolchain.compiler
         ),
-        "-DCMAKE_INSTALL_PREFIX={}".format(destination_root),
+        "-DCMAKE_INSTALL_PREFIX={}".format(
+            destination_root.replace("\\", "/")
+            if host_system == get_windows_system_name() else destination_root
+        ),
         "-DODE_BUILD_TEST={}".format("ON" if arguments.build_test else "OFF"),
         "-DODE_TEST_BENCHMARKING={}".format(
             "ON" if arguments.build_benchmark else "OFF"
@@ -190,7 +193,10 @@ def compose_project(
             ) else "OFF"
         ),
         "-DODE_CXX_VERSION={}".format(arguments.std),
-        "-DODE_DEPENDENCY_PREFIX={}".format(dependencies_root),
+        "-DODE_DEPENDENCY_PREFIX={}".format(
+            dependencies_root.replace("\\", "/")
+            if host_system == get_windows_system_name() else dependencies_root
+        ),
         "-DODE_VERSION={}".format(arguments.ode_version),
         "-DANTHEM_VERSION={}".format(arguments.anthem_version),
         "-DODE_OPENGL_VERSION_MAJOR={}".format(
