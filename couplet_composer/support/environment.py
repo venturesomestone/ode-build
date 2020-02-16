@@ -84,7 +84,7 @@ def get_composing_directory(
             target.system,
             target.machine,
             build_variant,
-            cmake_generator
+            cmake_generator.replace(" ", "_")
         )
     )
 
