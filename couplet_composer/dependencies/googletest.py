@@ -74,6 +74,10 @@ def should_install(
             dependencies_root,
             "lib",
             "gtest.lib"
+        )) and not os.path.exists(os.path.join(
+            dependencies_root,
+            "lib",
+            "gtestd.lib"
         ))
     else:
         return not os.path.exists(os.path.join(
