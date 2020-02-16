@@ -167,6 +167,7 @@ def install_dependency(
         host_system=host_system,
         build_variant=build_variant,
         cmake_options={"BUILD_GMOCK": False},
+        solution_name="gtest",
         dry_run=dry_run,
         print_debug=print_debug
     )

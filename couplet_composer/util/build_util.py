@@ -17,7 +17,8 @@ the dependencies.
 
 import os
 
-from ..support.cmake_generators import get_ninja_cmake_generator_name
+from ..support.cmake_generators import \
+    get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
 from . import shell
 
@@ -33,6 +34,7 @@ def build_with_cmake(
     build_variant,
     cmake_options=None,
     do_install=True,
+    solution_name=None,
     dry_run=None,
     print_debug=None
 ):
@@ -65,6 +67,9 @@ def build_with_cmake(
 
     do_install -- Whether or not the install command should be
     called after building the project.
+
+    solution_name -- Optional name for the Visual Studio solution
+    that is used to build the project.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
@@ -116,10 +121,25 @@ def build_with_cmake(
             dry_run=dry_run,
             echo=print_debug
         )
-        shell.call([toolchain.build_system], dry_run=dry_run, echo=print_debug)
-        if do_install:
+        # Have different call for Visual Studio as MSBuild is
+        # used.
+        if cmake_generator == get_visual_studio_16_cmake_generator_name():
+            build_call = [toolchain.build_system]
+            if solution_name:
+                build_call.extend(["{}.sln".format(solution_name)])
+            build_call.extend(
+                ["/property:Configuration={}".format(build_variant)]
+            )
+            shell.call(build_call, dry_run=dry_run, echo=print_debug)
+        else:
             shell.call(
-                [toolchain.build_system, "install"],
+                [toolchain.build_system],
                 dry_run=dry_run,
                 echo=print_debug
             )
+            if do_install:
+                shell.call(
+                    [toolchain.build_system, "install"],
+                    dry_run=dry_run,
+                    echo=print_debug
+                )
