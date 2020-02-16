@@ -202,7 +202,7 @@ def install_dependency(
                 echo=print_debug
             )
         shell.copytree(
-            os.path.join(temp_dir, "googletest", "gtest"),
+            os.path.join(temp_dir, "googletest", "include", "gtest"),
             os.path.join(dependencies_root, "include", "gtest")
         )
 
