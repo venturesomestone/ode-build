@@ -259,6 +259,7 @@ def install_dependency(
                 host_system=host_system,
                 build_variant=build_variant,
                 do_install=host_system != get_windows_system_name(),
+                msbuild_target="lua.sln",
                 dry_run=dry_run,
                 print_debug=print_debug
             )
