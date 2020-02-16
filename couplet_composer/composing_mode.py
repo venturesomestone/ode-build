@@ -19,7 +19,8 @@ composing mode of the script.
 import logging
 import os
 
-from .support.cmake_generators import get_ninja_cmake_generator_name
+from .support.cmake_generators import \
+    get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
 from .support.environment import \
     get_build_root, get_composing_directory, get_destination_directory, \
@@ -238,16 +239,35 @@ def compose_project(
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
-        shell.call(
-            [toolchain.build_system],
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
-        shell.call(
-            [toolchain.build_system, "install"],
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
+        if arguments.cmake_generator \
+                == get_visual_studio_16_cmake_generator_name():
+            logging.debug(
+                "The build directory contains the following files and "
+                "directories:\n%s",
+                "\n".join([f for f in os.listdir(composing_root)])
+            )
+            shell.call(
+                [
+                    toolchain.build_system,
+                    "anthem.sln",
+                    "/property:Configuration={}".format(
+                        arguments.build_variant
+                    )
+                ],
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        else:
+            shell.call(
+                [toolchain.build_system],
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.call(
+                [toolchain.build_system, "install"],
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
 
     build_target = parse_target_from_argument_string(arguments.host_target)
 
