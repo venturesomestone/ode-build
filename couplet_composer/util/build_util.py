@@ -37,7 +37,7 @@ def build_with_cmake(
     build_variant,
     cmake_options=None,
     do_install=True,
-    solution_name=None,
+    msbuild_target=None,
     dry_run=None,
     print_debug=None
 ):
@@ -71,8 +71,8 @@ def build_with_cmake(
     do_install -- Whether or not the install command should be
     called after building the project.
 
-    solution_name -- Optional name for the Visual Studio solution
-    that is used to build the project.
+    msbuild_target -- Optional name for the Visual Studio
+    solution or project that is used to build the project.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
@@ -134,8 +134,8 @@ def build_with_cmake(
                     "\n".join([f for f in os.listdir(build_directory)])
                 )
             build_call = [toolchain.build_system]
-            if solution_name:
-                build_call.extend(["{}.sln".format(solution_name)])
+            if msbuild_target:
+                build_call.extend(["{}".format(msbuild_target)])
             build_call.extend(
                 ["/property:Configuration={}".format(build_variant)]
             )
