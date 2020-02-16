@@ -207,15 +207,13 @@ def install_dependency(
     print_debug -- Whether debug output should be printed.
     """
     temp_dir = get_temporary_directory(build_root=build_root)
-    dependency_temp_dir = os.path.join(temp_dir, "lua")
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
-    shell.makedirs(dependency_temp_dir, dry_run=dry_run, echo=print_debug)
 
     url = "https://www.lua.org/ftp/lua-{version}.tar.gz".format(
         version=version
     )
-    dest = os.path.join(dependency_temp_dir, "lua.tar.gz")
+    dest = os.path.join(temp_dir, "lua.tar.gz")
 
     http.stream(
         url=url,
@@ -224,9 +222,9 @@ def install_dependency(
         dry_run=dry_run,
         print_debug=print_debug
     )
-    shell.tar(dest, dependency_temp_dir, dry_run=dry_run, echo=print_debug)
+    shell.tar(dest, temp_dir, dry_run=dry_run, echo=print_debug)
 
-    subdir = os.path.join(dependency_temp_dir, "lua-{}".format(version))
+    subdir = os.path.join(temp_dir, "lua-{}".format(version))
 
     with shell.pushd(subdir, dry_run=dry_run, echo=print_debug):
         if cmake_generator == get_make_cmake_generator_name() \
@@ -280,7 +278,7 @@ def install_dependency(
                 if os.path.exists(lib_file):
                     shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
                 shell.copy(
-                    os.path.join(build_dir, "Debug", "lua.lib"),
+                    os.path.join(build_dir, build_variant, "lua.lib"),
                     lib_file,
                     dry_run=dry_run,
                     echo=print_debug
@@ -306,25 +304,25 @@ def install_dependency(
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(dependency_temp_dir, "src", "lua.h"),
+                    os.path.join(temp_dir, "src", "lua.h"),
                     os.path.join(dependencies_root, "include", "lua.h"),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(dependency_temp_dir, "src", "lualib.h"),
+                    os.path.join(temp_dir, "src", "lualib.h"),
                     os.path.join(dependencies_root, "include", "lualib.h"),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(dependency_temp_dir, "src", "lauxlib.h"),
+                    os.path.join(temp_dir, "src", "lauxlib.h"),
                     os.path.join(dependencies_root, "include", "lauxlib.h"),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
-                    os.path.join(dependency_temp_dir, "src", "luaconf.h"),
+                    os.path.join(temp_dir, "src", "luaconf.h"),
                     os.path.join(dependencies_root, "include", "luaconf.h"),
                     dry_run=dry_run,
                     echo=print_debug
