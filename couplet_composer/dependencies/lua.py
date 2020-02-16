@@ -15,6 +15,8 @@ This support module contains the functions related to the
 building and finding Lua.
 """
 
+import glob
+import logging
 import os
 import sys
 
@@ -266,6 +268,15 @@ def install_dependency(
                 dry_run=dry_run,
                 print_debug=print_debug
             )
+
+            logging.debug(
+                "The files in the temporary directory are:\n%s",
+                "\n".join(glob.iglob(
+                    os.path.join(temp_dir, "**", "*"),
+                    recursive=True
+                ))
+            )
+
             if host_system == get_windows_system_name():
                 build_dir = os.path.join(temp_dir, "build")
                 if not os.path.isdir(os.path.join(dependencies_root, "lib")):
