@@ -257,7 +257,10 @@ def compose_project(
                     "anthem.sln",
                     "/property:Configuration={}".format(
                         arguments.build_variant
-                    )
+                    ),
+                    # SDL for requires that multi-threaded
+                    # dynamic libraries are used.
+                    "/MDd"
                 ],
                 dry_run=arguments.dry_run,
                 echo=arguments.print_debug
