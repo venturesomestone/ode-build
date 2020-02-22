@@ -154,14 +154,6 @@ def compose_project(
         "-G",
         arguments.cmake_generator,
         "-DCMAKE_BUILD_TYPE={}".format(arguments.build_variant),
-        "-DCMAKE_C_COMPILER={}".format(
-            toolchain.compiler["cc"]
-            if isinstance(toolchain.compiler, dict) else toolchain.compiler
-        ),
-        "-DCMAKE_CXX_COMPILER={}".format(
-            toolchain.compiler["cxx"]
-            if isinstance(toolchain.compiler, dict) else toolchain.compiler
-        ),
         "-DCMAKE_INSTALL_PREFIX={}".format(
             destination_root.replace("\\", "/")
             if host_system == get_windows_system_name() else destination_root
@@ -214,6 +206,16 @@ def compose_project(
         "-DANTHEM_NAME={}".format(arguments.anthem_binaries_name)
     ]
 
+    if host_system != get_windows_system_name():
+        cmake_call.extend(["-DCMAKE_C_COMPILER={}".format(
+            toolchain.compiler["cc"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+        cmake_call.extend(["-DCMAKE_CXX_COMPILER={}".format(
+            toolchain.compiler["cxx"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+
     if arguments.cmake_generator == get_ninja_cmake_generator_name():
         cmake_call.extend(
             ["-DCMAKE_MAKE_PROGRAM={}".format(toolchain.build_system)]
@@ -224,13 +226,16 @@ def compose_project(
     elif host_system == get_linux_system_name():
         cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
-    if isinstance(toolchain.compiler, dict):
-        cmake_env = {
-            "CC": toolchain.compiler["cc"],
-            "CXX": toolchain.compiler["cxx"]
-        }
+    if host_system != get_windows_system_name():
+        if isinstance(toolchain.compiler, dict):
+            cmake_env = {
+                "CC": toolchain.compiler["cc"],
+                "CXX": toolchain.compiler["cxx"]
+            }
+        else:
+            cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
     else:
-        cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
+        cmake_env = None
 
     with shell.pushd(composing_root):
         shell.call(

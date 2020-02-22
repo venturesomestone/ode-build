@@ -22,6 +22,8 @@ import os
 from ..support.cmake_generators import \
     get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
+from ..support.platform_names import get_windows_system_name
+
 from . import shell
 
 
@@ -85,6 +87,16 @@ def build_with_cmake(
         "-DCMAKE_INSTALL_PREFIX={}".format(dependencies_root)
     ]
 
+    if host_system != get_windows_system_name():
+        cmake_call.extend(["-DCMAKE_C_COMPILER={}".format(
+            toolchain.compiler["cc"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+        cmake_call.extend(["-DCMAKE_CXX_COMPILER={}".format(
+            toolchain.compiler["cxx"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+
     if cmake_generator == get_ninja_cmake_generator_name():
         cmake_call.extend([
             "-DCMAKE_MAKE_PROGRAM={}".format(toolchain.build_system)
@@ -104,13 +116,16 @@ def build_with_cmake(
         else:
             cmake_call += cmake_options
 
-    if isinstance(toolchain.compiler, dict):
-        cmake_env = {
-            "CC": toolchain.compiler["cc"],
-            "CXX": toolchain.compiler["cxx"]
-        }
+    if host_system != get_windows_system_name():
+        if isinstance(toolchain.compiler, dict):
+            cmake_env = {
+                "CC": toolchain.compiler["cc"],
+                "CXX": toolchain.compiler["cxx"]
+            }
+        else:
+            cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
     else:
-        cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
+        cmake_env = None
 
     build_directory = os.path.join(temporary_root, "build")
 
