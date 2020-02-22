@@ -87,15 +87,15 @@ def build_with_cmake(
         "-DCMAKE_INSTALL_PREFIX={}".format(dependencies_root)
     ]
 
-    # if host_system != get_windows_system_name():
-    #     cmake_call.extend(["-DCMAKE_C_COMPILER={}".format(
-    #         toolchain.compiler["cc"]
-    #         if isinstance(toolchain.compiler, dict) else toolchain.compiler
-    #     )])
-    #     cmake_call.extend(["-DCMAKE_CXX_COMPILER={}".format(
-    #         toolchain.compiler["cxx"]
-    #         if isinstance(toolchain.compiler, dict) else toolchain.compiler
-    #     )])
+    if host_system != get_windows_system_name():
+        cmake_call.extend(["-DCMAKE_C_COMPILER={}".format(
+            toolchain.compiler["cc"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+        cmake_call.extend(["-DCMAKE_CXX_COMPILER={}".format(
+            toolchain.compiler["cxx"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
 
     if cmake_generator == get_ninja_cmake_generator_name():
         cmake_call.extend([
