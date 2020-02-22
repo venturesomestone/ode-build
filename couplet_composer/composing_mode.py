@@ -227,7 +227,7 @@ def compose_project(
         cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
     if host_system == get_windows_system_name():
-        cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebugDLL"])
+        cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
 
     if host_system != get_windows_system_name():
         if isinstance(toolchain.compiler, dict):
