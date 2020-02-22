@@ -197,9 +197,9 @@ def install_dependency(
                     dry_run=dry_run,
                     echo=print_debug
                 )
-        for lib_file in os.listdir(os.path.join(subdir, "lib", "x86")):
+        for lib_file in os.listdir(os.path.join(subdir, "lib", "x64")):
             shell.copy(
-                os.path.join(subdir, "lib", "x86", lib_file),
+                os.path.join(subdir, "lib", "x64", lib_file),
                 os.path.join(dependencies_root, "lib", lib_file),
                 dry_run=dry_run,
                 echo=print_debug
