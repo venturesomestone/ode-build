@@ -226,6 +226,9 @@ def compose_project(
     elif host_system == get_linux_system_name():
         cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
+    if host_system == get_windows_system_name():
+        cmake_call.extend("-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebugDLL")
+
     if host_system != get_windows_system_name():
         if isinstance(toolchain.compiler, dict):
             cmake_env = {
@@ -257,10 +260,7 @@ def compose_project(
                     "anthem.sln",
                     "/property:Configuration={}".format(
                         arguments.build_variant
-                    ),
-                    # SDL for requires that multi-threaded
-                    # dynamic libraries are used.
-                    "/MDd"
+                    )
                 ],
                 dry_run=arguments.dry_run,
                 echo=arguments.print_debug
