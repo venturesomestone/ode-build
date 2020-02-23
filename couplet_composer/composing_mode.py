@@ -19,7 +19,7 @@ composing mode of the script.
 import logging
 import os
 
-from dependencies import googletest
+from .dependencies import googletest
 
 from .support.cmake_generators import \
     get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
