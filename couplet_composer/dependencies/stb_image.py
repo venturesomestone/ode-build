@@ -140,7 +140,7 @@ def install_dependency(
         user_agent=github_user_agent,
         api_token=github_api_token,
         host_system=host_system,
-        commit="2c2908f50515dcd939f24be261c3ccbcd277bb49",
+        commit="0224a44a10564a214595797b4c88323f79a5f934",
         dry_run=dry_run,
         print_debug=print_debug
     )
