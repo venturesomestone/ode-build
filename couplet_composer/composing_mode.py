@@ -19,6 +19,8 @@ composing mode of the script.
 import logging
 import os
 
+from dependencies import googletest
+
 from .support.cmake_generators import \
     get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
@@ -231,6 +233,19 @@ def compose_project(
             cmake_call.extend(["-DODE_USE_SDL_DEBUG_SUFFIX=ON"])
         else:
             cmake_call.extend(["-DODE_USE_SDL_DEBUG_SUFFIX=OFF"])
+
+    if googletest.should_add_sources_to_project(host_system=host_system):
+        cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=ON"])
+        google_test_dir_name = os.path.basename(os.path.normpath(
+            googletest.get_dependency_source_directory(
+                dependencies_root=dependencies_root
+            )
+        ))
+        cmake_call.extend(["-DODE_GOOGLE_TEST_DIRECTORY_NAME={}".format(
+            google_test_dir_name
+        )])
+    else:
+        cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=OFF"])
 
     # if host_system == get_windows_system_name():
     #     cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
