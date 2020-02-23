@@ -102,6 +102,34 @@ def _copy_sources_to_dependencies(
         echo=print_debug
     )
 
+    google_test_dependency_include_dir = os.path.join(
+        dependencies_root,
+        "include",
+        "gtest"
+    )
+
+    # The headers of Google Test are copied to the same directory
+    # where the other dependency header are for clarity.
+    if os.path.isdir(google_test_dependency_include_dir):
+        shell.rmtree(
+            google_test_dependency_include_dir,
+            dry_run=dry_run,
+            echo=print_debug
+        )
+
+    shell.makedirs(
+        os.path.join(dependencies_root, "include"),
+        dry_run=dry_run,
+        echo=print_debug
+    )
+
+    shell.copytree(
+        os.path.join(asset_directory, "googletest", "include", "gtest"),
+        google_test_dependency_include_dir,
+        dry_run=dry_run,
+        echo=print_debug
+    )
+
 
 def _build(
     toolchain,
