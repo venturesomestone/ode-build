@@ -197,7 +197,9 @@ def install_dependency(
                 build_variant,
                 "gtestd.lib"
             ),
-            lib_file
+            lib_file,
+            dry_run=dry_run,
+            echo=print_debug
         )
         if not os.path.isdir(
             os.path.join(dependencies_root, "include", "gtest")
@@ -215,7 +217,9 @@ def install_dependency(
                 "include",
                 "gtest"
             ),
-            os.path.join(dependencies_root, "include", "gtest")
+            os.path.join(dependencies_root, "include", "gtest"),
+            dry_run=dry_run,
+            echo=print_debug
         )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
