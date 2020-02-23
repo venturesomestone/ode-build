@@ -226,8 +226,8 @@ def compose_project(
     elif host_system == get_linux_system_name():
         cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
-    if host_system == get_windows_system_name():
-        cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
+    # if host_system == get_windows_system_name():
+    #     cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
 
     if host_system != get_windows_system_name():
         if isinstance(toolchain.compiler, dict):

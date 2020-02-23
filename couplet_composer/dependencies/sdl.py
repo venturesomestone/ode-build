@@ -19,6 +19,9 @@ import os
 
 from ..github import release
 
+from ..support.cmake_generators import \
+    get_visual_studio_16_cmake_generator_name
+
 from ..support.environment import \
     get_data_directory, get_sdl_shared_data_file, get_temporary_directory
 
@@ -89,6 +92,113 @@ def _copy_visual_c_binaries(
         shell.copy(
             os.path.join(subdirectory, "lib", "x64", lib_file),
             os.path.join(dependencies_root, "lib", lib_file),
+            dry_run=dry_run,
+            echo=print_debug
+        )
+
+
+def _build_using_cmake(
+    toolchain,
+    cmake_generator,
+    dependencies_root,
+    temporary_directory,
+    subdirectory,
+    target,
+    host_system,
+    build_variant,
+    dry_run=None,
+    print_debug=None
+):
+    """
+    Builds SDL using CMake.
+
+    toolchain -- The toolchain object of the run.
+
+    cmake_generator -- The name of the generator that CMake
+    should use as the build system for which the build scripts
+    are generated.
+
+    dependencies_root -- The root directory of the dependencies
+    for the current build target.
+
+    temporary_directory -- The temporary directory used for
+    downloading and building SDL.
+
+    subdirectory -- The temporary directory where the SDL files
+    are located.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    host_system -- The system this script is run on.
+
+    build_variant -- The build variant used to build the project.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
+    """
+    build_with_cmake(
+        toolchain=toolchain,
+        cmake_generator=cmake_generator,
+        source_directory=subdirectory,
+        temporary_root=temporary_directory,
+        dependencies_root=dependencies_root,
+        target=target,
+        host_system=host_system,
+        build_variant=build_variant,
+        # msbuild_target="ALL_BUILD.vcxproj",
+        dry_run=dry_run,
+        print_debug=print_debug
+    )
+
+    if cmake_generator == get_visual_studio_16_cmake_generator_name():
+        if not os.path.isdir(os.path.join(dependencies_root, "lib")):
+            shell.makedirs(
+                os.path.join(dependencies_root, "lib"),
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        lib_file = os.path.join(dependencies_root, "lib", "SDL2.lib")
+        main_lib_file = os.path.join(dependencies_root, "lib", "SDL2main.lib")
+        if os.path.exists(lib_file):
+            shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
+        if os.path.exists(main_lib_file):
+            shell.rm(main_lib_file, dry_run=dry_run, echo=print_debug)
+        shell.copy(
+            os.path.join(
+                temporary_directory,
+                "build",
+                build_variant,
+                "SDL2.lib"
+            ),
+            lib_file,
+            dry_run=dry_run,
+            echo=print_debug
+        )
+        shell.copy(
+            os.path.join(
+                temporary_directory,
+                "build",
+                build_variant,
+                "SDL2main.lib"
+            ),
+            main_lib_file,
+            dry_run=dry_run,
+            echo=print_debug
+        )
+        if not os.path.isdir(
+            os.path.join(dependencies_root, "include", "SDL2")
+        ):
+            shell.makedirs(
+                os.path.join(dependencies_root, "include", "SDL2"),
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        shell.copytree(
+            os.path.join(subdirectory, "include"),
+            os.path.join(dependencies_root, "include", "SDL2"),
             dry_run=dry_run,
             echo=print_debug
         )
@@ -248,11 +358,16 @@ def install_dependency(
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
     shell.makedirs(dependency_temp_dir, dry_run=dry_run, echo=print_debug)
 
-    url = ("https://www.libsdl.org/release/SDL2-devel-{version}-VC.zip"
+    url = ("https://www.libsdl.org/release/SDL2-{version}.zip"
            if host_system == get_windows_system_name()
            else "https://www.libsdl.org/release/SDL2-{version}.tar.gz").format(
         version=version
     )
+    # url = ("https://www.libsdl.org/release/SDL2-devel-{version}-VC.zip"
+    #        if host_system == get_windows_system_name()
+    #        else "https://www.libsdl.org/release/SDL2-{version}.tar.gz").format(
+    #     version=version
+    # )
     dest = os.path.join(
         dependency_temp_dir,
         "sdl.zip" if host_system == get_windows_system_name() else "sdl.tar.gz"
@@ -270,9 +385,21 @@ def install_dependency(
     subdir = os.path.join(dependency_temp_dir, "SDL2-{}".format(version))
 
     if host_system == get_windows_system_name():
-        _copy_visual_c_binaries(
+        # _copy_visual_c_binaries(
+        #     dependencies_root=dependencies_root,
+        #     subdirectory=subdir,
+        #     dry_run=dry_run,
+        #     print_debug=print_debug
+        # )
+        _build_using_cmake(
+            toolchain=toolchain,
+            cmake_generator=cmake_generator,
             dependencies_root=dependencies_root,
+            temporary_directory=temp_dir,
             subdirectory=subdir,
+            target=target,
+            host_system=host_system,
+            build_variant=build_variant,
             dry_run=dry_run,
             print_debug=print_debug
         )
