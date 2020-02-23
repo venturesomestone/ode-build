@@ -387,6 +387,51 @@ def compose_project(
             src="libSDL2-2.0.so.{}".format(version_data[0])
         )
         _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
+    elif host_system == get_windows_system_name():
+        sdl_dynamic_lib_name = "SDL2.dll"
+        sdl_dynamic_lib_d_name = "SDL2d.dll"
+        sdl_dynamic_lib = os.path.join(
+            destination_root,
+            "bin",
+            sdl_dynamic_lib_name
+        )
+        sdl_dynamic_lib_d = os.path.join(
+            destination_root,
+            "bin",
+            sdl_dynamic_lib_d_name
+        )
+        if os.path.exists(sdl_dynamic_lib):
+            shell.rm(
+                sdl_dynamic_lib,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        if os.path.exists(sdl_dynamic_lib_d):
+            shell.rm(
+                sdl_dynamic_lib_d,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        if os.path.exists(
+            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name)
+        ):
+            shell.copy(
+                os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name),
+                os.path.join(destination_root, "bin"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        elif os.path.exists(
+            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_d_name)
+        ):
+            shell.copy(
+                os.path.join(dependencies_root, "lib", sdl_dynamic_lib_d_name),
+                os.path.join(destination_root, "bin"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        else:
+            logging.debug("No dynamic SDL library was found for Windows")
 
     latest_path_file = get_latest_install_path_file(build_root=build_root)
 
