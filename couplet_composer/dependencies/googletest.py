@@ -199,7 +199,9 @@ def install_dependency(
             ),
             lib_file
         )
-        if os.path.isdir(os.path.join(dependencies_root, "include", "gtest")):
+        if not os.path.isdir(
+            os.path.join(dependencies_root, "include", "gtest")
+        ):
             shell.makedirs(
                 os.path.join(dependencies_root, "include", "gtest"),
                 dry_run=dry_run,
