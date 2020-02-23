@@ -15,6 +15,7 @@ This support module contains the functions related to the
 building and finding Simple DirectMedia Layer.
 """
 
+import logging
 import os
 
 from ..github import release
@@ -153,6 +154,83 @@ def _build_using_cmake(
         print_debug=print_debug
     )
 
+    def _copy_windows_lib(
+        library_name,
+        dependencies_root,
+        temporary_directory,
+        build_variant,
+        dry_run=None,
+        print_debug=None
+    ):
+        """
+        Copies a build SDL library on Windows from the temporary
+        build directory to the dependency directory.
+
+        library_name -- The name of the library to copy.
+
+        dependencies_root -- The root directory of the
+        dependencies for the current build target.
+
+        temporary_directory -- The temporary directory used for
+        downloading and building SDL.
+
+        build_variant -- The build variant used to build the project.
+
+        dry_run -- Whether the commands are only printed instead
+        of running them.
+
+        print_debug -- Whether debug output should be printed.
+        """
+        lib_file = os.path.join(
+            dependencies_root,
+            "lib",
+            "{}.lib".format(library_name)
+        )
+        lib_file_d = os.path.join(
+            dependencies_root,
+            "lib",
+            "{}d.lib".format(library_name)
+        )
+
+        if os.path.exists(lib_file):
+            shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
+
+        if os.path.exists(lib_file_d):
+            shell.rm(lib_file_d, dry_run=dry_run, echo=print_debug)
+
+        temp_lib_file = os.path.join(
+            temporary_directory,
+            "build",
+            build_variant,
+            "{}.lib".format(library_name)
+        )
+        temp_lib_file_d = os.path.join(
+            temporary_directory,
+            "build",
+            build_variant,
+            "{}d.lib".format(library_name)
+        )
+
+        if os.path.exists(temp_lib_file):
+            shell.copy(
+                temp_lib_file,
+                lib_file,
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        elif os.path.exists(temp_lib_file_d):
+            shell.copy(
+                temp_lib_file_d,
+                lib_file,
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        else:
+            logging.debug(
+                "No built SDL library was found with name %s",
+                library_name
+            )
+
     if cmake_generator == get_visual_studio_16_cmake_generator_name():
         if not os.path.isdir(os.path.join(dependencies_root, "lib")):
             shell.makedirs(
@@ -160,34 +238,32 @@ def _build_using_cmake(
                 dry_run=dry_run,
                 echo=print_debug
             )
-        lib_file = os.path.join(dependencies_root, "lib", "SDL2.lib")
-        main_lib_file = os.path.join(dependencies_root, "lib", "SDL2main.lib")
-        if os.path.exists(lib_file):
-            shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
-        if os.path.exists(main_lib_file):
-            shell.rm(main_lib_file, dry_run=dry_run, echo=print_debug)
-        shell.copy(
-            os.path.join(
-                temporary_directory,
-                "build",
-                build_variant,
-                "SDL2.lib"
-            ),
-            lib_file,
+
+        _copy_windows_lib(
+            library_name="SDL2-static",
+            dependencies_root=dependencies_root,
+            temporary_directory=temporary_directory,
+            build_variant=build_variant,
             dry_run=dry_run,
-            echo=print_debug
+            print_debug=print_debug
         )
-        shell.copy(
-            os.path.join(
-                temporary_directory,
-                "build",
-                build_variant,
-                "SDL2main.lib"
-            ),
-            main_lib_file,
+        _copy_windows_lib(
+            library_name="SDL2",
+            dependencies_root=dependencies_root,
+            temporary_directory=temporary_directory,
+            build_variant=build_variant,
             dry_run=dry_run,
-            echo=print_debug
+            print_debug=print_debug
         )
+        _copy_windows_lib(
+            library_name="SDL2main",
+            dependencies_root=dependencies_root,
+            temporary_directory=temporary_directory,
+            build_variant=build_variant,
+            dry_run=dry_run,
+            print_debug=print_debug
+        )
+
         if not os.path.isdir(
             os.path.join(dependencies_root, "include", "SDL2")
         ):
@@ -196,6 +272,7 @@ def _build_using_cmake(
                 dry_run=dry_run,
                 echo=print_debug
             )
+
         shell.copytree(
             os.path.join(subdirectory, "include"),
             os.path.join(dependencies_root, "include", "SDL2"),

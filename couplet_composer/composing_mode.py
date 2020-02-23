@@ -226,6 +226,12 @@ def compose_project(
     elif host_system == get_linux_system_name():
         cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
+    if host_system == get_windows_system_name():
+        if os.path.exists(os.path.join(dependencies_root, "lib", "SDL2d.lib")):
+            cmake_call.extend(["-DODE_USE_SDL_DEBUG_SUFFIX=ON"])
+        else:
+            cmake_call.extend(["-DODE_USE_SDL_DEBUG_SUFFIX=OFF"])
+
     # if host_system == get_windows_system_name():
     #     cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
 
