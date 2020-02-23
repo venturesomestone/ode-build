@@ -34,6 +34,110 @@ from ..util.cache import cached
 from ..util import http, shell
 
 
+def _copy_visual_c_binaries(
+    dependencies_root,
+    subdirectory,
+    dry_run=None,
+    print_debug=None
+):
+    """
+    Copies the pre-built binaries for Visual C on Windows.
+
+    dependencies_root -- The root directory of the dependencies
+    for the current build target.
+
+    subdirectory -- The temporary directory where the SDL files
+    are located.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
+    """
+    if not os.path.isdir(os.path.join(dependencies_root, "include")):
+        shell.makedirs(
+            os.path.join(dependencies_root, "include"),
+            dry_run=dry_run,
+            echo=print_debug
+        )
+    include_dir = os.path.join(dependencies_root, "include", "SDL2")
+    if os.path.isdir(include_dir):
+        shell.rmtree(include_dir, dry_run=dry_run, echo=print_debug)
+    shell.copytree(
+        os.path.join(subdirectory, "include"),
+        include_dir,
+        dry_run=dry_run,
+        echo=print_debug
+    )
+    if not os.path.isdir(os.path.join(dependencies_root, "lib")):
+        shell.makedirs(
+            os.path.join(dependencies_root, "lib"),
+            dry_run=dry_run,
+            echo=print_debug
+        )
+    for lib_file in os.listdir(os.path.join(
+        dependencies_root,
+        "lib"
+    )):
+        if "SDL" in lib_file:
+            shell.rm(
+                os.path.join(dependencies_root, "lib", lib_file),
+                dry_run=dry_run,
+                echo=print_debug
+            )
+    for lib_file in os.listdir(os.path.join(subdirectory, "lib", "x64")):
+        shell.copy(
+            os.path.join(subdirectory, "lib", "x64", lib_file),
+            os.path.join(dependencies_root, "lib", lib_file),
+            dry_run=dry_run,
+            echo=print_debug
+        )
+
+
+def _build(
+    toolchain,
+    dependencies_root,
+    temporary_directory,
+    subdirectory,
+    dry_run=None,
+    print_debug=None
+):
+    """
+    Builds SDL using the build scripts supplied with it.
+
+    dependencies_root -- The root directory of the dependencies
+    for the current build target.
+
+    temporary_directory -- The temporary directory used for
+    downloading and building SDL.
+
+    subdirectory -- The temporary directory where the SDL files
+    are located.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
+    """
+    config_call = [
+        os.path.join(subdirectory, "configure"),
+        "--prefix={}".format(dependencies_root)
+    ]
+
+    build_directory = os.path.join(temporary_directory, "build")
+
+    shell.makedirs(build_directory, dry_run=dry_run, echo=print_debug)
+
+    with shell.pushd(build_directory):
+        shell.call(config_call, dry_run=dry_run, echo=print_debug)
+        shell.call([toolchain.make], dry_run=dry_run, echo=print_debug)
+        shell.call(
+            [toolchain.make, "install"],
+            dry_run=dry_run,
+            echo=print_debug
+        )
+
+
 ################################################################
 # DEPENDENCY DATA FUNCTIONS
 ################################################################
@@ -166,62 +270,21 @@ def install_dependency(
     subdir = os.path.join(dependency_temp_dir, "SDL2-{}".format(version))
 
     if host_system == get_windows_system_name():
-        if not os.path.isdir(os.path.join(dependencies_root, "include")):
-            shell.makedirs(
-                os.path.join(dependencies_root, "include"),
-                dry_run=dry_run,
-                echo=print_debug
-            )
-        include_dir = os.path.join(dependencies_root, "include", "SDL2")
-        if os.path.isdir(include_dir):
-            shell.rmtree(include_dir, dry_run=dry_run, echo=print_debug)
-        shell.copytree(
-            os.path.join(subdir, "include"),
-            include_dir,
+        _copy_visual_c_binaries(
+            dependencies_root=dependencies_root,
+            subdirectory=subdir,
             dry_run=dry_run,
-            echo=print_debug
+            print_debug=print_debug
         )
-        if not os.path.isdir(os.path.join(dependencies_root, "lib")):
-            shell.makedirs(
-                os.path.join(dependencies_root, "lib"),
-                dry_run=dry_run,
-                echo=print_debug
-            )
-        for lib_file in os.listdir(os.path.join(
-            dependencies_root,
-            "lib"
-        )):
-            if "SDL" in lib_file:
-                shell.rm(
-                    os.path.join(dependencies_root, "lib", lib_file),
-                    dry_run=dry_run,
-                    echo=print_debug
-                )
-        for lib_file in os.listdir(os.path.join(subdir, "lib", "x64")):
-            shell.copy(
-                os.path.join(subdir, "lib", "x64", lib_file),
-                os.path.join(dependencies_root, "lib", lib_file),
-                dry_run=dry_run,
-                echo=print_debug
-            )
     else:
-        config_call = [
-            os.path.join(subdir, "configure"),
-            "--prefix={}".format(dependencies_root)
-        ]
-
-        build_directory = os.path.join(temp_dir, "build")
-
-        shell.makedirs(build_directory, dry_run=dry_run, echo=print_debug)
-
-        with shell.pushd(build_directory):
-            shell.call(config_call, dry_run=dry_run, echo=print_debug)
-            shell.call([toolchain.make], dry_run=dry_run, echo=print_debug)
-            shell.call(
-                [toolchain.make, "install"],
-                dry_run=dry_run,
-                echo=print_debug
-            )
+        _build(
+            toolchain=toolchain,
+            dependencies_root=dependencies_root,
+            temporary_directory=temp_dir,
+            subdirectory=subdir,
+            dry_run=dry_run,
+            print_debug=print_debug
+        )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
 
