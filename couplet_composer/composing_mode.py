@@ -286,6 +286,106 @@ def compose_project(
                 dry_run=arguments.dry_run,
                 echo=arguments.print_debug
             )
+            anthem_executable_name = "{}.exe".format(
+                arguments.anthem_binaries_name
+            )
+            anthem_executable = os.path.join(
+                destination_root,
+                anthem_executable_name
+            )
+            if os.path.exists(anthem_executable):
+                shell.rm(
+                    anthem_executable,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+            test_executable_name = "test-{}.exe".format(
+                arguments.anthem_binaries_name
+            )
+            test_executable = os.path.join(
+                destination_root,
+                test_executable_name
+            )
+            if os.path.exists(test_executable):
+                shell.rm(
+                    test_executable,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+            shell.makedirs(
+                os.path.join(destination_root, "bin"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.copy(
+                os.path.join(
+                    composing_root,
+                    arguments.build_variant,
+                    anthem_executable_name
+                ),
+                anthem_executable,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.copy(
+                os.path.join(
+                    composing_root,
+                    arguments.build_variant,
+                    test_executable_name
+                ),
+                test_executable,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+
+            script_dest_dir = os.path.join(composing_root, "lib")
+
+            if os.path.exists(script_dest_dir):
+                shell.rmtree(
+                    script_dest_dir,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+
+            shell.makedirs(
+                script_dest_dir,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+
+            shell.copytree(
+                os.path.join(project_root, "script", "anthem"),
+                os.path.join(script_dest_dir, "anthem"),
+                dry_run=arguments.dry_run,
+                echo=arguments.echo
+            )
+            shell.copytree(
+                os.path.join(project_root, "script", "ode"),
+                os.path.join(script_dest_dir, "ode"),
+                dry_run=arguments.dry_run,
+                echo=arguments.echo
+            )
+            shell.copytree(
+                os.path.join(project_root, "script", "test", "anthem"),
+                os.path.join(script_dest_dir, "anthem"),
+                dry_run=arguments.dry_run,
+                echo=arguments.echo
+            )
+            shell.copytree(
+                os.path.join(project_root, "script", "test", "ode"),
+                os.path.join(script_dest_dir, "ode"),
+                dry_run=arguments.dry_run,
+                echo=arguments.echo
+            )
+
+            for dirpath, dirnames, filenames in os.walk(script_dest_dir):
+                for filename in filenames:
+                    if filename == "CMakeLists.txt":
+                        shell.rm(
+                            os.path.join(dirpath, filename),
+                            dry_run=arguments.dry_run,
+                            echo=arguments.print_debug
+                        )
         else:
             shell.call(
                 [toolchain.build_system],

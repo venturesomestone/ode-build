@@ -182,7 +182,7 @@ def copytree(src, dest, dry_run=None, echo=None):
     if dry_run:
         return
     # A workaround
-    if os.path.isdir(dest):  # and data.build.ci:
+    if os.path.isdir(dest):
         for item in os.listdir(src):
             s = os.path.join(src, item)
             d = os.path.join(dest, item)
