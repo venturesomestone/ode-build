@@ -291,6 +291,7 @@ def compose_project(
             )
             anthem_executable = os.path.join(
                 destination_root,
+                "bin",
                 anthem_executable_name
             )
             if os.path.exists(anthem_executable):
@@ -304,6 +305,7 @@ def compose_project(
             )
             test_executable = os.path.join(
                 destination_root,
+                "bin",
                 test_executable_name
             )
             if os.path.exists(test_executable):
