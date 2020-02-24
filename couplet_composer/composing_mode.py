@@ -357,25 +357,25 @@ def compose_project(
                 os.path.join(project_root, "script", "anthem"),
                 os.path.join(script_dest_dir, "anthem"),
                 dry_run=arguments.dry_run,
-                echo=arguments.echo
+                echo=arguments.print_debug
             )
             shell.copytree(
                 os.path.join(project_root, "script", "ode"),
                 os.path.join(script_dest_dir, "ode"),
                 dry_run=arguments.dry_run,
-                echo=arguments.echo
+                echo=arguments.print_debug
             )
             shell.copytree(
                 os.path.join(project_root, "script", "test", "anthem"),
                 os.path.join(script_dest_dir, "anthem"),
                 dry_run=arguments.dry_run,
-                echo=arguments.echo
+                echo=arguments.print_debug
             )
             shell.copytree(
                 os.path.join(project_root, "script", "test", "ode"),
                 os.path.join(script_dest_dir, "ode"),
                 dry_run=arguments.dry_run,
-                echo=arguments.echo
+                echo=arguments.print_debug
             )
 
             for dirpath, dirnames, filenames in os.walk(script_dest_dir):
