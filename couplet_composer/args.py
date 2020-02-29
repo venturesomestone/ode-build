@@ -594,6 +594,13 @@ def create_argument_parser(source_root):
         help="enable developer features in the built executables"
     )
 
+    compose.add_argument(
+        "--test-logging",
+        action="store_true",
+        help="enable writing log output in the test executables if tests are "
+             "built"
+    )
+
     return parser
 
 

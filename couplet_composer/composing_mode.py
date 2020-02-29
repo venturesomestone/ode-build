@@ -179,6 +179,9 @@ def compose_project(
         "-DODE_DEVELOPER={}".format(
             "ON" if arguments.developer_build else "OFF"
         ),
+        "-DODE_TEST_USE_NULL_SINK={}".format(
+            "ON" if not arguments.test_logging else "OFF"
+        ),
         # TODO Maybe have some more sophisticated way to set this
         # option
         "-DODE_DISABLE_GL_CALLS={}".format(
