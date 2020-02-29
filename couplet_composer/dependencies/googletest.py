@@ -263,15 +263,14 @@ def should_install(
     written to the JSON file containing the currently installed
     versions of the dependencies.
     """
-    return True
     if not installed_version or version != installed_version:
         return True
 
     if should_add_sources_to_project(host_system=host_system):
         logging.debug("Checking if the Google Test sources exist")
-        return os.path.isdir(get_dependency_source_directory(
+        return not os.path.isdir(get_dependency_source_directory(
             dependencies_root=dependencies_root
-        )) and os.path.exists(os.path.join(
+        )) or not os.path.exists(os.path.join(
             get_dependency_source_directory(
                 dependencies_root=dependencies_root
             ),
