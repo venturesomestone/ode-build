@@ -15,6 +15,7 @@ This support module contains the functions related to the
 building and finding Google Test.
 """
 
+import logging
 import os
 
 from ..github import release
@@ -266,6 +267,7 @@ def should_install(
         return True
 
     if should_add_sources_to_project(host_system=host_system):
+        logging.debug("Checking if the Google Test sources exist")
         return os.path.isdir(get_dependency_source_directory(
             dependencies_root=dependencies_root
         )) and os.path.exists(os.path.join(
