@@ -221,7 +221,7 @@ def _build_using_cmake(
         elif os.path.exists(temp_lib_file_d):
             shell.copy(
                 temp_lib_file_d,
-                lib_file,
+                lib_file_d,
                 dry_run=dry_run,
                 echo=print_debug
             )
@@ -298,7 +298,7 @@ def _build_using_cmake(
         elif os.path.exists(temp_lib_file_d):
             shell.copy(
                 temp_lib_file_d,
-                lib_file,
+                lib_file_d,
                 dry_run=dry_run,
                 echo=print_debug
             )
