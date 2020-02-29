@@ -444,25 +444,41 @@ def should_install(
         return True
 
     if host_system == get_windows_system_name():
-        return not os.path.exists(os.path.join(
-            dependencies_root,
-            "lib",
-            "SDL2.lib"
-        )) and not os.path.exists(os.path.join(
-            dependencies_root,
-            "lib",
-            "SDL2d.lib"
-        ))
+        lib_file = os.path.join(dependencies_root, "lib", "SDL2.lib")
+        main_lib_file = os.path.join(dependencies_root, "lib", "SDL2main.lib")
+        dynamic_lib_file = os.path.join(dependencies_root, "lib", "SDL2.dll")
+        if not (os.path.exists(lib_file) and os.path.exists(main_lib_file)
+                and os.path.exists(dynamic_lib_file)):
+            lib_file = os.path.join(dependencies_root, "lib", "SDL2d.lib")
+            main_lib_file = os.path.join(
+                dependencies_root,
+                "lib",
+                "SDL2maind.lib"
+            )
+            dynamic_lib_file = os.path.join(
+                dependencies_root,
+                "lib",
+                "SDL2d.dll"
+            )
+            return not (os.path.exists(lib_file)
+                        and os.path.exists(main_lib_file)
+                        and os.path.exists(dynamic_lib_file))
+        else:
+            return False
     else:
-        return not os.path.exists(os.path.join(
-            dependencies_root,
-            "lib",
-            "libSDL2.a"
-        )) and not os.path.exists(os.path.join(
-            dependencies_root,
-            "lib",
-            "libSDL2d.a"
-        ))
+        lib_file = os.path.join(dependencies_root, "lib", "libSDL2.a")
+        main_lib_file = os.path.join(dependencies_root, "lib", "libSDL2main.a")
+        if not (os.path.exists(lib_file) and os.path.exists(main_lib_file)):
+            lib_file = os.path.join(dependencies_root, "lib", "libSDL2d.a")
+            main_lib_file = os.path.join(
+                dependencies_root,
+                "lib",
+                "libSDL2maind.a"
+            )
+            return not (os.path.exists(lib_file)
+                        and os.path.exists(main_lib_file))
+        else:
+            return False
 
 
 def install_dependency(
