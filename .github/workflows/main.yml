@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         runs-on: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: [2.7, 3.5, 3.6, 3.7]
+        python-version: [3.x]
 
     steps:
     - uses: actions/checkout@v2
