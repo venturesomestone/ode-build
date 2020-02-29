@@ -263,6 +263,7 @@ def should_install(
     written to the JSON file containing the currently installed
     versions of the dependencies.
     """
+    return True
     if not installed_version or version != installed_version:
         return True
 
