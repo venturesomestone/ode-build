@@ -29,6 +29,8 @@ from .support.project_names import get_project_name
 
 from .util.date import date_difference, to_date_string
 
+from .__version__ import get_version
+
 from . import args, modes
 
 
@@ -151,7 +153,15 @@ def _main():
     # utilized throughout the rest of the run.
     _set_logging_level(print_debug=arguments.print_debug)
 
+    logging.info("Running %s version %s", get_project_name(), get_version())
+
     _check_and_print_python_version()
+
+    logging.debug(
+        "The source root '%s' is valid and the required file '%s' exists",
+        source_root,
+        os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+    )
 
     def _resolve_mode(mode):
         if mode == get_preset_mode_name():

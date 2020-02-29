@@ -15,9 +15,14 @@ This support module contains helpers for making build calls for
 the dependencies.
 """
 
+import glob
+import logging
 import os
 
-from ..support.cmake_generators import get_ninja_cmake_generator_name
+from ..support.cmake_generators import \
+    get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
+
+from ..support.platform_names import get_windows_system_name
 
 from . import shell
 
@@ -33,6 +38,7 @@ def build_with_cmake(
     build_variant,
     cmake_options=None,
     do_install=True,
+    msbuild_target=None,
     dry_run=None,
     print_debug=None
 ):
@@ -66,6 +72,9 @@ def build_with_cmake(
     do_install -- Whether or not the install command should be
     called after building the project.
 
+    msbuild_target -- Optional name for the Visual Studio
+    solution or project that is used to build the project.
+
     dry_run -- Whether the commands are only printed instead of
     running them.
 
@@ -77,6 +86,16 @@ def build_with_cmake(
         "-DCMAKE_BUILD_TYPE={}".format(build_variant),
         "-DCMAKE_INSTALL_PREFIX={}".format(dependencies_root)
     ]
+
+    if host_system != get_windows_system_name():
+        cmake_call.extend(["-DCMAKE_C_COMPILER={}".format(
+            toolchain.compiler["cc"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+        cmake_call.extend(["-DCMAKE_CXX_COMPILER={}".format(
+            toolchain.compiler["cxx"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
 
     if cmake_generator == get_ninja_cmake_generator_name():
         cmake_call.extend([
@@ -97,13 +116,16 @@ def build_with_cmake(
         else:
             cmake_call += cmake_options
 
-    if isinstance(toolchain.compiler, dict):
-        cmake_env = {
-            "CC": toolchain.compiler["cc"],
-            "CXX": toolchain.compiler["cxx"]
-        }
+    if host_system != get_windows_system_name():
+        if isinstance(toolchain.compiler, dict):
+            cmake_env = {
+                "CC": toolchain.compiler["cc"],
+                "CXX": toolchain.compiler["cxx"]
+            }
+        else:
+            cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
     else:
-        cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
+        cmake_env = None
 
     build_directory = os.path.join(temporary_root, "build")
 
@@ -116,10 +138,36 @@ def build_with_cmake(
             dry_run=dry_run,
             echo=print_debug
         )
-        shell.call([toolchain.build_system], dry_run=dry_run, echo=print_debug)
-        if do_install:
+        # Have different call for Visual Studio as MSBuild is
+        # used.
+        if cmake_generator == get_visual_studio_16_cmake_generator_name():
+            logging.debug(
+                "The build directory contains the following files and "
+                "directories:\n%s",
+                "\n".join([f for f in os.listdir(build_directory)])
+            )
+            build_call = [toolchain.build_system]
+            if msbuild_target:
+                build_call.extend(["{}".format(msbuild_target)])
+            build_call.extend(
+                ["/property:Configuration={}".format(build_variant)]
+            )
+            shell.call(build_call, dry_run=dry_run, echo=print_debug)
+            logging.debug(
+                "The build library files are:\n%s",
+                "\n".join(
+                    glob.glob(os.path.join(build_directory, "**", "*.lib"))
+                )
+            )
+        else:
             shell.call(
-                [toolchain.build_system, "install"],
+                [toolchain.build_system],
                 dry_run=dry_run,
                 echo=print_debug
             )
+            if do_install:
+                shell.call(
+                    [toolchain.build_system, "install"],
+                    dry_run=dry_run,
+                    echo=print_debug
+                )

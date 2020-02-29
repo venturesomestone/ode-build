@@ -19,7 +19,10 @@ composing mode of the script.
 import logging
 import os
 
-from .support.cmake_generators import get_ninja_cmake_generator_name
+from .dependencies import googletest
+
+from .support.cmake_generators import \
+    get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
 from .support.environment import \
     get_build_root, get_composing_directory, get_destination_directory, \
@@ -153,15 +156,10 @@ def compose_project(
         "-G",
         arguments.cmake_generator,
         "-DCMAKE_BUILD_TYPE={}".format(arguments.build_variant),
-        "-DCMAKE_C_COMPILER={}".format(
-            toolchain.compiler["cc"]
-            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        "-DCMAKE_INSTALL_PREFIX={}".format(
+            destination_root.replace("\\", "/")
+            if host_system == get_windows_system_name() else destination_root
         ),
-        "-DCMAKE_CXX_COMPILER={}".format(
-            toolchain.compiler["cxx"]
-            if isinstance(toolchain.compiler, dict) else toolchain.compiler
-        ),
-        "-DCMAKE_INSTALL_PREFIX={}".format(destination_root),
         "-DODE_BUILD_TEST={}".format("ON" if arguments.build_test else "OFF"),
         "-DODE_TEST_BENCHMARKING={}".format(
             "ON" if arguments.build_benchmark else "OFF"
@@ -181,6 +179,9 @@ def compose_project(
         "-DODE_DEVELOPER={}".format(
             "ON" if arguments.developer_build else "OFF"
         ),
+        "-DODE_TEST_USE_NULL_SINK={}".format(
+            "ON" if not arguments.test_logging else "OFF"
+        ),
         # TODO Maybe have some more sophisticated way to set this
         # option
         "-DODE_DISABLE_GL_CALLS={}".format(
@@ -190,7 +191,10 @@ def compose_project(
             ) else "OFF"
         ),
         "-DODE_CXX_VERSION={}".format(arguments.std),
-        "-DODE_DEPENDENCY_PREFIX={}".format(dependencies_root),
+        "-DODE_DEPENDENCY_PREFIX={}".format(
+            dependencies_root.replace("\\", "/")
+            if host_system == get_windows_system_name() else dependencies_root
+        ),
         "-DODE_VERSION={}".format(arguments.ode_version),
         "-DANTHEM_VERSION={}".format(arguments.anthem_version),
         "-DODE_OPENGL_VERSION_MAJOR={}".format(
@@ -207,6 +211,16 @@ def compose_project(
         "-DANTHEM_NAME={}".format(arguments.anthem_binaries_name)
     ]
 
+    if host_system != get_windows_system_name():
+        cmake_call.extend(["-DCMAKE_C_COMPILER={}".format(
+            toolchain.compiler["cc"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+        cmake_call.extend(["-DCMAKE_CXX_COMPILER={}".format(
+            toolchain.compiler["cxx"]
+            if isinstance(toolchain.compiler, dict) else toolchain.compiler
+        )])
+
     if arguments.cmake_generator == get_ninja_cmake_generator_name():
         cmake_call.extend(
             ["-DCMAKE_MAKE_PROGRAM={}".format(toolchain.build_system)]
@@ -217,13 +231,38 @@ def compose_project(
     elif host_system == get_linux_system_name():
         cmake_call.extend(["-DODE_RPATH=$ORIGIN"])
 
-    if isinstance(toolchain.compiler, dict):
-        cmake_env = {
-            "CC": toolchain.compiler["cc"],
-            "CXX": toolchain.compiler["cxx"]
-        }
+    if host_system == get_windows_system_name():
+        if os.path.exists(os.path.join(dependencies_root, "lib", "SDL2d.lib")):
+            cmake_call.extend(["-DODE_USE_SDL_DEBUG_SUFFIX=ON"])
+        else:
+            cmake_call.extend(["-DODE_USE_SDL_DEBUG_SUFFIX=OFF"])
+
+    if googletest.should_add_sources_to_project(host_system=host_system):
+        cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=ON"])
+        google_test_dir_name = os.path.basename(os.path.normpath(
+            googletest.get_dependency_source_directory(
+                dependencies_root=dependencies_root
+            )
+        ))
+        cmake_call.extend(["-DODE_GOOGLE_TEST_DIRECTORY_NAME={}".format(
+            google_test_dir_name
+        )])
     else:
-        cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
+        cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=OFF"])
+
+    # if host_system == get_windows_system_name():
+    #     cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
+
+    if host_system != get_windows_system_name():
+        if isinstance(toolchain.compiler, dict):
+            cmake_env = {
+                "CC": toolchain.compiler["cc"],
+                "CXX": toolchain.compiler["cxx"]
+            }
+        else:
+            cmake_env = {"CC": toolchain.compiler, "CXX": toolchain.compiler}
+    else:
+        cmake_env = None
 
     with shell.pushd(composing_root):
         shell.call(
@@ -232,16 +271,137 @@ def compose_project(
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
-        shell.call(
-            [toolchain.build_system],
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
-        shell.call(
-            [toolchain.build_system, "install"],
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
+        if arguments.cmake_generator \
+                == get_visual_studio_16_cmake_generator_name():
+            logging.debug(
+                "The build directory contains the following files and "
+                "directories:\n%s",
+                "\n".join([f for f in os.listdir(composing_root)])
+            )
+            shell.call(
+                [
+                    toolchain.build_system,
+                    "anthem.sln",
+                    "/property:Configuration={}".format(
+                        arguments.build_variant
+                    )
+                ],
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            anthem_executable_name = "{}.exe".format(
+                arguments.anthem_binaries_name
+            )
+            anthem_executable = os.path.join(
+                destination_root,
+                "bin",
+                anthem_executable_name
+            )
+            if os.path.exists(anthem_executable):
+                shell.rm(
+                    anthem_executable,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+            test_executable_name = "test-{}.exe".format(
+                arguments.anthem_binaries_name
+            )
+            test_executable = os.path.join(
+                destination_root,
+                "bin",
+                test_executable_name
+            )
+            if os.path.exists(test_executable):
+                shell.rm(
+                    test_executable,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+            shell.makedirs(
+                os.path.join(destination_root, "bin"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.copy(
+                os.path.join(
+                    composing_root,
+                    arguments.build_variant,
+                    anthem_executable_name
+                ),
+                anthem_executable,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.copy(
+                os.path.join(
+                    composing_root,
+                    arguments.build_variant,
+                    test_executable_name
+                ),
+                test_executable,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+
+            script_dest_dir = os.path.join(composing_root, "lib")
+
+            if os.path.exists(script_dest_dir):
+                shell.rmtree(
+                    script_dest_dir,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
+
+            shell.makedirs(
+                script_dest_dir,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+
+            shell.copytree(
+                os.path.join(project_root, "script", "anthem"),
+                os.path.join(script_dest_dir, "anthem"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.copytree(
+                os.path.join(project_root, "script", "ode"),
+                os.path.join(script_dest_dir, "ode"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.copytree(
+                os.path.join(project_root, "script", "test", "anthem"),
+                os.path.join(script_dest_dir, "anthem"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.copytree(
+                os.path.join(project_root, "script", "test", "ode"),
+                os.path.join(script_dest_dir, "ode"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+
+            for dirpath, dirnames, filenames in os.walk(script_dest_dir):
+                for filename in filenames:
+                    if filename == "CMakeLists.txt":
+                        shell.rm(
+                            os.path.join(dirpath, filename),
+                            dry_run=arguments.dry_run,
+                            echo=arguments.print_debug
+                        )
+        else:
+            shell.call(
+                [toolchain.build_system],
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            shell.call(
+                [toolchain.build_system, "install"],
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
 
     build_target = parse_target_from_argument_string(arguments.host_target)
 
@@ -332,6 +492,51 @@ def compose_project(
             src="libSDL2-2.0.so.{}".format(version_data[0])
         )
         _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
+    elif host_system == get_windows_system_name():
+        sdl_dynamic_lib_name = "SDL2.dll"
+        sdl_dynamic_lib_d_name = "SDL2d.dll"
+        sdl_dynamic_lib = os.path.join(
+            destination_root,
+            "bin",
+            sdl_dynamic_lib_name
+        )
+        sdl_dynamic_lib_d = os.path.join(
+            destination_root,
+            "bin",
+            sdl_dynamic_lib_d_name
+        )
+        if os.path.exists(sdl_dynamic_lib):
+            shell.rm(
+                sdl_dynamic_lib,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        if os.path.exists(sdl_dynamic_lib_d):
+            shell.rm(
+                sdl_dynamic_lib_d,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        if os.path.exists(
+            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name)
+        ):
+            shell.copy(
+                os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name),
+                os.path.join(destination_root, "bin"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        elif os.path.exists(
+            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_d_name)
+        ):
+            shell.copy(
+                os.path.join(dependencies_root, "lib", sdl_dynamic_lib_d_name),
+                os.path.join(destination_root, "bin"),
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        else:
+            logging.debug("No dynamic SDL library was found for Windows")
 
     latest_path_file = get_latest_install_path_file(build_root=build_root)
 
