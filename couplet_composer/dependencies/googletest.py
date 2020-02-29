@@ -268,6 +268,11 @@ def should_install(
     if should_add_sources_to_project(host_system=host_system):
         return os.path.isdir(get_dependency_source_directory(
             dependencies_root=dependencies_root
+        )) and os.path.exists(os.path.join(
+            get_dependency_source_directory(
+                dependencies_root=dependencies_root
+            ),
+            "CMakeLists.txt"
         ))
 
     if host_system == get_windows_system_name():

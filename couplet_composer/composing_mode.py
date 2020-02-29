@@ -239,13 +239,10 @@ def compose_project(
 
     if googletest.should_add_sources_to_project(host_system=host_system):
         cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=ON"])
-        google_test_dir_name = os.path.basename(os.path.normpath(
+        cmake_call.extend(["-DODE_GOOGLE_TEST_DIRECTORY={}".format(
             googletest.get_dependency_source_directory(
                 dependencies_root=dependencies_root
             )
-        ))
-        cmake_call.extend(["-DODE_GOOGLE_TEST_DIRECTORY_NAME={}".format(
-            google_test_dir_name
         )])
     else:
         cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=OFF"])
