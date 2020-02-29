@@ -383,6 +383,8 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
+            lua_scripts = []
+
             for dirpath, dirnames, filenames in os.walk(script_dest_dir):
                 for filename in filenames:
                     if filename == "CMakeLists.txt":
@@ -391,6 +393,10 @@ def compose_project(
                             dry_run=arguments.dry_run,
                             echo=arguments.print_debug
                         )
+                    else:
+                        lua_scripts.append(os.path.join(dirpath, filename))
+
+            logging.debug("The Lua scripts are:\n\n%s", "\n".join(lua_scripts))
         else:
             shell.call(
                 [toolchain.build_system],
