@@ -343,7 +343,7 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
-            script_dest_dir = os.path.join(composing_root, "lib")
+            script_dest_dir = os.path.join(destination_root, "lib")
 
             if os.path.exists(script_dest_dir):
                 shell.rmtree(
