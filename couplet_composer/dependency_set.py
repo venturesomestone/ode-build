@@ -85,8 +85,8 @@ def _resolve_dependencies_to_install(
             ),
             target=target,
             host_system=host_system,
-            installed_version=version_data[data.get_name()]
-            if version_data and data.get_name() in version_data else None
+            installed_version=version_data[data.get_key()]
+            if version_data and data.get_key() in version_data else None
         )
     ]
     accumulated_to_install = [
@@ -100,8 +100,8 @@ def _resolve_dependencies_to_install(
             ),
             target=target,
             host_system=host_system,
-            installed_version=version_data[data.get_name()]
-            if version_data and data.get_name() in version_data else None
+            installed_version=version_data[data.get_key()]
+            if version_data and data.get_key() in version_data else None
         )
     ]
     return accumulated_not_to_install, accumulated_to_install
@@ -213,7 +213,7 @@ def install_dependencies(
             print_debug=print_debug
         )
         version_data.update({
-            dependency.get_name(): dependency.get_required_version(
+            dependency.get_key(): dependency.get_required_version(
                 target=target,
                 host_system=host_system
             )
