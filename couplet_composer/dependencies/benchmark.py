@@ -182,6 +182,7 @@ def install_dependency(
     )
 
     if cmake_generator == get_visual_studio_16_cmake_generator_name():
+        logging.debug("Google Benchmark files will be copied manually")
         build_dir = os.path.join(temp_dir, "build")
         if not os.path.isdir(os.path.join(dependencies_root, "lib")):
             shell.makedirs(
@@ -195,9 +196,15 @@ def install_dependency(
             shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
         if os.path.exists(lib_file_d):
             shell.rm(lib_file_d, dry_run=dry_run, echo=print_debug)
-        temp_lib_file = os.path.join(build_dir, build_variant, "benchmark.lib")
+        temp_lib_file = os.path.join(
+            build_dir,
+            "src",
+            build_variant,
+            "benchmark.lib"
+        )
         temp_lib_file_d = os.path.join(
             build_dir,
+            "src",
             build_variant,
             "benchmarkd.lib"
         )
