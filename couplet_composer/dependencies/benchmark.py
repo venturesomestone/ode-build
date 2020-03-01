@@ -176,6 +176,7 @@ def install_dependency(
         host_system=host_system,
         build_variant=build_variant,
         cmake_options={"BENCHMARK_ENABLE_GTEST_TESTS": False},
+        msbuild_target="ALL_BUILD.vcxproj",
         dry_run=dry_run,
         print_debug=print_debug
     )
