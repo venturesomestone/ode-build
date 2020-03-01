@@ -409,6 +409,7 @@ def run_in_configuring_mode(arguments, source_root):
             build_variant=arguments.build_variant
         ),
         build_test=arguments.build_test,
+        build_benchmark=arguments.build_benchmark,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
     )
