@@ -101,16 +101,26 @@ def _add_common_arguments(parser):
     github_group = parser.add_argument_group("GitHub options")
 
     github_group.add_argument(
+        "--github-auth-file",
+        default=None,
+        help="find the user agent and API token for accessing the version 4 "
+             "of the GitHub API from the given file by path relative to the "
+             "root directory of the project repository. The first line of the "
+             "file must contain the user agent and the second the API token"
+    )
+    github_group.add_argument(
         "--github-user-agent",
         default=None,
-        help="set the user agent used when accessing the GitHub API "
-             "(default: {})".format(None)
+        help="set the user agent used when accessing the GitHub API (default: "
+             "{}). Overrides the value read using the '--github-user-agent' "
+             "option".format(None)
     )
     github_group.add_argument(
         "--github-api-token",
         default=None,
-        help="set the API token used when accessing the GitHub API "
-             "(default: {})".format(None)
+        help="set the API token used when accessing the GitHub API (default: "
+             "{}). Overrides the value read using the '--github-user-agent' "
+             "option".format(None)
     )
 
     return parser

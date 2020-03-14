@@ -38,3 +38,12 @@ def get_project_dependencies_file_path():
     the Ode repository.
     """
     return os.path.join("util", "dependencies.json")
+
+
+def get_github_api_file_path():
+    """
+    Gives the relative default path to the file where the
+    information required to access the version 4 of the GitHub
+    API can be found.
+    """
+    return os.path.join("util", ".github_api")
