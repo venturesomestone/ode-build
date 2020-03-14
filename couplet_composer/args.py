@@ -17,9 +17,8 @@ import multiprocessing
 import platform
 
 from .support.build_variant import \
-    get_build_variant_names, get_debug_variant_name, \
-    get_minimum_size_release_variant_name, get_release_variant_name, \
-    get_release_with_debuginfo_variant_name
+    get_debug_variant_name, get_minimum_size_release_variant_name, \
+    get_release_variant_name, get_release_with_debuginfo_variant_name
 
 from .support.cmake_generators import \
     get_cmake_generator_names, get_make_cmake_generator_name, \
@@ -408,7 +407,7 @@ def create_argument_parser(source_root):
             subparsers.add_parser("configure")
         ),
         source_root=source_root
-    )
+    )  # noqa: F841
     compose = _add_common_build_arguments(
         _add_common_arguments(
             subparsers.add_parser("compose")

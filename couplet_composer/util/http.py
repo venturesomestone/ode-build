@@ -16,8 +16,7 @@ import sys
 
 import requests
 
-from ..support.platform_names import \
-    get_darwin_system_name, get_linux_system_name, get_windows_system_name
+from ..support.platform_names import get_windows_system_name
 
 from . import shell
 

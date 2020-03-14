@@ -17,9 +17,7 @@ GitHub.
 
 import os
 
-from ..support.platform_names import get_windows_system_name
-
-from ..util import http, shell
+from ..util import shell
 
 from ._api_v4 import find_release_node, make_api_call
 

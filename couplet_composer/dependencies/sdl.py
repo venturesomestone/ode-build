@@ -18,18 +18,14 @@ building and finding Simple DirectMedia Layer.
 import logging
 import os
 
-from ..github import release
-
 from ..support.cmake_generators import \
     get_visual_studio_16_cmake_generator_name
 
 from ..support.environment import \
     get_data_directory, get_sdl_shared_data_file, get_temporary_directory
 
-from ..support.github_data import GitHubData
-
 from ..support.platform_names import \
-    get_darwin_system_name, get_linux_system_name, get_windows_system_name
+    get_linux_system_name, get_windows_system_name
 
 from ..util.build_util import build_with_cmake
 

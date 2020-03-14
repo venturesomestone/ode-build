@@ -24,8 +24,6 @@ import platform
 import sys
 import time
 
-from functools import partial
-
 from .support.cmake_generators import \
     get_make_cmake_generator_name, get_ninja_cmake_generator_name, \
     get_visual_studio_16_cmake_generator_name
@@ -43,8 +41,6 @@ from .support.file_paths import \
 
 from .support.mode_names import get_configuring_mode_name
 
-from .support.platform_names import get_windows_system_name
-
 from .support.project_names import get_ode_repository_name, get_project_name
 
 from .support.tool_data import \
@@ -59,8 +55,7 @@ from .util import shell
 from .composing_mode import \
     compose_project, create_composing_root, create_destination_root
 
-from .configuring_mode import \
-    create_build_root, create_dependencies_root, create_tools_root
+from .configuring_mode import create_dependencies_root, create_tools_root
 
 from .dependency_set import construct_dependencies_data, install_dependencies
 

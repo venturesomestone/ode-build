@@ -12,8 +12,6 @@
 
 """This support module helps to handle date and time objects."""
 
-from datetime import datetime, time
-
 
 def date_difference(first, second):
     """
