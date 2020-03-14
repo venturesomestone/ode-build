@@ -36,14 +36,6 @@ def _get_accept_header():
     return "application/vnd.github.v3+json"
 
 
-def _get_streaming_accept_header():
-    """
-    Returns the default value for the Accept header for the REST
-    API calls that should be used for streaming files..
-    """
-    return "application/vnd.github.v3+octet-stream"
-
-
 def make_api_call(call_path):
     """
     Makes a call to the GitHub REST API using the given path
@@ -65,43 +57,6 @@ def make_api_call(call_path):
             "User-Agent": "Couplet Composer",
             "Accept": _get_accept_header()
         }
-    )
-
-    logging.debug(
-        "The returned value from the REST API is the following:\n%s",
-        response
-    )
-    logging.debug(
-        "The returned JSON data from the REST API is the following:\n%s",
-        response.json()
-    )
-
-    return response.json()
-
-
-def make_api_stream_call(call_path):
-    """
-    Makes a call to the GitHub REST API using the given path
-    appended to the end point and returns the result. The result
-    can be used to stream an asset to the local machine.
-
-    call_path -- The path that will be appended to the API end
-    point.
-    """
-    logging.debug(
-        "Making a GitHub REST API call with the following path:\n%s",
-        call_path
-    )
-
-    # Redirects which are required for the REST API are enabled
-    # by default.
-    response = requests.get(
-        url="{}{}".format(_get_api_endpoint(), call_path),
-        headers={
-            "User-Agent": "Couplet Composer",
-            "Accept": _get_streaming_accept_header()
-        },
-        stream=True
     )
 
     logging.debug(

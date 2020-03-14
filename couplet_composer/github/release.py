@@ -17,9 +17,19 @@ assets from GitHub.
 
 import os
 
+import requests
+
 from ..util import http
 
 from . import _api_v3, _api_v4, tag
+
+
+def _get_api_v3_streaming_accept_header():
+    """
+    Returns the default value for the Accept header for the REST
+    API calls that should be used for streaming files.
+    """
+    return "application/octet-stream"
 
 
 def _download_by_api_v3(
@@ -65,19 +75,25 @@ def _download_by_api_v3(
         api_response=asset_list_response,
         name=github_data.asset_name
     )
-    asset_response = _api_v3.make_api_stream_call(
+    asset_response = _api_v3.make_api_call(
         call_path="/repos/{owner}/{repo}/releases/assets/{asset_id}".format(
             owner=github_data.owner,
             repo=github_data.name,
             asset_id=asset_id
         )
     )
-    asset_url = asset_response["url"]
     dest = os.path.join(path, github_data.asset_name)
-    with open(dest, "wb") as f:
-        for chunk in asset_url.iter_content(chunk_size=1024):
-            if chunk:
-                f.write(chunk)
+    http.stream(
+        url=asset_response["url"],
+        destination=dest,
+        host_system=host_system,
+        headers={
+            "User-Agent": "Couplet Composer",
+            "Accept": _get_api_v3_streaming_accept_header()
+        },
+        dry_run=dry_run,
+        print_debug=print_debug
+    )
     return dest
 
 
