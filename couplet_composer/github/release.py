@@ -72,9 +72,10 @@ def _download_by_api_v3(
             asset_id=asset_id
         )
     )
+    asset_url = asset_response["url"]
     dest = os.path.join(path, github_data.asset_name)
     with open(dest, "wb") as f:
-        for chunk in asset_response.iter_content(chunk_size=1024):
+        for chunk in asset_url.iter_content(chunk_size=1024):
             if chunk:
                 f.write(chunk)
     return dest
