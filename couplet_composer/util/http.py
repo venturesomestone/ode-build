@@ -48,7 +48,11 @@ def stream(
         response = requests.get(url=url, headers=headers, stream=True)
     else:
         response = requests.get(url=url, stream=True)
-    shell.makedirs(destination, dry_run=dry_run, echo=print_debug)
+    shell.makedirs(
+        os.path.dirname(destination),
+        dry_run=dry_run,
+        echo=print_debug
+    )
     if print_debug:
         shell.curl(url, destination, dry_run=True, echo=print_debug)
     if dry_run:
