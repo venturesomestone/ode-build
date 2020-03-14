@@ -44,6 +44,61 @@ def _checkout_commit(
         )
 
 
+def _clone_by_api_v3(
+    path,
+    git,
+    github_data,
+    host_system,
+    commit=None,
+    dry_run=None,
+    print_debug=None
+):
+    """
+    Downloads a repository from GitHub using the version 3 of the
+    GitHub API (the REST API).
+
+    path -- Path to the directory where the downloaded files are
+    put.
+
+    git -- Path to the Git executable from the toolchain.
+
+    github_data -- The object containing the data required to
+    download the repository from GitHub.
+
+    host_system -- The system this script is run on.
+
+    commit -- A commit that is checked out after the cloning.
+
+    dry_run -- Whether the commands are only printed instead of
+    running them.
+
+    print_debug -- Whether debug output should be printed.
+    """
+    repository_url = "https://github.com/{owner}/{repo}".format(
+        owner=github_data.owner,
+        repo=github_data.name
+    )
+
+    with shell.pushd(path):
+        shell.call(
+            [git, "clone", "{}.git".format(repository_url)],
+            dry_run=dry_run,
+            echo=print_debug
+        )
+
+    if commit:
+        _checkout_commit(
+            path=path,
+            git=git,
+            github_data=github_data,
+            commit=commit,
+            dry_run=dry_run,
+            print_debug=print_debug
+        )
+
+    return os.path.join(path, github_data.name)
+
+
 def _clone_by_api_v4(
     path,
     git,
@@ -160,13 +215,23 @@ def clone(
 
     print_debug -- Whether debug output should be printed.
     """
-    return _clone_by_api_v4(
-        path=path,
-        git=git,
-        github_data=github_data,
-        user_agent=user_agent,
-        api_token=api_token,
-        host_system=host_system,
-        dry_run=dry_run,
-        print_debug=print_debug
-    )
+    if user_agent and api_token:
+        return _clone_by_api_v4(
+            path=path,
+            git=git,
+            github_data=github_data,
+            user_agent=user_agent,
+            api_token=api_token,
+            host_system=host_system,
+            dry_run=dry_run,
+            print_debug=print_debug
+        )
+    else:
+        return _clone_by_api_v3(
+            path=path,
+            git=git,
+            github_data=github_data,
+            host_system=host_system,
+            dry_run=dry_run,
+            print_debug=print_debug
+        )
