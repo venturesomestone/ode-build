@@ -12,11 +12,10 @@
 
 """This support module is used to download files."""
 
+import os
 import sys
 
 import requests
-
-from ..support.platform_names import get_windows_system_name
 
 from . import shell
 
@@ -45,31 +44,16 @@ def stream(
 
     print_debug -- Whether debug output should be printed.
     """
-    # The conditional statement here before renewal was:
-    # if data.session.ci or sys.version_info.major < 3:
-
-    if sys.version_info.major < 3:
-        if host_system == get_windows_system_name():
-            if headers:
-                response = requests.get(url=url, headers=headers, stream=True)
-            else:
-                response = requests.get(url=url, stream=True)
-            with open(destination, "wb") as destination_file:
-                if print_debug:
-                    shell.curl(url, destination, dry_run=True)
-                for chunk in response.iter_content(chunk_size=1024):
-                    if chunk:
-                        destination_file.write(chunk)
-        else:
-            shell.curl(url, destination, dry_run=dry_run, echo=print_debug)
-        return
     if headers:
         response = requests.get(url=url, headers=headers, stream=True)
     else:
         response = requests.get(url=url, stream=True)
+    shell.makedirs(destination, dry_run=dry_run, echo=print_debug)
+    if print_debug:
+        shell.curl(url, destination, dry_run=True, echo=print_debug)
+    if dry_run:
+        return
     with open(destination, "wb") as destination_file:
-        if print_debug:
-            shell.curl(url, destination, dry_run=True)
         for chunk in response.iter_content(chunk_size=1024):
             if chunk:
                 destination_file.write(chunk)
