@@ -17,9 +17,8 @@ import multiprocessing
 import platform
 
 from .support.build_variant import \
-    get_build_variant_names, get_debug_variant_name, \
-    get_minimum_size_release_variant_name, get_release_variant_name, \
-    get_release_with_debuginfo_variant_name
+    get_debug_variant_name, get_minimum_size_release_variant_name, \
+    get_release_variant_name, get_release_with_debuginfo_variant_name
 
 from .support.cmake_generators import \
     get_cmake_generator_names, get_make_cmake_generator_name, \
@@ -102,16 +101,26 @@ def _add_common_arguments(parser):
     github_group = parser.add_argument_group("GitHub options")
 
     github_group.add_argument(
+        "--github-auth-file",
+        default=None,
+        help="find the user agent and API token for accessing the version 4 "
+             "of the GitHub API from the given file by path relative to the "
+             "root directory of the project repository. The first line of the "
+             "file must contain the user agent and the second the API token"
+    )
+    github_group.add_argument(
         "--github-user-agent",
         default=None,
-        help="set the user agent used when accessing the GitHub API "
-             "(default: {})".format(None)
+        help="set the user agent used when accessing the GitHub API (default: "
+             "{}). Overrides the value read using the '--github-user-agent' "
+             "option".format(None)
     )
     github_group.add_argument(
         "--github-api-token",
         default=None,
-        help="set the API token used when accessing the GitHub API "
-             "(default: {})".format(None)
+        help="set the API token used when accessing the GitHub API (default: "
+             "{}). Overrides the value read using the '--github-user-agent' "
+             "option".format(None)
     )
 
     return parser
@@ -408,7 +417,7 @@ def create_argument_parser(source_root):
             subparsers.add_parser("configure")
         ),
         source_root=source_root
-    )
+    )  # noqa: F841
     compose = _add_common_build_arguments(
         _add_common_arguments(
             subparsers.add_parser("compose")

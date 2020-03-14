@@ -23,7 +23,7 @@ import requests
 
 def _get_api_endpoint():
     """
-    Returns the endpoint of the version 4 of the GitHub API.
+    Returns the end point of the version 4 of the GitHub API.
     """
     return "https://api.github.com/graphql"
 

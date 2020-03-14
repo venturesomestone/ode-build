@@ -15,16 +15,19 @@ This support module contains the functions related to the
 building and finding Google Benchmark.
 """
 
+import logging
 import os
 
 from ..github import release
+
+from ..support.cmake_generators import \
+    get_visual_studio_16_cmake_generator_name
 
 from ..support.environment import get_temporary_directory
 
 from ..support.github_data import GitHubData
 
-from ..support.platform_names import \
-    get_darwin_system_name, get_linux_system_name, get_windows_system_name
+from ..support.platform_names import get_windows_system_name
 
 from ..util.build_util import build_with_cmake
 
@@ -63,17 +66,30 @@ def should_install(
     written to the JSON file containing the currently installed
     versions of the dependencies.
     """
-    if host_system == get_windows_system_name():
-        return False
+    # if host_system == get_windows_system_name():
+    #     return False
 
     if not installed_version or version != installed_version:
         return True
 
-    return not os.path.exists(os.path.join(
-        dependencies_root,
-        "lib",
-        "libbenchmark.a"
-    ))
+    if host_system == get_windows_system_name():
+        lib_file = os.path.join(dependencies_root, "lib", "benchmark.lib")
+        if not os.path.exists(lib_file):
+            lib_file = os.path.join(dependencies_root, "lib", "benchmarkd.lib")
+            return not os.path.exists(lib_file)
+        else:
+            return False
+    else:
+        lib_file = os.path.join(dependencies_root, "lib", "libbenchmark.a")
+        if not os.path.exists(lib_file):
+            lib_file = os.path.join(
+                dependencies_root,
+                "lib",
+                "libbenchmarkd.a"
+            )
+            return not os.path.exists(lib_file)
+        else:
+            return False
 
 
 def install_dependency(
@@ -159,8 +175,68 @@ def install_dependency(
         host_system=host_system,
         build_variant=build_variant,
         cmake_options={"BENCHMARK_ENABLE_GTEST_TESTS": False},
+        msbuild_target="ALL_BUILD.vcxproj",
         dry_run=dry_run,
         print_debug=print_debug
     )
+
+    if cmake_generator == get_visual_studio_16_cmake_generator_name():
+        logging.debug("Google Benchmark files will be copied manually")
+        build_dir = os.path.join(temp_dir, "build")
+        if not os.path.isdir(os.path.join(dependencies_root, "lib")):
+            shell.makedirs(
+                os.path.join(dependencies_root, "lib"),
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        lib_file = os.path.join(dependencies_root, "lib", "benchmark.lib")
+        lib_file_d = os.path.join(dependencies_root, "lib", "benchmarkd.lib")
+        if os.path.exists(lib_file):
+            shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
+        if os.path.exists(lib_file_d):
+            shell.rm(lib_file_d, dry_run=dry_run, echo=print_debug)
+        temp_lib_file = os.path.join(
+            build_dir,
+            "src",
+            build_variant,
+            "benchmark.lib"
+        )
+        temp_lib_file_d = os.path.join(
+            build_dir,
+            "src",
+            build_variant,
+            "benchmarkd.lib"
+        )
+        if os.path.exists(temp_lib_file):
+            shell.copy(
+                temp_lib_file,
+                lib_file,
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        elif os.path.exists(temp_lib_file_d):
+            shell.copy(
+                temp_lib_file_d,
+                lib_file_d,
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        else:
+            logging.debug("No built Google Benchmark library was found")
+
+        if not os.path.isdir(
+            os.path.join(dependencies_root, "include", "benchmark")
+        ):
+            shell.makedirs(
+                os.path.join(dependencies_root, "include", "benchmark"),
+                dry_run=dry_run,
+                echo=print_debug
+            )
+        shell.copytree(
+            os.path.join(asset_path, "include", "benchmark"),
+            os.path.join(dependencies_root, "include", "benchmark"),
+            dry_run=dry_run,
+            echo=print_debug
+        )
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)

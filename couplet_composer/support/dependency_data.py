@@ -30,22 +30,9 @@ from .project_names import get_project_package_name
 # dependency. Thus, the tuple contains various functions that the
 # script utilizes when it constructs the dependencies.
 #
-# get_required_version -- Returns a string that represents the
-# version of the dependency that is required by the project.
-# Parameters: target, host_system
-#
-# should_install -- Tells whether or not the dependency should be
-# built. Parameters: build_test, dependencies_root, version,
-# target, host_system, installed_version
-#
-# install_dependency -- Installs the dependency if it wasn't
-# found on the system. The dependency is downloaded and possibly
-# built. The function ought to return path to the installed
-# dependency. The parameters for the function are: toolchain,
-# cmake_generator, build_root, dependencies_root, version,
-# target, host_system, github_user_agent, github_api_token,
-# opengl_version, dry_run, print_debug
+# TODO: Functions
 DependencyData = namedtuple("DependencyData", [
+    "get_key",
     "get_name",
     "get_required_version",
     "should_install",
@@ -57,6 +44,7 @@ def _should_install_dependency(
     module,
     data_node,
     build_test,
+    build_benchmark,
     dependencies_root,
     version,
     target,
@@ -74,6 +62,9 @@ def _should_install_dependency(
 
     build_test -- Whether or not the tests should be built.
 
+    build_benchmark -- Whether or not the benchmarks should be
+    built.
+
     dependencies_root -- The root directory of the dependencies
     for the current build target.
 
@@ -89,6 +80,8 @@ def _should_install_dependency(
     versions of the dependencies.
     """
     if data_node["testonly"] and not build_test:
+        return False
+    if data_node["benchmarkonly"] and not build_benchmark:
         return False
     return getattr(module, "should_install")(
         dependencies_root=dependencies_root,
@@ -117,6 +110,7 @@ def create_dependency_data(module_name, data_node):
     )
     dependency_module = importlib.import_module(package_name)
     return DependencyData(
+        get_key=lambda: module_name,
         get_name=lambda: data_node["name"],
         get_required_version=lambda target, host_system: data_node["version"],
         should_install=partial(

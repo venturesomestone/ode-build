@@ -16,15 +16,10 @@ building and finding Lua.
 """
 
 import os
-import sys
-
-from ..github import tag
 
 from ..support.cmake_generators import get_make_cmake_generator_name
 
 from ..support.environment import get_temporary_directory
-
-from ..support.github_data import GitHubData
 
 from ..support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name

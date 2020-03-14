@@ -49,6 +49,7 @@ def _resolve_dependencies_to_install(
     host_system,
     dependencies_root,
     build_test,
+    build_benchmark,
     version_data
 ):
     """
@@ -71,6 +72,9 @@ def _resolve_dependencies_to_install(
 
     build_test -- Whether or not the tests should be built.
 
+    build_benchmark -- Whether or not the benchmarks should be
+    built.
+
     version_data -- The dictionary read from the JSON file containing the
     versions of the currently installed dependencies.
     """
@@ -78,6 +82,7 @@ def _resolve_dependencies_to_install(
         data for data in dependencies_data
         if data.should_install is None or not data.should_install(
             build_test=build_test,
+            build_benchmark=build_benchmark,
             dependencies_root=dependencies_root,
             version=data.get_required_version(
                 target=target,
@@ -85,14 +90,15 @@ def _resolve_dependencies_to_install(
             ),
             target=target,
             host_system=host_system,
-            installed_version=version_data[data.get_name()]
-            if version_data and data.get_name() in version_data else None
+            installed_version=version_data[data.get_key()]
+            if version_data and data.get_key() in version_data else None
         )
     ]
     accumulated_to_install = [
         data for data in dependencies_data
         if data.should_install is not None and data.should_install(
             build_test=build_test,
+            build_benchmark=build_benchmark,
             dependencies_root=dependencies_root,
             version=data.get_required_version(
                 target=target,
@@ -100,8 +106,8 @@ def _resolve_dependencies_to_install(
             ),
             target=target,
             host_system=host_system,
-            installed_version=version_data[data.get_name()]
-            if version_data and data.get_name() in version_data else None
+            installed_version=version_data[data.get_key()]
+            if version_data and data.get_key() in version_data else None
         )
     ]
     return accumulated_not_to_install, accumulated_to_install
@@ -121,6 +127,7 @@ def install_dependencies(
     build_root,
     version_data_file,
     build_test,
+    build_benchmark,
     dry_run,
     print_debug
 ):
@@ -163,6 +170,9 @@ def install_dependencies(
 
     build_test -- Whether or not the tests should be built.
 
+    build_benchmark -- Whether or not the benchmarks should be
+    built.
+
     dry_run -- Whether the commands are only printed instead of
     running them.
 
@@ -185,6 +195,7 @@ def install_dependencies(
         host_system=host_system,
         dependencies_root=dependencies_root,
         build_test=build_test,
+        build_benchmark=build_benchmark,
         version_data=version_data
     )
 
@@ -213,7 +224,7 @@ def install_dependencies(
             print_debug=print_debug
         )
         version_data.update({
-            dependency.get_name(): dependency.get_required_version(
+            dependency.get_key(): dependency.get_required_version(
                 target=target,
                 host_system=host_system
             )

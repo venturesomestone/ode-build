@@ -239,13 +239,10 @@ def compose_project(
 
     if googletest.should_add_sources_to_project(host_system=host_system):
         cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=ON"])
-        google_test_dir_name = os.path.basename(os.path.normpath(
+        cmake_call.extend(["-DODE_GOOGLE_TEST_DIRECTORY={}".format(
             googletest.get_dependency_source_directory(
                 dependencies_root=dependencies_root
             )
-        ))
-        cmake_call.extend(["-DODE_GOOGLE_TEST_DIRECTORY_NAME={}".format(
-            google_test_dir_name
         )])
     else:
         cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=OFF"])
@@ -343,7 +340,7 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
-            script_dest_dir = os.path.join(composing_root, "lib")
+            script_dest_dir = os.path.join(destination_root, "lib")
 
             if os.path.exists(script_dest_dir):
                 shell.rmtree(
@@ -383,6 +380,8 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
+            lua_scripts = []
+
             for dirpath, dirnames, filenames in os.walk(script_dest_dir):
                 for filename in filenames:
                     if filename == "CMakeLists.txt":
@@ -391,6 +390,10 @@ def compose_project(
                             dry_run=arguments.dry_run,
                             echo=arguments.print_debug
                         )
+                    else:
+                        lua_scripts.append(os.path.join(dirpath, filename))
+
+            logging.debug("The Lua scripts are:\n\n%s", "\n".join(lua_scripts))
         else:
             shell.call(
                 [toolchain.build_system],

@@ -15,6 +15,7 @@ This support module contains the functions related to the
 building and finding Google Test.
 """
 
+import logging
 import os
 
 from ..github import release
@@ -26,8 +27,7 @@ from ..support.environment import get_temporary_directory
 
 from ..support.github_data import GitHubData
 
-from ..support.platform_names import \
-    get_darwin_system_name, get_linux_system_name, get_windows_system_name
+from ..support.platform_names import get_windows_system_name
 
 from ..util.build_util import build_with_cmake
 
@@ -266,8 +266,14 @@ def should_install(
         return True
 
     if should_add_sources_to_project(host_system=host_system):
-        return os.path.isdir(get_dependency_source_directory(
+        logging.debug("Checking if the Google Test sources exist")
+        return not os.path.isdir(get_dependency_source_directory(
             dependencies_root=dependencies_root
+        )) or not os.path.exists(os.path.join(
+            get_dependency_source_directory(
+                dependencies_root=dependencies_root
+            ),
+            "CMakeLists.txt"
         ))
 
     if host_system == get_windows_system_name():
