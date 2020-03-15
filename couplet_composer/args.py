@@ -28,6 +28,8 @@ from .support.compiler_toolchains import \
     get_gcc_toolchain_name, get_clang_toolchain_name, \
     get_compiler_toolchain_names, get_msvc_toolchain_name
 
+from .support.file_paths import get_github_api_file_path
+
 from .support.platform_names import get_windows_system_name
 
 from .support.project_values import \
@@ -102,11 +104,12 @@ def _add_common_arguments(parser):
 
     github_group.add_argument(
         "--github-auth-file",
-        default=None,
+        default=get_github_api_file_path(),
         help="find the user agent and API token for accessing the version 4 "
              "of the GitHub API from the given file by path relative to the "
-             "root directory of the project repository. The first line of the "
-             "file must contain the user agent and the second the API token"
+             "root directory of the project repository (default: {}). The "
+             "first line of the file must contain the user agent and the "
+             "second the API token".format(get_github_api_file_path())
     )
     github_group.add_argument(
         "--github-user-agent",

@@ -118,6 +118,11 @@ def compose_preset_call(arguments, file_names):
         build_call.append("--print-debug")
     if arguments.in_tree_build:
         build_call.append("--in-tree-build")
+    if arguments.github_auth_file:
+        build_call.extend([
+            "--github-auth-file",
+            str(arguments.github_auth_file)
+        ])
     if arguments.github_user_agent:
         build_call.extend([
             "--github-user-agent",
