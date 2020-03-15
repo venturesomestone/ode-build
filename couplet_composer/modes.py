@@ -258,7 +258,7 @@ def _get_github_api_access_values(
         logging.debug("Adding the API token from command line")
         return_api_token = api_token
 
-    if user_agent and api_token:
+    if return_user_agent and return_api_token:
         logging.info(
             "Using the GraphQL API of GitHub as user agent and access token "
             "are given"
