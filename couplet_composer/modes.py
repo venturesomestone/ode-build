@@ -224,20 +224,23 @@ def _get_github_api_access_values(
     arguments that is used to access the API.
     """
     repository_root = os.path.join(source_root, get_ode_repository_name())
-    api_file_content = None
-    default_value_file = os.path.join(
-        repository_root,
-        get_github_api_file_path()
-    )
+    value_file_path = os.path.join(repository_root, value_file)
+    api_file_content = []
 
-    if value_file and os.path.exists(
-        os.path.join(repository_root, value_file)
-    ):
+    if value_file and os.path.exists(value_file_path):
+        logging.debug(
+            "Found a file containing the user agent and authorization token "
+            "for GitHub API from %s",
+            value_file_path
+        )
         with open(os.path.join(repository_root, value_file)) as api_file:
             api_file_content = [line.strip() for line in api_file.readlines()]
-    elif os.path.exists(default_value_file):
-        with open(default_value_file) as api_file:
-            api_file_content = [line.strip() for line in api_file.readlines()]
+    elif not os.path.exists(value_file_path):
+        logging.debug(
+            "The file containing the user agent and authorization token for "
+            "GitHub API wasn't found from %s",
+            value_file_path
+        )
 
     return_user_agent = None
     return_api_token = None

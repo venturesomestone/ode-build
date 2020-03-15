@@ -22,7 +22,7 @@ def get_release_version():
     and, thus, returns three values: the major version number,
     the minor version number, and the patch version number.
     """
-    return 0, 7, 1
+    return 0, 7, 2
 
 
 def get_version():
