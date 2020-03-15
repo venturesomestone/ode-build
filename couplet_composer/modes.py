@@ -234,15 +234,7 @@ def _get_github_api_access_values(
             value_file_path
         )
         with open(value_file_path) as api_file:
-            for line in api_file.readlines():
-                logging.debug(
-                    "Going to add %s to the contents read from the GitHub API "
-                    "authorization file",
-                    line.strip()
-                )
-                api_file_content.append(line.strip())
-            # api_file_content =
-            # [line.strip() for line in api_file.readlines()]
+            api_file_content = [line.strip() for line in api_file.readlines()]
     elif not os.path.exists(value_file_path):
         logging.debug(
             "The file containing the user agent and authorization token for "
@@ -254,26 +246,16 @@ def _get_github_api_access_values(
     return_api_token = None
 
     if api_file_content:
-        logging.debug(
-            "Adding %s as the user agent and %s as the API token",
-            api_file_content[0],
-            api_file_content[1]
-        )
+        logging.debug("Adding the user agent and the API token from the file")
         return_user_agent = api_file_content[0]
         return_api_token = api_file_content[1]
 
     if user_agent:
-        logging.debug(
-            "Adding %s as the user agent from command line",
-            user_agent
-        )
+        logging.debug("Adding the user agent from command line")
         return_user_agent = user_agent
 
     if api_token:
-        logging.debug(
-            "Adding %s as the API token from command line",
-            api_token
-        )
+        logging.debug("Adding the API token from command line")
         return_api_token = api_token
 
     if user_agent and api_token:
