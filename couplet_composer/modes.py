@@ -254,13 +254,26 @@ def _get_github_api_access_values(
     return_api_token = None
 
     if api_file_content:
+        logging.debug(
+            "Adding %s as the user agent and %s as the API token",
+            api_file_content[0],
+            api_file_content[1]
+        )
         return_user_agent = api_file_content[0]
         return_api_token = api_file_content[1]
 
     if user_agent:
+        logging.debug(
+            "Adding %s as the user agent from command line",
+            user_agent
+        )
         return_user_agent = user_agent
 
     if api_token:
+        logging.debug(
+            "Adding %s as the API token from command line",
+            api_token
+        )
         return_api_token = api_token
 
     if user_agent and api_token:
