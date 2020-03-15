@@ -17,8 +17,9 @@ import multiprocessing
 import platform
 
 from .support.build_variant import \
-    get_debug_variant_name, get_minimum_size_release_variant_name, \
-    get_release_variant_name, get_release_with_debuginfo_variant_name
+    get_build_variant_names, get_debug_variant_name, \
+    get_minimum_size_release_variant_name, get_release_variant_name, \
+    get_release_with_debuginfo_variant_name
 
 from .support.cmake_generators import \
     get_cmake_generator_names, get_make_cmake_generator_name, \
@@ -187,7 +188,7 @@ def _add_common_build_arguments(parser, source_root):
     variant_selection_group.add_argument(
         "--build-variant",
         default=default_build_variant,
-        choices=get_compiler_toolchain_names(),
+        choices=get_build_variant_names(),
         help="use the selected build variant (default: {})".format(
             default_build_variant
         ),
