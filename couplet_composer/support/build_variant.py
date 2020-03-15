@@ -43,5 +43,6 @@ def get_build_variant_names():
     return [
         get_debug_variant_name(),
         get_release_with_debuginfo_variant_name(),
-        get_release_variant_name()
+        get_release_variant_name(),
+        get_minimum_size_release_variant_name()
     ]
