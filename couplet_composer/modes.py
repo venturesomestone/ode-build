@@ -233,7 +233,7 @@ def _get_github_api_access_values(
             "for GitHub API from %s",
             value_file_path
         )
-        with open(os.path.join(repository_root, value_file)) as api_file:
+        with open(value_file_path) as api_file:
             api_file_content = [line.strip() for line in api_file.readlines()]
     elif not os.path.exists(value_file_path):
         logging.debug(
