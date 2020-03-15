@@ -115,14 +115,14 @@ def _add_common_arguments(parser):
         "--github-user-agent",
         default=None,
         help="set the user agent used when accessing the GitHub API (default: "
-             "{}). Overrides the value read using the '--github-user-agent' "
+             "{}). Overrides the value read using the '--github-auth-file' "
              "option".format(None)
     )
     github_group.add_argument(
         "--github-api-token",
         default=None,
         help="set the API token used when accessing the GitHub API (default: "
-             "{}). Overrides the value read using the '--github-user-agent' "
+             "{}). Overrides the value read using the '--github-auth-file' "
              "option".format(None)
     )
 
