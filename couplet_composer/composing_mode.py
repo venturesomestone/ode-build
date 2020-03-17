@@ -598,6 +598,17 @@ def install_running_copies(arguments, build_root, destination_root):
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
+    shell.makedirs(
+        os.path.join(running_path, "lib"),
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+    shell.copytree(
+        os.path.join(destination_root, "lib"),
+        os.path.join(running_path, "lib"),
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
 
     latest_path_file = get_latest_running_path_file(build_root=build_root)
 
