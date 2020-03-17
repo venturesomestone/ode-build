@@ -54,8 +54,8 @@ from .util.target import parse_target_from_argument_string
 from .util import shell
 
 from .composing_mode import \
-    compose_project, create_composing_root, create_destination_root, \
-    install_running_copies
+    compose_project, create_artifacts, create_composing_root, \
+    create_destination_root, install_running_copies
 
 from .configuring_mode import create_dependencies_root, create_tools_root
 
@@ -591,6 +591,15 @@ def run_in_composing_mode(arguments, source_root):
             cmake_generator=arguments.cmake_generator,
             build_variant=arguments.build_variant,
             version=arguments.anthem_version
+        )
+    )
+
+    create_artifacts(
+        arguments=arguments,
+        host_system=platform.system(),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
         )
     )
 
