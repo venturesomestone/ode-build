@@ -650,7 +650,7 @@ def create_artifacts(arguments, host_system, build_root):
         arguments.anthem_version,
         arguments.host_target,
         arguments.build_variant,
-        "zip" if host_system == get_windows_system_name() else "tar.gz"
+        "zip" if host_system == get_windows_system_name() else "zip"  # "tar.gz"
     )
     artifact_dir = get_artifact_directory(
         build_root=build_root,
@@ -710,7 +710,7 @@ def create_artifacts(arguments, host_system, build_root):
             echo=arguments.print_debug
         )
     else:
-        shell.create_tar(
+        shell.create_zip(
             tmp_dir,
             artifact_path,
             dry_run=arguments.dry_run,
