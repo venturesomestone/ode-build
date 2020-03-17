@@ -376,6 +376,20 @@ def get_latest_install_path_file(build_root):
 
 
 @cached
+def get_latest_running_path_file(build_root):
+    """
+    Gives path to the file in the build directory containing
+    relative path to directory for running the most recently
+    built products to automatically run tests on them on
+    e.g. continuous integration.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+    """
+    return os.path.join(build_root, "latest-install-for-running")
+
+
+@cached
 def get_latest_install_version_file(build_root):
     """
     Gives path to the file in the build directory containing

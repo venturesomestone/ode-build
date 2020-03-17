@@ -27,7 +27,9 @@ from .support.cmake_generators import \
 from .support.environment import \
     get_build_root, get_composing_directory, get_destination_directory, \
     get_latest_install_path_file, get_latest_install_version_file, \
-    get_relative_destination_directory, get_sdl_shared_data_file
+    get_latest_running_path_file, get_relative_destination_directory, \
+    get_relative_running_directory, get_running_directory, \
+    get_sdl_shared_data_file
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
@@ -551,8 +553,8 @@ def compose_project(
             target=build_target,
             cmake_generator=arguments.cmake_generator,
             build_variant=arguments.build_variant,
-            version=arguments.anthem_version)
-        ))
+            version=arguments.anthem_version
+        )))
 
     latest_version_file = get_latest_install_version_file(
         build_root=build_root
@@ -563,3 +565,54 @@ def compose_project(
 
     with open(latest_version_file, "w") as f:
         f.write(arguments.anthem_version)
+
+
+def install_running_copies(arguments, build_root, destination_root):
+    """
+    Installs the built products to the running directories.
+
+    arguments -- The parsed command line arguments of the run.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
+
+    destination_root -- The directory where the built product is
+    placed in.
+    """
+    running_path = get_running_directory(
+        build_root=build_root,
+        target=arguments.build_target,
+        build_variant=arguments.build_variant,
+        version=arguments.anthem_version
+    )
+    shell.makedirs(
+        running_path,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+    shell.copytree(
+        os.path.join(destination_root, "bin"),
+        running_path,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+
+    latest_path_file = get_latest_running_path_file(build_root=build_root)
+
+    if os.path.exists(latest_path_file):
+        shell.rm(latest_path_file)
+
+    build_target = parse_target_from_argument_string(arguments.host_target)
+
+    with open(latest_path_file, "w") as f:
+        f.write(str(get_relative_running_directory(
+            target=build_target,
+            build_variant=arguments.build_variant,
+            version=arguments.anthem_version
+        )))
+
+
+def create_artifacts():
+    """
+    Creates the artifacts of the built products.
+    """
