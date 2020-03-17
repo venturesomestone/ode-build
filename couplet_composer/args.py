@@ -580,6 +580,13 @@ def create_argument_parser(source_root):
             source_root=source_root
         ))
     )
+    compose.add_argument(
+        "--anthem-artifacts-name",
+        default=get_anthem_binaries_base_name(source_root=source_root),
+        help="set base name of the artifacts of {}".format(get_anthem_name(
+            source_root=source_root
+        ))
+    )
 
     assertions_group = compose.add_mutually_exclusive_group()
 
