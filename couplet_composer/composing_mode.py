@@ -579,9 +579,11 @@ def install_running_copies(arguments, build_root, destination_root):
     destination_root -- The directory where the built product is
     placed in.
     """
+    build_target = parse_target_from_argument_string(arguments.host_target)
+
     running_path = get_running_directory(
         build_root=build_root,
-        target=arguments.build_target,
+        target=build_target,
         build_variant=arguments.build_variant,
         version=arguments.anthem_version
     )
@@ -601,8 +603,6 @@ def install_running_copies(arguments, build_root, destination_root):
 
     if os.path.exists(latest_path_file):
         shell.rm(latest_path_file)
-
-    build_target = parse_target_from_argument_string(arguments.host_target)
 
     with open(latest_path_file, "w") as f:
         f.write(str(get_relative_running_directory(
