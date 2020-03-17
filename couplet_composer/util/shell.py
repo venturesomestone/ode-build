@@ -296,7 +296,9 @@ def create_zip(src, dest, dry_run=None, echo=None):
     if dry_run:
         return
     with zipfile.ZipFile(dest, "w") as f:
-        for dirpath, dirnames, filenames in os.walk(src):
+        for dirpath, dirnames, filenames in os.walk(
+            os.path.basename(os.path.normpath(src))
+        ):
             for filename in filenames:
                 f.write(os.path.join(dirpath, filename))
 

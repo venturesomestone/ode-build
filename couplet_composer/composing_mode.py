@@ -710,9 +710,10 @@ def create_artifacts(arguments, host_system, build_root):
             echo=arguments.print_debug
         )
     else:
-        shell.create_zip(
-            tmp_dir,
-            artifact_path,
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
+        with shell.pushd(tmp_dir):
+            shell.create_zip(
+                tmp_dir,
+                artifact_path,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
