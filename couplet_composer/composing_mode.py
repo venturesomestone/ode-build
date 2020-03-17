@@ -25,11 +25,11 @@ from .support.cmake_generators import \
     get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
 from .support.environment import \
-    get_build_root, get_composing_directory, get_destination_directory, \
-    get_latest_install_path_file, get_latest_install_version_file, \
-    get_latest_running_path_file, get_relative_destination_directory, \
-    get_relative_running_directory, get_running_directory, \
-    get_sdl_shared_data_file
+    get_artifact_directory, get_build_root, get_composing_directory, \
+    get_destination_directory, get_latest_install_path_file, \
+    get_latest_install_version_file, get_latest_running_path_file, \
+    get_relative_destination_directory, get_relative_running_directory, \
+    get_running_directory, get_sdl_shared_data_file, get_temporary_directory
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
@@ -631,7 +631,72 @@ def install_running_copies(arguments, build_root, destination_root):
         )))
 
 
-def create_artifacts():
+def create_artifacts(arguments, host_system, build_root):
     """
     Creates the artifacts of the built products.
+
+    arguments -- The parsed command line arguments of the run.
+
+    host_system -- The system this script is run on.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
     """
+    build_target = parse_target_from_argument_string(arguments.host_target)
+
+    artifact_name = "{}-{}-{}-{}.{}".format(
+        arguments.anthem_artifacts_name,
+        arguments.anthem_version,
+        arguments.host_target,
+        arguments.build_variant,
+        "zip" if host_system == get_windows_system_name() else "tar.gz"
+    )
+    artifact_dir = get_artifact_directory(
+        build_root=build_root,
+        target=build_target,
+        build_variant=arguments.build_variant,
+        version=arguments.anthem_version
+    )
+    artifact_path = os.path.join(artifact_dir, artifact_name)
+
+    if os.path.exists(artifact_path):
+        shell.rm(
+            artifact_path,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+
+    shell.makedirs(
+        artifact_dir,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+
+    tmp_dir = get_temporary_directory(build_root=build_root)
+
+    if os.path.exists(tmp_dir):
+        shell.rmtree(
+            tmp_dir,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+
+    shell.makedirs(
+        tmp_dir,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+
+    running_path = get_running_directory(
+        build_root=build_root,
+        target=build_target,
+        build_variant=arguments.build_variant,
+        version=arguments.anthem_version
+    )
+
+    shell.copytree(
+        running_path,
+        tmp_dir,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )

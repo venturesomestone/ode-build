@@ -169,11 +169,7 @@ def get_relative_artifact_directory(target, build_variant, version):
 
     version -- The version number of the project.
     """
-    return os.path.join(
-        "artifacts",
-        version,
-        "{}-{}-{}".format(target.system, target.machine, build_variant)
-    )
+    return "artifacts"
 
 
 @cached
