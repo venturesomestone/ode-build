@@ -157,6 +157,52 @@ def get_destination_directory(
 
 
 @cached
+def get_relative_artifact_directory(target, build_variant, version):
+    """
+    Gives the path to the directory where the built project
+    artifacts are placed relative to the build root.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+
+    version -- The version number of the project.
+    """
+    return os.path.join(
+        "artifacts",
+        version,
+        "{}-{}-{}".format(target.system, target.machine, build_variant)
+    )
+
+
+@cached
+def get_artifact_directory(build_root, target, build_variant, version):
+    """
+    Gives the path to the directory where the built project
+    artifacts are placed.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+
+    version -- The version number of the project.
+    """
+    return os.path.join(
+        build_root,
+        get_relative_artifact_directory(
+            target=target,
+            build_variant=build_variant,
+            version=version
+        )
+    )
+
+
+@cached
 def get_tools_directory(build_root, target):
     """
     Gives the path to the directory in the build directory that
