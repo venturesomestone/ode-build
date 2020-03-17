@@ -18,6 +18,7 @@ composing mode of the script.
 
 import logging
 import os
+import tarfile
 
 from .dependencies import googletest
 
@@ -700,3 +701,18 @@ def create_artifacts(arguments, host_system, build_root):
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
+
+    if host_system == get_windows_system_name():
+        shell.create_zip(
+            tmp_dir,
+            artifact_path,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+    else:
+        shell.create_tar(
+            tmp_dir,
+            artifact_path,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
