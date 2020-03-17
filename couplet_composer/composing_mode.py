@@ -587,6 +587,14 @@ def install_running_copies(arguments, build_root, destination_root):
         build_variant=arguments.build_variant,
         version=arguments.anthem_version
     )
+
+    if os.path.exists(running_path):
+        shell.rmtree(
+            running_path,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+
     shell.makedirs(
         running_path,
         dry_run=arguments.dry_run,
