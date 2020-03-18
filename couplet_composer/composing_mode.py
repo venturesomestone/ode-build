@@ -645,11 +645,10 @@ def create_artefacts(arguments, host_system, build_root):
     """
     build_target = parse_target_from_argument_string(arguments.host_target)
 
-    artefact_name = "{}-{}-{}-{}.{}".format(
+    artefact_name = "{}-{}-{}.{}".format(
         arguments.anthem_artefacts_name,
         arguments.anthem_version,
         arguments.host_target,
-        arguments.build_variant,
         "zip" if host_system == get_windows_system_name() else "tar.gz"
     )
     artefact_dir = get_artefact_directory(
