@@ -25,9 +25,6 @@ from .support.presets import \
     get_all_preset_names, get_composing_preset_prefix, \
     get_configuration_preset_prefix, get_preset_options
 
-from .support.mode_names import \
-    get_composing_mode_name, get_configuring_mode_name
-
 from .util import shell
 
 
@@ -91,7 +88,6 @@ def compose_preset_call(arguments, file_names):
     file_names -- The preset file names from which the preset
     names are read.
     """
-
     preset_options, preset_options_after_end = get_preset_options(
         preset_file_names=file_names,
         preset_name=arguments.preset,
@@ -101,17 +97,11 @@ def compose_preset_call(arguments, file_names):
 
     build_call = [sys.argv[0]]
 
-    if arguments.preset_run_mode == get_configuring_mode_name():
-        build_call.append(get_configuring_mode_name())
-    elif arguments.preset_run_mode == get_composing_mode_name():
-        build_call.append(get_composing_mode_name())
+    build_call.append(arguments.preset_run_mode)
 
     if arguments.dry_run:
         build_call.append("--dry-run")
-    # TODO Contemplate whether this should be able to be set from
-    # preset mode
-    if arguments.jobs:
-        build_call.extend(["--jobs", str(arguments.jobs)])
+    build_call.extend(["--jobs", str(arguments.jobs)])
     if arguments.clean:
         build_call.append("--clean")
     if arguments.print_debug:

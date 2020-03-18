@@ -109,9 +109,6 @@ def run_in_preset_mode(arguments, source_root):
         logging.debug("The build script invocation is printed")
         return 0
 
-    # command_to_run = [sys.executable] + build_call
-
-    # shell.caffeinate(command_to_run, dry_run=False, echo=True)
     shell.caffeinate(build_call, dry_run=False, echo=True)
 
     return 0
