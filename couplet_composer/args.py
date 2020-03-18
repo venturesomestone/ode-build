@@ -416,12 +416,12 @@ def create_argument_parser(source_root):
     subparsers = parser.add_subparsers(dest="composer_mode")
 
     preset = _add_common_arguments(subparsers.add_parser("preset"))
-    configure = _add_common_build_arguments(
+    configure = _add_common_build_arguments(  # noqa: F841
         _add_common_arguments(
             subparsers.add_parser("configure")
         ),
         source_root=source_root
-    )  # noqa: F841
+    )
     compose = _add_common_build_arguments(
         _add_common_arguments(
             subparsers.add_parser("compose")
@@ -581,11 +581,18 @@ def create_argument_parser(source_root):
         ))
     )
     compose.add_argument(
+        "--anthem-artefacts-name",
+        default=get_anthem_binaries_base_name(source_root=source_root),
+        help="set base name of the artefacts of {}".format(get_anthem_name(
+            source_root=source_root
+        )),
+        dest="anthem_artefacts_name"
+    )
+    compose.add_argument(
         "--anthem-artifacts-name",
         default=get_anthem_binaries_base_name(source_root=source_root),
-        help="set base name of the artifacts of {}".format(get_anthem_name(
-            source_root=source_root
-        ))
+        help="alias for '--anthem-artefacts-name'",
+        dest="anthem_artefacts_name"
     )
 
     assertions_group = compose.add_mutually_exclusive_group()

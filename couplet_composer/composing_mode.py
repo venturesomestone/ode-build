@@ -16,9 +16,9 @@ This support module contains the functions for running the
 composing mode of the script.
 """
 
+import json
 import logging
 import os
-import tarfile
 
 from .dependencies import googletest
 
@@ -26,16 +26,14 @@ from .support.cmake_generators import \
     get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
 from .support.environment import \
-    get_artifact_directory, get_build_root, get_composing_directory, \
-    get_destination_directory, get_latest_install_path_file, \
-    get_latest_install_version_file, get_latest_running_path_file, \
-    get_relative_destination_directory, get_relative_running_directory, \
-    get_running_directory, get_sdl_shared_data_file, get_temporary_directory
+    get_artefact_directory, get_build_root, get_composing_directory, \
+    get_destination_directory, get_project_root, get_running_directory, \
+    get_temporary_directory
+
+from .support.file_paths import get_project_dependencies_file_path
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
-
-from .util.target import parse_target_from_argument_string
 
 from .util import shell
 
@@ -121,6 +119,7 @@ def create_destination_root(
 
 
 def compose_project(
+    source_root,
     toolchain,
     arguments,
     host_system,
@@ -132,6 +131,9 @@ def compose_project(
 ):
     """
     Builds the project this script acts on.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
 
     toolchain -- The toolchain object of the run.
 
@@ -409,8 +411,6 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
-    build_target = parse_target_from_argument_string(arguments.host_target)
-
     if host_system != get_windows_system_name():
         logging.debug(
             "Found the following SDL libraries:\n\n{}".format(
@@ -458,20 +458,16 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
-        shared_version_file = get_sdl_shared_data_file(
-            build_root=build_root,
-            target=build_target,
-            build_variant=arguments.build_variant
+        dependency_version_file = os.path.join(
+            get_project_root(source_root=source_root),
+            get_project_dependencies_file_path()
         )
-        if os.path.exists(shared_version_file):
-            with open(shared_version_file) as f:
-                shared_version = f.read()
-        else:
-            shared_version = "0.0.0"
+        with open(dependency_version_file) as f:
+            sdl_version = json.load(f)["sdl"]["version"]
 
-        version_data = shared_version.split(".")
+        sdl_major, sdl_minor, sdl_patch = sdl_version.split(".")
 
-        _copy_linux_sdl("libSDL2-2.0.so.{}".format(shared_version))
+        _copy_linux_sdl("libSDL2-2.0.so.{}.{}.0".format(sdl_minor, sdl_patch))
 
         def _link_linux_sdl(name, src):
             new_link = os.path.join(destination_root, "bin", name)
@@ -490,12 +486,12 @@ def compose_project(
             )
 
         _link_linux_sdl(
-            name="libSDL2-2.0.so.{}".format(version_data[0]),
-            src="libSDL2-2.0.so.{}".format(shared_version)
+            name="libSDL2-2.0.so.{}".format(sdl_major),
+            src="libSDL2-2.0.so.{}.{}.0".format(sdl_minor, sdl_patch)
         )
         _link_linux_sdl(
             name="libSDL2-2.0.so",
-            src="libSDL2-2.0.so.{}".format(version_data[0])
+            src="libSDL2-2.0.so.{}".format(sdl_major)
         )
         _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
     elif host_system == get_windows_system_name():
@@ -544,29 +540,6 @@ def compose_project(
         else:
             logging.debug("No dynamic SDL library was found for Windows")
 
-    latest_path_file = get_latest_install_path_file(build_root=build_root)
-
-    if os.path.exists(latest_path_file):
-        shell.rm(latest_path_file)
-
-    with open(latest_path_file, "w") as f:
-        f.write(str(get_relative_destination_directory(
-            target=build_target,
-            cmake_generator=arguments.cmake_generator,
-            build_variant=arguments.build_variant,
-            version=arguments.anthem_version
-        )))
-
-    latest_version_file = get_latest_install_version_file(
-        build_root=build_root
-    )
-
-    if os.path.exists(latest_version_file):
-        shell.rm(latest_version_file)
-
-    with open(latest_version_file, "w") as f:
-        f.write(arguments.anthem_version)
-
 
 def install_running_copies(arguments, build_root, destination_root):
     """
@@ -580,14 +553,7 @@ def install_running_copies(arguments, build_root, destination_root):
     destination_root -- The directory where the built product is
     placed in.
     """
-    build_target = parse_target_from_argument_string(arguments.host_target)
-
-    running_path = get_running_directory(
-        build_root=build_root,
-        target=build_target,
-        build_variant=arguments.build_variant,
-        version=arguments.anthem_version
-    )
+    running_path = get_running_directory(build_root=build_root)
 
     if os.path.exists(running_path):
         shell.rmtree(
@@ -619,22 +585,10 @@ def install_running_copies(arguments, build_root, destination_root):
         echo=arguments.print_debug
     )
 
-    latest_path_file = get_latest_running_path_file(build_root=build_root)
 
-    if os.path.exists(latest_path_file):
-        shell.rm(latest_path_file)
-
-    with open(latest_path_file, "w") as f:
-        f.write(str(get_relative_running_directory(
-            target=build_target,
-            build_variant=arguments.build_variant,
-            version=arguments.anthem_version
-        )))
-
-
-def create_artifacts(arguments, host_system, build_root):
+def create_artefacts(arguments, host_system, build_root):
     """
-    Creates the artifacts of the built products.
+    Creates the artefacts of the built products.
 
     arguments -- The parsed command line arguments of the run.
 
@@ -643,37 +597,34 @@ def create_artifacts(arguments, host_system, build_root):
     build_root -- The path to the root directory that is used for
     all created files and directories.
     """
-    build_target = parse_target_from_argument_string(arguments.host_target)
-
-    artifact_name = "{}-{}-{}-{}.{}".format(
-        arguments.anthem_artifacts_name,
+    artefact_name = "{}-{}-{}.{}".format(
+        arguments.anthem_artefacts_name,
         arguments.anthem_version,
         arguments.host_target,
-        arguments.build_variant,
         "zip" if host_system == get_windows_system_name() else "tar.gz"
     )
-    artifact_dir = get_artifact_directory(
-        build_root=build_root,
-        target=build_target,
-        build_variant=arguments.build_variant,
-        version=arguments.anthem_version
-    )
-    artifact_path = os.path.join(artifact_dir, artifact_name)
+    artefact_dir = get_artefact_directory(build_root=build_root)
+    artefact_path = os.path.join(artefact_dir, artefact_name)
 
-    if os.path.exists(artifact_path):
+    if os.path.exists(artefact_path):
         shell.rm(
-            artifact_path,
+            artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
 
     shell.makedirs(
-        artifact_dir,
+        artefact_dir,
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
 
     tmp_dir = get_temporary_directory(build_root=build_root)
+    tmp_subdir = "{}-{}-{}".format(
+        arguments.anthem_artefacts_name,
+        arguments.anthem_version,
+        arguments.host_target
+    )
 
     if os.path.exists(tmp_dir):
         shell.rmtree(
@@ -687,32 +638,32 @@ def create_artifacts(arguments, host_system, build_root):
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
-
-    running_path = get_running_directory(
-        build_root=build_root,
-        target=build_target,
-        build_variant=arguments.build_variant,
-        version=arguments.anthem_version
+    shell.makedirs(
+        os.path.join(tmp_dir, tmp_subdir),
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
     )
+
+    running_path = get_running_directory(build_root=build_root)
 
     shell.copytree(
         running_path,
-        tmp_dir,
+        os.path.join(tmp_dir, tmp_subdir),
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
 
     if host_system == get_windows_system_name():
         shell.create_zip(
-            tmp_dir,
-            artifact_path,
+            os.path.join(tmp_dir, tmp_subdir),
+            artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
     else:
         shell.create_tar(
-            tmp_dir,
-            artifact_path,
+            os.path.join(tmp_dir, tmp_subdir),
+            artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )

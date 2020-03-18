@@ -90,38 +90,6 @@ def get_composing_directory(
 
 
 @cached
-def get_relative_destination_directory(
-    target,
-    cmake_generator,
-    build_variant,
-    version
-):
-    """
-    Gives the path to the directory where the built project is
-    placed relative to the build root.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    cmake_generator -- The CMake generator that is used.
-
-    build_variant -- The build variant used to build the project.
-
-    version -- The version number of the project.
-    """
-    return os.path.join(
-        "dest",
-        version,
-        "{}-{}-{}-{}".format(
-            target.system,
-            target.machine,
-            build_variant,
-            cmake_generator.replace(" ", "_")
-        )
-    )
-
-
-@cached
 def get_destination_directory(
     build_root,
     target,
@@ -147,101 +115,39 @@ def get_destination_directory(
     """
     return os.path.join(
         build_root,
-        get_relative_destination_directory(
-            target=target,
-            cmake_generator=cmake_generator,
-            build_variant=build_variant,
-            version=version
-        )
-    )
-
-
-@cached
-def get_relative_artifact_directory(target, build_variant, version):
-    """
-    Gives the path to the directory where the built project
-    artifacts are placed relative to the build root.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    build_variant -- The build variant used to build the project.
-
-    version -- The version number of the project.
-    """
-    return "artifacts"
-
-
-@cached
-def get_artifact_directory(build_root, target, build_variant, version):
-    """
-    Gives the path to the directory where the built project
-    artifacts are placed.
-
-    build_root -- Path to the directory that is the root of the
-    script build files.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    build_variant -- The build variant used to build the project.
-
-    version -- The version number of the project.
-    """
-    return os.path.join(
-        build_root,
-        get_relative_artifact_directory(
-            target=target,
-            build_variant=build_variant,
-            version=version
-        )
-    )
-
-
-@cached
-def get_relative_running_directory(target, build_variant, version):
-    """
-    Gives the path to the directory where the built project is
-    placed relative to the build root for running it.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    build_variant -- The build variant used to build the project.
-
-    version -- The version number of the project.
-    """
-    return os.path.join(
-        "run",
+        "dest",
         version,
-        "{}-{}-{}".format(target.system, target.machine, build_variant)
+        "{}-{}-{}-{}".format(
+            target.system,
+            target.machine,
+            build_variant,
+            cmake_generator.replace(" ", "_")
+        )
     )
 
 
 @cached
-def get_running_directory(build_root, target, build_variant, version):
+def get_artefact_directory(build_root):
     """
-    Gives the path to the directory where the built project is
-    placed for running it.
+    Gives the path to the directory where the built project
+    artefacts are placed.
 
     build_root -- Path to the directory that is the root of the
     script build files.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    build_variant -- The build variant used to build the project.
-
-    version -- The version number of the project.
     """
-    return os.path.join(
-        build_root,
-        get_relative_running_directory(
-            target=target,
-            build_variant=build_variant,
-            version=version
-        )
-    )
+    return os.path.join(build_root, "artefacts")
+
+
+@cached
+def get_running_directory(build_root):
+    """
+    Gives the path to the directory where the latest built
+    products for the system are placed for running them.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+    """
+    return os.path.join(build_root, "run")
 
 
 @cached
@@ -309,94 +215,6 @@ def get_dependency_version_data_file(build_root, target, build_variant):
             build_variant
         )
     )
-
-
-@cached
-def get_data_directory(build_root, target, build_variant):
-    """
-    Gives the path to the directory in the build directory that
-    contains helpful data files for the build process.
-
-    build_root -- Path to the directory that is the root of the
-    script build files.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    build_variant -- The build variant used to build the project.
-    """
-    return os.path.join(
-        build_root,
-        "local",
-        "data",
-        "{}-{}-{}".format(target.system, target.machine, build_variant)
-    )
-
-
-@cached
-def get_sdl_shared_data_file(build_root, target, build_variant):
-    """
-    Gives path to the file in the build directory containing
-    the version of the installed shared SDL library.
-
-    build_root -- Path to the directory that is the root of the
-    script build files.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    build_variant -- The build variant used to build the project.
-    """
-    return os.path.join(
-        get_data_directory(
-            build_root=build_root,
-            target=target,
-            build_variant=build_variant
-        ),
-        "linux-shared-sdl"
-    )
-
-
-@cached
-def get_latest_install_path_file(build_root):
-    """
-    Gives path to the file in the build directory containing
-    relative path to the most recently built products to
-    automatically run tests on them on e.g. continuous
-    integration.
-
-    build_root -- Path to the directory that is the root of the
-    script build files.
-    """
-    return os.path.join(build_root, "latest-install")
-
-
-@cached
-def get_latest_running_path_file(build_root):
-    """
-    Gives path to the file in the build directory containing
-    relative path to directory for running the most recently
-    built products to automatically run tests on them on
-    e.g. continuous integration.
-
-    build_root -- Path to the directory that is the root of the
-    script build files.
-    """
-    return os.path.join(build_root, "latest-install-for-running")
-
-
-@cached
-def get_latest_install_version_file(build_root):
-    """
-    Gives path to the file in the build directory containing
-    the version of the most recently built products to
-    automatically run tests on them on e.g. continuous
-    integration.
-
-    build_root -- Path to the directory that is the root of the
-    script build files.
-    """
-    return os.path.join(build_root, "latest-install-version")
 
 
 @cached

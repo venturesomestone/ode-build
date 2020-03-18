@@ -37,8 +37,7 @@ from .support.environment import \
     get_project_root, get_tools_directory
 
 from .support.file_paths import \
-    get_github_api_file_path, get_preset_file_path, \
-    get_project_dependencies_file_path
+    get_preset_file_path, get_project_dependencies_file_path
 
 from .support.mode_names import get_configuring_mode_name
 
@@ -54,7 +53,7 @@ from .util.target import parse_target_from_argument_string
 from .util import shell
 
 from .composing_mode import \
-    compose_project, create_artifacts, create_composing_root, \
+    compose_project, create_artefacts, create_composing_root, \
     create_destination_root, install_running_copies
 
 from .configuring_mode import create_dependencies_root, create_tools_root
@@ -110,9 +109,6 @@ def run_in_preset_mode(arguments, source_root):
         logging.debug("The build script invocation is printed")
         return 0
 
-    # command_to_run = [sys.executable] + build_call
-
-    # shell.caffeinate(command_to_run, dry_run=False, echo=True)
     shell.caffeinate(build_call, dry_run=False, echo=True)
 
     return 0
@@ -143,7 +139,6 @@ def _clean(arguments, source_root):
         source_root=source_root,
         in_tree_build=arguments.in_tree_build
     )
-
     composing_root = get_composing_directory(
         build_root=build_root,
         target=build_target,
@@ -451,8 +446,7 @@ def run_in_configuring_mode(arguments, source_root):
     install_dependencies(
         dependencies_data=construct_dependencies_data(
             data_file=os.path.join(
-                source_root,
-                "unsung-anthem",
+                get_project_root(source_root=source_root),
                 get_project_dependencies_file_path()
             )
         ),
@@ -545,6 +539,7 @@ def run_in_composing_mode(arguments, source_root):
     logging.debug("The created toolchain is %s", toolchain)
 
     compose_project(
+        source_root=source_root,
         toolchain=toolchain,
         arguments=arguments,
         host_system=platform.system(),
@@ -594,7 +589,7 @@ def run_in_composing_mode(arguments, source_root):
         )
     )
 
-    create_artifacts(
+    create_artefacts(
         arguments=arguments,
         host_system=platform.system(),
         build_root=get_build_root(

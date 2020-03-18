@@ -17,8 +17,6 @@ assets from GitHub.
 
 import os
 
-import requests
-
 from ..util import http
 
 from . import _api_v3, _api_v4, tag
