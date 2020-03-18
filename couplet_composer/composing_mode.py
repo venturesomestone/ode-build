@@ -673,6 +673,11 @@ def create_artefacts(arguments, host_system, build_root):
     )
 
     tmp_dir = get_temporary_directory(build_root=build_root)
+    tmp_subdir = "{}-{}-{}".format(
+        arguments.anthem_artefacts_name,
+        arguments.anthem_version,
+        arguments.host_target
+    )
 
     if os.path.exists(tmp_dir):
         shell.rmtree(
@@ -686,6 +691,11 @@ def create_artefacts(arguments, host_system, build_root):
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
+    shell.makedirs(
+        os.path.join(tmp_dir, tmp_subdir),
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
 
     running_path = get_running_directory(
         build_root=build_root,
@@ -696,21 +706,21 @@ def create_artefacts(arguments, host_system, build_root):
 
     shell.copytree(
         running_path,
-        tmp_dir,
+        os.path.join(tmp_dir, tmp_subdir),
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
 
     if host_system == get_windows_system_name():
         shell.create_zip(
-            tmp_dir,
+            os.path.join(tmp_dir, tmp_subdir),
             artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
     else:
         shell.create_tar(
-            tmp_dir,
+            os.path.join(tmp_dir, tmp_subdir),
             artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
