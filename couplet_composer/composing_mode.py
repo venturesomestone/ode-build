@@ -27,8 +27,8 @@ from .support.cmake_generators import \
 
 from .support.environment import \
     get_artefact_directory, get_build_root, get_composing_directory, \
-    get_destination_directory, get_relative_destination_directory, \
-    get_running_directory, get_sdl_shared_data_file, get_temporary_directory
+    get_destination_directory, get_running_directory, \
+    get_sdl_shared_data_file, get_temporary_directory
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
