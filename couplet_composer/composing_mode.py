@@ -716,3 +716,9 @@ def create_artifacts(arguments, host_system, build_root):
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
+
+    shell.rmtree(
+        tmp_dir,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
