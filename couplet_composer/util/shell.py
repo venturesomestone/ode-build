@@ -288,7 +288,12 @@ def create_tar(src, dest, dry_run=None, echo=None):
     dest_file = dest
     if dest_file.endswith(".tar.gz"):
         dest_file = dest_file[:-7]
-    shutil.make_archive(dest_file, format="gztar", root_dir=src)
+    shutil.make_archive(
+        dest_file,
+        format="gztar",
+        root_dir=src,
+        base_dir=os.path.basename(os.path.normpath(src))
+    )
     # with tarfile.open(dest, "w:gz") as tar:
     #     tar.add(src, arcname=os.path.basename(src))
 
