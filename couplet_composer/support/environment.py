@@ -157,6 +157,94 @@ def get_destination_directory(
 
 
 @cached
+def get_relative_artifact_directory(target, build_variant, version):
+    """
+    Gives the path to the directory where the built project
+    artifacts are placed relative to the build root.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+
+    version -- The version number of the project.
+    """
+    return "artifacts"
+
+
+@cached
+def get_artifact_directory(build_root, target, build_variant, version):
+    """
+    Gives the path to the directory where the built project
+    artifacts are placed.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+
+    version -- The version number of the project.
+    """
+    return os.path.join(
+        build_root,
+        get_relative_artifact_directory(
+            target=target,
+            build_variant=build_variant,
+            version=version
+        )
+    )
+
+
+@cached
+def get_relative_running_directory(target, build_variant, version):
+    """
+    Gives the path to the directory where the built project is
+    placed relative to the build root for running it.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+
+    version -- The version number of the project.
+    """
+    return os.path.join(
+        "run",
+        version,
+        "{}-{}-{}".format(target.system, target.machine, build_variant)
+    )
+
+
+@cached
+def get_running_directory(build_root, target, build_variant, version):
+    """
+    Gives the path to the directory where the built project is
+    placed for running it.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    build_variant -- The build variant used to build the project.
+
+    version -- The version number of the project.
+    """
+    return os.path.join(
+        build_root,
+        get_relative_running_directory(
+            target=target,
+            build_variant=build_variant,
+            version=version
+        )
+    )
+
+
+@cached
 def get_tools_directory(build_root, target):
     """
     Gives the path to the directory in the build directory that
@@ -281,6 +369,20 @@ def get_latest_install_path_file(build_root):
     script build files.
     """
     return os.path.join(build_root, "latest-install")
+
+
+@cached
+def get_latest_running_path_file(build_root):
+    """
+    Gives path to the file in the build directory containing
+    relative path to directory for running the most recently
+    built products to automatically run tests on them on
+    e.g. continuous integration.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+    """
+    return os.path.join(build_root, "latest-install-for-running")
 
 
 @cached

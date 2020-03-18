@@ -279,6 +279,30 @@ def tar(path, dest=None, dry_run=None, echo=None):
                         archive.extractall()
 
 
+def create_tar(src, dest, dry_run=None, echo=None):
+    """Creates a .tar.gz archive."""
+    if dry_run or echo:
+        _echo_command(dry_run, ["tar", "-czf", dest, src])
+    if dry_run:
+        return
+    dest_file = dest
+    if dest_file.endswith(".tar.gz"):
+        dest_file = dest_file[:-7]
+    shutil.make_archive(dest_file, format="gztar", root_dir=src)
+
+
+def create_zip(src, dest, dry_run=None, echo=None):
+    """Creates a .zip archive."""
+    if dry_run or echo:
+        _echo_command(dry_run, ["zip", "-r", dest, src])
+    if dry_run:
+        return
+    dest_file = dest
+    if dest_file.endswith(".zip"):
+        dest_file = dest_file[:-4]
+    shutil.make_archive(dest_file, format="zip", root_dir=src)
+
+
 def curl(url, dest, env=None, dry_run=None, echo=None):
     """Downloads a file."""
     call(

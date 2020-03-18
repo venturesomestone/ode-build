@@ -54,7 +54,8 @@ from .util.target import parse_target_from_argument_string
 from .util import shell
 
 from .composing_mode import \
-    compose_project, create_composing_root, create_destination_root
+    compose_project, create_artifacts, create_composing_root, \
+    create_destination_root, install_running_copies
 
 from .configuring_mode import create_dependencies_root, create_tools_root
 
@@ -246,13 +247,16 @@ def _get_github_api_access_values(
     return_api_token = None
 
     if api_file_content:
+        logging.debug("Adding the user agent and the API token from the file")
         return_user_agent = api_file_content[0]
         return_api_token = api_file_content[1]
 
     if user_agent:
+        logging.debug("Adding the user agent from command line")
         return_user_agent = user_agent
 
     if api_token:
+        logging.debug("Adding the API token from command line")
         return_api_token = api_token
 
     if return_user_agent and return_api_token:
@@ -569,6 +573,33 @@ def run_in_composing_mode(arguments, source_root):
             in_tree_build=arguments.in_tree_build,
             target=build_target,
             build_variant=arguments.build_variant
+        )
+    )
+
+    install_running_copies(
+        arguments=arguments,
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
+        destination_root=get_destination_directory(
+            build_root=get_build_root(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            ),
+            target=build_target,
+            cmake_generator=arguments.cmake_generator,
+            build_variant=arguments.build_variant,
+            version=arguments.anthem_version
+        )
+    )
+
+    create_artifacts(
+        arguments=arguments,
+        host_system=platform.system(),
+        build_root=get_build_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
         )
     )
 
