@@ -130,7 +130,7 @@ def compose_preset_call(arguments, file_names):
     )
 
     build_call.extend(preset_arguments)
-    # TODO: build_call.append("--")
+    build_call.append("--")
     build_call.extend(preset_arguments_after_end)
 
     return build_call
