@@ -110,6 +110,32 @@ def _check_and_print_python_version():
         logging.debug("You seem to have an excellent taste!")
 
 
+def _resolve_running_function(mode, argument_parser):
+    """
+    Resolves the function that is chiefly responsible for running
+    the script according to the mode in which the script is run.
+    Returns a function.
+
+    mode -- The name of the mode in which the script was run.
+
+    argument_parser -- The parser used to parse the command line
+    arguments of the script.
+    """
+    if mode == get_preset_mode_name():
+        return modes.run_in_preset_mode
+    elif mode == get_configuring_mode_name():
+        return modes.run_in_configuring_mode
+    elif mode == get_composing_mode_name():
+        return modes.run_in_composing_mode
+    else:
+        def _(_1, _2):
+            argument_parser.error("{} wasn't in valid mode".format(
+                get_project_name()
+            ))
+            return 1
+        return _
+
+
 def run_script(runner, arguments, source_root):
     """
     Runs the script with the given runner and arguments and
@@ -163,25 +189,11 @@ def _main():
         os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
     )
 
-    def _resolve_mode(mode):
-        if mode == get_preset_mode_name():
-            return modes.run_in_preset_mode
-        elif mode == get_configuring_mode_name():
-            return modes.run_in_configuring_mode
-        elif mode == get_composing_mode_name():
-            return modes.run_in_composing_mode
-        else:
-            def _(_1, _2):
-                argument_parser.error("{} wasn't in valid mode".format(
-                    get_project_name()
-                ))
-                return 1
-            return _
-
-    mode_runner = _resolve_mode(mode=arguments.composer_mode)
-
     return run_script(
-        runner=mode_runner,
+        runner=_resolve_running_function(
+            mode=arguments.composer_mode,
+            argument_parser=argument_parser
+        ),
         arguments=arguments,
         source_root=source_root
     )
