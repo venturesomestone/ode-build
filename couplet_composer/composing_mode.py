@@ -28,8 +28,7 @@ from .support.cmake_generators import \
 from .support.environment import \
     get_artefact_directory, get_build_root, get_composing_directory, \
     get_destination_directory, get_relative_destination_directory, \
-    get_relative_running_directory, get_running_directory, \
-    get_sdl_shared_data_file, get_temporary_directory
+    get_running_directory, get_sdl_shared_data_file, get_temporary_directory
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
@@ -542,19 +541,6 @@ def compose_project(
             )
         else:
             logging.debug("No dynamic SDL library was found for Windows")
-
-    latest_path_file = get_latest_install_path_file(build_root=build_root)
-
-    if os.path.exists(latest_path_file):
-        shell.rm(latest_path_file)
-
-    with open(latest_path_file, "w") as f:
-        f.write(str(get_relative_destination_directory(
-            target=build_target,
-            cmake_generator=arguments.cmake_generator,
-            build_variant=arguments.build_variant,
-            version=arguments.anthem_version
-        )))
 
 
 def install_running_copies(arguments, build_root, destination_root):
