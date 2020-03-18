@@ -157,10 +157,10 @@ def get_destination_directory(
 
 
 @cached
-def get_relative_artifact_directory(target, build_variant, version):
+def get_relative_artefact_directory(target, build_variant, version):
     """
     Gives the path to the directory where the built project
-    artifacts are placed relative to the build root.
+    artefacts are placed relative to the build root.
 
     target -- The target system of the build represented by a
     Target.
@@ -169,14 +169,14 @@ def get_relative_artifact_directory(target, build_variant, version):
 
     version -- The version number of the project.
     """
-    return "artifacts"
+    return "artefacts"
 
 
 @cached
-def get_artifact_directory(build_root, target, build_variant, version):
+def get_artefact_directory(build_root, target, build_variant, version):
     """
     Gives the path to the directory where the built project
-    artifacts are placed.
+    artefacts are placed.
 
     build_root -- Path to the directory that is the root of the
     script build files.
@@ -190,7 +190,7 @@ def get_artifact_directory(build_root, target, build_variant, version):
     """
     return os.path.join(
         build_root,
-        get_relative_artifact_directory(
+        get_relative_artefact_directory(
             target=target,
             build_variant=build_variant,
             version=version

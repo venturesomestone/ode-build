@@ -26,7 +26,7 @@ from .support.cmake_generators import \
     get_ninja_cmake_generator_name, get_visual_studio_16_cmake_generator_name
 
 from .support.environment import \
-    get_artifact_directory, get_build_root, get_composing_directory, \
+    get_artefact_directory, get_build_root, get_composing_directory, \
     get_destination_directory, get_latest_install_path_file, \
     get_latest_install_version_file, get_latest_running_path_file, \
     get_relative_destination_directory, get_relative_running_directory, \
@@ -632,9 +632,9 @@ def install_running_copies(arguments, build_root, destination_root):
         )))
 
 
-def create_artifacts(arguments, host_system, build_root):
+def create_artefacts(arguments, host_system, build_root):
     """
-    Creates the artifacts of the built products.
+    Creates the artefacts of the built products.
 
     arguments -- The parsed command line arguments of the run.
 
@@ -645,30 +645,30 @@ def create_artifacts(arguments, host_system, build_root):
     """
     build_target = parse_target_from_argument_string(arguments.host_target)
 
-    artifact_name = "{}-{}-{}-{}.{}".format(
-        arguments.anthem_artifacts_name,
+    artefact_name = "{}-{}-{}-{}.{}".format(
+        arguments.anthem_artefacts_name,
         arguments.anthem_version,
         arguments.host_target,
         arguments.build_variant,
         "zip" if host_system == get_windows_system_name() else "tar.gz"
     )
-    artifact_dir = get_artifact_directory(
+    artefact_dir = get_artefact_directory(
         build_root=build_root,
         target=build_target,
         build_variant=arguments.build_variant,
         version=arguments.anthem_version
     )
-    artifact_path = os.path.join(artifact_dir, artifact_name)
+    artefact_path = os.path.join(artefact_dir, artefact_name)
 
-    if os.path.exists(artifact_path):
+    if os.path.exists(artefact_path):
         shell.rm(
-            artifact_path,
+            artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
 
     shell.makedirs(
-        artifact_dir,
+        artefact_dir,
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
@@ -705,14 +705,14 @@ def create_artifacts(arguments, host_system, build_root):
     if host_system == get_windows_system_name():
         shell.create_zip(
             tmp_dir,
-            artifact_path,
+            artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
     else:
         shell.create_tar(
             tmp_dir,
-            artifact_path,
+            artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
