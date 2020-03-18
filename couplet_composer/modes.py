@@ -450,8 +450,7 @@ def run_in_configuring_mode(arguments, source_root):
     install_dependencies(
         dependencies_data=construct_dependencies_data(
             data_file=os.path.join(
-                source_root,
-                "unsung-anthem",
+                get_project_root(source_root=source_root),
                 get_project_dependencies_file_path()
             )
         ),
@@ -544,6 +543,7 @@ def run_in_composing_mode(arguments, source_root):
     logging.debug("The created toolchain is %s", toolchain)
 
     compose_project(
+        source_root=source_root,
         toolchain=toolchain,
         arguments=arguments,
         host_system=platform.system(),

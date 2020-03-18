@@ -16,6 +16,7 @@ This support module contains the functions for running the
 composing mode of the script.
 """
 
+import json
 import logging
 import os
 
@@ -26,13 +27,13 @@ from .support.cmake_generators import \
 
 from .support.environment import \
     get_artefact_directory, get_build_root, get_composing_directory, \
-    get_destination_directory, get_running_directory, \
-    get_sdl_shared_data_file, get_temporary_directory
+    get_destination_directory, get_project_root, get_running_directory, \
+    get_temporary_directory
+
+from .support.file_paths import get_project_dependencies_file_path
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
-
-from .util.target import parse_target_from_argument_string
 
 from .util import shell
 
@@ -118,6 +119,7 @@ def create_destination_root(
 
 
 def compose_project(
+    source_root,
     toolchain,
     arguments,
     host_system,
@@ -129,6 +131,9 @@ def compose_project(
 ):
     """
     Builds the project this script acts on.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
 
     toolchain -- The toolchain object of the run.
 
@@ -406,8 +411,6 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
-    build_target = parse_target_from_argument_string(arguments.host_target)
-
     if host_system != get_windows_system_name():
         logging.debug(
             "Found the following SDL libraries:\n\n{}".format(
@@ -455,20 +458,16 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
-        shared_version_file = get_sdl_shared_data_file(
-            build_root=build_root,
-            target=build_target,
-            build_variant=arguments.build_variant
+        dependency_version_file = os.path.join(
+            get_project_root(source_root=source_root),
+            get_project_dependencies_file_path()
         )
-        if os.path.exists(shared_version_file):
-            with open(shared_version_file) as f:
-                shared_version = f.read()
-        else:
-            shared_version = "0.0.0"
+        with open(dependency_version_file) as f:
+            sdl_version = json.load(f)["sdl"]["version"]
 
-        version_data = shared_version.split(".")
+        sdl_major, sdl_minor, sdl_patch = sdl_version.split(".")
 
-        _copy_linux_sdl("libSDL2-2.0.so.{}".format(shared_version))
+        _copy_linux_sdl("libSDL2-2.0.so.{}.{}.0".format(sdl_minor, sdl_patch))
 
         def _link_linux_sdl(name, src):
             new_link = os.path.join(destination_root, "bin", name)
@@ -487,12 +486,12 @@ def compose_project(
             )
 
         _link_linux_sdl(
-            name="libSDL2-2.0.so.{}".format(version_data[0]),
-            src="libSDL2-2.0.so.{}".format(shared_version)
+            name="libSDL2-2.0.so.{}".format(sdl_major),
+            src="libSDL2-2.0.so.{}.{}.0".format(sdl_minor, sdl_patch)
         )
         _link_linux_sdl(
             name="libSDL2-2.0.so",
-            src="libSDL2-2.0.so.{}".format(version_data[0])
+            src="libSDL2-2.0.so.{}".format(sdl_major)
         )
         _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
     elif host_system == get_windows_system_name():
