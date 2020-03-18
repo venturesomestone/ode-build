@@ -541,11 +541,6 @@ def install_dependency(
            else "https://www.libsdl.org/release/SDL2-{version}.tar.gz").format(
         version=version
     )
-    # url = ("https://www.libsdl.org/release/SDL2-devel-{version}-VC.zip"
-    #        if host_system == get_windows_system_name()
-    #        else "https://www.libsdl.org/release/SDL2-{version}.tar.gz").format(
-    #     version=version
-    # )
     dest = os.path.join(
         dependency_temp_dir,
         "sdl.zip" if host_system == get_windows_system_name() else "sdl.tar.gz"

@@ -13,7 +13,6 @@
 """This support module is used to download files."""
 
 import os
-import sys
 
 import requests
 

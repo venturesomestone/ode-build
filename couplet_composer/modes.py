@@ -37,8 +37,7 @@ from .support.environment import \
     get_project_root, get_tools_directory
 
 from .support.file_paths import \
-    get_github_api_file_path, get_preset_file_path, \
-    get_project_dependencies_file_path
+    get_preset_file_path, get_project_dependencies_file_path
 
 from .support.mode_names import get_configuring_mode_name
 

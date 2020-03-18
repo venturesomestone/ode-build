@@ -18,7 +18,6 @@ composing mode of the script.
 
 import logging
 import os
-import tarfile
 
 from .dependencies import googletest
 

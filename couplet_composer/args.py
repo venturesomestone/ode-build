@@ -416,12 +416,12 @@ def create_argument_parser(source_root):
     subparsers = parser.add_subparsers(dest="composer_mode")
 
     preset = _add_common_arguments(subparsers.add_parser("preset"))
-    configure = _add_common_build_arguments(
+    configure = _add_common_build_arguments(  # noqa: F841
         _add_common_arguments(
             subparsers.add_parser("configure")
         ),
         source_root=source_root
-    )  # noqa: F841
+    )
     compose = _add_common_build_arguments(
         _add_common_arguments(
             subparsers.add_parser("compose")
