@@ -710,7 +710,7 @@ def create_artifacts(arguments, host_system, build_root):
             echo=arguments.print_debug
         )
     else:
-        shell.create_zip(
+        shell.create_tar(
             tmp_dir,
             artifact_path,
             dry_run=arguments.dry_run,
