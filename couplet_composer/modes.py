@@ -139,7 +139,6 @@ def _clean(arguments, source_root):
         source_root=source_root,
         in_tree_build=arguments.in_tree_build
     )
-
     composing_root = get_composing_directory(
         build_root=build_root,
         target=build_target,
