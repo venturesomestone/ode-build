@@ -295,13 +295,10 @@ def create_zip(src, dest, dry_run=None, echo=None):
         _echo_command(dry_run, ["zip", "-r", dest, src])
     if dry_run:
         return
-    with zipfile.ZipFile(dest, "w") as f:
-        for dirpath, dirnames, filenames in os.walk(src):
-            for filename in filenames:
-                f.write(os.path.join(
-                    os.path.basename(os.path.normpath(dirpath)),
-                    filename)
-                )
+    dest_file = dest
+    if dest_file.endswith(".zip"):
+        dest_file = dest_file[:-4]
+    shutil.make_archive(dest_file, format="zip", root_dir=src)
 
 
 def curl(url, dest, env=None, dry_run=None, echo=None):
