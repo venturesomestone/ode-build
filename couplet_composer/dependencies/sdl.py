@@ -23,8 +23,7 @@ from ..support.cmake_generators import \
 
 from ..support.environment import get_temporary_directory
 
-from ..support.platform_names import \
-    get_linux_system_name, get_windows_system_name
+from ..support.platform_names import get_windows_system_name
 
 from ..util.build_util import build_with_cmake
 
