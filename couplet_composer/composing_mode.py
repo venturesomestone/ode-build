@@ -599,20 +599,13 @@ def create_artefacts(arguments, host_system, build_root):
     build_root -- The path to the root directory that is used for
     all created files and directories.
     """
-    build_target = parse_target_from_argument_string(arguments.host_target)
-
     artefact_name = "{}-{}-{}.{}".format(
         arguments.anthem_artefacts_name,
         arguments.anthem_version,
         arguments.host_target,
         "zip" if host_system == get_windows_system_name() else "tar.gz"
     )
-    artefact_dir = get_artefact_directory(
-        build_root=build_root,
-        target=build_target,
-        build_variant=arguments.build_variant,
-        version=arguments.anthem_version
-    )
+    artefact_dir = get_artefact_directory(build_root=build_root)
     artefact_path = os.path.join(artefact_dir, artefact_name)
 
     if os.path.exists(artefact_path):
