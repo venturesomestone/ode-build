@@ -185,7 +185,7 @@ def install_dependencies(
             version_data = json.load(json_file)
     except Exception:
         logging.debug(
-            "The version data file for dependencies was found from path %s",
+            "The version data file for dependencies wasn't found from path %s",
             version_data_file
         )
 
