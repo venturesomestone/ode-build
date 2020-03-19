@@ -84,7 +84,7 @@ def list_tool_types():
     """
     Creates a list of the possible tool types for the toolchain.
     """
-    return ["compiler", "cmake", "build_system", "scm", "make"]
+    return ["compiler", "cmake", "build_system", "scm", "make", "doxygen"]
 
 
 def _create_tool_data(module_name, tool_name):
@@ -264,6 +264,19 @@ def create_make_tool_data():
         get_tool_key=lambda: "make",
         get_tool_name=lambda: "Make",
         get_searched_tool=lambda: "make",
+        use_predefined_path=lambda: False,
+        get_required_local_version=None,
+        get_local_executable=None,
+        install_tool=None
+    )
+
+
+def create_doxygen_tool_data():
+    """Creates the ToolData object of Doxygen for toolchain."""
+    return ToolData(
+        get_tool_key=lambda: "doxygen",
+        get_tool_name=lambda: "Doxygen",
+        get_searched_tool=lambda: "doxygen",
         use_predefined_path=lambda: False,
         get_required_local_version=None,
         get_local_executable=None,
