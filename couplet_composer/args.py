@@ -158,6 +158,13 @@ def _add_common_build_arguments(parser, source_root):
     )
 
     parser.add_argument(
+        "--docs",
+        action="store_true",
+        help="build the documentation",
+        dest="build_docs"
+    )
+
+    parser.add_argument(
         "--ode-version",
         default=get_ode_version(source_root=source_root),
         help="set the version of {}".format(get_ode_name(

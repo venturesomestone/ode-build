@@ -169,6 +169,9 @@ def compose_project(
         "-DODE_TEST_BENCHMARKING={}".format(
             "ON" if arguments.build_benchmark else "OFF"
         ),
+        "-DODE_BUILD_DOCS={}".format(
+            "ON" if arguments.build_docs and toolchain.doxygen else "OFF"
+        ),
         "-DODE_BUILD_STATIC={}".format(
             "ON" if arguments.build_ode_static_lib else "OFF"
         ),

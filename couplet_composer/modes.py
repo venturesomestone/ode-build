@@ -44,9 +44,9 @@ from .support.mode_names import get_configuring_mode_name
 from .support.project_names import get_ode_repository_name, get_project_name
 
 from .support.tool_data import \
-    create_clang_tool_data, create_cmake_tool_data, create_gcc_tool_data, \
-    create_git_tool_data, create_make_tool_data, create_msbuild_tool_data, \
-    create_msvc_tool_data, create_ninja_tool_data
+    create_clang_tool_data, create_cmake_tool_data, create_doxygen_tool_data, \
+    create_gcc_tool_data, create_git_tool_data, create_make_tool_data, \
+    create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data
 
 from .util.target import parse_target_from_argument_string
 
@@ -373,7 +373,8 @@ def _construct_tool_data(arguments, host_system):
         "cmake": create_cmake_tool_data(),
         "build_system": _create_build_system_data(arguments=arguments),
         "scm": create_git_tool_data(),
-        "make": create_make_tool_data()
+        "make": create_make_tool_data(),
+        "doxygen": create_doxygen_tool_data()
     }
 
 
