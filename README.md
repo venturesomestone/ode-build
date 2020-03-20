@@ -6,7 +6,7 @@ Couplet Composer is the build script for [Obliging Ode](https://github.com/antti
 
 ## Installing
 
-While you can install Couplet Composer globally to you system, it is recommended that you use it via the helper scripts that come with [Obliging Ode](https://github.com/anttikivi/unsung-anthem), [Unsung Anthem](https://github.com/anttikivi/unsung-anthem), and [Effective Elegy](https://github.com/anttikivi/effective-elegy). Those script automatically install the up-to-date version of Couplet Composer and invoke it using the correct set of options.
+While you can install Couplet Composer globally to you system, it is recommended that you use it via the helper scripts that come with [Obliging Ode](https://github.com/anttikivi/unsung-anthem) and [Unsung Anthem](https://github.com/anttikivi/unsung-anthem). Those script automatically install the up-to-date version of Couplet Composer and invoke it using the correct set of options.
 
 ## Contribute
 
