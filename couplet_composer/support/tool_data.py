@@ -145,9 +145,9 @@ def create_unix_compiler_tool_data(
             get_searched_tool=(lambda: tool_key) if not version
             else (lambda: "{}-{}".format(tool_key, version)),
             use_predefined_path=lambda: False,
-            get_required_local_version=None,
-            get_local_executable=None,
-            install_tool=None
+            get_required_local_version=lambda: None,
+            get_local_executable=lambda: None,
+            install_tool=lambda: None
         )
 
     def _create_compiler_tool_data_with_path(tool_key, tool_path):
@@ -156,9 +156,9 @@ def create_unix_compiler_tool_data(
             get_tool_name=lambda: tool_name,
             get_searched_tool=lambda: tool_path,
             use_predefined_path=lambda: True,
-            get_required_local_version=None,
-            get_local_executable=None,
-            install_tool=None
+            get_required_local_version=lambda: None,
+            get_local_executable=lambda: None,
+            install_tool=lambda: None
         )
 
     return CompilerToolPair(
@@ -201,9 +201,9 @@ def create_windows_compiler_tool_data(
         get_searched_tool=(lambda: tool_name) if not tool_path
         else (lambda: tool_path),
         use_predefined_path=(lambda: True) if tool_path else (lambda: False),
-        get_required_local_version=None,
-        get_local_executable=None,
-        install_tool=None
+        get_required_local_version=lambda: None,
+        get_local_executable=lambda: None,
+        install_tool=lambda: None
     )
 
 
@@ -265,9 +265,9 @@ def create_make_tool_data():
         get_tool_name=lambda: "Make",
         get_searched_tool=lambda: "make",
         use_predefined_path=lambda: False,
-        get_required_local_version=None,
-        get_local_executable=None,
-        install_tool=None
+        get_required_local_version=lambda: None,
+        get_local_executable=lambda: None,
+        install_tool=lambda: None
     )
 
 
@@ -278,9 +278,9 @@ def create_doxygen_tool_data():
         get_tool_name=lambda: "Doxygen",
         get_searched_tool=lambda: "doxygen",
         use_predefined_path=lambda: False,
-        get_required_local_version=None,
-        get_local_executable=None,
-        install_tool=None
+        get_required_local_version=lambda: None,
+        get_local_executable=lambda: None,
+        install_tool=lambda: None
     )
 
 
@@ -296,9 +296,9 @@ def create_msbuild_tool_data(tool_path=None):
             get_tool_name=lambda: "MSBuild",
             get_searched_tool=lambda: tool_path,
             use_predefined_path=lambda: True,
-            get_required_local_version=None,
-            get_local_executable=None,
-            install_tool=None
+            get_required_local_version=lambda: None,
+            get_local_executable=lambda: None,
+            install_tool=lambda: None
         )
     else:
         return ToolData(
@@ -306,9 +306,9 @@ def create_msbuild_tool_data(tool_path=None):
             get_tool_name=lambda: "MSBuild",
             get_searched_tool=lambda: "msbuild",
             use_predefined_path=lambda: False,
-            get_required_local_version=None,
-            get_local_executable=None,
-            install_tool=None
+            get_required_local_version=lambda: None,
+            get_local_executable=lambda: None,
+            install_tool=lambda: None
         )
 
 
@@ -319,9 +319,9 @@ def create_git_tool_data():
         get_tool_name=lambda: "Git",
         get_searched_tool=lambda: "git",
         use_predefined_path=lambda: False,
-        get_required_local_version=None,
-        get_local_executable=None,
-        install_tool=None
+        get_required_local_version=lambda: None,
+        get_local_executable=lambda: None,
+        install_tool=lambda: None
     )
 
 
