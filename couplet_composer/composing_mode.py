@@ -9,6 +9,7 @@ composing mode of the script.
 import json
 import logging
 import os
+import sys
 
 from .dependencies import googletest
 
@@ -285,6 +286,7 @@ def compose_project(
                 "run-clang-tidy.py"
             )
             clang_tidy_call = [
+                sys.executable,
                 run_clang_tidy,
                 "-clang-tidy-binary",
                 toolchain.linter
