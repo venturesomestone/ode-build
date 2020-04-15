@@ -365,7 +365,7 @@ def _construct_tool_data(arguments, host_system):
         "build_system": _create_build_system_data(arguments=arguments),
         "scm": create_git_tool_data(),
         "make": create_make_tool_data(),
-        "doxygen": create_doxygen_tool_data()
+        "doxygen": create_doxygen_tool_data(),
         "linter": create_clang_tidy_tool_data()
     }
 
