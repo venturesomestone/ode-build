@@ -295,7 +295,11 @@ def compose_project(
             clang_tidy_call = [
                 run_clang_tidy,
                 "-clang-tidy-binary",
-                toolchain.linter
+                toolchain.linter,
+                "-j",
+                arguments.jobs,
+                "-export-fixes",
+                os.path.join(source_root, "clang-fixes.yml")
             ]
             shell.call(
                 clang_tidy_call,
