@@ -297,10 +297,24 @@ def compose_project(
                 "-clang-tidy-binary",
                 toolchain.linter,
                 "-j",
-                str(arguments.jobs),
-                "-export-fixes",
-                os.path.join(source_root, "clang-fixes.yml")
+                str(arguments.jobs)
             ]
+            if arguments.export_linter_fixes:
+                if toolchain.linter_replacements:
+                    clang_tidy_call.extend([
+                        "-clang-apply-replacements-binary",
+                        toolchain.linter_replacements,
+                        "-export-fixes",
+                        os.path.join(
+                            source_root,
+                            arguments.export_linter_fixes
+                        )
+                    ])
+                else:
+                    logging.warning(
+                        "Couplet Composer should export diagnostics from "
+                        "clang-tidy, but clang-apply-replacements wasn't found"
+                    )
             shell.call(
                 clang_tidy_call,
                 dry_run=arguments.dry_run,
