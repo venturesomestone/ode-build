@@ -304,6 +304,16 @@ def curl(url, dest, env=None, dry_run=None, echo=None):
     )
 
 
+def chmod(path, mode, dry_run=None, echo=None):
+    """Changes the mode of a file."""
+    if dry_run or echo:
+        _echo_command(dry_run, ["chmod", mode, path])
+    if dry_run:
+        return
+    file_stat = os.stat(path)
+    os.chmod(path, file_stat.st_mode | mode)
+
+
 def caffeinate(command, env=None, dry_run=None, echo=None):
     """Runs a command during which system sleep is disabled."""
     command_to_run = list(command)
