@@ -297,7 +297,7 @@ def compose_project(
                 "-clang-tidy-binary",
                 toolchain.linter,
                 "-j",
-                arguments.jobs,
+                str(arguments.jobs),
                 "-export-fixes",
                 os.path.join(source_root, "clang-fixes.yml")
             ]
