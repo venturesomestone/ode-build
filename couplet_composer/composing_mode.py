@@ -289,9 +289,7 @@ def compose_project(
                 sys.executable,
                 run_clang_tidy,
                 "-clang-tidy-binary",
-                toolchain.linter,
-                "-j",
-                arguments.jobs
+                toolchain.linter
             ]
             shell.call(
                 clang_tidy_call,
