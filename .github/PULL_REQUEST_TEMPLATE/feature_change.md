@@ -44,6 +44,6 @@ If this change is not user-facing or notable enough to be included in release no
 
 Examples:
 
-- The latest version of tool X can be locally installed with the script.
+- Added support for installing locally the latest version of tool X with the script.
 - Fixed an issue where the temporary directories of dependency builds weren’t deleted properly.
 - Increased the performance of creating project artefacts.
