@@ -14,6 +14,6 @@ If this change is not user-facing or notable enough to be included in release no
 
 Examples:
 
-- Player can now use the double attack with hammers.
-- Fixed an issue where the enemies collision detection didn’t sometimes work when the player was running.
-- Increased the performance of running in-game weather commands.
+- The latest version of tool X can be locally installed with the script.
+- Fixed an issue where the temporary directories of dependency builds weren’t deleted properly.
+- Increased the performance of creating project artefacts.
