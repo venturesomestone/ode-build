@@ -74,7 +74,16 @@ def list_tool_types():
     """
     Creates a list of the possible tool types for the toolchain.
     """
-    return ["compiler", "cmake", "build_system", "scm", "make", "doxygen"]
+    return [
+        "compiler",
+        "cmake",
+        "build_system",
+        "scm",
+        "make",
+        "doxygen",
+        "linter",
+        "linter_replacements"
+    ]
 
 
 def _create_tool_data(module_name, tool_name):
@@ -371,3 +380,83 @@ def create_ninja_tool_data():
     importlib.
     """
     return _create_tool_data(module_name="ninja", tool_name="Ninja")
+
+
+def create_clang_tidy_tool_data(tool_path=None):
+    """
+    Creates the ToolData object of Clang-Tidy for toolchain.
+
+    tool_path -- An optional predefined path to clang-tidy.
+    """
+    if tool_path:
+        return ToolData(
+            get_tool_key=lambda: "clang-tidy",
+            get_tool_name=lambda: "Clang-Tidy",
+            get_searched_tool=lambda: tool_path,
+            use_predefined_path=lambda: True,
+            get_required_local_version=lambda target, host_system: None,
+            get_local_executable=(
+                lambda tools_root, version, target, host_system: None
+            ),
+            install_tool=(
+                lambda build_root, tools_root, version, target, host_system,
+                github_user_agent, github_api_token, dry_run, print_debug: None
+            )
+        )
+    else:
+        return ToolData(
+            get_tool_key=lambda: "clang-tidy",
+            get_tool_name=lambda: "Clang-Tidy",
+            get_searched_tool=lambda: "clang-tidy",
+            use_predefined_path=lambda: False,
+            get_required_local_version=lambda target, host_system: None,
+            get_local_executable=(
+                    lambda tools_root, version, target, host_system: None
+                ),
+            install_tool=(
+                    lambda build_root, tools_root, version, target,
+                    host_system, github_user_agent, github_api_token, dry_run,
+                    print_debug: None
+                )
+        )
+
+
+def create_clang_apply_replacements_tool_data(tool_path=None):
+    """
+    Creates the ToolData object of clang-apply-replacements for
+    toolchain.
+
+    tool_path -- An optional predefined path to
+    clang-apply-replacements.
+    """
+    if tool_path:
+        return ToolData(
+            get_tool_key=lambda: "clang-apply-replacements",
+            get_tool_name=lambda: "clang-apply-replacements",
+            get_searched_tool=lambda: tool_path,
+            use_predefined_path=lambda: True,
+            get_required_local_version=lambda target, host_system: None,
+            get_local_executable=(
+                lambda tools_root, version, target, host_system: None
+            ),
+            install_tool=(
+                lambda build_root, tools_root, version, target, host_system,
+                github_user_agent, github_api_token, dry_run, print_debug: None
+            )
+        )
+    else:
+        return ToolData(
+            get_tool_key=lambda: "clang-apply-replacements",
+            get_tool_name=lambda: "clang-apply-replacements",
+            get_searched_tool=lambda: "clang-apply-replacements",
+            use_predefined_path=lambda: False,
+            get_required_local_version=lambda target, host_system: None,
+            get_local_executable=(
+                    lambda tools_root, version, target, host_system: None
+                ),
+            install_tool=(
+                    lambda build_root, tools_root, version, target,
+                    host_system, github_user_agent, github_api_token, dry_run,
+                    print_debug: None
+                )
+        )

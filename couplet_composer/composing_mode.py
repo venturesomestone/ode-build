@@ -9,6 +9,8 @@ composing mode of the script.
 import json
 import logging
 import os
+import stat
+import sys
 
 from .dependencies import googletest
 
@@ -245,6 +247,18 @@ def compose_project(
     else:
         cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=OFF"])
 
+    if arguments.lint or arguments.only_lint:
+        if toolchain.linter:
+            cmake_call.extend(["-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"])
+        else:
+            cmake_call.extend(["-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"])
+            logging.warning(
+                "Couplet Composer should perform linting, but clang-tidy "
+                "wasn't found"
+            )
+    else:
+        cmake_call.extend(["-DCMAKE_EXPORT_COMPILE_COMMANDS=OFF"])
+
     # if host_system == get_windows_system_name():
     #     cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
 
@@ -266,6 +280,48 @@ def compose_project(
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
+        if arguments.lint or arguments.only_lint and toolchain.linter:
+            run_clang_tidy = os.path.join(
+                os.path.dirname(__file__),
+                "llvm",
+                "run-clang-tidy.py"
+            )
+            shell.chmod(
+                run_clang_tidy,
+                stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+            clang_tidy_call = [
+                run_clang_tidy,
+                "-clang-tidy-binary",
+                toolchain.linter,
+                "-j",
+                str(arguments.jobs)
+            ]
+            if arguments.export_linter_fixes:
+                if toolchain.linter_replacements:
+                    clang_tidy_call.extend([
+                        "-clang-apply-replacements-binary",
+                        toolchain.linter_replacements,
+                        "-export-fixes",
+                        os.path.join(
+                            source_root,
+                            arguments.export_linter_fixes
+                        )
+                    ])
+                else:
+                    logging.warning(
+                        "Couplet Composer should export diagnostics from "
+                        "clang-tidy, but clang-apply-replacements wasn't found"
+                    )
+            shell.call(
+                clang_tidy_call,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        if arguments.only_lint:
+            return
         if arguments.cmake_generator \
                 == get_visual_studio_16_cmake_generator_name():
             logging.debug(

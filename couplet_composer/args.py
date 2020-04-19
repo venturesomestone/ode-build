@@ -332,6 +332,19 @@ def _add_common_build_arguments(parser, source_root):
              "instead of the automatically resolved MSBuild"
     )
 
+    toolchain_group.add_argument(
+        "--clang-tidy-binary",
+        default=None,
+        help="give the path to clang-tidy and use it instead of the "
+             "automatically resolved one"
+    )
+    toolchain_group.add_argument(
+        "--clang-apply-replacements-binary",
+        default=None,
+        help="give the path to clang-apply-replacements and use it instead of "
+             "the automatically resolved one"
+    )
+
     # --------------------------------------------------------- #
     # OpenGL options
 
@@ -502,6 +515,32 @@ def create_argument_parser(source_root):
             get_anthem_name(source_root=source_root)
         ),
         dest="build_anthem_shared_lib"
+    )
+
+    linter_group = compose.add_mutually_exclusive_group(required=False)
+
+    linter_group.add_argument(
+        "--lint",
+        action="store_true",
+        help="run cland-tidy on {} and {}".format(
+            get_anthem_name(source_root=source_root),
+            get_ode_name(source_root=source_root)
+        )
+    )
+    linter_group.add_argument(
+        "--only-lint",
+        action="store_true",
+        help="only run clang-tidy on {} and {} without building them".format(
+            get_anthem_name(source_root=source_root),
+            get_ode_name(source_root=source_root)
+        )
+    )
+
+    compose.add_argument(
+        "--export-linter-fixes",
+        default=None,
+        help="export the fixes suggested by clang-tidy to the given file, the "
+             "path of which is given relative to the source root"
     )
 
     # --------------------------------------------------------- #
