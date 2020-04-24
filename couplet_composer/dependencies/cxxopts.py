@@ -1,14 +1,14 @@
-# Copyright (c) 2019 Antti Kivi
+# Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
 """
 This support module contains the functions related to the
-building and finding Clara.
+building and finding cxxopts.
 """
 
 import os
 
-from ..github import release
+from ..github import tag
 
 from ..support.environment import get_temporary_directory
 
@@ -52,11 +52,9 @@ def should_install(
     if not installed_version or version != installed_version:
         return True
 
-    return not os.path.exists(os.path.join(
-        dependencies_root,
-        "include",
-        "clara.hpp"
-    ))
+    return not os.path.exists(
+        os.path.join(dependencies_root, "include", "cxxopts.hpp")
+    )
 
 
 def install_dependency(
@@ -116,13 +114,14 @@ def install_dependency(
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
 
-    asset_path = release.download_asset(
+    asset_path = tag.download_tag(
         path=temp_dir,
+        git=toolchain.scm,
         github_data=GitHubData(
-            owner="catchorg",
-            name="Clara",
+            owner="jarro2783",
+            name="cxxopts",
             tag_name="v{}".format(version),
-            asset_name="clara.hpp"
+            asset_name=None
         ),
         user_agent=github_user_agent,
         api_token=github_api_token,
@@ -137,9 +136,18 @@ def install_dependency(
             dry_run=dry_run,
             echo=print_debug
         )
-
+    if os.path.exists(os.path.join(
+            dependencies_root,
+            "include",
+            "cxxopts.hpp"
+    )):
+        shell.rm(
+            os.path.join(dependencies_root, "include", "cxxopts.hpp"),
+            dry_run=dry_run,
+            echo=print_debug
+        )
     shell.copy(
-        asset_path,
+        os.path.join(asset_path, "include", "cxxopts.hpp"),
         os.path.join(dependencies_root, "include"),
         dry_run=dry_run,
         echo=print_debug
