@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- cxxotps as supported dependency.
+
+### Removed
+
+- Clara as supported dependency.
+
 ## [0.11.0] - 2020-04-19
 
 ### Added
