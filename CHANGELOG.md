@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.12.0] - 2020-04-25
+
 ### Added
 
 - cxxotps as supported dependency.
@@ -257,7 +259,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.11.0...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/anttikivi/couplet-composer/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/anttikivi/couplet-composer/compare/v0.10.3...v0.11.0
 [0.10.3]: https://github.com/anttikivi/couplet-composer/compare/v0.10.2...v0.10.3
 [0.10.2]: https://github.com/anttikivi/couplet-composer/compare/v0.10.1...v0.10.2
