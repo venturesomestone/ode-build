@@ -1,8 +1,0 @@
-# Copyright (c) 2020 Antti Kivi
-# Licensed under the MIT License
-
-extraction:
-  python:
-    python_setup:
-      requirements_files:
-        - requirements.txt
