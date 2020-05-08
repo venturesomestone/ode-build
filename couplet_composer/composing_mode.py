@@ -646,21 +646,33 @@ def create_artefacts(arguments, host_system, build_root):
     build_root -- The path to the root directory that is used for
     all created files and directories.
     """
-    artefact_name = "{}-{}-{}.{}".format(
+    artefact_base_name = "{}-{}-{}".format(
         arguments.anthem_artefacts_name,
         arguments.anthem_version,
-        arguments.host_target,
+        arguments.host_target
+    )
+
+    use_dir = arguments.use_artefact_directory
+    artefact_name = artefact_base_name if use_dir else "{}.{}".format(
+        artefact_base_name,
         "zip" if host_system == get_windows_system_name() else "tar.gz"
     )
     artefact_dir = get_artefact_directory(build_root=build_root)
     artefact_path = os.path.join(artefact_dir, artefact_name)
 
     if os.path.exists(artefact_path):
-        shell.rm(
-            artefact_path,
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
+        if use_dir:
+            shell.rmtree(
+                artefact_path,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        else:
+            shell.rm(
+                artefact_path,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
 
     shell.makedirs(
         artefact_dir,
@@ -702,20 +714,28 @@ def create_artefacts(arguments, host_system, build_root):
         echo=arguments.print_debug
     )
 
-    if host_system == get_windows_system_name():
-        shell.create_zip(
+    if use_dir:
+        shell.copytree(
             os.path.join(tmp_dir, tmp_subdir),
             artefact_path,
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
     else:
-        shell.create_tar(
-            os.path.join(tmp_dir, tmp_subdir),
-            artefact_path,
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
+        if host_system == get_windows_system_name():
+            shell.create_zip(
+                os.path.join(tmp_dir, tmp_subdir),
+                artefact_path,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
+        else:
+            shell.create_tar(
+                os.path.join(tmp_dir, tmp_subdir),
+                artefact_path,
+                dry_run=arguments.dry_run,
+                echo=arguments.print_debug
+            )
 
     shell.rmtree(
         tmp_dir,

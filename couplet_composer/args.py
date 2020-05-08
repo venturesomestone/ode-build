@@ -543,6 +543,12 @@ def create_argument_parser(source_root):
              "path of which is given relative to the source root"
     )
 
+    compose.add_argument(
+        "--use-artefact-directory",
+        action="store_true",
+        help="copy the artefact files to a directory instead of archiving them"
+    )
+
     # --------------------------------------------------------- #
     # Compose: C++ standard options
 
