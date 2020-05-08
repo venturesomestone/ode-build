@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Changed
 
-- Pass the required parameters into the tool installation functions as one object instead of many different parameters.
+- The required parameters of the tool installation functions to one object instead of passing many different parameters.
 - The version of Ninja to 1.10.0.
 
 ## [0.12.0] - 2020-04-25
