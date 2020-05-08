@@ -713,15 +713,16 @@ Environment variables
 
 This script respects the following environment variables if you set them:
 
-ODE_SOURCE_ROOT: a directory containing the source for {ode}
+ODE_SOURCE_ROOT: a directory containing the source directory for
+{ode} and {anthem}.
 
 Couplet Composer expects the sources to be laid out in the following way:
 
    $ODE_SOURCE_ROOT/unsung-anthem
                    /build           (created automatically)
-                   /composer        (created automatically)
+                   /script          (created automatically)
 
-The directory '$ODE_SOURCE_ROOT/composer' is created only if the script is run
+The directory '$ODE_SOURCE_ROOT/script' is created only if the script is run
 by using the scripts in the repository of {ode} and {anthem}, which
 is the recommended way.
 
