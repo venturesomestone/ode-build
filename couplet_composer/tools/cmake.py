@@ -30,7 +30,7 @@ def _get_cmake_version_info():
 @cached
 def get_required_cmake_version():
     """
-    Gives the version of CMake that is donwloaded when CMake
+    Gives the version of CMake that is downloaded when the tool
     isn't found.
     """
     return ".".join([str(n) for n in _get_cmake_version_info()])

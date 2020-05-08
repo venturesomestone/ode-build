@@ -34,8 +34,8 @@ def _get_ninja_version_info():
 @cached
 def get_required_ninja_version():
     """
-    Gives the version of Ninja that is donwloaded when it isn't
-    found.
+    Gives the version of Ninja that is downloaded when the tool
+    isn't found.
     """
     return ".".join([str(n) for n in _get_ninja_version_info()])
 
