@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- Option to copy the build binaries to a directory instead of archiving them as it is useful on CI for example.
+
 ### Changed
 
 - The required parameters of the tool installation functions to one object instead of passing many different parameters.
