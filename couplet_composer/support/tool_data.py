@@ -45,9 +45,7 @@ from ..util.cache import cached
 # install_tool -- Installs the tool if it wasn't found on the
 # system. The tool is downloaded and possibly built. The function
 # ought to return path to the installed tool. The parameters for
-# the function are: build_root, tools_root, version, target,
-# host_system, github_user_agent, github_api_token, dry_run,
-# print_debug
+# the function are: install_info, dry_run, print_debug
 ToolData = namedtuple("ToolData", [
     "get_tool_key",
     "get_tool_name",
@@ -148,10 +146,7 @@ def create_unix_compiler_tool_data(
             get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-            install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )
 
     def _create_compiler_tool_data_with_path(tool_key, tool_path):
@@ -164,10 +159,7 @@ def create_unix_compiler_tool_data(
             get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-            install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )
 
     return CompilerToolPair(
@@ -214,10 +206,7 @@ def create_windows_compiler_tool_data(
         get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-        install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+        install_tool=lambda install_info, dry_run, print_debug: None
     )
 
 
@@ -283,10 +272,7 @@ def create_make_tool_data():
         get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-        install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+        install_tool=lambda install_info, dry_run, print_debug: None
     )
 
 
@@ -301,10 +287,7 @@ def create_doxygen_tool_data():
         get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-        install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+        install_tool=lambda install_info, dry_run, print_debug: None
     )
 
 
@@ -324,10 +307,7 @@ def create_msbuild_tool_data(tool_path=None):
             get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-            install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )
     else:
         return ToolData(
@@ -339,10 +319,7 @@ def create_msbuild_tool_data(tool_path=None):
             get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-            install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )
 
 
@@ -357,10 +334,7 @@ def create_git_tool_data():
         get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-        install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+        install_tool=lambda install_info, dry_run, print_debug: None
     )
 
 
@@ -398,10 +372,7 @@ def create_clang_tidy_tool_data(tool_path=None):
             get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-            install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )
     else:
         return ToolData(
@@ -413,11 +384,7 @@ def create_clang_tidy_tool_data(tool_path=None):
             get_local_executable=(
                     lambda tools_root, version, target, host_system: None
                 ),
-            install_tool=(
-                    lambda build_root, tools_root, version, target,
-                    host_system, github_user_agent, github_api_token, dry_run,
-                    print_debug: None
-                )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )
 
 
@@ -439,10 +406,7 @@ def create_clang_apply_replacements_tool_data(tool_path=None):
             get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-            install_tool=(
-                lambda build_root, tools_root, version, target, host_system,
-                github_user_agent, github_api_token, dry_run, print_debug: None
-            )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )
     else:
         return ToolData(
@@ -454,9 +418,5 @@ def create_clang_apply_replacements_tool_data(tool_path=None):
             get_local_executable=(
                     lambda tools_root, version, target, host_system: None
                 ),
-            install_tool=(
-                    lambda build_root, tools_root, version, target,
-                    host_system, github_user_agent, github_api_token, dry_run,
-                    print_debug: None
-                )
+            install_tool=lambda install_info, dry_run, print_debug: None
         )

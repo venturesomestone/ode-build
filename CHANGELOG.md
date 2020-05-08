@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Changed
+
+- Pass the required parameters into the tool installation functions as one object instead of many different parameters.
+
 ## [0.12.0] - 2020-04-25
 
 ### Added

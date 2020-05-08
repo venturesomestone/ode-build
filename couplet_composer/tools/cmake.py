@@ -188,46 +188,20 @@ def get_local_executable(tools_root, version, target, host_system):
     )
 
 
-def install_tool(
-    build_root,
-    tools_root,
-    version,
-    target,
-    host_system,
-    github_user_agent,
-    github_api_token,
-    dry_run=None,
-    print_debug=None
-):
+def install_tool(install_info, dry_run=None, print_debug=None):
     """
     Installs the tool by downloading and possibly building it.
     Returns the path to the built tool executable.
 
-    build_root -- The path to the root directory that is used for
-    all created files and directories.
-
-    tools_root -- The root directory of the tools for the current
-    build target.
-
-    version -- The full version number of the tool.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    host_system -- The system this script is run on.
-
-    github_user_agent -- The user agent used when accessing the
-    GitHub API.
-
-    github_api_token -- The GitHub API token that is used to
-    access the API.
+    install_info -- The object containing the install information
+    for this tool.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
 
     print_debug -- Whether debug output should be printed.
     """
-    temp_dir = get_temporary_directory(build_root=build_root)
+    temp_dir = get_temporary_directory(build_root=install_info.build_root)
     tool_temp_dir = os.path.join(temp_dir, "cmake")
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
@@ -235,7 +209,7 @@ def install_tool(
 
     major_version, minor_version, patch_version = tuple(map(
         int,
-        version.split(".")
+        install_info.version.split(".")
     ))
 
     url = "https://cmake.org/files/v{major}.{minor}/cmake-" \
@@ -244,37 +218,41 @@ def install_tool(
             minor=minor_version,
             patch=patch_version,
             target=_resolve_cmake_download_target(
-                version=version,
-                system=host_system
+                version=install_info.version,
+                system=install_info.host_system
             ),
-            archive="zip" if host_system == "Windows" else "tar.gz"
+            archive="zip"
+            if install_info.host_system == "Windows"
+            else "tar.gz"
         )
     dest = os.path.join(
         tool_temp_dir,
-        "cmake.{}".format("zip" if host_system == "Windows" else "tar.gz")
+        "cmake.{}".format(
+            "zip" if install_info.host_system == "Windows" else "tar.gz"
+        )
     )
 
     http.stream(
         url=url,
         destination=dest,
-        host_system=host_system,
+        host_system=install_info.host_system,
         dry_run=dry_run,
         print_debug=print_debug
     )
     shell.tar(dest, tool_temp_dir, dry_run=dry_run, echo=print_debug)
 
     subdir = "cmake-{version}-{target}".format(
-        version=version,
+        version=install_info.version,
         target=_resolve_cmake_download_target(
-            version=version,
-            system=host_system
+            version=install_info.version,
+            system=install_info.host_system
         )
     )
 
     local_dir = _get_local_cmake_directory(
-        tools_root=tools_root,
-        version=version,
-        system=host_system
+        tools_root=install_info.tools_root,
+        version=install_info.version,
+        system=install_info.host_system
     )
 
     if os.path.isdir(local_dir):
@@ -289,8 +267,8 @@ def install_tool(
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
 
     return get_local_executable(
-        tools_root=tools_root,
-        version=version,
-        target=target,
-        host_system=host_system
+        tools_root=install_info.tools_root,
+        version=install_info.version,
+        target=install_info.target,
+        host_system=install_info.host_system
     )
