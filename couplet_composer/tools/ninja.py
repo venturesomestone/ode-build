@@ -28,7 +28,7 @@ def _get_ninja_version_info():
     Gives a tuple containing the version information of Ninja,
     i.e. (major, minor, patch).
     """
-    return 1, 9, 0
+    return 1, 10, 0
 
 
 @cached
