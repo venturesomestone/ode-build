@@ -17,7 +17,9 @@ from ..support.platform_names import \
 
 from ..util.cache import cached
 
-from ..util import http, shell, target
+from ..util.target import parse_target_from_argument_string
+
+from ..util import http, shell
 
 
 def _get_llvm_version_info():
@@ -123,13 +125,13 @@ def install_tool(install_info, tool_name, dry_run=None, print_debug=None):
         if host_system == get_darwin_system_name():
             return "clang+llvm-{version}-{arch}-darwin-apple.tar.xz".format(
                 version=version,
-                arch=target.parse_target_from_argument_string(target)[1]
+                arch=parse_target_from_argument_string(target)[1]
             )
         elif host_system == get_linux_system_name():
             return ("clang+llvm-{version}-{arch}-linux-gnu-{id}-{sysver}"
                     ".tar.xz".format(
                         version=version,
-                        arch=target.parse_target_from_argument_string(
+                        arch=parse_target_from_argument_string(
                             target
                         )[1],
                         id=distro.id(),
