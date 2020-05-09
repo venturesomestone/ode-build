@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.13.2] - 2020-05-09
+
+### Changed
+
+- The version of LLVM to 10.0.0.
+- The downloads the LLVM to only support GitHub releases.
+- The installation of clang-tidy to only happen when linter is actually needed.
+
 ## [0.13.1] - 2020-05-09
 
 ### Fixed
@@ -282,7 +290,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.13.1...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.13.2...HEAD
+[0.13.2]: https://github.com/anttikivi/couplet-composer/compare/v0.13.1...v0.13.2
 [0.13.1]: https://github.com/anttikivi/couplet-composer/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/anttikivi/couplet-composer/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/anttikivi/couplet-composer/compare/v0.11.0...v0.12.0
