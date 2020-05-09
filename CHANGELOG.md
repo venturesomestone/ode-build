@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - The required parameters of the tool installation functions to one object instead of passing many different parameters.
 - The required parameters of the dependency installation functions to one object instead of passing many different parameters.
 - The version of Ninja to 1.10.0.
+- All platform names to lower case.
 
 ## [0.12.0] - 2020-04-25
 

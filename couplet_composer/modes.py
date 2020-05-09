@@ -39,7 +39,7 @@ from .support.tool_data import \
     create_gcc_tool_data, create_git_tool_data, create_make_tool_data, \
     create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data
 
-from .util.target import parse_target_from_argument_string
+from .util.target import current_platform, parse_target_from_argument_string
 
 from .util import shell
 
@@ -413,11 +413,11 @@ def run_in_configuring_mode(arguments, source_root):
     toolchain = create_toolchain(
         tools_data=_construct_tool_data(
             arguments=arguments,
-            host_system=platform.system()
+            host_system=current_platform()
         ),
         cmake_generator=arguments.cmake_generator,
         target=build_target,
-        host_system=platform.system(),
+        host_system=current_platform(),
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         tools_root=tools_root,
@@ -451,7 +451,7 @@ def run_in_configuring_mode(arguments, source_root):
         toolchain=toolchain,
         cmake_generator=arguments.cmake_generator,
         target=build_target,
-        host_system=platform.system(),
+        host_system=current_platform(),
         build_variant=arguments.build_variant,
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
@@ -517,11 +517,11 @@ def run_in_composing_mode(arguments, source_root):
     toolchain = create_toolchain(
         tools_data=_construct_tool_data(
             arguments=arguments,
-            host_system=platform.system()
+            host_system=current_platform()
         ),
         cmake_generator=arguments.cmake_generator,
         target=build_target,
-        host_system=platform.system(),
+        host_system=current_platform(),
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         tools_root=tools_root,
@@ -540,7 +540,7 @@ def run_in_composing_mode(arguments, source_root):
         source_root=source_root,
         toolchain=toolchain,
         arguments=arguments,
-        host_system=platform.system(),
+        host_system=current_platform(),
         project_root=get_project_root(source_root=source_root),
         build_root=get_build_root(
             source_root=source_root,
@@ -589,7 +589,7 @@ def run_in_composing_mode(arguments, source_root):
 
     create_artefacts(
         arguments=arguments,
-        host_system=platform.system(),
+        host_system=current_platform(),
         build_root=get_build_root(
             source_root=source_root,
             in_tree_build=arguments.in_tree_build

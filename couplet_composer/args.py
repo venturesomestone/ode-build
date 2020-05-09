@@ -33,7 +33,7 @@ from .support.project_values import \
 
 from .util.cache import cached
 
-from .util.target import resolve_host_target
+from .util.target import current_platform, resolve_host_target
 
 from . import __version__
 
@@ -257,7 +257,7 @@ def _add_common_build_arguments(parser, source_root):
     )
 
     default_compiler_toolchain = get_clang_toolchain_name() \
-        if platform.system() != get_windows_system_name() \
+        if current_platform() != get_windows_system_name() \
         else get_msvc_toolchain_name()
 
     toolchain_selection_group.add_argument(
@@ -362,7 +362,7 @@ def _add_common_build_arguments(parser, source_root):
     generator_group = parser.add_mutually_exclusive_group(required=False)
 
     default_cmake_generator = get_ninja_cmake_generator_name() \
-        if platform.system() != get_windows_system_name() \
+        if current_platform() != get_windows_system_name() \
         else get_visual_studio_16_cmake_generator_name()
 
     parser.set_defaults(cmake_generator=default_cmake_generator)

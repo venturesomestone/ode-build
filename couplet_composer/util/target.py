@@ -86,6 +86,12 @@ def get_known_targets():
 
 
 @cached
+def current_platform():
+    """Resolves the platform in the correct format."""
+    return platform.system().lower()
+
+
+@cached
 def resolve_host_target():
     """Resolves the platform on which the script is run."""
     def _is_host_target_valid(system, machine):
@@ -99,11 +105,11 @@ def resolve_host_target():
         machines = (t.machine for t in get_known_targets()
                     if t.system == system)
         return machine in machines
-    if _is_host_target_valid(platform.system(), platform.machine()):
-        return "{}-{}".format(platform.system(), platform.machine())
+    if _is_host_target_valid(current_platform(), platform.machine()):
+        return "{}-{}".format(current_platform(), platform.machine()).lower()
     raise NotImplementedError(
         "System '{}' with architecture '{}' is not supported".format(
-            platform.system(),
+            current_platform(),
             platform.machine()
         )
     )

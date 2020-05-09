@@ -32,6 +32,8 @@ from ..support.platform_names import get_darwin_system_name
 
 from .cache import cached
 
+from .target import current_platform
+
 
 @cached
 def get_dev_null():
@@ -318,6 +320,6 @@ def caffeinate(command, env=None, dry_run=None, echo=None):
     """Runs a command during which system sleep is disabled."""
     command_to_run = list(command)
     # Disable system sleep, if possible.
-    if platform.system() == get_darwin_system_name():
+    if current_platform() == get_darwin_system_name():
         command_to_run = ["caffeinate"] + list(command)
     call(command_to_run, env=env, dry_run=dry_run, echo=echo)
