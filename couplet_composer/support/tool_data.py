@@ -105,7 +105,8 @@ def _create_tool_data(module_name, tool_name, tool_key=None):
     return ToolData(
         get_tool_key=(lambda: tool_key) if tool_key else (lambda: module_name),
         get_tool_name=lambda: tool_name,
-        get_searched_tool=lambda: module_name,
+        get_searched_tool=(lambda: tool_key) if tool_key
+        else (lambda: module_name),
         use_predefined_path=lambda: False,
         get_required_local_version=getattr(tool_module, "get_version"),
         get_local_executable=getattr(tool_module, "get_local_executable"),
