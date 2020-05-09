@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- Copying of launching scripts from the project directory to the destination directory.
+
 ## [0.13.4] - 2020-05-09
 
 ### Fixed

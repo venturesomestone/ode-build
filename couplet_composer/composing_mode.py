@@ -19,8 +19,7 @@ from .support.cmake_generators import \
 
 from .support.environment import \
     get_artefact_directory, get_build_root, get_composing_directory, \
-    get_destination_directory, get_project_root, get_running_directory, \
-    get_temporary_directory
+    get_destination_directory, get_running_directory, get_temporary_directory
 
 from .support.file_paths import get_project_dependencies_file_path
 
@@ -460,6 +459,28 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
+    shell.copytree(
+        os.path.join(project_root, "util", "bin"),
+        os.path.join(destination_root, "bin"),
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+
+    launch_file = os.path.join(destination_root, "bin", "launch")
+    launch_test_file = os.path.join(destination_root, "bin", "launch_test")
+
+    mode_launch = os.stat(launch_file).st_mode
+    os.chmod(
+        launch_file,
+        mode_launch | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+    )
+
+    mode_launch_test = os.stat(launch_test_file).st_mode
+    os.chmod(
+        launch_test_file,
+        mode_launch_test | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+    )
+
     if host_system != get_windows_system_name():
         logging.debug(
             "Found the following SDL libraries:\n\n{}".format(
@@ -508,7 +529,7 @@ def compose_project(
             )
 
         dependency_version_file = os.path.join(
-            get_project_root(source_root=source_root),
+            project_root,
             get_project_dependencies_file_path()
         )
         with open(dependency_version_file) as f:
