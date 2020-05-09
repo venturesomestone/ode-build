@@ -12,6 +12,8 @@ import logging
 
 from .support.dependency_data import create_dependency_data
 
+from .support.dependency_install_information import DependencyInstallInfo
+
 
 def construct_dependencies_data(data_file):
     """
@@ -197,20 +199,22 @@ def install_dependencies(
 
     for dependency in to_install:
         dependency.install_dependency(
-            toolchain=toolchain,
-            cmake_generator=cmake_generator,
-            build_root=build_root,
-            dependencies_root=dependencies_root,
-            version=dependency.get_required_version(
+            install_info=DependencyInstallInfo(
+                toolchain=toolchain,
+                cmake_generator=cmake_generator,
+                build_root=build_root,
+                dependencies_root=dependencies_root,
+                version=dependency.get_required_version(
+                    target=target,
+                    host_system=host_system
+                ),
                 target=target,
-                host_system=host_system
+                host_system=host_system,
+                build_variant=build_variant,
+                github_user_agent=github_user_agent,
+                github_api_token=github_api_token,
+                opengl_version=opengl_version
             ),
-            target=target,
-            host_system=host_system,
-            build_variant=build_variant,
-            github_user_agent=github_user_agent,
-            github_api_token=github_api_token,
-            opengl_version=opengl_version,
             dry_run=dry_run,
             print_debug=print_debug
         )

@@ -74,8 +74,8 @@ def get_composing_directory(
         "{}-{}-{}-{}".format(
             target.system,
             target.machine,
-            build_variant,
-            cmake_generator.replace(" ", "_")
+            build_variant.lower(),
+            cmake_generator.replace(" ", "_").lower()
         )
     )
 
@@ -111,8 +111,8 @@ def get_destination_directory(
         "{}-{}-{}-{}".format(
             target.system,
             target.machine,
-            build_variant,
-            cmake_generator.replace(" ", "_")
+            build_variant.lower(),
+            cmake_generator.replace(" ", "_").lower()
         )
     )
 
@@ -179,7 +179,7 @@ def get_dependencies_directory(build_root, target, build_variant):
         build_root,
         "local",
         "lib",
-        "{}-{}-{}".format(target.system, target.machine, build_variant)
+        "{}-{}-{}".format(target.system, target.machine, build_variant.lower())
     )
 
 
@@ -203,7 +203,7 @@ def get_dependency_version_data_file(build_root, target, build_variant):
         "versions-{}-{}-{}".format(
             target.system,
             target.machine,
-            build_variant
+            build_variant.lower()
         )
     )
 

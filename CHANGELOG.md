@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.13.0] - 2020-05-09
+
+### Added
+
+- Option to copy the build binaries to a directory instead of archiving them as it is useful on CI for example.
+- Dependency on `distro` for resolving the Linux distribution for LLVM installation.
+- Support installing the LLVM tools on macOS and Ubuntu if they are not found on the system.
+
+### Changed
+
+- The required parameters of the tool installation functions to one object instead of passing many different parameters.
+- The required parameters of the dependency installation functions to one object instead of passing many different parameters.
+- The version of Ninja to 1.10.0.
+- All platform names to lower case.
+- The build variant in the directory names to lower case.
+- The CMake generator in the directory names to lower case.
+
 ## [0.12.0] - 2020-04-25
 
 ### Added
@@ -259,7 +276,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.12.0...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/anttikivi/couplet-composer/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/anttikivi/couplet-composer/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/anttikivi/couplet-composer/compare/v0.10.3...v0.11.0
 [0.10.3]: https://github.com/anttikivi/couplet-composer/compare/v0.10.2...v0.10.3

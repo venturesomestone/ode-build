@@ -139,86 +139,46 @@ def should_install(
         )
 
 
-def install_dependency(
-    toolchain,
-    cmake_generator,
-    build_root,
-    dependencies_root,
-    version,
-    target,
-    host_system,
-    build_variant,
-    github_user_agent,
-    github_api_token,
-    opengl_version,
-    dry_run=None,
-    print_debug=None
-):
+def install_dependency(install_info, dry_run=None, print_debug=None):
     """
     Installs the dependency by downloading and possibly building
     it. Returns the path to the built dependency.
 
-    toolchain -- The toolchain object of the run.
-
-    cmake_generator -- The name of the generator that CMake
-    should use as the build system for which the build scripts
-    are generated.
-
-    build_root -- The path to the root directory that is used for
-    all created files and directories.
-
-    dependencies_root -- The root directory of the dependencies
-    for the current build target.
-
-    version -- The full version number of the dependency.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    host_system -- The system this script is run on.
-
-    build_variant -- The build variant used to build the project.
-
-    github_user_agent -- The user agent used when accessing the
-    GitHub API.
-
-    github_api_token -- The GitHub API token that is used to
-    access the API.
-
-    opengl_version -- The version of OpenGL that is used.
+    install_info -- The object containing the install information
+    for this tool.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
 
     print_debug -- Whether debug output should be printed.
     """
-    temp_dir = get_temporary_directory(build_root=build_root)
+    temp_dir = get_temporary_directory(build_root=install_info.build_root)
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
 
     url = "https://www.lua.org/ftp/lua-{version}.tar.gz".format(
-        version=version
+        version=install_info.version
     )
     dest = os.path.join(temp_dir, "lua.tar.gz")
 
     http.stream(
         url=url,
         destination=dest,
-        host_system=host_system,
+        host_system=install_info.host_system,
         dry_run=dry_run,
         print_debug=print_debug
     )
     shell.tar(dest, temp_dir, dry_run=dry_run, echo=print_debug)
 
-    subdir = os.path.join(temp_dir, "lua-{}".format(version))
+    subdir = os.path.join(temp_dir, "lua-{}".format(install_info.version))
 
     with shell.pushd(subdir, dry_run=dry_run, echo=print_debug):
-        if cmake_generator == get_make_cmake_generator_name() \
-                and host_system != get_windows_system_name():
+        if install_info.cmake_generator == get_make_cmake_generator_name() \
+                and install_info.host_system != get_windows_system_name():
             _build_with_make(
-                toolchain=toolchain,
-                dependencies_root=dependencies_root,
-                host_system=host_system,
+                toolchain=install_info.toolchain,
+                dependencies_root=install_info.dependencies_root,
+                host_system=install_info.host_system,
                 dry_run=dry_run,
                 print_debug=print_debug
             )
@@ -234,83 +194,127 @@ def install_dependency(
                 echo=print_debug
             )
             build_with_cmake(
-                toolchain=toolchain,
-                cmake_generator=cmake_generator,
+                toolchain=install_info.toolchain,
+                cmake_generator=install_info.cmake_generator,
                 source_directory=subdir,
                 temporary_root=temp_dir,
-                dependencies_root=dependencies_root,
-                target=target,
-                host_system=host_system,
-                build_variant=build_variant,
-                do_install=host_system != get_windows_system_name(),
+                dependencies_root=install_info.dependencies_root,
+                target=install_info.target,
+                host_system=install_info.host_system,
+                build_variant=install_info.build_variant,
+                do_install=install_info.host_system !=
+                get_windows_system_name(),
                 msbuild_target="lua.sln",
                 dry_run=dry_run,
                 print_debug=print_debug
             )
             _create_cxx_header(
-                dependencies_root=dependencies_root,
+                dependencies_root=install_info.dependencies_root,
                 dry_run=dry_run,
                 print_debug=print_debug
             )
 
-            if host_system == get_windows_system_name():
+            if install_info.host_system == get_windows_system_name():
                 build_dir = os.path.join(temp_dir, "build")
-                if not os.path.isdir(os.path.join(dependencies_root, "lib")):
+                if not os.path.isdir(os.path.join(
+                    install_info.dependencies_root,
+                    "lib"
+                )):
                     shell.makedirs(
-                        os.path.join(dependencies_root, "lib"),
+                        os.path.join(install_info.dependencies_root, "lib"),
                         dry_run=dry_run,
                         echo=print_debug
                     )
-                lib_file = os.path.join(dependencies_root, "lib", "lua.lib")
+                lib_file = os.path.join(
+                    install_info.dependencies_root,
+                    "lib",
+                    "lua.lib"
+                )
                 if os.path.exists(lib_file):
                     shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
                 shell.copy(
-                    os.path.join(build_dir, build_variant, "lua.lib"),
+                    os.path.join(
+                        build_dir,
+                        install_info.build_variant,
+                        "lua.lib"
+                    ),
                     lib_file,
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.rm(
-                    os.path.join(dependencies_root, "include", "lua.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "lua.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.rm(
-                    os.path.join(dependencies_root, "include", "lualib.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "lualib.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.rm(
-                    os.path.join(dependencies_root, "include", "lauxlib.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "lauxlib.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.rm(
-                    os.path.join(dependencies_root, "include", "luaconf.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "luaconf.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
                     os.path.join(subdir, "src", "lua.h"),
-                    os.path.join(dependencies_root, "include", "lua.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "lua.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
                     os.path.join(subdir, "src", "lualib.h"),
-                    os.path.join(dependencies_root, "include", "lualib.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "lualib.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
                     os.path.join(subdir, "src", "lauxlib.h"),
-                    os.path.join(dependencies_root, "include", "lauxlib.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "lauxlib.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )
                 shell.copy(
                     os.path.join(subdir, "src", "luaconf.h"),
-                    os.path.join(dependencies_root, "include", "luaconf.h"),
+                    os.path.join(
+                        install_info.dependencies_root,
+                        "include",
+                        "luaconf.h"
+                    ),
                     dry_run=dry_run,
                     echo=print_debug
                 )

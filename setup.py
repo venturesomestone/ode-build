@@ -15,7 +15,7 @@ from setuptools import find_packages, setup, Command
 # Package metadata
 NAME = "couplet-composer"
 DESCRIPTION = "Tool for building, testing, and preparing binary " \
-    "distribution archives of Obliging Ode."
+    "distribution archives of Obliging Ode and Unsung Anthem."
 URL = "https://github.com/anttikivi/couplet-composer"
 EMAIL = "antti.kivi@visiosto.fi"
 AUTHOR = "Antti Kivi"

@@ -33,7 +33,7 @@ from .support.project_values import \
 
 from .util.cache import cached
 
-from .util.target import resolve_host_target
+from .util.target import current_platform, resolve_host_target
 
 from . import __version__
 
@@ -257,7 +257,7 @@ def _add_common_build_arguments(parser, source_root):
     )
 
     default_compiler_toolchain = get_clang_toolchain_name() \
-        if platform.system() != get_windows_system_name() \
+        if current_platform() != get_windows_system_name() \
         else get_msvc_toolchain_name()
 
     toolchain_selection_group.add_argument(
@@ -362,7 +362,7 @@ def _add_common_build_arguments(parser, source_root):
     generator_group = parser.add_mutually_exclusive_group(required=False)
 
     default_cmake_generator = get_ninja_cmake_generator_name() \
-        if platform.system() != get_windows_system_name() \
+        if current_platform() != get_windows_system_name() \
         else get_visual_studio_16_cmake_generator_name()
 
     parser.set_defaults(cmake_generator=default_cmake_generator)
@@ -543,6 +543,12 @@ def create_argument_parser(source_root):
              "path of which is given relative to the source root"
     )
 
+    compose.add_argument(
+        "--use-artefact-directory",
+        action="store_true",
+        help="copy the artefact files to a directory instead of archiving them"
+    )
+
     # --------------------------------------------------------- #
     # Compose: C++ standard options
 
@@ -713,15 +719,16 @@ Environment variables
 
 This script respects the following environment variables if you set them:
 
-ODE_SOURCE_ROOT: a directory containing the source for {ode}
+ODE_SOURCE_ROOT: a directory containing the source directory for
+{ode} and {anthem}.
 
 Couplet Composer expects the sources to be laid out in the following way:
 
    $ODE_SOURCE_ROOT/unsung-anthem
                    /build           (created automatically)
-                   /composer        (created automatically)
+                   /script          (created automatically)
 
-The directory '$ODE_SOURCE_ROOT/composer' is created only if the script is run
+The directory '$ODE_SOURCE_ROOT/script' is created only if the script is run
 by using the scripts in the repository of {ode} and {anthem}, which
 is the recommended way.
 

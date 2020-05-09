@@ -17,6 +17,8 @@ from .support.platform_names import \
 
 from .support.tool_data import CompilerToolPair, list_tool_types
 
+from .support.tool_install_information import ToolInstallInfo
+
 from .util.where import where
 
 from .util.which import which
@@ -341,13 +343,15 @@ def _install_missing_tools(
         )
         if tool_data.install_tool is not None:
             tool_path = tool_data.install_tool(
-                build_root=build_root,
-                tools_root=tools_root,
-                version=version,
-                target=target,
-                host_system=host_system,
-                github_user_agent=github_user_agent,
-                github_api_token=github_api_token,
+                install_info=ToolInstallInfo(
+                    build_root=build_root,
+                    tools_root=tools_root,
+                    version=version,
+                    target=target,
+                    host_system=host_system,
+                    github_user_agent=github_user_agent,
+                    github_api_token=github_api_token
+                ),
                 dry_run=dry_run,
                 print_debug=print_debug
             )

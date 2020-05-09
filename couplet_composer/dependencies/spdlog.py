@@ -57,94 +57,58 @@ def should_install(
     )
 
 
-def install_dependency(
-    toolchain,
-    cmake_generator,
-    build_root,
-    dependencies_root,
-    version,
-    target,
-    host_system,
-    build_variant,
-    github_user_agent,
-    github_api_token,
-    opengl_version,
-    dry_run=None,
-    print_debug=None
-):
+def install_dependency(install_info, dry_run=None, print_debug=None):
     """
     Installs the dependency by downloading and possibly building
     it. Returns the path to the built dependency.
 
-    toolchain -- The toolchain object of the run.
-
-    cmake_generator -- The name of the generator that CMake
-    should use as the build system for which the build scripts
-    are generated.
-
-    build_root -- The path to the root directory that is used for
-    all created files and directories.
-
-    dependencies_root -- The root directory of the dependencies
-    for the current build target.
-
-    version -- The full version number of the dependency.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    host_system -- The system this script is run on.
-
-    build_variant -- The build variant used to build the project.
-
-    github_user_agent -- The user agent used when accessing the
-    GitHub API.
-
-    github_api_token -- The GitHub API token that is used to
-    access the API.
-
-    opengl_version -- The version of OpenGL that is used.
+    install_info -- The object containing the install information
+    for this tool.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
 
     print_debug -- Whether debug output should be printed.
     """
-    temp_dir = get_temporary_directory(build_root=build_root)
+    temp_dir = get_temporary_directory(build_root=install_info.build_root)
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
 
     asset_path = tag.download_tag(
         path=temp_dir,
-        git=toolchain.scm,
+        git=install_info.toolchain.scm,
         github_data=GitHubData(
             owner="gabime",
             name="spdlog",
-            tag_name="v{}".format(version),
+            tag_name="v{}".format(install_info.version),
             asset_name=None
         ),
-        user_agent=github_user_agent,
-        api_token=github_api_token,
-        host_system=host_system,
+        user_agent=install_info.github_user_agent,
+        api_token=install_info.github_api_token,
+        host_system=install_info.host_system,
         dry_run=dry_run,
         print_debug=print_debug
     )
 
-    if not os.path.isdir(os.path.join(dependencies_root, "include")):
+    if not os.path.isdir(
+        os.path.join(install_info.dependencies_root, "include")
+    ):
         shell.makedirs(
-            os.path.join(dependencies_root, "include"),
+            os.path.join(install_info.dependencies_root, "include"),
             dry_run=dry_run,
             echo=print_debug
         )
-    if os.path.isdir(os.path.join(dependencies_root, "include", "spdlog")):
+    if os.path.isdir(
+        os.path.join(install_info.dependencies_root, "include", "spdlog")
+    ):
         shell.rmtree(
-            os.path.join(dependencies_root, "include", "spdlog"),
+            os.path.join(install_info.dependencies_root, "include", "spdlog"),
             dry_run=dry_run,
             echo=print_debug
         )
     shell.copytree(
         os.path.join(asset_path, "include", "spdlog"),
-        os.path.join(dependencies_root, "include", "spdlog"),
+        os.path.join(install_info.dependencies_root, "include", "spdlog"),
         dry_run=dry_run,
         echo=print_debug
     )

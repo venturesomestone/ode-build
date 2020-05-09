@@ -83,105 +83,76 @@ def should_install(
             return False
 
 
-def install_dependency(
-    toolchain,
-    cmake_generator,
-    build_root,
-    dependencies_root,
-    version,
-    target,
-    host_system,
-    build_variant,
-    github_user_agent,
-    github_api_token,
-    opengl_version,
-    dry_run=None,
-    print_debug=None
-):
+def install_dependency(install_info, dry_run=None, print_debug=None):
     """
     Installs the dependency by downloading and possibly building
     it. Returns the path to the built dependency.
 
-    toolchain -- The toolchain object of the run.
-
-    cmake_generator -- The name of the generator that CMake
-    should use as the build system for which the build scripts
-    are generated.
-
-    build_root -- The path to the root directory that is used for
-    all created files and directories.
-
-    dependencies_root -- The root directory of the dependencies
-    for the current build target.
-
-    version -- The full version number of the dependency.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    host_system -- The system this script is run on.
-
-    build_variant -- The build variant used to build the project.
-
-    github_user_agent -- The user agent used when accessing the
-    GitHub API.
-
-    github_api_token -- The GitHub API token that is used to
-    access the API.
-
-    opengl_version -- The version of OpenGL that is used.
+    install_info -- The object containing the install information
+    for this tool.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
 
     print_debug -- Whether debug output should be printed.
     """
-    temp_dir = get_temporary_directory(build_root=build_root)
+    temp_dir = get_temporary_directory(build_root=install_info.build_root)
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
 
     asset_path = release.download_tag(
         path=temp_dir,
-        git=toolchain.scm,
+        git=install_info.toolchain.scm,
         github_data=GitHubData(
             owner="google",
             name="benchmark",
-            tag_name="v{}".format(version),
+            tag_name="v{}".format(install_info.version),
             asset_name=None
         ),
-        user_agent=github_user_agent,
-        api_token=github_api_token,
-        host_system=host_system,
+        user_agent=install_info.github_user_agent,
+        api_token=install_info.github_api_token,
+        host_system=install_info.host_system,
         dry_run=dry_run,
         print_debug=print_debug
     )
 
     build_with_cmake(
-        toolchain=toolchain,
-        cmake_generator=cmake_generator,
+        toolchain=install_info.toolchain,
+        cmake_generator=install_info.cmake_generator,
         source_directory=asset_path,
         temporary_root=temp_dir,
-        dependencies_root=dependencies_root,
-        target=target,
-        host_system=host_system,
-        build_variant=build_variant,
+        dependencies_root=install_info.dependencies_root,
+        target=install_info.target,
+        host_system=install_info.host_system,
+        build_variant=install_info.build_variant,
         cmake_options={"BENCHMARK_ENABLE_GTEST_TESTS": False},
         msbuild_target="ALL_BUILD.vcxproj",
         dry_run=dry_run,
         print_debug=print_debug
     )
 
-    if cmake_generator == get_visual_studio_16_cmake_generator_name():
+    if install_info.cmake_generator == \
+            get_visual_studio_16_cmake_generator_name():
         logging.debug("Google Benchmark files will be copied manually")
         build_dir = os.path.join(temp_dir, "build")
-        if not os.path.isdir(os.path.join(dependencies_root, "lib")):
+        if not os.path.isdir(
+            os.path.join(install_info.dependencies_root, "lib")
+        ):
             shell.makedirs(
-                os.path.join(dependencies_root, "lib"),
+                os.path.join(install_info.dependencies_root, "lib"),
                 dry_run=dry_run,
                 echo=print_debug
             )
-        lib_file = os.path.join(dependencies_root, "lib", "benchmark.lib")
-        lib_file_d = os.path.join(dependencies_root, "lib", "benchmarkd.lib")
+        lib_file = os.path.join(
+            install_info.dependencies_root,
+            "lib",
+            "benchmark.lib"
+        )
+        lib_file_d = os.path.join(
+            install_info.dependencies_root,
+            "lib",
+            "benchmarkd.lib"
+        )
         if os.path.exists(lib_file):
             shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
         if os.path.exists(lib_file_d):
@@ -189,13 +160,13 @@ def install_dependency(
         temp_lib_file = os.path.join(
             build_dir,
             "src",
-            build_variant,
+            install_info.build_variant,
             "benchmark.lib"
         )
         temp_lib_file_d = os.path.join(
             build_dir,
             "src",
-            build_variant,
+            install_info.build_variant,
             "benchmarkd.lib"
         )
         if os.path.exists(temp_lib_file):
@@ -216,16 +187,28 @@ def install_dependency(
             logging.debug("No built Google Benchmark library was found")
 
         if not os.path.isdir(
-            os.path.join(dependencies_root, "include", "benchmark")
+            os.path.join(
+                install_info.dependencies_root,
+                "include",
+                "benchmark"
+            )
         ):
             shell.makedirs(
-                os.path.join(dependencies_root, "include", "benchmark"),
+                os.path.join(
+                    install_info.dependencies_root,
+                    "include",
+                    "benchmark"
+                ),
                 dry_run=dry_run,
                 echo=print_debug
             )
         shell.copytree(
             os.path.join(asset_path, "include", "benchmark"),
-            os.path.join(dependencies_root, "include", "benchmark"),
+            os.path.join(
+                install_info.dependencies_root,
+                "include",
+                "benchmark"
+            ),
             dry_run=dry_run,
             echo=print_debug
         )

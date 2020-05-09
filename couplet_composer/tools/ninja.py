@@ -28,14 +28,14 @@ def _get_ninja_version_info():
     Gives a tuple containing the version information of Ninja,
     i.e. (major, minor, patch).
     """
-    return 1, 9, 0
+    return 1, 10, 0
 
 
 @cached
 def get_required_ninja_version():
     """
-    Gives the version of Ninja that is donwloaded when it isn't
-    found.
+    Gives the version of Ninja that is downloaded when the tool
+    isn't found.
     """
     return ".".join([str(n) for n in _get_ninja_version_info()])
 
@@ -112,46 +112,20 @@ def get_local_executable(tools_root, version, target, host_system):
     )
 
 
-def install_tool(
-    build_root,
-    tools_root,
-    version,
-    target,
-    host_system,
-    github_user_agent,
-    github_api_token,
-    dry_run=None,
-    print_debug=None
-):
+def install_tool(install_info, dry_run=None, print_debug=None):
     """
     Installs the tool by downloading and possibly building it.
     Returns the path to the built tool executable.
 
-    build_root -- The path to the root directory that is used for
-    all created files and directories.
-
-    tools_root -- The root directory of the tools for the current
-    build target.
-
-    version -- The full version number of the tool.
-
-    target -- The target system of the build represented by a
-    Target.
-
-    host_system -- The system this script is run on.
-
-    github_user_agent -- The user agent used when accessing the
-    GitHub API.
-
-    github_api_token -- The GitHub API token that is used to
-    access the API.
+    install_info -- The object containing the install information
+    for this tool.
 
     dry_run -- Whether the commands are only printed instead of
     running them.
 
     print_debug -- Whether debug output should be printed.
     """
-    temp_dir = get_temporary_directory(build_root=build_root)
+    temp_dir = get_temporary_directory(build_root=install_info.build_root)
     tool_temp_dir = os.path.join(temp_dir, "ninja")
 
     shell.makedirs(temp_dir, dry_run=dry_run, echo=print_debug)
@@ -170,12 +144,12 @@ def install_tool(
         github_data=GitHubData(
             owner="ninja-build",
             name="ninja",
-            tag_name="v{}".format(version),
-            asset_name=_asset_name(host_system)
+            tag_name="v{}".format(install_info.version),
+            asset_name=_asset_name(install_info.host_system)
         ),
-        user_agent=github_user_agent,
-        api_token=github_api_token,
-        host_system=host_system,
+        user_agent=install_info.github_user_agent,
+        api_token=install_info.github_api_token,
+        host_system=install_info.host_system,
         dry_run=dry_run,
         print_debug=print_debug
     )
@@ -183,9 +157,9 @@ def install_tool(
     shell.tar(asset_path, tool_temp_dir, dry_run=dry_run, echo=print_debug)
 
     dest_dir = os.path.dirname(get_local_ninja_executable(
-        tools_root=tools_root,
-        version=version,
-        system=host_system
+        tools_root=install_info.tools_root,
+        version=install_info.version,
+        system=install_info.host_system
     ))
 
     if os.path.isdir(dest_dir):
@@ -197,7 +171,8 @@ def install_tool(
         os.path.join(
             tool_temp_dir,
             "ninja.exe"
-            if host_system == get_windows_system_name() else "ninja"
+            if install_info.host_system == get_windows_system_name()
+            else "ninja"
         ),
         dest_dir,
         dry_run=dry_run,
@@ -206,18 +181,18 @@ def install_tool(
 
     shell.rmtree(temp_dir, dry_run=dry_run, echo=print_debug)
 
-    if host_system == get_darwin_system_name() \
-            or host_system == get_linux_system_name():
+    if install_info.host_system == get_darwin_system_name() \
+            or install_info.host_system == get_linux_system_name():
         dest_file = get_local_ninja_executable(
-            tools_root=tools_root,
-            version=version,
-            system=host_system
+            tools_root=install_info.tools_root,
+            version=install_info.version,
+            system=install_info.host_system
         )
         mode = os.stat(dest_file).st_mode
         os.chmod(dest_file, mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
 
     return get_local_ninja_executable(
-        tools_root=tools_root,
-        version=version,
-        system=host_system
+        tools_root=install_info.tools_root,
+        version=install_info.version,
+        system=install_info.host_system
     )

@@ -11,18 +11,18 @@ def get_darwin_system_name():
     """
     Gives the system name of a platform that runs on Darwin.
     """
-    return "Darwin"
+    return "Darwin".lower()
 
 
 def get_linux_system_name():
     """
     Gives the system name of a platform that runs on Linux.
     """
-    return "Linux"
+    return "Linux".lower()
 
 
 def get_windows_system_name():
     """
     Gives the system name of a platform that runs on Windows.
     """
-    return "Windows"
+    return "Windows".lower()
