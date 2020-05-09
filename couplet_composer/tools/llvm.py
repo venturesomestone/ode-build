@@ -121,13 +121,13 @@ def install_tool(install_info, tool_name, dry_run=None, print_debug=None):
 
     def _asset_name(host_system, version, target):
         if host_system == get_darwin_system_name():
-            return "clang+llvm-{version}-{arch}-darwin-apple.tar.xz".format(
+            return "clang+llvm-{version}-{arch}-darwin-apple".format(
                 version=version,
                 arch=target.machine
             )
         elif host_system == get_linux_system_name():
-            return ("clang+llvm-{version}-{arch}-linux-gnu-{id}-{sysver}"
-                    ".tar.xz".format(
+            return ("clang+llvm-{version}-{arch}-linux-gnu-{id}-"
+                    "{sysver}".format(
                         version=version,
                         arch=target.machine,
                         id=distro.id(),
