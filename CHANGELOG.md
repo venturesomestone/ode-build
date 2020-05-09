@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 ### Added
 
 - Option to copy the build binaries to a directory instead of archiving them as it is useful on CI for example.
+- Dependency on `distro` for resolving the Linux distribution for LLVM installation.
+- Support installing the LLVM tools on macOS and Ubuntu if they are not found on the system.
 
 ### Changed
 

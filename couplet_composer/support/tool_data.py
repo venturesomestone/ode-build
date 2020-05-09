@@ -84,7 +84,7 @@ def list_tool_types():
     ]
 
 
-def _create_tool_data(module_name, tool_name):
+def _create_tool_data(module_name, tool_name, tool_key=None):
     """
     Creates a common ToolData object of a tool for toolchain.
     This function isn't totally pure as it imports the module
@@ -94,6 +94,8 @@ def _create_tool_data(module_name, tool_name):
     functions are got.
 
     tool_name -- The name of the tool.
+
+    tool_key -- An optional identifier for the tool.
     """
     package_name = "{}.tools.{}".format(
         get_project_package_name(),
@@ -101,7 +103,7 @@ def _create_tool_data(module_name, tool_name):
     )
     tool_module = importlib.import_module(package_name)
     return ToolData(
-        get_tool_key=lambda: module_name,
+        get_tool_key=(lambda: tool_key) if tool_key else (lambda: module_name),
         get_tool_name=lambda: tool_name,
         get_searched_tool=lambda: module_name,
         use_predefined_path=lambda: False,
@@ -115,6 +117,8 @@ def create_unix_compiler_tool_data(
     cc_name,
     cxx_name,
     tool_name,
+    cc_module_name=None,
+    cxx_module_name=None,
     version=None,
     cc_path=None,
     cxx_path=None
@@ -129,25 +133,37 @@ def create_unix_compiler_tool_data(
 
     tool_name -- The name of the tool.
 
+    cc_module_name -- The name of the module for installing the C
+    compiler if it exists.
+
+    cxx_module_name -- The name of the module for installing the
+    C++ compiler if it exists.
+
     version -- The version of compiler tool to search for.
 
     cc_path -- An optional predefined path to the C compiler.
 
     cxx_path -- An optional predefined path to the C++ compiler.
     """
-    def _create_compiler_tool_data(tool_key):
-        return ToolData(
-            get_tool_key=lambda: tool_key,
-            get_tool_name=lambda: tool_name,
-            get_searched_tool=(lambda: tool_key) if not version
-            else (lambda: "{}-{}".format(tool_key, version)),
-            use_predefined_path=lambda: False,
-            get_required_local_version=lambda target, host_system: None,
-            get_local_executable=(
-                lambda tools_root, version, target, host_system: None
-            ),
-            install_tool=lambda install_info, dry_run, print_debug: None
-        )
+    def _create_compiler_tool_data(tool_key, module_name):
+        if module_name:
+            return _create_tool_data(
+                module_name=module_name,
+                tool_name=tool_name
+            )
+        else:
+            return ToolData(
+                get_tool_key=lambda: tool_key,
+                get_tool_name=lambda: tool_name,
+                get_searched_tool=(lambda: tool_key) if not version
+                else (lambda: "{}-{}".format(tool_key, version)),
+                use_predefined_path=lambda: False,
+                get_required_local_version=lambda target, host_system: None,
+                get_local_executable=(
+                    lambda tools_root, version, target, host_system: None
+                ),
+                install_tool=lambda install_info, dry_run, print_debug: None
+            )
 
     def _create_compiler_tool_data_with_path(tool_key, tool_path):
         return ToolData(
@@ -164,12 +180,18 @@ def create_unix_compiler_tool_data(
 
     return CompilerToolPair(
         get_tool_name=lambda: tool_name,
-        cc=_create_compiler_tool_data(tool_key=cc_name) if not cc_path
+        cc=_create_compiler_tool_data(
+            tool_key=cc_name,
+            module_name=cc_module_name
+        ) if not cc_path
         else _create_compiler_tool_data_with_path(
             tool_key=cc_name,
             tool_path=cc_path
         ),
-        cxx=_create_compiler_tool_data(tool_key=cxx_name) if not cxx_path
+        cxx=_create_compiler_tool_data(
+            tool_key=cxx_name,
+            module_name=cxx_module_name
+        ) if not cxx_path
         else _create_compiler_tool_data_with_path(
             tool_key=cxx_name,
             tool_path=cxx_path
@@ -224,6 +246,8 @@ def create_clang_tool_data(version=None, cc_path=None, cxx_path=None):
     return create_unix_compiler_tool_data(
         cc_name="clang",
         cxx_name="clang++",
+        cc_module_name="clang",
+        cxx_module_name="clangxx",
         tool_name="Clang",
         version=version
     )
@@ -375,16 +399,10 @@ def create_clang_tidy_tool_data(tool_path=None):
             install_tool=lambda install_info, dry_run, print_debug: None
         )
     else:
-        return ToolData(
-            get_tool_key=lambda: "clang-tidy",
-            get_tool_name=lambda: "Clang-Tidy",
-            get_searched_tool=lambda: "clang-tidy",
-            use_predefined_path=lambda: False,
-            get_required_local_version=lambda target, host_system: None,
-            get_local_executable=(
-                    lambda tools_root, version, target, host_system: None
-                ),
-            install_tool=lambda install_info, dry_run, print_debug: None
+        return _create_tool_data(
+            module_name="clang_tidy",
+            tool_name="Clang-Tidy",
+            tool_key="clang-tidy"
         )
 
 
@@ -409,14 +427,8 @@ def create_clang_apply_replacements_tool_data(tool_path=None):
             install_tool=lambda install_info, dry_run, print_debug: None
         )
     else:
-        return ToolData(
-            get_tool_key=lambda: "clang-apply-replacements",
-            get_tool_name=lambda: "clang-apply-replacements",
-            get_searched_tool=lambda: "clang-apply-replacements",
-            use_predefined_path=lambda: False,
-            get_required_local_version=lambda target, host_system: None,
-            get_local_executable=(
-                    lambda tools_root, version, target, host_system: None
-                ),
-            install_tool=lambda install_info, dry_run, print_debug: None
+        return _create_tool_data(
+            module_name="clang_apply_replacements",
+            tool_name="clang-apply-replacements",
+            tool_key="clang-apply-replacements"
         )
