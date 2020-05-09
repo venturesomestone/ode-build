@@ -258,6 +258,11 @@ def compose_project(
     else:
         cmake_call.extend(["-DCMAKE_EXPORT_COMPILE_COMMANDS=OFF"])
 
+    if arguments.skip_build:
+        cmake_call.extend(["-DODE_SKIP_BUILD=ON"])
+    else:
+        cmake_call.extend(["-DODE_SKIP_BUILD=OFF"])
+
     # if host_system == get_windows_system_name():
     #     cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
 
