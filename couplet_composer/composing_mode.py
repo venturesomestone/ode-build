@@ -247,7 +247,7 @@ def compose_project(
     else:
         cmake_call.extend(["-DODE_ADD_GOOGLE_TEST_SOURCE=OFF"])
 
-    if arguments.lint or arguments.only_lint:
+    if arguments.lint:
         if toolchain.linter:
             cmake_call.extend(["-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"])
         else:
@@ -280,7 +280,7 @@ def compose_project(
             dry_run=arguments.dry_run,
             echo=arguments.print_debug
         )
-        if arguments.lint or arguments.only_lint and toolchain.linter:
+        if arguments.lint and toolchain.linter:
             run_clang_tidy = os.path.join(
                 os.path.dirname(__file__),
                 "llvm",
@@ -320,7 +320,7 @@ def compose_project(
                 dry_run=arguments.dry_run,
                 echo=arguments.print_debug
             )
-        if arguments.only_lint:
+        if arguments.skip_build:
             return
         if arguments.cmake_generator \
                 == get_visual_studio_16_cmake_generator_name():
