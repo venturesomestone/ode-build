@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.13.3] - 2020-05-09
+
+### Added
+
+- A command line option to skip build.
+
+### Changed
+
+- The linter options’ location to the common options with other similar build options.
+
+### Removed
+
+- The option to only run the linter.
+
 ## [0.13.2] - 2020-05-09
 
 ### Changed
