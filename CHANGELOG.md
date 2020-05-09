@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.14.5] - 2020-05-09
+
+### Fixed
+
+- The script attempting to install binaries when the build is skipped.
+
 ## [0.14.4] - 2020-05-09
 
 ### Changed

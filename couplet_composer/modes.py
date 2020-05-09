@@ -571,6 +571,9 @@ def run_in_composing_mode(arguments, source_root):
         )
     )
 
+    if arguments.skip_build:
+        return 0
+
     install_running_copies(
         arguments=arguments,
         build_root=get_build_root(
