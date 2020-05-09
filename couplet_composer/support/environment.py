@@ -75,7 +75,7 @@ def get_composing_directory(
             target.system,
             target.machine,
             build_variant.lower(),
-            cmake_generator.replace(" ", "_")
+            cmake_generator.replace(" ", "_").lower()
         )
     )
 
@@ -112,7 +112,7 @@ def get_destination_directory(
             target.system,
             target.machine,
             build_variant.lower(),
-            cmake_generator.replace(" ", "_")
+            cmake_generator.replace(" ", "_").lower()
         )
     )
 

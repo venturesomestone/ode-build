@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - The version of Ninja to 1.10.0.
 - All platform names to lower case.
 - The build variant in the directory names to lower case.
+- The CMake generator in the directory names to lower case.
 
 ## [0.12.0] - 2020-04-25
 
