@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.14.0] - 2020-05-09
+
+### Added
+
+- Copying of launching scripts from the project directory to the destination directory.
+
 ## [0.13.4] - 2020-05-09
 
 ### Fixed
@@ -310,7 +316,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.13.4...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/anttikivi/couplet-composer/compare/v0.13.4...v0.14.0
 [0.13.4]: https://github.com/anttikivi/couplet-composer/compare/v0.13.3...v0.13.4
 [0.13.3]: https://github.com/anttikivi/couplet-composer/compare/v0.13.2...v0.13.3
 [0.13.2]: https://github.com/anttikivi/couplet-composer/compare/v0.13.1...v0.13.2
