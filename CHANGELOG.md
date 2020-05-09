@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.14.2] - 2020-05-09
+
+### Fixed
+
+- The host target option missing for printing the current system when running the script in preset mode.
+
 ## [0.14.1] - 2020-05-09
 
 ### Added
