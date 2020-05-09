@@ -367,11 +367,11 @@ def _construct_tool_data(arguments, host_system):
         "make": create_make_tool_data(),
         "doxygen": create_doxygen_tool_data(),
         "linter": create_clang_tidy_tool_data(
-            linter_required=arguments.lint or arguments.only_lint,
+            linter_required=arguments.lint,
             tool_path=arguments.clang_tidy_binary
         ),
         "linter_replacements": create_clang_apply_replacements_tool_data(
-            linter_required=arguments.lint or arguments.only_lint,
+            linter_required=arguments.lint,
             tool_path=arguments.clang_apply_replacements_binary
         )
     }

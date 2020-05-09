@@ -156,6 +156,15 @@ def _add_common_build_arguments(parser, source_root):
     )
 
     parser.add_argument(
+        "--lint",
+        action="store_true",
+        help="run cland-tidy on {} and {}".format(
+            get_anthem_name(source_root=source_root),
+            get_ode_name(source_root=source_root)
+        )
+    )
+
+    parser.add_argument(
         "--ode-version",
         default=get_ode_version(source_root=source_root),
         help="set the version of {}".format(get_ode_name(
@@ -517,20 +526,10 @@ def create_argument_parser(source_root):
         dest="build_anthem_shared_lib"
     )
 
-    linter_group = compose.add_mutually_exclusive_group(required=False)
-
-    linter_group.add_argument(
-        "--lint",
+    compose.add_argument(
+        "--skip-build",
         action="store_true",
-        help="run cland-tidy on {} and {}".format(
-            get_anthem_name(source_root=source_root),
-            get_ode_name(source_root=source_root)
-        )
-    )
-    linter_group.add_argument(
-        "--only-lint",
-        action="store_true",
-        help="only run clang-tidy on {} and {} without building them".format(
+        help="generate build files for {} and {} without building them".format(
             get_anthem_name(source_root=source_root),
             get_ode_name(source_root=source_root)
         )
