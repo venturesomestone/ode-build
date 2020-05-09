@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.14.4] - 2020-05-09
+
+### Changed
+
+- The printing of the Linux distribution at the beginning to be simpler.
+
 ## [0.14.3] - 2020-05-09
 
 ### Fixed
@@ -338,7 +344,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.3...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.4...HEAD
+[0.14.4]: https://github.com/anttikivi/couplet-composer/compare/v0.14.3...v0.14.4
 [0.14.3]: https://github.com/anttikivi/couplet-composer/compare/v0.14.2...v0.14.3
 [0.14.2]: https://github.com/anttikivi/couplet-composer/compare/v0.14.1...v0.14.2
 [0.14.1]: https://github.com/anttikivi/couplet-composer/compare/v0.14.0...v0.14.1
