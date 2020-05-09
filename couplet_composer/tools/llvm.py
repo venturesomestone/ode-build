@@ -10,7 +10,11 @@ import os
 
 import distro
 
+from ..github import release
+
 from ..support.environment import get_temporary_directory
+
+from ..support.github_data import GitHubData
 
 from ..support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
@@ -25,7 +29,7 @@ def _get_llvm_version_info():
     Gives a tuple containing the version information of LLVM,
     i.e. (major, minor, patch).
     """
-    return 9, 0, 1
+    return 10, 0, 0
 
 
 @cached
@@ -140,20 +144,22 @@ def install_tool(install_info, tool_name, dry_run=None, print_debug=None):
         target=install_info.target
     )
 
-    url = "https://releases.llvm.org/{version}/{asset}.tar.xz".format(
-        version=install_info.version,
-        asset=asset_name
-    )
-    dest = os.path.join(tool_temp_dir, "llvm.tar.xz")
-
-    http.stream(
-        url=url,
-        destination=dest,
+    asset_path = release.download_asset(
+        path=temp_dir,
+        github_data=GitHubData(
+            owner="llvm",
+            name="llvm-project",
+            tag_name="llvmorg-{}".format(install_info.version),
+            asset_name="{}.tar.xz".format(asset_name)
+        ),
+        user_agent=install_info.github_user_agent,
+        api_token=install_info.github_api_token,
         host_system=install_info.host_system,
         dry_run=dry_run,
         print_debug=print_debug
     )
-    shell.tar(dest, tool_temp_dir, dry_run=dry_run, echo=print_debug)
+
+    shell.tar(asset_path, tool_temp_dir, dry_run=dry_run, echo=print_debug)
 
     local_dir = get_local_path(
         tools_root=install_info.tools_root,
