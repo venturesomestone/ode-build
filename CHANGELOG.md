@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.14.7] - 2020-05-09
+
+### Added
+
+- Support for the CMake option for indicating that the compilation of the binaries will be skipped.
+
 ## [0.14.6] - 2020-05-09
 
 ### Fixed
@@ -356,7 +362,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.6...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...HEAD
+[0.14.7]: https://github.com/anttikivi/couplet-composer/compare/v0.14.6...v0.14.7
 [0.14.6]: https://github.com/anttikivi/couplet-composer/compare/v0.14.5...v0.14.6
 [0.14.5]: https://github.com/anttikivi/couplet-composer/compare/v0.14.4...v0.14.5
 [0.14.4]: https://github.com/anttikivi/couplet-composer/compare/v0.14.3...v0.14.4
