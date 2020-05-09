@@ -7,7 +7,10 @@ from __future__ import print_function
 
 import logging
 import os
+import platform
 import sys
+
+import distro
 
 from datetime import datetime
 
@@ -16,9 +19,14 @@ from .support.environment import is_path_source_root
 from .support.mode_names import \
     get_composing_mode_name, get_configuring_mode_name, get_preset_mode_name
 
+from .support.platform_names import \
+    get_darwin_system_name, get_linux_system_name, get_windows_system_name
+
 from .support.project_names import get_project_name
 
 from .util.date import date_difference, to_date_string
+
+from .util.target import parse_target_from_argument_string
 
 from .__version__ import get_version
 
@@ -171,6 +179,23 @@ def _main():
     _set_logging_level(print_debug=arguments.print_debug)
 
     logging.info("Running %s version %s", get_project_name(), get_version())
+
+    host_target = parse_target_from_argument_string(arguments.host_target)
+
+    if host_target.system == get_linux_system_name():
+        logging.info(
+            "Running on %s %s (%s-%s)",
+            distro.name(),
+            distro.version(),
+            distro.id(),
+            distro.version()
+        )
+    elif host_target.system == get_darwin_system_name():
+        logging.info("Running on %s %s", "macOS", platform.mac_ver()[0])
+    elif host_target.system == get_windows_system_name():
+        logging.info("Running on %s %s", "Windows", platform.win32_ver()[0])
+    else:
+        logging.warning("Running on an unknown platform")
 
     _check_and_print_python_version()
 

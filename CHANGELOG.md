@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.14.1] - 2020-05-09
+
+### Added
+
+- Printing of the current platform at the beginning of the run.
+
+### Fixed
+
+- The check of the Linux distribution at the beginning of the LLVM installation.
+
 ## [0.14.0] - 2020-05-09
 
 ### Added
@@ -316,7 +326,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.0...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.1...HEAD
+[0.14.1]: https://github.com/anttikivi/couplet-composer/compare/v0.14.0...v0.14.1
 [0.14.0]: https://github.com/anttikivi/couplet-composer/compare/v0.13.4...v0.14.0
 [0.13.4]: https://github.com/anttikivi/couplet-composer/compare/v0.13.3...v0.13.4
 [0.13.3]: https://github.com/anttikivi/couplet-composer/compare/v0.13.2...v0.13.3
