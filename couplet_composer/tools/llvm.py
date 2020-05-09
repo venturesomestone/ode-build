@@ -114,7 +114,7 @@ def install_tool(install_info, tool_name, dry_run=None, print_debug=None):
     if install_info.host_system == get_windows_system_name():
         return None
     elif install_info.host_system == get_linux_system_name():
-        if "ubuntu" != distro.id()[0]:
+        if "ubuntu" != distro.id():
             return None
 
     temp_dir = get_temporary_directory(build_root=install_info.build_root)
