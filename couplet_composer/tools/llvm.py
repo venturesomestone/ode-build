@@ -142,7 +142,7 @@ def install_tool(install_info, tool_name, dry_run=None, print_debug=None):
 
     url = "https://releases.llvm.org/{version}/{asset}.tar.xz".format(
         version=install_info.version,
-        archive=asset_name
+        asset=asset_name
     )
     dest = os.path.join(tool_temp_dir, "llvm.tar.xz")
 
