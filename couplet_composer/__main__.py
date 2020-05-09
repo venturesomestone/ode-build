@@ -186,13 +186,7 @@ def _main():
         host_target = parse_target_from_argument_string(arguments.host_target)
 
         if host_target.system == get_linux_system_name():
-            logging.info(
-                "Running on %s %s (%s-%s)",
-                distro.name(),
-                distro.version(),
-                distro.id(),
-                distro.version()
-            )
+            logging.info("Running on %s %s", distro.name(), distro.version())
         elif host_target.system == get_darwin_system_name():
             logging.info("Running on %s %s", "macOS", platform.mac_ver()[0])
         elif host_target.system == get_windows_system_name():
