@@ -8,6 +8,7 @@ objects for each tool for the toolchain.
 """
 
 import importlib
+import logging
 
 from collections import namedtuple
 
@@ -102,6 +103,12 @@ def _create_tool_data(module_name, tool_name, tool_key=None):
         module_name
     )
     tool_module = importlib.import_module(package_name)
+    logging.debug(
+        "Creating a ToolData with module '%s' for tool '%s' (key: %s)",
+        module_name,
+        tool_name,
+        tool_key
+    )
     return ToolData(
         get_tool_key=(lambda: tool_key) if tool_key else (lambda: module_name),
         get_tool_name=lambda: tool_name,
@@ -150,7 +157,8 @@ def create_unix_compiler_tool_data(
         if module_name:
             return _create_tool_data(
                 module_name=module_name,
-                tool_name=tool_name
+                tool_name=tool_name,
+                tool_key=tool_key
             )
         else:
             return ToolData(
