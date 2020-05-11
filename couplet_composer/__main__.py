@@ -173,10 +173,16 @@ def _main():
             "The source root directory is invalid: %s",
             source_root
         )
-        logging.warning(
-            "The script didn't find the required file '%s'",
-            os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
-        )
+        if arguments.in_tree_build:
+            logging.warning(
+                "The script didn't find the required file '%s'",
+                os.path.join(source_root, "CMakeLists.txt")
+            )
+        else:
+            logging.warning(
+                "The script didn't find the required file '%s'",
+                os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+            )
         sys.exit(1)
 
     if arguments.composer_mode == get_configuring_mode_name() or \
