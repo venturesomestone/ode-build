@@ -71,11 +71,14 @@ def run_in_preset_mode(arguments, source_root):
     """
     logging.debug("Running %s in preset mode", get_project_name())
 
-    preset_file_names = [os.path.join(
-        source_root,
-        get_ode_repository_name(),
-        get_preset_file_path()
-    )]
+    if arguments.in_tree_build:
+        preset_file_names = [os.path.join(source_root, get_preset_file_path())]
+    else:
+        preset_file_names = [os.path.join(
+            source_root,
+            get_ode_repository_name(),
+            get_preset_file_path()
+        )]
 
     logging.debug("The preset files are %s", ", ".join(preset_file_names))
 
