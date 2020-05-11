@@ -46,38 +46,18 @@ def _get_project_values(source_root):
         return None
 
 
-@cached
-def get_ode_name(source_root):
-    """
-    Gives the name of Obliging Ode.
+def get_ode_name():
+    """Gives the name of Obliging Ode."""
+    return "Obliging Ode"
 
-    source_root -- Path to the directory that is the root of the
-    script run.
-    """
-    project_values = _get_project_values(source_root=source_root)
-    if project_values:
-        return project_values["ode"]["name"]
-    else:
-        return "ode-name-file-not-found"
+
+def get_anthem_name():
+    """Gives the name of Unsung Anthem."""
+    return "Unsung Anthem"
 
 
 @cached
-def get_anthem_name(source_root):
-    """
-    Gives the name of Unsung Anthem.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
-    """
-    project_values = _get_project_values(source_root=source_root)
-    if project_values:
-        return project_values["anthem"]["name"]
-    else:
-        return "anthem-name-file-not-found"
-
-
-@cached
-def get_ode_version(source_root):
+def get_ode_version():
     """
     Gives the default version of Obliging Ode.
 
@@ -121,68 +101,30 @@ def get_opengl_version(source_root):
         return "3.2"
 
 
-@cached
-def get_default_ode_window_name(source_root):
+def get_default_ode_window_name():
     """
     Gives the default name of the window of Obliging Ode.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
     """
-    return "ode-window"
+    return get_ode_name()
 
 
-@cached
-def get_default_anthem_window_name(source_root):
+def get_default_anthem_window_name():
     """
     Gives the default name of the window of Unsung Anthem.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
     """
-    return get_anthem_name(source_root=source_root)
+    return get_anthem_name()
 
 
-@cached
-def get_default_ode_logger_name(source_root):
-    """
-    Gives the default name of the logger of Obliging Ode.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
-    """
-    return "ode"
-
-
-@cached
-def get_default_anthem_logger_name(source_root):
-    """
-    Gives the default name of the logger of Unsung Anthem.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
-    """
-    return get_anthem_name(source_root=source_root)
-
-
-@cached
-def get_ode_binaries_base_name(source_root):
+def get_ode_binaries_base_name():
     """
     Gives the default base name for the binaries of Obliging Ode.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
     """
     return "ode"
 
 
-@cached
-def get_anthem_binaries_base_name(source_root):
+def get_anthem_binaries_base_name():
     """
     Gives the default base name for the binaries of Unsung
     Anthem.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
     """
     return "anthem"
