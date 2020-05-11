@@ -446,7 +446,10 @@ def run_in_configuring_mode(arguments, source_root):
     install_dependencies(
         dependencies_data=construct_dependencies_data(
             data_file=os.path.join(
-                get_project_root(source_root=source_root),
+                get_project_root(
+                    source_root=source_root,
+                    in_tree_build=arguments.in_tree_build
+                ),
                 get_project_dependencies_file_path()
             )
         ),
@@ -543,7 +546,10 @@ def run_in_composing_mode(arguments, source_root):
         toolchain=toolchain,
         arguments=arguments,
         host_system=current_platform(),
-        project_root=get_project_root(source_root=source_root),
+        project_root=get_project_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
         build_root=get_build_root(
             source_root=source_root,
             in_tree_build=arguments.in_tree_build
