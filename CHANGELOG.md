@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Changed
+
+- The in-tree build to have all of the directories in tree.
+
+### Removed
+
+- The command line options for setting the names of the loggers and windows of Obliging Ode and Unsung Anthem.
+
 ## [0.14.7] - 2020-05-09
 
 ### Added
