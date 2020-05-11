@@ -8,28 +8,38 @@ import os
 from ..util.cache import cached
 
 
-def is_path_source_root(path):
+def is_path_source_root(path, in_tree_build):
     """
     Checks if the given path is valid source root for the script.
 
     path -- The path that is to be checked.
+
+    in_tree_build -- Whether the build files are created in tree.
     """
     # The checkout has to have a CMake Listfile.
-    return os.path.exists(
-        os.path.join(path, "unsung-anthem", "CMakeLists.txt")
-    )
+    if in_tree_build:
+        return os.path.exists(os.path.join(path, "CMakeLists.txt"))
+    else:
+        return os.path.exists(
+            os.path.join(path, "unsung-anthem", "CMakeLists.txt")
+        )
 
 
 @cached
-def get_project_root(source_root):
+def get_project_root(source_root, in_tree_build):
     """
     Gives the path to the root directory of the project this
     script acts on.
 
     source_root -- Path to the directory that is the root of the
     script run.
+
+    in_tree_build -- Whether the build files are created in tree.
     """
-    return os.path.join(source_root, "unsung-anthem")
+    return source_root if in_tree_build else os.path.join(
+        source_root,
+        "unsung-anthem"
+    )
 
 
 @cached

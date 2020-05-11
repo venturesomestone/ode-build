@@ -24,6 +24,8 @@ from .support.platform_names import \
 
 from .support.project_names import get_project_name
 
+from .support.project_values import get_anthem_version, get_ode_version
+
 from .util.date import date_difference, to_date_string
 
 from .util.target import parse_target_from_argument_string
@@ -155,9 +157,18 @@ def _main():
     """
     Enters the program and runs it. This function isn't pure.
     """
+    argument_parser = _create_argument_parser()
+    arguments = _parse_arguments(argument_parser)
+
+    # The logging level is the first thing to be set so it can be
+    # utilized throughout the rest of the run.
+    _set_logging_level(print_debug=arguments.print_debug)
+
+    logging.info("Running %s version %s", get_project_name(), get_version())
+
     source_root = os.getenv("ODE_SOURCE_ROOT", os.getcwd())
 
-    if not is_path_source_root(source_root):
+    if not is_path_source_root(source_root, arguments.in_tree_build):
         logging.critical(
             "The source root directory is invalid: %s",
             source_root
@@ -168,14 +179,18 @@ def _main():
         )
         sys.exit(1)
 
-    argument_parser = _create_argument_parser()
-    arguments = _parse_arguments(argument_parser)
-
-    # The logging level is the first thing to be set so it can be
-    # utilized throughout the rest of the run.
-    _set_logging_level(print_debug=arguments.print_debug)
-
-    logging.info("Running %s version %s", get_project_name(), get_version())
+    # If no project version is got from command line, it should
+    # be read from the source root.
+    if not arguments.ode_version:
+        arguments.ode_version = get_ode_version(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        )
+    if not arguments.anthem_version:
+        arguments.anthem_version = get_anthem_version(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        )
 
     # Only configuring and composing modes have the option for host target.
     if arguments.composer_mode == get_configuring_mode_name() or \

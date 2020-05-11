@@ -25,10 +25,9 @@ from .support.file_paths import get_github_api_file_path
 from .support.platform_names import get_windows_system_name
 
 from .support.project_values import \
-    get_anthem_binaries_base_name, get_anthem_name, get_anthem_version, \
+    get_anthem_binaries_base_name, get_anthem_name, \
     get_default_anthem_window_name, get_default_ode_window_name, \
-    get_ode_binaries_base_name, get_ode_name, get_ode_version, \
-    get_opengl_version
+    get_ode_binaries_base_name, get_ode_name
 
 from .util.cache import cached
 
