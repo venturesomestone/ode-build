@@ -179,22 +179,23 @@ def _main():
         )
         sys.exit(1)
 
-    # If no project version is got from command line, it should
-    # be read from the source root.
-    if not arguments.ode_version:
-        arguments.ode_version = get_ode_version(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        )
-    if not arguments.anthem_version:
-        arguments.anthem_version = get_anthem_version(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        )
-
-    # Only configuring and composing modes have the option for host target.
     if arguments.composer_mode == get_configuring_mode_name() or \
             arguments.composer_mode == get_composing_mode_name():
+        # If no project version is got from command line, it
+        # should be read from the source root.
+        if not arguments.ode_version:
+            arguments.ode_version = get_ode_version(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            )
+        if not arguments.anthem_version:
+            arguments.anthem_version = get_anthem_version(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            )
+
+        # Only configuring and composing modes have the option
+        # for host target.
         host_target = parse_target_from_argument_string(arguments.host_target)
 
         if host_target.system == get_linux_system_name():
