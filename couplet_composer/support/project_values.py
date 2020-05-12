@@ -132,3 +132,14 @@ def get_anthem_binaries_base_name():
     Anthem.
     """
     return "anthem"
+
+
+@cached
+def get_scripts_base_directory_name(coverage):
+    """
+    Gives the name of the base directory where the Lua scripts
+    are copied to.
+
+    coverage -- Whether or not code coverage is enabled.
+    """
+    return "scripts_lib" if coverage else "lib"
