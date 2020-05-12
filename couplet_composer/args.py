@@ -351,6 +351,12 @@ def _add_common_build_arguments(parser):
              "the automatically resolved one"
     )
 
+    toolchain_group.add_argument(
+        "--enable-xvfb",
+        action="store_true",
+        help="use X virtual frame buffer when running the code coverage"
+    )
+
     # --------------------------------------------------------- #
     # OpenGL options
 

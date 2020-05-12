@@ -37,7 +37,8 @@ from .support.tool_data import \
     create_clang_apply_replacements_tool_data, create_clang_tidy_tool_data, \
     create_clang_tool_data, create_cmake_tool_data, create_doxygen_tool_data, \
     create_gcc_tool_data, create_git_tool_data, create_make_tool_data, \
-    create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data
+    create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data, \
+    create_xvfb_tool_data
 
 from .util.target import current_platform, parse_target_from_argument_string
 
@@ -376,7 +377,8 @@ def _construct_tool_data(arguments, host_system):
         "linter_replacements": create_clang_apply_replacements_tool_data(
             linter_required=arguments.lint,
             tool_path=arguments.clang_apply_replacements_binary
-        )
+        ),
+        "xvfb": create_xvfb_tool_data()
     }
 
 

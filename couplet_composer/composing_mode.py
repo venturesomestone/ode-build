@@ -431,11 +431,27 @@ def compose_project(
                     project_root=project_root,
                     dependencies_root=dependencies_root
                 )
+                coverage_env = {}
+                coverage_call = []
+                if arguments.enable_xvfb:
+                    coverage_env.update({"SDL_VIDEODRIVER": "x11"})
+                    coverage_env.update({"DISPLAY": ":99.0"})
+                    coverage_call.extend([
+                        toolchain.xvfb,
+                        "-n",
+                        "99",
+                        "--server-args",
+                        "-screen 0 1920x1080x24 +extension GLX",
+                        "-e",
+                        "/dev/stdout"
+                    ])
+                coverage_call.extend([
+                    toolchain.build_system,
+                    "{}_coverage".format(arguments.anthem_binaries_name)
+                ])
                 shell.call(
-                    [
-                        toolchain.build_system,
-                        "{}_coverage".format(arguments.anthem_binaries_name)
-                    ],
+                    coverage_call,
+                    env=coverage_env,
                     dry_run=arguments.dry_run,
                     echo=arguments.print_debug
                 )

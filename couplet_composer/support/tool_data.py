@@ -82,7 +82,7 @@ def list_tool_types():
         "doxygen",
         "linter",
         "linter_replacements",
-        "coverage"
+        "xvfb"
     ]
 
 
@@ -474,3 +474,21 @@ def create_clang_apply_replacements_tool_data(linter_required, tool_path=None):
                 ),
                 install_tool=lambda install_info, dry_run, print_debug: None
             )
+
+
+def create_xvfb_tool_data():
+    """
+    Creates the ToolData object of X virtual frame buffer for
+    toolchain.
+    """
+    return ToolData(
+        get_tool_key=lambda: "xvfb-run",
+        get_tool_name=lambda: "X virtual frame buffer",
+        get_searched_tool=lambda: "xvfb-run",
+        use_predefined_path=lambda: False,
+        get_required_local_version=lambda target, host_system: None,
+        get_local_executable=(
+                lambda tools_root, version, target, host_system: None
+            ),
+        install_tool=lambda install_info, dry_run, print_debug: None
+    )
