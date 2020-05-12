@@ -14,6 +14,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - The in-tree build to have all of the directories in tree.
 
+### Fixed
+
+- The Lua trying to build for macOS on Linux when using Unix Makefiles build generator.
+
 ### Removed
 
 - The command line options for setting the names of the loggers and windows of Obliging Ode and Unsung Anthem.
