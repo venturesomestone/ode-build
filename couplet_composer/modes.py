@@ -377,8 +377,7 @@ def _construct_tool_data(arguments, host_system):
         "linter_replacements": create_clang_apply_replacements_tool_data(
             linter_required=arguments.lint,
             tool_path=arguments.clang_apply_replacements_binary
-        ),
-        "coverage": create_lcov_tool_data()
+        )
     }
 
 
