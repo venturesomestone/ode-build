@@ -53,8 +53,7 @@ def get_build_root(source_root, in_tree_build):
 
     in_tree_build -- Whether the build files are created in-tree.
     """
-    return os.path.join(source_root, "build") if in_tree_build \
-        else os.path.join(source_root, "unsung-anthem", "build")
+    return os.path.join(source_root, "build")
 
 
 @cached
