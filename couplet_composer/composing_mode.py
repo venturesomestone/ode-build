@@ -203,8 +203,6 @@ def compose_project(
         "-DODE_OPENGL_VERSION_MINOR={}".format(
             arguments.opengl_version.split(".")[1]
         ),
-        "-DODE_WINDOW_NAME={}".format(arguments.ode_window_name),
-        "-DANTHEM_WINDOW_NAME={}".format(arguments.anthem_window_name),
         "-DODE_NAME={}".format(arguments.ode_binaries_name),
         "-DANTHEM_NAME={}".format(arguments.anthem_binaries_name)
     ]
