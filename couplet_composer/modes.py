@@ -36,9 +36,8 @@ from .support.project_names import get_ode_repository_name, get_project_name
 from .support.tool_data import \
     create_clang_apply_replacements_tool_data, create_clang_tidy_tool_data, \
     create_clang_tool_data, create_cmake_tool_data, create_doxygen_tool_data, \
-    create_gcc_tool_data, create_git_tool_data, create_lcov_tool_data, \
-    create_make_tool_data, create_msbuild_tool_data, create_msvc_tool_data, \
-    create_ninja_tool_data
+    create_gcc_tool_data, create_git_tool_data, create_make_tool_data, \
+    create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data
 
 from .util.target import current_platform, parse_target_from_argument_string
 
