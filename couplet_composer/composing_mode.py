@@ -460,6 +460,15 @@ def compose_project(
                 dry_run=arguments.dry_run,
                 echo=arguments.print_debug
             )
+            if arguments.coverage:
+                shell.call(
+                    [
+                        toolchain.build_system,
+                        "{}_coverage".format(arguments.anthem_binaries_name)
+                    ],
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
 
     shell.copytree(
         os.path.join(project_root, "util", "bin"),
