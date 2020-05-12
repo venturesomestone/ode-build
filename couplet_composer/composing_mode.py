@@ -163,6 +163,7 @@ def compose_project(
         "-DODE_BUILD_DOCS={}".format(
             "ON" if arguments.build_docs and toolchain.doxygen else "OFF"
         ),
+        "-DODE_CODE_COVERAGE={}".format("ON" if arguments.coverage else "OFF"),
         "-DODE_BUILD_STATIC={}".format(
             "ON" if arguments.build_ode_static_lib else "OFF"
         ),

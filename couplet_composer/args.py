@@ -160,6 +160,12 @@ def _add_common_build_arguments(parser):
     )
 
     parser.add_argument(
+        "--coverage",
+        action="store_true",
+        help="generate the code coverage information from the tests"
+    )
+
+    parser.add_argument(
         "--ode-version",
         default=None,
         help="set the version of {}".format(get_ode_name())

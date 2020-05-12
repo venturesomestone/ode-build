@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- Support for generating code coverage data from the tests.
+
 ### Changed
 
 - The in-tree build to have all of the directories in tree.
