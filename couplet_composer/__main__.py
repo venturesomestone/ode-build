@@ -166,7 +166,7 @@ def _main():
 
     logging.info("Running %s version %s", get_project_name(), get_version())
 
-    source_root = os.getenv("ODE_SOURCE_ROOT", os.getcwd())
+    source_root = os.getcwd()
 
     if not is_path_source_root(source_root, arguments.in_tree_build):
         logging.critical(
