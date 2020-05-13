@@ -602,7 +602,7 @@ def run_in_composing_mode(arguments, source_root):
         )
     )
 
-    if arguments.docs:
+    if arguments.build_docs:
         install_documentation(
             arguments=arguments,
             build_root=get_build_root(
