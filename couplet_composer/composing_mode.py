@@ -20,7 +20,8 @@ from .support.cmake_generators import \
 
 from .support.environment import \
     get_artefact_directory, get_build_root, get_composing_directory, \
-    get_destination_directory, get_running_directory, get_temporary_directory
+    get_destination_directory, get_documentation_directory, \
+    get_running_directory, get_temporary_directory
 
 from .support.file_paths import get_project_dependencies_file_path
 
@@ -526,6 +527,41 @@ def install_running_copies(arguments, build_root, destination_root):
     shell.copytree(
         os.path.join(destination_root, "lib"),
         os.path.join(running_path, "lib"),
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+
+
+def install_documentation(arguments, build_root, composing_root):
+    """
+    Installs the built Doxygen to its destination directories.
+
+    arguments -- The parsed command line arguments of the run.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
+
+    composing_root -- The directory for the actual build of the
+    project.
+    """
+    docs_path = get_documentation_directory(build_root=build_root)
+    html_path = os.path.join(docs_path, "html")
+
+    if os.path.exists(html_path):
+        shell.rmtree(
+            html_path,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+
+    shell.makedirs(
+        html_path,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+    shell.copytree(
+        os.path.join(composing_root, "docs", "doxygen", "html"),
+        html_path,
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )

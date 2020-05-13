@@ -151,6 +151,18 @@ def get_running_directory(build_root):
 
 
 @cached
+def get_documentation_directory(build_root):
+    """
+    Gives the path to the directory where the latest built
+    documentation is placed.
+
+    build_root -- Path to the directory that is the root of the
+    script build files.
+    """
+    return os.path.join(build_root, "docs")
+
+
+@cached
 def get_tools_directory(build_root, target):
     """
     Gives the path to the directory in the build directory that

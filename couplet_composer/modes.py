@@ -45,7 +45,7 @@ from .util import shell
 
 from .composing_mode import \
     compose_project, create_artefacts, create_composing_root, \
-    create_destination_root, install_running_copies
+    create_destination_root, install_documentation, install_running_copies
 
 from .configuring_mode import create_dependencies_root, create_tools_root
 
@@ -601,6 +601,24 @@ def run_in_composing_mode(arguments, source_root):
             version=arguments.anthem_version
         )
     )
+
+    if arguments.docs:
+        install_documentation(
+            arguments=arguments,
+            build_root=get_build_root(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            ),
+            composing_root=get_composing_directory(
+                build_root=get_build_root(
+                    source_root=source_root,
+                    in_tree_build=arguments.in_tree_build
+                ),
+                target=build_target,
+                cmake_generator=arguments.cmake_generator,
+                build_variant=arguments.build_variant
+            )
+        )
 
     create_artefacts(
         arguments=arguments,
