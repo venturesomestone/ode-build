@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 ### Removed
 
 - The command line options for setting the names of the loggers and windows of Obliging Ode and Unsung Anthem.
+- The support for specifying the source root by using `$ODE_SOURCE_ROOT`.
 
 ## [0.14.7] - 2020-05-09
 
