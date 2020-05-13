@@ -219,11 +219,18 @@ def _main():
 
     _check_and_print_python_version()
 
-    logging.debug(
-        "The source root '%s' is valid and the required file '%s' exists",
-        source_root,
-        os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
-    )
+    if arguments.in_tree_build:
+        logging.debug(
+            "The source root '%s' is valid and the required file '%s' exists",
+            source_root,
+            os.path.join(source_root, "CMakeLists.txt")
+        )
+    else:
+        logging.debug(
+            "The source root '%s' is valid and the required file '%s' exists",
+            source_root,
+            os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+        )
 
     return run_script(
         runner=_resolve_running_function(
