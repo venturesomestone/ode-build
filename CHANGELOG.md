@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Support for generating code coverage data from the tests.
 - Support for using X virtual frame buffer with the code coverage target.
+- Installation of the Doxygen documentation to a directory for easier reading.
 
 ### Changed
 
