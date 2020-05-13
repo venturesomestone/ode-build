@@ -217,6 +217,8 @@ def _main():
         else:
             logging.warning("Running on an unknown platform")
 
+        logging.info("The current build target is {}", arguments.host_target)
+
     _check_and_print_python_version()
 
     if arguments.in_tree_build:
