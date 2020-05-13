@@ -602,7 +602,7 @@ def run_in_composing_mode(arguments, source_root):
         )
     )
 
-    if arguments.build_docs:
+    if arguments.build_docs and toolchain.doxygen and not arguments.skip_build:
         install_documentation(
             arguments=arguments,
             build_root=get_build_root(
