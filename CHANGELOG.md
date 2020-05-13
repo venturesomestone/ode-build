@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.15.0] - 2020-05-13
+
 ### Added
 
 - Support for generating code coverage data from the tests.
@@ -381,7 +383,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...v0.15.0
 [0.14.7]: https://github.com/anttikivi/couplet-composer/compare/v0.14.6...v0.14.7
 [0.14.6]: https://github.com/anttikivi/couplet-composer/compare/v0.14.5...v0.14.6
 [0.14.5]: https://github.com/anttikivi/couplet-composer/compare/v0.14.4...v0.14.5
