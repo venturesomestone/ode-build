@@ -403,7 +403,7 @@ def compose_project(
             )
 
             libraries.copy_scripts(
-                path=os.path.join(destination_root, "lib"),
+                path=destination_root,
                 arguments=arguments,
                 project_root=project_root
             )
