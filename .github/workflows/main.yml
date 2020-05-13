@@ -1,24 +1,25 @@
 name: Main workflow
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
 
-    runs-on: ${{ matrix.runs-on }}
-
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        runs-on: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: [3.x]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: [2.x, 3.x]
 
     steps:
-    - uses: actions/checkout@v2.0.0
-    - name: Set up Python environment
-      uses: actions/setup-python@v1.1.1
+    - name: Check out the project
+      uses: actions/checkout@v2.1.0
+    - name: Set up Python
+      uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Cache dependencies on Linux
+        architecture: x64
+    - name: Cache dependencies (Linux)
       uses: actions/cache@v1.1.2
       if: startsWith(runner.os, 'Linux')
       with:
@@ -26,7 +27,7 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    - name: Cache dependencies on macOS
+    - name: Cache dependencies (macOS)
       uses: actions/cache@v1.1.2
       if: startsWith(runner.os, 'macOS')
       with:
@@ -34,7 +35,7 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    - name: Cache dependencies on Windows
+    - name: Cache dependencies (Windows)
       uses: actions/cache@v1.1.2
       if: startsWith(runner.os, 'Windows')
       with:

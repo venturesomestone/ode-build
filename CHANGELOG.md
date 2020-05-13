@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [0.15.0] - 2020-05-13
+
+### Added
+
+- Support for generating code coverage data from the tests.
+- Support for using X virtual frame buffer with the code coverage target.
+- Installation of the Doxygen documentation to a directory for easier reading.
+
+### Changed
+
+- The in-tree build to have all of the directories in tree.
+
+### Fixed
+
+- The Lua trying to build for macOS on Linux when using Unix Makefiles build generator.
+
+### Removed
+
+- The command line options for setting the names of the loggers and windows of Obliging Ode and Unsung Anthem.
+- The support for specifying the source root by using `$ODE_SOURCE_ROOT`.
+
 ## [0.14.7] - 2020-05-09
 
 ### Added
@@ -362,7 +383,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...v0.15.0
 [0.14.7]: https://github.com/anttikivi/couplet-composer/compare/v0.14.6...v0.14.7
 [0.14.6]: https://github.com/anttikivi/couplet-composer/compare/v0.14.5...v0.14.6
 [0.14.5]: https://github.com/anttikivi/couplet-composer/compare/v0.14.4...v0.14.5

@@ -81,7 +81,8 @@ def list_tool_types():
         "make",
         "doxygen",
         "linter",
-        "linter_replacements"
+        "linter_replacements",
+        "xvfb"
     ]
 
 
@@ -389,19 +390,32 @@ def create_ninja_tool_data():
     return _create_tool_data(module_name="ninja", tool_name="Ninja")
 
 
-def create_clang_tidy_tool_data(linter_required, tool_path=None):
+def create_clang_tools_tool_data(
+    tool_key,
+    tool_name,
+    tool,
+    linter_required,
+    tool_path
+):
     """
-    Creates the ToolData object of Clang-Tidy for toolchain.
+    Creates the ToolData object of clang-apply-replacements for
+    toolchain.
+
+    tool_key -- The name of the tool module.
+
+    tool_name -- The name of the tool.
+
+    tool -- The tool that will be searched from the system.
 
     linter_required -- Whether or not the current build
     configuration requires linter.
 
-    tool_path -- An optional predefined path to clang-tidy.
+    tool_path -- An optional predefined path to the tool.
     """
     if tool_path:
         return ToolData(
-            get_tool_key=lambda: "clang-tidy",
-            get_tool_name=lambda: "Clang-Tidy",
+            get_tool_key=lambda: tool_key,
+            get_tool_name=lambda: tool_name,
             get_searched_tool=lambda: tool_path,
             use_predefined_path=lambda: True,
             get_required_local_version=lambda target, host_system: None,
@@ -413,15 +427,15 @@ def create_clang_tidy_tool_data(linter_required, tool_path=None):
     else:
         if linter_required:
             return _create_tool_data(
-                module_name="clang_tidy",
-                tool_name="Clang-Tidy",
-                tool_key="clang-tidy"
+                module_name=tool_key,
+                tool_name=tool_name,
+                tool_key=tool
             )
         else:
             return ToolData(
-                get_tool_key=lambda: "clang-tidy",
-                get_tool_name=lambda: "Clang-Tidy",
-                get_searched_tool=lambda: "clang-tidy",
+                get_tool_key=lambda: tool_key,
+                get_tool_name=lambda: tool_name,
+                get_searched_tool=lambda: tool,
                 use_predefined_path=lambda: False,
                 get_required_local_version=lambda target, host_system: None,
                 get_local_executable=(
@@ -429,6 +443,24 @@ def create_clang_tidy_tool_data(linter_required, tool_path=None):
                 ),
                 install_tool=lambda install_info, dry_run, print_debug: None
             )
+
+
+def create_clang_tidy_tool_data(linter_required, tool_path=None):
+    """
+    Creates the ToolData object of Clang-Tidy for toolchain.
+
+    linter_required -- Whether or not the current build
+    configuration requires linter.
+
+    tool_path -- An optional predefined path to clang-tidy.
+    """
+    return create_clang_tools_tool_data(
+        tool_key="clang_tidy",
+        tool_name="Clang-Tidy",
+        tool="clang-tidy",
+        linter_required=linter_required,
+        tool_path=tool_path
+    )
 
 
 def create_clang_apply_replacements_tool_data(linter_required, tool_path=None):
@@ -442,34 +474,28 @@ def create_clang_apply_replacements_tool_data(linter_required, tool_path=None):
     tool_path -- An optional predefined path to
     clang-apply-replacements.
     """
-    if tool_path:
-        return ToolData(
-            get_tool_key=lambda: "clang-apply-replacements",
-            get_tool_name=lambda: "clang-apply-replacements",
-            get_searched_tool=lambda: tool_path,
-            use_predefined_path=lambda: True,
-            get_required_local_version=lambda target, host_system: None,
-            get_local_executable=(
+    return create_clang_tools_tool_data(
+        tool_key="clang_apply_replacements",
+        tool_name="clang-apply-replacements",
+        tool="clang-apply-replacements",
+        linter_required=linter_required,
+        tool_path=tool_path
+    )
+
+
+def create_xvfb_tool_data():
+    """
+    Creates the ToolData object of X virtual frame buffer for
+    toolchain.
+    """
+    return ToolData(
+        get_tool_key=lambda: "xvfb-run",
+        get_tool_name=lambda: "X virtual frame buffer",
+        get_searched_tool=lambda: "xvfb-run",
+        use_predefined_path=lambda: False,
+        get_required_local_version=lambda target, host_system: None,
+        get_local_executable=(
                 lambda tools_root, version, target, host_system: None
             ),
-            install_tool=lambda install_info, dry_run, print_debug: None
-        )
-    else:
-        if linter_required:
-            return _create_tool_data(
-                module_name="clang_apply_replacements",
-                tool_name="clang-apply-replacements",
-                tool_key="clang-apply-replacements"
-            )
-        else:
-            return ToolData(
-                get_tool_key=lambda: "clang-apply-replacements",
-                get_tool_name=lambda: "clang-apply-replacements",
-                get_searched_tool=lambda: "clang-apply-replacements",
-                use_predefined_path=lambda: False,
-                get_required_local_version=lambda target, host_system: None,
-                get_local_executable=(
-                    lambda tools_root, version, target, host_system: None
-                ),
-                install_tool=lambda install_info, dry_run, print_debug: None
-            )
+        install_tool=lambda install_info, dry_run, print_debug: None
+    )

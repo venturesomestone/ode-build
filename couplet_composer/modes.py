@@ -10,7 +10,6 @@ from __future__ import print_function
 
 import logging
 import os
-import platform
 import sys
 import time
 
@@ -37,7 +36,8 @@ from .support.tool_data import \
     create_clang_apply_replacements_tool_data, create_clang_tidy_tool_data, \
     create_clang_tool_data, create_cmake_tool_data, create_doxygen_tool_data, \
     create_gcc_tool_data, create_git_tool_data, create_make_tool_data, \
-    create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data
+    create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data, \
+    create_xvfb_tool_data
 
 from .util.target import current_platform, parse_target_from_argument_string
 
@@ -45,7 +45,7 @@ from .util import shell
 
 from .composing_mode import \
     compose_project, create_artefacts, create_composing_root, \
-    create_destination_root, install_running_copies
+    create_destination_root, install_documentation, install_running_copies
 
 from .configuring_mode import create_dependencies_root, create_tools_root
 
@@ -71,11 +71,14 @@ def run_in_preset_mode(arguments, source_root):
     """
     logging.debug("Running %s in preset mode", get_project_name())
 
-    preset_file_names = [os.path.join(
-        source_root,
-        get_ode_repository_name(),
-        get_preset_file_path()
-    )]
+    if arguments.in_tree_build:
+        preset_file_names = [os.path.join(source_root, get_preset_file_path())]
+    else:
+        preset_file_names = [os.path.join(
+            source_root,
+            get_ode_repository_name(),
+            get_preset_file_path()
+        )]
 
     logging.debug("The preset files are %s", ", ".join(preset_file_names))
 
@@ -373,7 +376,8 @@ def _construct_tool_data(arguments, host_system):
         "linter_replacements": create_clang_apply_replacements_tool_data(
             linter_required=arguments.lint,
             tool_path=arguments.clang_apply_replacements_binary
-        )
+        ),
+        "xvfb": create_xvfb_tool_data()
     }
 
 
@@ -446,7 +450,10 @@ def run_in_configuring_mode(arguments, source_root):
     install_dependencies(
         dependencies_data=construct_dependencies_data(
             data_file=os.path.join(
-                get_project_root(source_root=source_root),
+                get_project_root(
+                    source_root=source_root,
+                    in_tree_build=arguments.in_tree_build
+                ),
                 get_project_dependencies_file_path()
             )
         ),
@@ -543,7 +550,10 @@ def run_in_composing_mode(arguments, source_root):
         toolchain=toolchain,
         arguments=arguments,
         host_system=current_platform(),
-        project_root=get_project_root(source_root=source_root),
+        project_root=get_project_root(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ),
         build_root=get_build_root(
             source_root=source_root,
             in_tree_build=arguments.in_tree_build
@@ -591,6 +601,24 @@ def run_in_composing_mode(arguments, source_root):
             version=arguments.anthem_version
         )
     )
+
+    if arguments.build_docs and toolchain.doxygen and not arguments.skip_build:
+        install_documentation(
+            arguments=arguments,
+            build_root=get_build_root(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            ),
+            composing_root=get_composing_directory(
+                build_root=get_build_root(
+                    source_root=source_root,
+                    in_tree_build=arguments.in_tree_build
+                ),
+                target=build_target,
+                cmake_generator=arguments.cmake_generator,
+                build_variant=arguments.build_variant
+            )
+        )
 
     create_artefacts(
         arguments=arguments,

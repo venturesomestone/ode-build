@@ -19,7 +19,6 @@ from __future__ import print_function
 import logging
 import os
 import pipes
-import platform
 import shutil
 import subprocess
 import sys

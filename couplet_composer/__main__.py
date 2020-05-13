@@ -24,6 +24,8 @@ from .support.platform_names import \
 
 from .support.project_names import get_project_name
 
+from .support.project_values import get_anthem_version, get_ode_version
+
 from .util.date import date_difference, to_date_string
 
 from .util.target import parse_target_from_argument_string
@@ -33,17 +35,14 @@ from .__version__ import get_version
 from . import args, modes
 
 
-def _create_argument_parser(source_root):
+def _create_argument_parser():
     """
     Creates the argument parser for the script and returns the
     namespace containing the parsed arguments. This function
     isn't pure but depends on the global Python variable
     containing the command line arguments.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
     """
-    return args.create_argument_parser(source_root=source_root)
+    return args.create_argument_parser()
 
 
 def _parse_arguments(parser):
@@ -158,20 +157,7 @@ def _main():
     """
     Enters the program and runs it. This function isn't pure.
     """
-    source_root = os.getenv("ODE_SOURCE_ROOT", os.getcwd())
-
-    if not is_path_source_root(source_root):
-        logging.critical(
-            "The source root directory is invalid: %s",
-            source_root
-        )
-        logging.warning(
-            "The script didn't find the required file '%s'",
-            os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
-        )
-        sys.exit(1)
-
-    argument_parser = _create_argument_parser(source_root=source_root)
+    argument_parser = _create_argument_parser()
     arguments = _parse_arguments(argument_parser)
 
     # The logging level is the first thing to be set so it can be
@@ -180,9 +166,42 @@ def _main():
 
     logging.info("Running %s version %s", get_project_name(), get_version())
 
-    # Only configuring and composing modes have the option for host target.
+    source_root = os.getcwd()
+
+    if not is_path_source_root(source_root, arguments.in_tree_build):
+        logging.critical(
+            "The source root directory is invalid: %s",
+            source_root
+        )
+        if arguments.in_tree_build:
+            logging.warning(
+                "The script didn't find the required file '%s'",
+                os.path.join(source_root, "CMakeLists.txt")
+            )
+        else:
+            logging.warning(
+                "The script didn't find the required file '%s'",
+                os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+            )
+        sys.exit(1)
+
     if arguments.composer_mode == get_configuring_mode_name() or \
             arguments.composer_mode == get_composing_mode_name():
+        # If no project version is got from command line, it
+        # should be read from the source root.
+        if not arguments.ode_version:
+            arguments.ode_version = get_ode_version(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            )
+        if not arguments.anthem_version:
+            arguments.anthem_version = get_anthem_version(
+                source_root=source_root,
+                in_tree_build=arguments.in_tree_build
+            )
+
+        # Only configuring and composing modes have the option
+        # for host target.
         host_target = parse_target_from_argument_string(arguments.host_target)
 
         if host_target.system == get_linux_system_name():
@@ -198,13 +217,22 @@ def _main():
         else:
             logging.warning("Running on an unknown platform")
 
+        logging.info("The current build target is %s", arguments.host_target)
+
     _check_and_print_python_version()
 
-    logging.debug(
-        "The source root '%s' is valid and the required file '%s' exists",
-        source_root,
-        os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
-    )
+    if arguments.in_tree_build:
+        logging.debug(
+            "The source root '%s' is valid and the required file '%s' exists",
+            source_root,
+            os.path.join(source_root, "CMakeLists.txt")
+        )
+    else:
+        logging.debug(
+            "The source root '%s' is valid and the required file '%s' exists",
+            source_root,
+            os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+        )
 
     return run_script(
         runner=_resolve_running_function(

@@ -5,7 +5,6 @@
 
 import argparse
 import multiprocessing
-import platform
 
 from .support.build_variant import \
     get_build_variant_names, get_debug_variant_name, \
@@ -25,13 +24,8 @@ from .support.file_paths import get_github_api_file_path
 from .support.platform_names import get_windows_system_name
 
 from .support.project_values import \
-    get_anthem_binaries_base_name, get_anthem_name, get_anthem_version, \
-    get_default_anthem_logger_name, get_default_ode_logger_name, \
-    get_default_anthem_window_name, get_default_ode_window_name, \
-    get_ode_binaries_base_name, get_ode_name, get_ode_version, \
-    get_opengl_version
-
-from .util.cache import cached
+    get_anthem_binaries_base_name, get_anthem_name, \
+    get_ode_binaries_base_name, get_ode_name
 
 from .util.target import current_platform, resolve_host_target
 
@@ -121,7 +115,7 @@ def _add_common_arguments(parser):
     return parser
 
 
-def _add_common_build_arguments(parser, source_root):
+def _add_common_build_arguments(parser):
     """
     Adds the options common to configure and compose parsers to
     the given parser. This function isn't pure as it modifies the
@@ -129,9 +123,6 @@ def _add_common_build_arguments(parser, source_root):
     arguments.
 
     parser -- The parser to which the arguments are added.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
     """
     parser.add_argument(
         "-t",
@@ -159,24 +150,26 @@ def _add_common_build_arguments(parser, source_root):
         "--lint",
         action="store_true",
         help="run cland-tidy on {} and {}".format(
-            get_anthem_name(source_root=source_root),
-            get_ode_name(source_root=source_root)
+            get_anthem_name(),
+            get_ode_name()
         )
     )
 
     parser.add_argument(
+        "--coverage",
+        action="store_true",
+        help="generate the code coverage information from the tests"
+    )
+
+    parser.add_argument(
         "--ode-version",
-        default=get_ode_version(source_root=source_root),
-        help="set the version of {}".format(get_ode_name(
-            source_root=source_root
-        ))
+        default=None,
+        help="set the version of {}".format(get_ode_name())
     )
     parser.add_argument(
         "--anthem-version",
-        default=get_anthem_version(source_root=source_root),
-        help="set the version of {}".format(get_anthem_name(
-            source_root=source_root
-        ))
+        default=None,
+        help="set the version of {}".format(get_anthem_name())
     )
 
     # --------------------------------------------------------- #
@@ -354,6 +347,12 @@ def _add_common_build_arguments(parser, source_root):
              "the automatically resolved one"
     )
 
+    toolchain_group.add_argument(
+        "--enable-xvfb",
+        action="store_true",
+        help="use X virtual frame buffer when running the code coverage"
+    )
+
     # --------------------------------------------------------- #
     # OpenGL options
 
@@ -361,7 +360,7 @@ def _add_common_build_arguments(parser, source_root):
 
     opengl_group.add_argument(
         "--opengl-version",
-        default=get_opengl_version(source_root=source_root),
+        default="3.2",
         help="set the version of OpenGL"
     )
 
@@ -413,16 +412,11 @@ def _add_common_build_arguments(parser, source_root):
     return parser
 
 
-def create_argument_parser(source_root):
-    """
-    Creates the argument parser of the program.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
-    """
+def create_argument_parser():
+    """Creates the argument parser of the program."""
     parser = argparse.ArgumentParser(
-        description=_get_description(source_root=source_root),
-        epilog=_get_epilog(source_root=source_root),
+        description=_get_description(),
+        epilog=_get_epilog(),
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
@@ -439,14 +433,10 @@ def create_argument_parser(source_root):
     configure = _add_common_build_arguments(  # noqa: F841
         _add_common_arguments(
             subparsers.add_parser("configure")
-        ),
-        source_root=source_root
+        )
     )
     compose = _add_common_build_arguments(
-        _add_common_arguments(
-            subparsers.add_parser("compose")
-        ),
-        source_root=source_root
+        _add_common_arguments(subparsers.add_parser("compose"))
     )
 
     # --------------------------------------------------------- #
@@ -496,24 +486,20 @@ def create_argument_parser(source_root):
     compose.add_argument(
         "--ode-static-lib",
         action="store_true",
-        help="build the static library of {}".format(
-            get_ode_name(source_root=source_root)
-        ),
+        help="build the static library of {}".format(get_ode_name()),
         dest="build_ode_static_lib"
     )
     compose.add_argument(
         "--ode-shared-lib",
         action="store_true",
-        help="build the shared library of {}".format(
-            get_ode_name(source_root=source_root)
-        ),
+        help="build the shared library of {}".format(get_ode_name()),
         dest="build_ode_shared_lib"
     )
     compose.add_argument(
         "--anthem-static-lib",
         action="store_true",
         help="build the static library of {} instead of the executable".format(
-            get_anthem_name(source_root=source_root)
+            get_anthem_name()
         ),
         dest="build_anthem_static_lib"
     )
@@ -521,7 +507,7 @@ def create_argument_parser(source_root):
         "--anthem-shared-lib",
         action="store_true",
         help="build the shared library of {} instead of the executable".format(
-            get_anthem_name(source_root=source_root)
+            get_anthem_name()
         ),
         dest="build_anthem_shared_lib"
     )
@@ -530,8 +516,8 @@ def create_argument_parser(source_root):
         "--skip-build",
         action="store_true",
         help="generate build files for {} and {} without building them".format(
-            get_anthem_name(source_root=source_root),
-            get_ode_name(source_root=source_root)
+            get_anthem_name(),
+            get_ode_name()
         )
     )
 
@@ -581,58 +567,24 @@ def create_argument_parser(source_root):
     # Compose: Feature options
 
     compose.add_argument(
-        "--ode-window-name",
-        default=get_default_ode_window_name(source_root=source_root),
-        help="set name of the default window of {}".format(get_ode_name(
-            source_root=source_root
-        ))
-    )
-    compose.add_argument(
-        "--anthem-window-name",
-        default=get_default_anthem_window_name(source_root=source_root),
-        help="set name of the default window of {}".format(get_anthem_name(
-            source_root=source_root
-        ))
-    )
-    compose.add_argument(
-        "--ode-logger-name",
-        default=get_default_ode_logger_name(source_root=source_root),
-        help="set name of the default logger of {}".format(get_ode_name(
-            source_root=source_root
-        ))
-    )
-    compose.add_argument(
-        "--anthem-logger-name",
-        default=get_default_anthem_logger_name(source_root=source_root),
-        help="set name of the default logger of {}".format(get_anthem_name(
-            source_root=source_root
-        ))
-    )
-    compose.add_argument(
         "--ode-binaries-name",
-        default=get_ode_binaries_base_name(source_root=source_root),
-        help="set base name of the binaries of {}".format(get_ode_name(
-            source_root=source_root
-        ))
+        default=get_ode_binaries_base_name(),
+        help="set base name of the binaries of {}".format(get_ode_name())
     )
     compose.add_argument(
         "--anthem-binaries-name",
-        default=get_anthem_binaries_base_name(source_root=source_root),
-        help="set base name of the binaries of {}".format(get_anthem_name(
-            source_root=source_root
-        ))
+        default=get_anthem_binaries_base_name(),
+        help="set base name of the binaries of {}".format(get_anthem_name())
     )
     compose.add_argument(
         "--anthem-artefacts-name",
-        default=get_anthem_binaries_base_name(source_root=source_root),
-        help="set base name of the artefacts of {}".format(get_anthem_name(
-            source_root=source_root
-        )),
+        default=get_anthem_binaries_base_name(),
+        help="set base name of the artefacts of {}".format(get_anthem_name()),
         dest="anthem_artefacts_name"
     )
     compose.add_argument(
         "--anthem-artifacts-name",
-        default=get_anthem_binaries_base_name(source_root=source_root),
+        default=get_anthem_binaries_base_name(),
         help="alias for '--anthem-artefacts-name'",
         dest="anthem_artefacts_name"
     )
@@ -673,32 +625,17 @@ def create_argument_parser(source_root):
     return parser
 
 
-@cached
-def _get_description(source_root):
-    """
-    Gives the command line description of Couplet Composer.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
-    """
+def _get_description():
+    """Gives the command line description of Couplet Composer."""
     return """
 Use this tool to build, test, and prepare binary distribution archives of
 {ode} and {anthem}.  This tool contains configuration mode that is used prepare
 the build environment and composing mode that builds the project.
-""".format(
-        ode=get_ode_name(source_root=source_root),
-        anthem=get_anthem_name(source_root=source_root)
-    )
+""".format(ode=get_ode_name(), anthem=get_anthem_name())
 
 
-@cached
-def _get_epilog(source_root):
-    """
-    Gives the command line epilogue of Couplet Composer.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
-    """
+def _get_epilog():
+    """Gives the command line epilogue of Couplet Composer."""
     return """
 Using option presets:
 
@@ -713,23 +650,18 @@ Using option presets:
   need to create a new preset.
 
 
-Environment variables
----------------------
-
-This script respects the following environment variables if you set them:
-
-ODE_SOURCE_ROOT: a directory containing the source directory for
-{ode} and {anthem}.
+Environment
+-----------
 
 Couplet Composer expects the sources to be laid out in the following way:
 
-   $ODE_SOURCE_ROOT/unsung-anthem
-                   /build           (created automatically)
-                   /script          (created automatically)
+    $root/unsung-anthem (source code of {ode} and {anthem})
+         /build          (created automatically)
+         /script         (created automatically)
 
-The directory '$ODE_SOURCE_ROOT/script' is created only if the script is run
-by using the scripts in the repository of {ode} and {anthem}, which
-is the recommended way.
+The directory '$root/script' is created only if the script is run by using the
+utility scripts in the repository of {ode} and {anthem}, which is the
+recommended way.
 
 Preparing to run this script
 ----------------------------
@@ -821,7 +753,4 @@ build system.  It is a policy decision aimed at making the builds uniform
 across all environments and easily reproducible by engineers who are not
 familiar with the details of the setups of other systems or automated
 environments.
-""".format(
-        ode=get_ode_name(source_root=source_root),
-        anthem=get_anthem_name(source_root=source_root)
-    )
+""".format(ode=get_ode_name(), anthem=get_anthem_name())

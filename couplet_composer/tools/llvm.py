@@ -21,7 +21,7 @@ from ..support.platform_names import \
 
 from ..util.cache import cached
 
-from ..util import http, shell
+from ..util import shell
 
 
 def _get_llvm_version_info():

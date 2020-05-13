@@ -49,7 +49,7 @@ def _build_with_make(
     if host_system == get_darwin_system_name():
         make_call.extend(["macosx"])
     elif host_system == get_linux_system_name():
-        make_call.extend(["macosx"])
+        make_call.extend(["linux"])
     shell.call(make_call, dry_run=dry_run, echo=print_debug)
     make_install_call = [
         toolchain.build_system,

@@ -10,7 +10,8 @@ import json
 import logging
 import os
 import stat
-import sys
+
+from .compose import libraries
 
 from .dependencies import googletest
 
@@ -19,12 +20,15 @@ from .support.cmake_generators import \
 
 from .support.environment import \
     get_artefact_directory, get_build_root, get_composing_directory, \
-    get_destination_directory, get_running_directory, get_temporary_directory
+    get_destination_directory, get_documentation_directory, \
+    get_running_directory, get_temporary_directory
 
 from .support.file_paths import get_project_dependencies_file_path
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
+
+from .support.project_values import get_scripts_base_directory_name
 
 from .util import shell
 
@@ -163,6 +167,7 @@ def compose_project(
         "-DODE_BUILD_DOCS={}".format(
             "ON" if arguments.build_docs and toolchain.doxygen else "OFF"
         ),
+        "-DODE_CODE_COVERAGE={}".format("ON" if arguments.coverage else "OFF"),
         "-DODE_BUILD_STATIC={}".format(
             "ON" if arguments.build_ode_static_lib else "OFF"
         ),
@@ -202,10 +207,9 @@ def compose_project(
         "-DODE_OPENGL_VERSION_MINOR={}".format(
             arguments.opengl_version.split(".")[1]
         ),
-        "-DODE_LOGGER_NAME={}".format(arguments.ode_logger_name),
-        "-DODE_WINDOW_NAME={}".format(arguments.ode_window_name),
-        "-DANTHEM_LOGGER_NAME={}".format(arguments.anthem_logger_name),
-        "-DANTHEM_WINDOW_NAME={}".format(arguments.anthem_window_name),
+        "-DODE_SCRIPTS_BASE_DIRECTORY={}".format(
+            get_scripts_base_directory_name(coverage=arguments.coverage)
+        ),
         "-DODE_NAME={}".format(arguments.ode_binaries_name),
         "-DANTHEM_NAME={}".format(arguments.anthem_binaries_name)
     ]
@@ -398,60 +402,11 @@ def compose_project(
                 echo=arguments.print_debug
             )
 
-            script_dest_dir = os.path.join(destination_root, "lib")
-
-            if os.path.exists(script_dest_dir):
-                shell.rmtree(
-                    script_dest_dir,
-                    dry_run=arguments.dry_run,
-                    echo=arguments.print_debug
-                )
-
-            shell.makedirs(
-                script_dest_dir,
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
+            libraries.copy_scripts(
+                path=destination_root,
+                arguments=arguments,
+                project_root=project_root
             )
-
-            shell.copytree(
-                os.path.join(project_root, "script", "anthem"),
-                os.path.join(script_dest_dir, "anthem"),
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-            shell.copytree(
-                os.path.join(project_root, "script", "ode"),
-                os.path.join(script_dest_dir, "ode"),
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-            shell.copytree(
-                os.path.join(project_root, "script", "test", "anthem"),
-                os.path.join(script_dest_dir, "anthem"),
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-            shell.copytree(
-                os.path.join(project_root, "script", "test", "ode"),
-                os.path.join(script_dest_dir, "ode"),
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-
-            lua_scripts = []
-
-            for dirpath, dirnames, filenames in os.walk(script_dest_dir):
-                for filename in filenames:
-                    if filename == "CMakeLists.txt":
-                        shell.rm(
-                            os.path.join(dirpath, filename),
-                            dry_run=arguments.dry_run,
-                            echo=arguments.print_debug
-                        )
-                    else:
-                        lua_scripts.append(os.path.join(dirpath, filename))
-
-            logging.debug("The Lua scripts are:\n\n%s", "\n".join(lua_scripts))
         else:
             shell.call(
                 [toolchain.build_system],
@@ -463,6 +418,43 @@ def compose_project(
                 dry_run=arguments.dry_run,
                 echo=arguments.print_debug
             )
+            if arguments.coverage:
+                libraries.copy_scripts(
+                    path=composing_root,
+                    arguments=arguments,
+                    project_root=project_root
+                )
+                libraries.copy_sdl_libraries(
+                    path=composing_root,
+                    arguments=arguments,
+                    host_system=host_system,
+                    project_root=project_root,
+                    dependencies_root=dependencies_root
+                )
+                coverage_env = {}
+                coverage_call = []
+                if arguments.enable_xvfb:
+                    coverage_env.update({"SDL_VIDEODRIVER": "x11"})
+                    coverage_env.update({"DISPLAY": ":99.0"})
+                    coverage_call.extend([
+                        toolchain.xvfb,
+                        "-n",
+                        "99",
+                        "--server-args",
+                        "-screen 0 1920x1080x24 +extension GLX",
+                        "-e",
+                        "/dev/stdout"
+                    ])
+                coverage_call.extend([
+                    toolchain.build_system,
+                    "{}_coverage".format(arguments.anthem_binaries_name)
+                ])
+                shell.call(
+                    coverage_call,
+                    env=coverage_env,
+                    dry_run=arguments.dry_run,
+                    echo=arguments.print_debug
+                )
 
     shell.copytree(
         os.path.join(project_root, "util", "bin"),
@@ -486,134 +478,13 @@ def compose_project(
         mode_launch_test | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
     )
 
-    if host_system != get_windows_system_name():
-        logging.debug(
-            "Found the following SDL libraries:\n\n{}".format(
-                "\n".join(
-                    [f for f in os.listdir(os.path.join(
-                        dependencies_root,
-                        "lib"
-                    )) if "libSDL" in f]
-                )
-            )
-        )
-
-    if host_system == get_darwin_system_name():
-        sdl_dynamic_lib_name = "libSDL2-2.0.0.dylib"
-        sdl_dynamic_lib = os.path.join(
-            destination_root,
-            "bin",
-            sdl_dynamic_lib_name
-        )
-        if os.path.exists(sdl_dynamic_lib):
-            shell.rm(
-                sdl_dynamic_lib,
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-        shell.copy(
-            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name),
-            os.path.join(destination_root, "bin"),
-            dry_run=arguments.dry_run,
-            echo=arguments.print_debug
-        )
-    elif host_system == get_linux_system_name():
-        def _copy_linux_sdl(name):
-            dynamic_lib = os.path.join(destination_root, "bin", name)
-            if os.path.exists(dynamic_lib):
-                shell.rm(
-                    dynamic_lib,
-                    dry_run=arguments.dry_run,
-                    echo=arguments.print_debug
-                )
-            shell.copy(
-                os.path.join(dependencies_root, "lib", name),
-                os.path.join(destination_root, "bin"),
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-
-        dependency_version_file = os.path.join(
-            project_root,
-            get_project_dependencies_file_path()
-        )
-        with open(dependency_version_file) as f:
-            sdl_version = json.load(f)["sdl"]["version"]
-
-        sdl_major, sdl_minor, sdl_patch = sdl_version.split(".")
-
-        _copy_linux_sdl("libSDL2-2.0.so.{}.{}.0".format(sdl_minor, sdl_patch))
-
-        def _link_linux_sdl(name, src):
-            new_link = os.path.join(destination_root, "bin", name)
-            if os.path.exists(new_link):
-                shell.rm(
-                    new_link,
-                    dry_run=arguments.dry_run,
-                    echo=arguments.print_debug
-                )
-            original = os.path.join(destination_root, "bin", src)
-            shell.link(
-                original,
-                new_link,
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-
-        _link_linux_sdl(
-            name="libSDL2-2.0.so.{}".format(sdl_major),
-            src="libSDL2-2.0.so.{}.{}.0".format(sdl_minor, sdl_patch)
-        )
-        _link_linux_sdl(
-            name="libSDL2-2.0.so",
-            src="libSDL2-2.0.so.{}".format(sdl_major)
-        )
-        _link_linux_sdl(name="libSDL2.so", src="libSDL2-2.0.so")
-    elif host_system == get_windows_system_name():
-        sdl_dynamic_lib_name = "SDL2.dll"
-        sdl_dynamic_lib_d_name = "SDL2d.dll"
-        sdl_dynamic_lib = os.path.join(
-            destination_root,
-            "bin",
-            sdl_dynamic_lib_name
-        )
-        sdl_dynamic_lib_d = os.path.join(
-            destination_root,
-            "bin",
-            sdl_dynamic_lib_d_name
-        )
-        if os.path.exists(sdl_dynamic_lib):
-            shell.rm(
-                sdl_dynamic_lib,
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-        if os.path.exists(sdl_dynamic_lib_d):
-            shell.rm(
-                sdl_dynamic_lib_d,
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-        if os.path.exists(
-            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name)
-        ):
-            shell.copy(
-                os.path.join(dependencies_root, "lib", sdl_dynamic_lib_name),
-                os.path.join(destination_root, "bin"),
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-        elif os.path.exists(
-            os.path.join(dependencies_root, "lib", sdl_dynamic_lib_d_name)
-        ):
-            shell.copy(
-                os.path.join(dependencies_root, "lib", sdl_dynamic_lib_d_name),
-                os.path.join(destination_root, "bin"),
-                dry_run=arguments.dry_run,
-                echo=arguments.print_debug
-            )
-        else:
-            logging.debug("No dynamic SDL library was found for Windows")
+    libraries.copy_sdl_libraries(
+        path=os.path.join(destination_root, "bin"),
+        arguments=arguments,
+        host_system=host_system,
+        project_root=project_root,
+        dependencies_root=dependencies_root
+    )
 
 
 def install_running_copies(arguments, build_root, destination_root):
@@ -656,6 +527,41 @@ def install_running_copies(arguments, build_root, destination_root):
     shell.copytree(
         os.path.join(destination_root, "lib"),
         os.path.join(running_path, "lib"),
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+
+
+def install_documentation(arguments, build_root, composing_root):
+    """
+    Installs the built Doxygen to its destination directories.
+
+    arguments -- The parsed command line arguments of the run.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
+
+    composing_root -- The directory for the actual build of the
+    project.
+    """
+    docs_path = get_documentation_directory(build_root=build_root)
+    html_path = os.path.join(docs_path, "html")
+
+    if os.path.exists(html_path):
+        shell.rmtree(
+            html_path,
+            dry_run=arguments.dry_run,
+            echo=arguments.print_debug
+        )
+
+    shell.makedirs(
+        html_path,
+        dry_run=arguments.dry_run,
+        echo=arguments.print_debug
+    )
+    shell.copytree(
+        os.path.join(composing_root, "docs", "doxygen", "html"),
+        html_path,
         dry_run=arguments.dry_run,
         echo=arguments.print_debug
     )
