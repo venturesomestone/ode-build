@@ -650,23 +650,18 @@ Using option presets:
   need to create a new preset.
 
 
-Environment variables
----------------------
-
-This script respects the following environment variables if you set them:
-
-ODE_SOURCE_ROOT: a directory containing the source directory for
-{ode} and {anthem}.
+Environment
+-----------
 
 Couplet Composer expects the sources to be laid out in the following way:
 
-   $ODE_SOURCE_ROOT/unsung-anthem
-                   /build           (created automatically)
-                   /script          (created automatically)
+    $root/unsung-anthem (source code of {ode} and {anthem})
+         /build          (created automatically)
+         /script         (created automatically)
 
-The directory '$ODE_SOURCE_ROOT/script' is created only if the script is run
-by using the scripts in the repository of {ode} and {anthem}, which
-is the recommended way.
+The directory '$root/script' is created only if the script is run by using the
+utility scripts in the repository of {ode} and {anthem}, which is the
+recommended way.
 
 Preparing to run this script
 ----------------------------
