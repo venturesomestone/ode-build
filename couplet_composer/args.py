@@ -5,7 +5,6 @@
 
 import argparse
 import multiprocessing
-import platform
 
 from .support.build_variant import \
     get_build_variant_names, get_debug_variant_name, \
@@ -26,10 +25,7 @@ from .support.platform_names import get_windows_system_name
 
 from .support.project_values import \
     get_anthem_binaries_base_name, get_anthem_name, \
-    get_default_anthem_window_name, get_default_ode_window_name, \
     get_ode_binaries_base_name, get_ode_name
-
-from .util.cache import cached
 
 from .util.target import current_platform, resolve_host_target
 

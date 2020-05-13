@@ -10,7 +10,6 @@ import json
 import logging
 import os
 import stat
-import sys
 
 from .compose import libraries
 
