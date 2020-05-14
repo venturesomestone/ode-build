@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Changed
+
+- The structure of the function used to perform actions common to different runs of the scripts.
+
 ## [0.15.0] - 2020-05-13
 
 ### Added
