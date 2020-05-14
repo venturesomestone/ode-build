@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 ### Changed
 
 - The structure of the function used to perform actions common to different runs of the scripts.
+- The structure of the composing mode module to be split up into more functions.
 
 ## [0.15.0] - 2020-05-13
 

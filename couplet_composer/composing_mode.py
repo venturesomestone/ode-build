@@ -110,22 +110,17 @@ def create_destination_root(
     return destination_root
 
 
-def compose_project(
-    source_root,
+def _create_cmake_call(
     toolchain,
     arguments,
     host_system,
     project_root,
-    build_root,
-    composing_root,
     destination_root,
     dependencies_root
 ):
     """
-    Builds the project this script acts on.
-
-    source_root -- Path to the directory that is the root of the
-    script run.
+    Creates the CMake call that is used to generate the build
+    files for the project.
 
     toolchain -- The toolchain object of the run.
 
@@ -135,12 +130,6 @@ def compose_project(
 
     project_root -- The root directory of the project this script
     acts on.
-
-    build_root -- The path to the root directory that is used for
-    all created files and directories.
-
-    composing_root -- The directory for the actual build of the
-    project.
 
     destination_root -- The directory where the built product is
     placed in.
@@ -266,6 +255,55 @@ def compose_project(
 
     # if host_system == get_windows_system_name():
     #     cmake_call.extend(["-DODE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebug"])
+
+    return cmake_call
+
+
+def compose_project(
+    source_root,
+    toolchain,
+    arguments,
+    host_system,
+    project_root,
+    build_root,
+    composing_root,
+    destination_root,
+    dependencies_root
+):
+    """
+    Builds the project this script acts on.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+
+    toolchain -- The toolchain object of the run.
+
+    arguments -- The parsed command line arguments of the run.
+
+    host_system -- The system this script is run on.
+
+    project_root -- The root directory of the project this script
+    acts on.
+
+    build_root -- The path to the root directory that is used for
+    all created files and directories.
+
+    composing_root -- The directory for the actual build of the
+    project.
+
+    destination_root -- The directory where the built product is
+    placed in.
+
+    dependencies_root -- The directory for the dependencies.
+    """
+    cmake_call = _create_cmake_call(
+        toolchain=toolchain,
+        arguments=arguments,
+        host_system=host_system,
+        project_root=project_root,
+        destination_root=destination_root,
+        dependencies_root=dependencies_root
+    )
 
     if host_system != get_windows_system_name():
         if isinstance(toolchain.compiler, dict):
