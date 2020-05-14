@@ -6,7 +6,6 @@ This support module contains the functions for running the
 composing mode of the script.
 """
 
-import json
 import logging
 import os
 import stat
@@ -22,8 +21,6 @@ from .support.environment import \
     get_artefact_directory, get_build_root, get_composing_directory, \
     get_destination_directory, get_documentation_directory, \
     get_running_directory, get_temporary_directory
-
-from .support.file_paths import get_project_dependencies_file_path
 
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
