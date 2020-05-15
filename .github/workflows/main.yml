@@ -69,5 +69,8 @@ jobs:
     - name: Generate code coverage reports
       run: pytest --cov=./
       if: matrix.coverage == true
+    - name: Upload the coverage reports
+      run: codecov
+      if: matrix.coverage==true
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
