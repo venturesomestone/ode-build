@@ -71,6 +71,6 @@ jobs:
       if: matrix.coverage == true
     - name: Upload the coverage reports
       run: codecov
-      if: matrix.coverage==true
+      if: matrix.coverage == true
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
