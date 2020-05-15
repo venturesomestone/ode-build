@@ -15,6 +15,12 @@ jobs:
         - os: ubuntu-latest
           python-version: 3.x
           coverage: true
+        - os: windows-latest
+          python-version: 3.x
+          coverage: true
+        - os: macos-latest
+          python-version: 3.x
+          coverage: true
 
     steps:
     - name: Check out the project
