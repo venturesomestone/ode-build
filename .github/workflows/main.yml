@@ -10,6 +10,11 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: [2.x, 3.x]
+        coverage: [false]
+        include:
+        - os: ubuntu-latest
+          python-version: 3.x
+          coverage: true
 
     steps:
     - name: Check out the project
@@ -59,3 +64,12 @@ jobs:
       run: |
         pip install pytest
         pytest
+      if: matrix.coverage == false
+    - name: Install coverage dependencies
+      run: pip install codecov pytest pytest-cov
+      if: matrix.coverage == true
+    - name: Generate code coverage reports
+      run: pytest --cov=./
+      if: matrix.coverage == true
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
