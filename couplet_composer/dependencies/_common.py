@@ -12,7 +12,14 @@ from ..util.cache import cached
 
 
 @cached
-def should_install(path, dependencies_root, version, installed_version):
+def should_install(
+    path,
+    dependencies_root,
+    version,
+    target,
+    host_system,
+    installed_version
+):
     """
     Tells whether the build of the dependency should be skipped.
 
@@ -23,6 +30,11 @@ def should_install(path, dependencies_root, version, installed_version):
     for the current build target.
 
     version -- The full version number of the dependency.
+
+    target -- The target system of the build represented by a
+    Target.
+
+    host_system -- The system this script is run on.
 
     installed_version -- The version of the dependecy that is
     written to the JSON file containing the currently installed
