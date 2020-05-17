@@ -11,7 +11,6 @@ from __future__ import print_function
 import logging
 import os
 import sys
-import time
 
 from .github.access import get_api_access_values
 
