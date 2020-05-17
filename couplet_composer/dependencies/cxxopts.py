@@ -6,6 +6,8 @@ This support module contains the functions related to the
 building and finding cxxopts.
 """
 
+from functools import partial
+
 import os
 
 from ..github import tag
@@ -26,37 +28,43 @@ from . import _common
 ################################################################
 
 
-@cached
-def should_install(
-    dependencies_root,
-    version,
-    target,
-    host_system,
-    installed_version
-):
-    """
-    Tells whether the build of the dependency should be skipped.
+should_install = partial(
+    _common.should_install,
+    path=os.path.join("include", "cxxopts.hpp")
+)
 
-    dependencies_root -- The root directory of the dependencies
-    for the current build target.
 
-    version -- The full version number of the dependency.
+# @cached
+# def should_install(
+#     dependencies_root,
+#     version,
+#     target,
+#     host_system,
+#     installed_version
+# ):
+#     """
+#     Tells whether the build of the dependency should be skipped.
 
-    target -- The target system of the build represented by a
-    Target.
+#     dependencies_root -- The root directory of the dependencies
+#     for the current build target.
 
-    host_system -- The system this script is run on.
+#     version -- The full version number of the dependency.
 
-    installed_version -- The version of the dependecy that is
-    written to the JSON file containing the currently installed
-    versions of the dependencies.
-    """
-    return _common.should_install(
-        path=os.path.join("include", "cxxopts.hpp"),
-        dependencies_root=dependencies_root,
-        version=version,
-        installed_version=installed_version
-    )
+#     target -- The target system of the build represented by a
+#     Target.
+
+#     host_system -- The system this script is run on.
+
+#     installed_version -- The version of the dependecy that is
+#     written to the JSON file containing the currently installed
+#     versions of the dependencies.
+#     """
+#     return _common.should_install(
+#         path=os.path.join("include", "cxxopts.hpp"),
+#         dependencies_root=dependencies_root,
+#         version=version,
+#         installed_version=installed_version
+#     )
 
 
 def install_dependency(install_info, dry_run=None, print_debug=None):
