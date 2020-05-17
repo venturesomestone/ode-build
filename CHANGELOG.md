@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - The structure of the function used to perform actions common to different runs of the scripts.
 - The structure of the composing mode module to be split up into more functions.
+- The two functions for copying Windows libraries in SDL dependency module into one.
 
 ## [0.15.0] - 2020-05-13
 

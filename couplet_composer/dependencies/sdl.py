@@ -144,6 +144,7 @@ def _build_using_cmake(
         dependencies_root,
         temporary_directory,
         build_variant,
+        extension,
         dry_run=None,
         print_debug=None
     ):
@@ -161,6 +162,8 @@ def _build_using_cmake(
 
         build_variant -- The build variant used to build the project.
 
+        extension -- The file extension of the library files.
+
         dry_run -- Whether the commands are only printed instead
         of running them.
 
@@ -169,12 +172,12 @@ def _build_using_cmake(
         lib_file = os.path.join(
             dependencies_root,
             "lib",
-            "{}.lib".format(library_name)
+            "{}.{}".format(library_name, extension)
         )
         lib_file_d = os.path.join(
             dependencies_root,
             "lib",
-            "{}d.lib".format(library_name)
+            "{}d.{}".format(library_name, extension)
         )
 
         if os.path.exists(lib_file):
@@ -187,13 +190,13 @@ def _build_using_cmake(
             temporary_directory,
             "build",
             build_variant,
-            "{}.lib".format(library_name)
+            "{}.{}".format(library_name, extension)
         )
         temp_lib_file_d = os.path.join(
             temporary_directory,
             "build",
             build_variant,
-            "{}d.lib".format(library_name)
+            "{}d.{}".format(library_name, extension)
         )
 
         if os.path.exists(temp_lib_file):
@@ -216,83 +219,6 @@ def _build_using_cmake(
                 library_name
             )
 
-    def _copy_windows_dynamic_lib(
-        library_name,
-        dependencies_root,
-        temporary_directory,
-        build_variant,
-        dry_run=None,
-        print_debug=None
-    ):
-        """
-        Copies a built dynamic SDL library on Windows from the
-        temporary build directory to the dependency directory.
-
-        library_name -- The name of the library to copy.
-
-        dependencies_root -- The root directory of the
-        dependencies for the current build target.
-
-        temporary_directory -- The temporary directory used for
-        downloading and building SDL.
-
-        build_variant -- The build variant used to build the project.
-
-        dry_run -- Whether the commands are only printed instead
-        of running them.
-
-        print_debug -- Whether debug output should be printed.
-        """
-        lib_file = os.path.join(
-            dependencies_root,
-            "lib",
-            "{}.dll".format(library_name)
-        )
-        lib_file_d = os.path.join(
-            dependencies_root,
-            "lib",
-            "{}d.dll".format(library_name)
-        )
-
-        if os.path.exists(lib_file):
-            shell.rm(lib_file, dry_run=dry_run, echo=print_debug)
-
-        if os.path.exists(lib_file_d):
-            shell.rm(lib_file_d, dry_run=dry_run, echo=print_debug)
-
-        temp_lib_file = os.path.join(
-            temporary_directory,
-            "build",
-            build_variant,
-            "{}.dll".format(library_name)
-        )
-        temp_lib_file_d = os.path.join(
-            temporary_directory,
-            "build",
-            build_variant,
-            "{}d.dll".format(library_name)
-        )
-
-        if os.path.exists(temp_lib_file):
-            shell.copy(
-                temp_lib_file,
-                lib_file,
-                dry_run=dry_run,
-                echo=print_debug
-            )
-        elif os.path.exists(temp_lib_file_d):
-            shell.copy(
-                temp_lib_file_d,
-                lib_file_d,
-                dry_run=dry_run,
-                echo=print_debug
-            )
-        else:
-            logging.debug(
-                "No built dynamic SDL library was found with name %s",
-                library_name
-            )
-
     if cmake_generator == get_visual_studio_16_cmake_generator_name():
         if not os.path.isdir(os.path.join(dependencies_root, "lib")):
             shell.makedirs(
@@ -306,6 +232,7 @@ def _build_using_cmake(
             dependencies_root=dependencies_root,
             temporary_directory=temporary_directory,
             build_variant=build_variant,
+            extension="lib",
             dry_run=dry_run,
             print_debug=print_debug
         )
@@ -314,6 +241,7 @@ def _build_using_cmake(
             dependencies_root=dependencies_root,
             temporary_directory=temporary_directory,
             build_variant=build_variant,
+            extension="lib",
             dry_run=dry_run,
             print_debug=print_debug
         )
@@ -322,14 +250,16 @@ def _build_using_cmake(
             dependencies_root=dependencies_root,
             temporary_directory=temporary_directory,
             build_variant=build_variant,
+            extension="lib",
             dry_run=dry_run,
             print_debug=print_debug
         )
-        _copy_windows_dynamic_lib(
+        _copy_windows_lib(
             library_name="SDL2",
             dependencies_root=dependencies_root,
             temporary_directory=temporary_directory,
             build_variant=build_variant,
+            extension="dll",
             dry_run=dry_run,
             print_debug=print_debug
         )
