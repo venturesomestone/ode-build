@@ -19,6 +19,8 @@ from ..util.cache import cached
 
 from ..util import shell
 
+from . import _common
+
 
 ################################################################
 # DEPENDENCY DATA FUNCTIONS
@@ -50,10 +52,12 @@ def should_install(
     written to the JSON file containing the currently installed
     versions of the dependencies.
     """
-    if not installed_version or version != installed_version:
-        return True
-
-    return not os.path.exists(os.path.join(dependencies_root, "src", "glad.c"))
+    return _common.should_install(
+        path=os.path.join("src", "glad.c"),
+        dependencies_root=dependencies_root,
+        version=version,
+        installed_version=installed_version
+    )
 
 
 def install_dependency(install_info, dry_run=None, print_debug=None):

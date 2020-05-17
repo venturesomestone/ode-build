@@ -22,7 +22,7 @@ from .support.mode_names import \
 from .support.platform_names import \
     get_darwin_system_name, get_linux_system_name, get_windows_system_name
 
-from .support.project_names import get_project_name
+from .support.project_names import get_ode_repository_name, get_project_name
 
 from .support.project_values import get_anthem_version, get_ode_version
 
@@ -181,7 +181,11 @@ def _main():
         else:
             logging.warning(
                 "The script didn't find the required file '%s'",
-                os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+                os.path.join(
+                    source_root,
+                    get_ode_repository_name(),
+                    "CMakeLists.txt"
+                )
             )
         sys.exit(1)
 
@@ -231,7 +235,11 @@ def _main():
         logging.debug(
             "The source root '%s' is valid and the required file '%s' exists",
             source_root,
-            os.path.join(source_root, "unsung-anthem", "CMakeLists.txt")
+            os.path.join(
+                source_root,
+                get_ode_repository_name(),
+                "CMakeLists.txt"
+            )
         )
 
     return run_script(

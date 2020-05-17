@@ -21,6 +21,8 @@ from ..util.cache import cached
 
 from ..util import http, shell
 
+from . import _common
+
 
 def _build_with_make(
     toolchain,
@@ -126,17 +128,14 @@ def should_install(
     written to the JSON file containing the currently installed
     versions of the dependencies.
     """
-    if not installed_version or version != installed_version:
-        return True
-
-    if host_system == get_windows_system_name():
-        return not os.path.exists(
-            os.path.join(dependencies_root, "lib", "lua.lib")
-        )
-    else:
-        return not os.path.exists(
-            os.path.join(dependencies_root, "lib", "liblua.a")
-        )
+    return _common.should_install(
+        path=os.path.join("lib", "lua.lib")
+        if host_system == get_windows_system_name()
+        else os.path.join("lib", "liblua.a"),
+        dependencies_root=dependencies_root,
+        version=version,
+        installed_version=installed_version
+    )
 
 
 def install_dependency(install_info, dry_run=None, print_debug=None):

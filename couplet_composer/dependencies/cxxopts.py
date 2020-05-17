@@ -6,6 +6,8 @@ This support module contains the functions related to the
 building and finding cxxopts.
 """
 
+from functools import partial
+
 import os
 
 from ..github import tag
@@ -17,6 +19,8 @@ from ..support.github_data import GitHubData
 from ..util.cache import cached
 
 from ..util import shell
+
+from . import _common
 
 
 ################################################################
@@ -49,11 +53,11 @@ def should_install(
     written to the JSON file containing the currently installed
     versions of the dependencies.
     """
-    if not installed_version or version != installed_version:
-        return True
-
-    return not os.path.exists(
-        os.path.join(dependencies_root, "include", "cxxopts.hpp")
+    return _common.should_install(
+        path=os.path.join("include", "cxxopts.hpp"),
+        dependencies_root=dependencies_root,
+        version=version,
+        installed_version=installed_version
     )
 
 
