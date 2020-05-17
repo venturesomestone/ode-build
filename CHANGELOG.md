@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- A helper module for the dependencies’ `should_install` functions
+
 ### Changed
 
 - The structure of the function used to perform actions common to different runs of the scripts.
