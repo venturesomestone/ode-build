@@ -28,43 +28,37 @@ from . import _common
 ################################################################
 
 
-should_install = partial(
-    _common.should_install,
-    path=os.path.join("include", "cxxopts.hpp")
-)
+@cached
+def should_install(
+    dependencies_root,
+    version,
+    target,
+    host_system,
+    installed_version
+):
+    """
+    Tells whether the build of the dependency should be skipped.
 
+    dependencies_root -- The root directory of the dependencies
+    for the current build target.
 
-# @cached
-# def should_install(
-#     dependencies_root,
-#     version,
-#     target,
-#     host_system,
-#     installed_version
-# ):
-#     """
-#     Tells whether the build of the dependency should be skipped.
+    version -- The full version number of the dependency.
 
-#     dependencies_root -- The root directory of the dependencies
-#     for the current build target.
+    target -- The target system of the build represented by a
+    Target.
 
-#     version -- The full version number of the dependency.
+    host_system -- The system this script is run on.
 
-#     target -- The target system of the build represented by a
-#     Target.
-
-#     host_system -- The system this script is run on.
-
-#     installed_version -- The version of the dependecy that is
-#     written to the JSON file containing the currently installed
-#     versions of the dependencies.
-#     """
-#     return _common.should_install(
-#         path=os.path.join("include", "cxxopts.hpp"),
-#         dependencies_root=dependencies_root,
-#         version=version,
-#         installed_version=installed_version
-#     )
+    installed_version -- The version of the dependecy that is
+    written to the JSON file containing the currently installed
+    versions of the dependencies.
+    """
+    return _common.should_install(
+        path=os.path.join("include", "cxxopts.hpp"),
+        dependencies_root=dependencies_root,
+        version=version,
+        installed_version=installed_version
+    )
 
 
 def install_dependency(install_info, dry_run=None, print_debug=None):
