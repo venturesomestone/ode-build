@@ -15,31 +15,15 @@ import time
 
 from .github.access import get_api_access_values
 
-from .support.cmake_generators import \
-    get_make_cmake_generator_name, get_ninja_cmake_generator_name, \
-    get_visual_studio_16_cmake_generator_name
-
-from .support.compiler_toolchains import \
-    get_clang_toolchain_name, get_gcc_toolchain_name, get_msvc_toolchain_name
-
 from .support.environment import \
-    get_build_root, get_composing_directory, get_dependencies_directory, \
+    get_build_root, get_composing_directory, \
     get_dependency_version_data_file, get_destination_directory, \
     get_project_root, get_tools_directory
 
 from .support.file_paths import \
     get_preset_file_path, get_project_dependencies_file_path
 
-from .support.mode_names import get_configuring_mode_name
-
 from .support.project_names import get_ode_repository_name, get_project_name
-
-from .support.tool_data import \
-    create_clang_apply_replacements_tool_data, create_clang_tidy_tool_data, \
-    create_clang_tool_data, create_cmake_tool_data, create_doxygen_tool_data, \
-    create_gcc_tool_data, create_git_tool_data, create_make_tool_data, \
-    create_msbuild_tool_data, create_msvc_tool_data, create_ninja_tool_data, \
-    create_xvfb_tool_data
 
 from .util.target import current_platform, parse_target_from_argument_string
 
@@ -131,11 +115,14 @@ def run_in_configuring_mode(arguments, source_root):
     build_target = parse_target_from_argument_string(arguments.host_target)
 
     # Check the directories.
-    # build_root = create_build_root(source_root=source_root)
     tools_root = create_tools_root(
         source_root=source_root,
         in_tree_build=arguments.in_tree_build,
         target=build_target
+    )
+    build_root = get_build_root(
+        source_root=source_root,
+        in_tree_build=arguments.in_tree_build
     )
 
     logging.debug("Creating the toolchain for the run")
@@ -158,10 +145,7 @@ def run_in_configuring_mode(arguments, source_root):
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         tools_root=tools_root,
-        build_root=get_build_root(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        ),
+        build_root=build_root,
         read_only=False,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
@@ -197,15 +181,9 @@ def run_in_configuring_mode(arguments, source_root):
         github_api_token=github_api_token,
         opengl_version=arguments.opengl_version,
         dependencies_root=dependencies_root,
-        build_root=get_build_root(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        ),
+        build_root=build_root,
         version_data_file=get_dependency_version_data_file(
-            build_root=get_build_root(
-                source_root=source_root,
-                in_tree_build=arguments.in_tree_build
-            ),
+            build_root=build_root,
             target=build_target,
             build_variant=arguments.build_variant
         ),
@@ -236,13 +214,16 @@ def run_in_composing_mode(arguments, source_root):
     build_target = parse_target_from_argument_string(arguments.host_target)
 
     # Check the directories.
-    # build_root = create_build_root(source_root=source_root)
     tools_root = get_tools_directory(
         build_root=get_build_root(
             source_root=source_root,
             in_tree_build=arguments.in_tree_build
         ),
         target=build_target
+    )
+    build_root = get_build_root(
+        source_root=source_root,
+        in_tree_build=arguments.in_tree_build
     )
 
     logging.debug("Creating the toolchain for the run")
@@ -265,10 +246,7 @@ def run_in_composing_mode(arguments, source_root):
         github_user_agent=github_user_agent,
         github_api_token=github_api_token,
         tools_root=tools_root,
-        build_root=get_build_root(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        ),
+        build_root=build_root,
         read_only=True,
         dry_run=arguments.dry_run,
         print_debug=arguments.print_debug
@@ -285,10 +263,7 @@ def run_in_composing_mode(arguments, source_root):
             source_root=source_root,
             in_tree_build=arguments.in_tree_build
         ),
-        build_root=get_build_root(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        ),
+        build_root=build_root,
         composing_root=create_composing_root(
             source_root=source_root,
             in_tree_build=arguments.in_tree_build,
@@ -317,15 +292,9 @@ def run_in_composing_mode(arguments, source_root):
 
     install_running_copies(
         arguments=arguments,
-        build_root=get_build_root(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        ),
+        build_root=build_root,
         destination_root=get_destination_directory(
-            build_root=get_build_root(
-                source_root=source_root,
-                in_tree_build=arguments.in_tree_build
-            ),
+            build_root=build_root,
             target=build_target,
             cmake_generator=arguments.cmake_generator,
             build_variant=arguments.build_variant,
@@ -336,15 +305,9 @@ def run_in_composing_mode(arguments, source_root):
     if arguments.build_docs and toolchain.doxygen and not arguments.skip_build:
         install_documentation(
             arguments=arguments,
-            build_root=get_build_root(
-                source_root=source_root,
-                in_tree_build=arguments.in_tree_build
-            ),
+            build_root=build_root,
             composing_root=get_composing_directory(
-                build_root=get_build_root(
-                    source_root=source_root,
-                    in_tree_build=arguments.in_tree_build
-                ),
+                build_root=build_root,
                 target=build_target,
                 cmake_generator=arguments.cmake_generator,
                 build_variant=arguments.build_variant
@@ -354,10 +317,7 @@ def run_in_composing_mode(arguments, source_root):
     create_artefacts(
         arguments=arguments,
         host_system=current_platform(),
-        build_root=get_build_root(
-            source_root=source_root,
-            in_tree_build=arguments.in_tree_build
-        )
+        build_root=build_root
     )
 
     return 0
