@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [1.0.0-rc.1] - 2020-05-17
+
 ### Added
 
 - A helper module for the dependencies’ `should_install` functions
@@ -393,7 +395,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0-rc.1...HEAD
+[1.0.0-rc.1]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...v1.0.0-rc.1
 [0.15.0]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...v0.15.0
 [0.14.7]: https://github.com/anttikivi/couplet-composer/compare/v0.14.6...v0.14.7
 [0.14.6]: https://github.com/anttikivi/couplet-composer/compare/v0.14.5...v0.14.6
