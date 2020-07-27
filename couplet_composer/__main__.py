@@ -103,6 +103,11 @@ def _check_and_print_python_version():
                 "January, 2020",
                 to_date_string(date_difference(python2_end_of_life, now))
             )
+            logging.warning(
+                "At some point in the future, %s will drop its support for "
+                "Python 2.7",
+                get_project_name()
+            )
     else:
         logging.debug("You're using Python %s", sys.version)
         logging.debug("You seem to have an excellent taste!")

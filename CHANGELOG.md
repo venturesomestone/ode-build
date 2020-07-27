@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- Note about ending supporting Python 2.7 at some point in the future.
+
 ## [1.0.0-rc.1] - 2020-05-17
 
 ### Added
