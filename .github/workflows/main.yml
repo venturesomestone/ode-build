@@ -11,16 +11,6 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: [2.x, 3.x]
         coverage: [false]
-        include:
-        - os: ubuntu-latest
-          python-version: 3.x
-          coverage: true
-        - os: windows-latest
-          python-version: 3.x
-          coverage: true
-        - os: macos-latest
-          python-version: 3.x
-          coverage: true
 
     steps:
     - name: Check out the project
@@ -63,20 +53,7 @@ jobs:
         pip install flake8
         flake8 . --count --select=E9,F63,F7,F82 --builtins=FileNotFoundError --show-source --statistics --exclude=./couplet_composer/llvm/run-clang-tidy.py
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics --exclude=./couplet_composer/llvm/run-clang-tidy.py
-      if: matrix.coverage == false
     - name: Test with pytest
       run: |
         pip install pytest
         pytest
-      if: matrix.coverage == false
-    - name: Install coverage dependencies
-      run: pip install codecov pytest pytest-cov
-      if: matrix.coverage == true
-    - name: Generate code coverage reports
-      run: pytest --cov=./
-      if: matrix.coverage == true
-    - name: Upload the coverage reports
-      run: codecov
-      if: matrix.coverage == true
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
