@@ -1,6 +1,6 @@
 # Couplet Composer
 
-![](https://github.com/anttikivi/couplet-composer/workflows/Main%20workflow/badge.svg) [![codecov](https://codecov.io/gh/anttikivi/couplet-composer/branch/develop/graph/badge.svg)](https://codecov.io/gh/anttikivi/couplet-composer) [![Total alerts](https://img.shields.io/lgtm/alerts/g/anttikivi/couplet-composer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/anttikivi/couplet-composer/alerts/)
+![](https://github.com/anttikivi/couplet-composer/workflows/Main%20workflow/badge.svg) [![Total alerts](https://img.shields.io/lgtm/alerts/g/anttikivi/couplet-composer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/anttikivi/couplet-composer/alerts/)
 
 Couplet Composer is the build script for [Obliging Ode](https://github.com/anttikivi/unsung-anthem) and [Unsung Anthem](https://github.com/anttikivi/unsung-anthem). It takes care of setting up the build environment, installing the dependencies, and building the project incrementally.
 
