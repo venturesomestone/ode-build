@@ -21,7 +21,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
         architecture: x64
     - name: Cache dependencies (Linux)
-      uses: actions/cache@v1.1.2
+      uses: actions/cache@v2.1.0
       if: startsWith(runner.os, 'Linux')
       with:
         path: ~/.cache/pip
@@ -29,7 +29,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
     - name: Cache dependencies (macOS)
-      uses: actions/cache@v1.1.2
+      uses: actions/cache@v2.1.0
       if: startsWith(runner.os, 'macOS')
       with:
         path: ~/Library/Caches/pip
@@ -37,7 +37,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-pip-
     - name: Cache dependencies (Windows)
-      uses: actions/cache@v1.1.2
+      uses: actions/cache@v2.1.0
       if: startsWith(runner.os, 'Windows')
       with:
         path: ~\AppData\Local\pip\Cache
