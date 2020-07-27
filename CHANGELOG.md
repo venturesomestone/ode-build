@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
-## [Unreleased]
+## [1.0.0] - 2020-07-27
 
 ### Added
 
@@ -403,7 +403,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0-rc.1...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0-rc.1...v1.0.0
 [1.0.0-rc.1]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...v1.0.0-rc.1
 [0.15.0]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...v0.15.0
 [0.14.7]: https://github.com/anttikivi/couplet-composer/compare/v0.14.6...v0.14.7
