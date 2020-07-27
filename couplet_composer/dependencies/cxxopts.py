@@ -6,8 +6,6 @@ This support module contains the functions related to the
 building and finding cxxopts.
 """
 
-from functools import partial
-
 import os
 
 from ..github import tag
