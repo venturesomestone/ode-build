@@ -10,17 +10,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Note about ending supporting Python 2.7 at some point in the future.
 
+### Fixed
+
+- Formatting of some entries in the changelog.
+
 ## [1.0.0-rc.1] - 2020-05-17
 
 ### Added
 
-- A helper module for the dependencies’ `should_install` functions
+- Helper module for the dependencies’ `should_install` functions.
 
 ### Changed
 
-- The structure of the function used to perform actions common to different runs of the scripts.
-- The structure of the composing mode module to be split up into more functions.
-- The two functions for copying Windows libraries in SDL dependency module into one.
+- Structure of the function used to perform actions common to different runs of the scripts.
+- Structure of the composing mode module to be split up into more functions.
+- Two functions for copying Windows libraries in SDL dependency module into one.
 
 ## [0.15.0] - 2020-05-13
 
@@ -32,16 +36,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Changed
 
-- The in-tree build to have all of the directories in tree.
+- In-tree build to have all of the directories in tree.
 
 ### Fixed
 
-- The Lua trying to build for macOS on Linux when using Unix Makefiles build generator.
+- Lua trying to build for macOS on Linux when using Unix Makefiles build generator.
 
 ### Removed
 
-- The command line options for setting the names of the loggers and windows of Obliging Ode and Unsung Anthem.
-- The support for specifying the source root by using `$ODE_SOURCE_ROOT`.
+- Command line options for setting the names of the loggers and windows of Obliging Ode and Unsung Anthem.
+- Support for specifying the source root by using `$ODE_SOURCE_ROOT`.
 
 ## [0.14.7] - 2020-05-09
 
@@ -53,31 +57,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Fixed
 
-- The missing links in the changelog.
+- Missing links in the changelog.
 
 ## [0.14.5] - 2020-05-09
 
 ### Fixed
 
-- The script attempting to install binaries when the build is skipped.
+- Script attempting to install binaries when the build is skipped.
 
 ## [0.14.4] - 2020-05-09
 
 ### Changed
 
-- The printing of the Linux distribution at the beginning to be simpler.
+- Printing of the Linux distribution at the beginning to be simpler.
 
 ## [0.14.3] - 2020-05-09
 
 ### Fixed
 
-- The missing links in the changelog.
+- Missing links in the changelog.
 
 ## [0.14.2] - 2020-05-09
 
 ### Fixed
 
-- The host target option missing for printing the current system when running the script in preset mode.
+- Host target option missing for printing the current system when running the script in preset mode.
 
 ## [0.14.1] - 2020-05-09
 
@@ -87,7 +91,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Fixed
 
-- The check of the Linux distribution at the beginning of the LLVM installation.
+- Check of the Linux distribution at the beginning of the LLVM installation.
 
 ## [0.14.0] - 2020-05-09
 
@@ -99,29 +103,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Fixed
 
-- The version [0.13.3] in the changelog.
+- Version [0.13.3] in the changelog.
 
 ## [0.13.3] - 2020-05-09
 
 ### Added
 
-- A command line option to skip build.
+- Command line option to skip build.
 
 ### Changed
 
-- The linter options’ location to the common options with other similar build options.
+- Linter options’ location to the common options with other similar build options.
 
 ### Removed
 
-- The option to only run the linter.
+- Option to only run the linter.
 
 ## [0.13.2] - 2020-05-09
 
 ### Changed
 
-- The version of LLVM to 10.0.0.
-- The downloads the LLVM to only support GitHub releases.
-- The installation of clang-tidy to only happen when linter is actually needed.
+- Version of LLVM to 10.0.0.
+- Downloads the LLVM to only support GitHub releases.
+- Installation of clang-tidy to only happen when linter is actually needed.
 
 ## [0.13.1] - 2020-05-09
 
@@ -139,12 +143,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Changed
 
-- The required parameters of the tool installation functions to one object instead of passing many different parameters.
-- The required parameters of the dependency installation functions to one object instead of passing many different parameters.
-- The version of Ninja to 1.10.0.
+- Required parameters of the tool installation functions to one object instead of passing many different parameters.
+- Required parameters of the dependency installation functions to one object instead of passing many different parameters.
+- Version of Ninja to 1.10.0.
 - All platform names to lower case.
-- The build variant in the directory names to lower case.
-- The CMake generator in the directory names to lower case.
+- Build variant in the directory names to lower case.
+- CMake generator in the directory names to lower case.
 
 ## [0.12.0] - 2020-04-25
 
