@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.1.4] - 2020-07-29
+
+### Changed
+
+- Replacement of the environment variables in the version strings to use named tuples to allow selecting the variable name with dot.
+
 ## [1.1.3] - 2020-07-29
 
 ### Added
@@ -427,7 +433,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.1.3...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.1.4...HEAD
+[1.1.4]: https://github.com/anttikivi/couplet-composer/compare/v1.1.3...v1.1.4
 [1.1.3]: https://github.com/anttikivi/couplet-composer/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/anttikivi/couplet-composer/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/anttikivi/couplet-composer/compare/v1.1.0...v1.1.1
