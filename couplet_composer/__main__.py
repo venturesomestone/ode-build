@@ -209,6 +209,32 @@ def _main():
                 in_tree_build=arguments.in_tree_build
             )
 
+        if "{env." in arguments.ode_version:
+            start = arguments.ode_version.find("{env.") + len("{env.")
+            end = arguments.ode_version.find("}", start)
+            variable_name = arguments.ode_version[start:end]
+            if variable_name in os.environ:
+                arguments.ode_version = arguments.ode_version.format(
+                    env=os.environ
+                )
+            else:
+                arguments.ode_version = arguments.ode_version.format(
+                    env={variable_name: "notfound"}
+                )
+
+        if "{env." in arguments.anthem_version:
+            start = arguments.anthem_version.find("{env.") + len("{env.")
+            end = arguments.anthem_version.find("}", start)
+            variable_name = arguments.anthem_version[start:end]
+            if variable_name in os.environ:
+                arguments.anthem_version = arguments.anthem_version.format(
+                    env=os.environ
+                )
+            else:
+                arguments.anthem_version = arguments.anthem_version.format(
+                    env={variable_name: "notfound"}
+                )
+
         # Only configuring and composing modes have the option
         # for host target.
         host_target = parse_target_from_argument_string(arguments.host_target)
