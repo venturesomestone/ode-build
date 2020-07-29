@@ -223,21 +223,14 @@ def _main():
                 variable_name,
                 get_ode_name()
             )
-            if variable_name in os.environ:
-                VariableTuple = namedtuple("VariableTuple", sorted(os.environ))
-                format_tuple = VariableTuple(**os.environ)
-            else:
-                format_dict = {}
-                format_dict[variable_name] = "notfound"
-                VariableTuple = namedtuple(
-                    "VariableTuple",
-                    sorted(format_dict)
-                )
-                format_tuple = VariableTuple(**format_dict)
-                logging.debug(
-                    "The dictionary used in the replacement is %s",
-                    format_tuple
-                )
+            format_dict = {}
+            format_dict[variable_name] = os.getenv(variable_name, "notfound")
+            VariableTuple = namedtuple("VariableTuple", sorted(format_dict))
+            format_tuple = VariableTuple(**format_dict)
+            logging.debug(
+                "The dictionary used in the replacement is %s",
+                format_tuple
+            )
             arguments.ode_version = arguments.ode_version.format(
                 env=format_tuple
             )
@@ -252,21 +245,14 @@ def _main():
                 variable_name,
                 get_ode_name()
             )
-            if variable_name in os.environ:
-                VariableTuple = namedtuple("VariableTuple", sorted(os.environ))
-                format_tuple = VariableTuple(**os.environ)
-            else:
-                format_dict = {}
-                format_dict[variable_name] = "notfound"
-                VariableTuple = namedtuple(
-                    "VariableTuple",
-                    sorted(format_dict)
-                )
-                format_tuple = VariableTuple(**format_dict)
-                logging.debug(
-                    "The dictionary used in the replacement is %s",
-                    format_tuple
-                )
+            format_dict = {}
+            format_dict[variable_name] = os.getenv(variable_name, "notfound")
+            VariableTuple = namedtuple("VariableTuple", sorted(format_dict))
+            format_tuple = VariableTuple(**format_dict)
+            logging.debug(
+                "The dictionary used in the replacement is %s",
+                format_tuple
+            )
             arguments.anthem_version = arguments.anthem_version.format(
                 env=format_tuple
             )
