@@ -12,6 +12,8 @@ import sys
 
 import distro
 
+from collections import namedtuple
+
 from datetime import datetime
 
 from .support.environment import is_path_source_root
@@ -222,19 +224,23 @@ def _main():
                 get_ode_name()
             )
             if variable_name in os.environ:
-                arguments.ode_version = arguments.ode_version.format(
-                    env=os.environ
-                )
+                VariableTuple = namedtuple("VariableTuple", sorted(os.environ))
+                format_tuple = VariableTuple(**os.environ)
             else:
                 format_dict = {}
                 format_dict[variable_name] = "notfound"
+                VariableTuple = namedtuple(
+                    "VariableTuple",
+                    sorted(format_dict)
+                )
+                format_tuple = VariableTuple(**format_dict)
                 logging.debug(
                     "The dictionary used in the replacement is %s",
-                    format_dict
+                    format_tuple
                 )
-                arguments.ode_version = arguments.ode_version.format(
-                    env=format_dict
-                )
+            arguments.ode_version = arguments.ode_version.format(
+                env=format_tuple
+            )
 
         if "{env." in arguments.anthem_version:
             start = arguments.anthem_version.find("{env.") + len("{env.")
@@ -244,22 +250,26 @@ def _main():
                 "Trying to replace the environment variable '%s' in the "
                 "version string of %s",
                 variable_name,
-                get_anthem_name()
+                get_ode_name()
             )
             if variable_name in os.environ:
-                arguments.anthem_version = arguments.anthem_version.format(
-                    env=os.environ
-                )
+                VariableTuple = namedtuple("VariableTuple", sorted(os.environ))
+                format_tuple = VariableTuple(**os.environ)
             else:
                 format_dict = {}
                 format_dict[variable_name] = "notfound"
+                VariableTuple = namedtuple(
+                    "VariableTuple",
+                    sorted(format_dict)
+                )
+                format_tuple = VariableTuple(**format_dict)
                 logging.debug(
                     "The dictionary used in the replacement is %s",
-                    format_dict
+                    format_tuple
                 )
-                arguments.anthem_version = arguments.anthem_version.format(
-                    env=format_dict
-                )
+            arguments.anthem_version = arguments.anthem_version.format(
+                env=format_tuple
+            )
 
         # Only configuring and composing modes have the option
         # for host target.
