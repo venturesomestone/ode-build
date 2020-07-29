@@ -217,6 +217,10 @@ def _main():
                 arguments.ode_version = arguments.ode_version.format(
                     env=os.environ
                 )
+            else:
+                arguments.ode_version = arguments.ode_version.format(
+                    env={variable_name: "notfound"}
+                )
 
         if "{env." in arguments.anthem_version:
             start = arguments.anthem_version.find("{env.") + len("{env.")
@@ -225,6 +229,10 @@ def _main():
             if variable_name in os.environ:
                 arguments.anthem_version = arguments.anthem_version.format(
                     env=os.environ
+                )
+            else:
+                arguments.anthem_version = arguments.anthem_version.format(
+                    env={variable_name: "notfound"}
                 )
 
         # Only configuring and composing modes have the option
