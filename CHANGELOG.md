@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.1.3] - 2020-07-29
+
+### Added
+
+- Logging to find out the name of the variable the script is trying to replace in the version string.
+
 ## [1.1.2] - 2020-07-29
 
 ### Fixed
@@ -421,7 +427,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.1.2...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.1.3...HEAD
+[1.1.3]: https://github.com/anttikivi/couplet-composer/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/anttikivi/couplet-composer/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/anttikivi/couplet-composer/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0...v1.1.0
