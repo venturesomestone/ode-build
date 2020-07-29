@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [1.1.2] - 2020-07-29
+
+### Fixed
+
+- Missing links in the changelog.
+
 ## [1.1.1] - 2020-07-29
 
 ### Fixed
@@ -417,7 +423,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.1.0...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.1.2...HEAD
+[1.1.2]: https://github.com/anttikivi/couplet-composer/compare/v1.1.1...v1.1.2
+[1.1.1]: https://github.com/anttikivi/couplet-composer/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0-rc.1...v1.0.0
 [1.0.0-rc.1]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...v1.0.0-rc.1
