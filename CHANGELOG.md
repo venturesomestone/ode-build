@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+## [1.1.1] - 2020-07-29
+
+### Fixed
+
+- Name of the environment variable missing from the default replacement dictionary for the versions of the projects.
+
 ## [1.1.0] - 2020-07-29
 
 ### Added

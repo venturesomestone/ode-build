@@ -209,6 +209,7 @@ def _main():
                 in_tree_build=arguments.in_tree_build
             )
 
+        # TODO Allow having more than one environment variable.
         if "{env." in arguments.ode_version:
             start = arguments.ode_version.find("{env.") + len("{env.")
             end = arguments.ode_version.find("}", start)
@@ -218,8 +219,10 @@ def _main():
                     env=os.environ
                 )
             else:
+                format_dict = {}
+                format_dict[variable_name] = "notfound"
                 arguments.ode_version = arguments.ode_version.format(
-                    env={variable_name: "notfound"}
+                    env=format_dict
                 )
 
         if "{env." in arguments.anthem_version:
@@ -231,8 +234,10 @@ def _main():
                     env=os.environ
                 )
             else:
+                format_dict = {}
+                format_dict[variable_name] = "notfound"
                 arguments.anthem_version = arguments.anthem_version.format(
-                    env={variable_name: "notfound"}
+                    env=format_dict
                 )
 
         # Only configuring and composing modes have the option
