@@ -24,7 +24,8 @@ from .support.platform_names import \
 
 from .support.project_names import get_ode_repository_name, get_project_name
 
-from .support.project_values import get_anthem_version, get_ode_version
+from .support.project_values import \
+    get_anthem_name, get_anthem_version, get_ode_name, get_ode_version
 
 from .util.date import date_difference, to_date_string
 
@@ -214,6 +215,12 @@ def _main():
             start = arguments.ode_version.find("{env.") + len("{env.")
             end = arguments.ode_version.find("}", start)
             variable_name = arguments.ode_version[start:end]
+            logging.debug(
+                "Trying to replace the environment variable '%s' in the "
+                "version string of %s",
+                variable_name,
+                get_ode_name()
+            )
             if variable_name in os.environ:
                 arguments.ode_version = arguments.ode_version.format(
                     env=os.environ
@@ -221,6 +228,10 @@ def _main():
             else:
                 format_dict = {}
                 format_dict[variable_name] = "notfound"
+                logging.debug(
+                    "The dictionary used in the replacement is %s",
+                    format_dict
+                )
                 arguments.ode_version = arguments.ode_version.format(
                     env=format_dict
                 )
@@ -229,6 +240,12 @@ def _main():
             start = arguments.anthem_version.find("{env.") + len("{env.")
             end = arguments.anthem_version.find("}", start)
             variable_name = arguments.anthem_version[start:end]
+            logging.debug(
+                "Trying to replace the environment variable '%s' in the "
+                "version string of %s",
+                variable_name,
+                get_anthem_name()
+            )
             if variable_name in os.environ:
                 arguments.anthem_version = arguments.anthem_version.format(
                     env=os.environ
@@ -236,6 +253,10 @@ def _main():
             else:
                 format_dict = {}
                 format_dict[variable_name] = "notfound"
+                logging.debug(
+                    "The dictionary used in the replacement is %s",
+                    format_dict
+                )
                 arguments.anthem_version = arguments.anthem_version.format(
                     env=format_dict
                 )
