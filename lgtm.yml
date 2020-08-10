@@ -1,8 +1,0 @@
-# Copyright (c) 2020 Antti Kivi
-# Licensed under the MIT License
-
-extraction:
-  python:
-    index:
-      exclude:
-        - couplet_composer/llvm/run-clang-tidy.py
