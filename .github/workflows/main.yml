@@ -131,4 +131,4 @@ jobs:
           couplet_composer/**/CMakeLists.txt
           LICENCE
           README.md
-      if: matrix.python-version == 3.x
+      if: matrix.python-version == '3.x'
