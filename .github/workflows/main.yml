@@ -105,7 +105,7 @@ jobs:
         PACKAGE_VERSION: ${{ steps.read_package_version.outputs.package_version }}
         DEVELOPMENT_VERSION_NUMBER: ${{ steps.development_version.outputs.development_version }}
     - name: Set development version to __version__.py
-      run: sed -i "s/-dev/-dev.$DEVELOPMENT_VERSION_NUMBER/g" __version__.py
+      run: sed -i "s/-dev/-dev.$DEVELOPMENT_VERSION_NUMBER/g" couplet_composer/__version__.py
       env:
         DEVELOPMENT_VERSION_NUMBER: ${{ steps.development_version.outputs.development_version }}
     - name: Install dependencies
