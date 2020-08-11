@@ -38,7 +38,7 @@ jobs:
     - id: read_package_version
       name: Read __version__.py
       run: |
-        from .couplet_composer.__version__ import __version__
+        from ./couplet_composer/__version__ import __version__
         print("The Python package version is", __version__)
         print("::set-output name=package_version::", __version__)
       shell: python
