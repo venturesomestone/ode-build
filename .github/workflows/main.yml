@@ -43,10 +43,11 @@ jobs:
         module_path = os.path.join("${{ github.workspace }}", "couplet_composer", "__version__.py")
         if version_info[0] < 3:
           import imp
+          from __future__ import print_function
           package = imp.load_source("__version__", module_path)
           version = package.__version__
-          print "The Python package version is", version
-          print "::set-output name=package_version::", version
+          print("The Python package version is", version)
+          print("::set-output name=package_version::", version)
         else:
           if version_info[1] < 5:
             from importlib.machinery import SourceFileLoader
