@@ -38,12 +38,12 @@ jobs:
     - id: read_package_version
       name: Read __version__.py
       run: |
+        from __future__ import print_function
         from sys import version_info
         import os
         module_path = os.path.join("${{ github.workspace }}", "couplet_composer", "__version__.py")
         if version_info[0] < 3:
           import imp
-          from __future__ import print_function
           package = imp.load_source("__version__", module_path)
           version = package.__version__
           print("The Python package version is", version)
