@@ -47,14 +47,14 @@ jobs:
           package = imp.load_source("__version__", module_path)
           version = package.__version__
           print("The Python package version is", version)
-          print("::set-output name=package_version::", version)
+          print("::set-output name=package_version::{}".format(version))
         else:
           if version_info[1] < 5:
             from importlib.machinery import SourceFileLoader
             package = SourceFileLoader("__version__", module_path).load_module()
             version = package.__version__
             print("The Python package version is", version)
-            print("::set-output name=package_version::", version)
+            print("::set-output name=package_version::{}".format(version))
           else:
             import importlib.util
             spec = importlib.util.spec_from_file_location("__version__", module_path)
@@ -62,7 +62,7 @@ jobs:
             spec.loader.exec_module(package)
             version = package.__version__
             print("The Python package version is", version)
-            print("::set-output name=package_version::", version)
+            print("::set-output name=package_version::{}".format(version))
       shell: python
     - id: development_version
       name: Determine development version
