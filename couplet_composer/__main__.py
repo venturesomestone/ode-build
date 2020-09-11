@@ -27,7 +27,8 @@ from .support.platform_names import \
 from .support.project_names import get_ode_repository_name, get_project_name
 
 from .support.project_values import \
-    get_anthem_name, get_anthem_version, get_ode_name, get_ode_version
+    get_anthem_name, get_anthem_version, get_ode_name, get_ode_version, \
+    get_project_version
 
 from .util.date import date_difference, to_date_string
 
@@ -201,18 +202,26 @@ def _main():
             arguments.composer_mode == get_composing_mode_name():
         # If no project version is got from command line, it
         # should be read from the source root.
+        default_version = str(get_project_version(
+            source_root=source_root,
+            in_tree_build=arguments.in_tree_build
+        ))
         if not arguments.ode_version:
-            arguments.ode_version = get_ode_version(
+            read_version = get_ode_version(
                 source_root=source_root,
                 in_tree_build=arguments.in_tree_build
             )
+            if not read_version or read_version.lower() == "default":
+                arguments.ode_version = default_version
         if not arguments.anthem_version:
-            arguments.anthem_version = get_anthem_version(
+            read_version = get_anthem_version(
                 source_root=source_root,
                 in_tree_build=arguments.in_tree_build
             )
+            if not read_version or read_version.lower() == "default":
+                arguments.anthem_version = default_version
 
-        # TODO Allow having more than one environment variable.
+        # TODO Remove this.
         if "{env." in arguments.ode_version:
             start = arguments.ode_version.find("{env.") + len("{env.")
             end = arguments.ode_version.find("}", start)
@@ -234,7 +243,13 @@ def _main():
             arguments.ode_version = arguments.ode_version.format(
                 env=format_tuple
             )
+            logging.warning(
+                "Please note that using environment variables in version "
+                "numbers is depracated functionality and will be removed in "
+                "future version of Couplet Composer"
+            )
 
+        # TODO Remove this.
         if "{env." in arguments.anthem_version:
             start = arguments.anthem_version.find("{env.") + len("{env.")
             end = arguments.anthem_version.find("}", start)
@@ -255,6 +270,11 @@ def _main():
             )
             arguments.anthem_version = arguments.anthem_version.format(
                 env=format_tuple
+            )
+            logging.warning(
+                "Please note that using environment variables in version "
+                "numbers is depracated functionality and will be removed in "
+                "future version of Couplet Composer"
             )
 
         # Only configuring and composing modes have the option

@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- Support for using one version number for both Obliging Ode and Unsung Anthem.
+
+### Deprecated
+
+- Replacement of environment variables in the project versions.
+
 ## [1.1.5] - 2020-07-29
 
 ### Fixed
