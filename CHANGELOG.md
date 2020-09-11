@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Support for using one version number for both Obliging Ode and Unsung Anthem.
 
+### Changed
+
+- Version number from Python module to a text file.
+
 ### Deprecated
 
 - Replacement of environment variables in the project versions.
