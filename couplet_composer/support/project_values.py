@@ -66,7 +66,7 @@ def get_anthem_name():
 
 
 @cached
-def get_version(source_root, in_tree_build):
+def get_project_version(source_root, in_tree_build):
     """
     Gives the default version of the project.
 
