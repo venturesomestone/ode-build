@@ -22,12 +22,12 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         architecture: x64
-    - name: Set up AWS command line interface
-      run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install
-        aws --version
+    - name: Determine project version
+      id: version
+      uses: anttikivi/maintain-revision@v0.6.0
+      with:
+        type: txt
+        file: couplet_composer/version
     - name: Cache dependencies
       uses: actions/cache@v2.1.1
       with:
@@ -35,79 +35,6 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    - id: read_package_version
-      name: Read __version__.py
-      run: |
-        from __future__ import print_function
-        from sys import version_info
-        import os
-        module_path = os.path.join("${{ github.workspace }}", "couplet_composer", "__version__.py")
-        if version_info[0] < 3:
-          import imp
-          package = imp.load_source("__version__", module_path)
-          version = package.__version__
-          print("The Python package version is", version)
-          print("::set-output name=package_version::{}".format(version))
-        else:
-          if version_info[1] < 5:
-            from importlib.machinery import SourceFileLoader
-            package = SourceFileLoader("__version__", module_path).load_module()
-            version = package.__version__
-            print("The Python package version is", version)
-            print("::set-output name=package_version::{}".format(version))
-          else:
-            import importlib.util
-            spec = importlib.util.spec_from_file_location("__version__", module_path)
-            package = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(package)
-            version = package.__version__
-            print("The Python package version is", version)
-            print("::set-output name=package_version::{}".format(version))
-      shell: python
-    - id: development_version
-      name: Determine development version
-      run: |
-        set +e
-        aws s3api head-object --bucket anthem-workflows --key $(echo "${{ github.repository }}" | tr - _)/${PACKAGE_VERSION}_version.txt
-        if [ $? -eq 0 ]; then
-          aws s3 cp s3://anthem-workflows/$(echo "${{ github.repository }}" | tr - _)/${PACKAGE_VERSION}_version.txt $LOCAL_VERSION_NUMBER_FILE
-        else
-          echo 0 > $LOCAL_VERSION_NUMBER_FILE
-        fi
-        set -e
-        dev_version=`cat $LOCAL_VERSION_NUMBER_FILE`
-        echo "The development version number is $dev_version"
-        rm $LOCAL_VERSION_NUMBER_FILE
-        expr $dev_version + 1 > $LOCAL_VERSION_NUMBER_FILE
-        dev_version=`cat $LOCAL_VERSION_NUMBER_FILE`
-        echo "The development version number for the current run is $dev_version"
-        echo "::set-output name=development_version::$dev_version"
-      env:
-        PACKAGE_VERSION: ${{ steps.read_package_version.outputs.package_version }}
-    - name: Upload development version
-      run: |
-        set +e
-        aws s3api head-object --bucket anthem-workflows --key $(echo "${{ github.repository }}" | tr - _)/${PACKAGE_VERSION}_version.txt
-        if [ $? -eq 0 ]; then
-          aws s3 rm s3://anthem-workflows/$(echo "${{ github.repository }}" | tr - _)/${PACKAGE_VERSION}_version.txt
-        fi
-        set -e
-        aws s3 cp $LOCAL_VERSION_NUMBER_FILE s3://anthem-workflows/$(echo "${{ github.repository }}" | tr - _)/${PACKAGE_VERSION}_version.txt
-      env:
-        PACKAGE_VERSION: ${{ steps.read_package_version.outputs.package_version }}
-    - id: version
-      name: Determine version
-      run: |
-        version="${PACKAGE_VERSION/-dev/-dev.$DEVELOPMENT_VERSION_NUMBER}"
-        echo "The version of the project is $version"
-        echo "::set-output name=version::$version"
-      env:
-        PACKAGE_VERSION: ${{ steps.read_package_version.outputs.package_version }}
-        DEVELOPMENT_VERSION_NUMBER: ${{ steps.development_version.outputs.development_version }}
-    - name: Set development version to __version__.py
-      run: sed -i "s/-dev/-dev.$DEVELOPMENT_VERSION_NUMBER/g" couplet_composer/__version__.py
-      env:
-        DEVELOPMENT_VERSION_NUMBER: ${{ steps.development_version.outputs.development_version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
