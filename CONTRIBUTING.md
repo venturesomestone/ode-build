@@ -66,7 +66,7 @@ Provide more context by answering these questions:
 
 Include details about your configuration and environment:
 
-* **Which version of Couplet Composer are you using?** You can get the exact version by running `anthem -v` in your terminal.
+* **Which version of Couplet Composer are you using?** You can get the exact version by running `couplet-composer -v` in your terminal.
 * **What’s the name and version of the OS you’re using**?
 * **Are you running Couplet Composer in a virtual machine?** If so, which VM software are you using and which operating systems and versions are used for the host and the guest?
 * **Which keyboard layout are you using?** Are you using a US layout or some other layout?
@@ -91,7 +91,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://guides.github.com
 * **Provide specific examples to demonstrate the steps**. Include copiable snippets which you use in those examples, as [Markdown code blocks](https://help.github.com/articles/markdown-basics#multiple-lines).
 * **Describe the current behaviour** and **explain which behaviour you expected to see instead** and why.
 * **Include screenshots and animated GIFs** which help you demonstrate the steps or point out the part of Couplet Composer which the suggestion is related to. You can use [this tool](http://www.cockos.com/licecap) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
-* **Specify which version of Couplet Composer you’re using.** You can get the exact version by running `couplet-composer -v` in your terminal. The helper scripts provided with Obliging Ode and Unsung Anthem also support the option `-v`.
+* **Specify which version of Couplet Composer you’re using.** You can get the exact version by running `couplet-composer -v` in your terminal.
 * **Specify the name and version of the OS you’re using.**
 
 ### Your First Code Contribution

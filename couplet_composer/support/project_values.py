@@ -66,6 +66,27 @@ def get_anthem_name():
 
 
 @cached
+def get_version(source_root, in_tree_build):
+    """
+    Gives the default version of the project.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
+
+    in_tree_build -- Whether the build files are created in tree.
+    """
+    project_values = _get_project_values(
+        source_root=source_root,
+        in_tree_build=in_tree_build
+    )
+    if project_values:
+        return None if "version" not in project_values \
+            else project_values["version"]
+    else:
+        return None
+
+
+@cached
 def get_ode_version(source_root, in_tree_build):
     """
     Gives the default version of Obliging Ode.
@@ -80,9 +101,13 @@ def get_ode_version(source_root, in_tree_build):
         in_tree_build=in_tree_build
     )
     if project_values:
+        if "ode" not in project_values:
+            return None
+        if "version" not in project_values["ode"]:
+            return None
         return project_values["ode"]["version"]
     else:
-        return "ode-version-file-not-found"
+        return None
 
 
 @cached
@@ -100,9 +125,13 @@ def get_anthem_version(source_root, in_tree_build):
         in_tree_build=in_tree_build
     )
     if project_values:
+        if "anthem" not in project_values:
+            return None
+        if "version" not in project_values["anthem"]:
+            return None
         return project_values["anthem"]["version"]
     else:
-        return "anthem-version-file-not-found"
+        return None
 
 
 def get_default_ode_window_name():
