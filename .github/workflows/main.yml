@@ -63,7 +63,7 @@ jobs:
       run: python setup.py sdist bdist_wheel
 
     - name: Upload build artefacts
-      uses: actions/upload-artifact@v2.2.0
+      uses: actions/upload-artifact@v2.2.1
       with:
         name: couplet-composer-${{ steps.version.outputs.version }}
         path: dist/**/*.tar.gz
