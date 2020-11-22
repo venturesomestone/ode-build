@@ -3,6 +3,8 @@
 
 """The entry point of Couplet Composer."""
 
+import sys
+
 
 def run():
     """Runs the script when Couplet Composer is invoked."""
