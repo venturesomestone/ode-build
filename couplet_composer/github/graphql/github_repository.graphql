@@ -1,5 +1,0 @@
-{
-  repository(owner: "{OWNER}", name: "{REPOSITORY_NAME}") {
-    url
-  }
-}
