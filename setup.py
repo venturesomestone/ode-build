@@ -19,7 +19,7 @@ DESCRIPTION = "Tool for building, testing, and preparing binary " \
 URL = "https://github.com/anttikivi/couplet-composer"
 EMAIL = "antti.kivi@visiosto.fi"
 AUTHOR = "Antti Kivi"
-REQUIRES_PYTHON = ">=2.7.11"
+REQUIRES_PYTHON = ">=3.6"
 VERSION = None
 
 # The packages that Couplet Composer needs
