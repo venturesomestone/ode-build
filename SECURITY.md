@@ -12,7 +12,7 @@ We currently support the following versions of Couplet Composer with security up
 
 ## Reporting a Vulnerability
 
-If you’ve found an vulnerability, please report it to security@visisto.fi.
+If you’ve found an vulnerability, please report it to security@visiosto.fi.
 
 We get back to you as soon as possible, usually within five working days.
 
