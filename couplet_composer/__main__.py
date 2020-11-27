@@ -6,11 +6,32 @@
 import sys
 
 
-def run():
-    """Runs the script when Couplet Composer is invoked."""
-    sys.exit(0)
+def _main() -> int:
+    """Starts the script, creates the invocation instance, and
+    runs it.
+
+    This function isn't pure as it runs all of the other
+    functions in the build script.
+
+    Returns:
+        An 'int' that is equal to the exit code of the build
+        script.
+    """
+    return 0
 
 
-# The script can also be invoked by calling this script
+def run() -> int:
+    """Runs the script when Couplet Composer is invoked.
+
+    This function isn't pure as it runs the main function of the
+    build script.
+
+    This function doesn't return anything but exits with the
+    function 'sys.exit' with the exit code of the build script.
+    """
+    sys.exit(_main())
+
+
+# The script can also be invoked by calling the script itself.
 if __name__ == "__main__":
-    sys.exit(0)
+    sys.exit(_main())
