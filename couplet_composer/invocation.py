@@ -6,6 +6,12 @@ A module that contains the class that represents an invocation of
 the build script.
 """
 
+import sys
+
+from .support.run_mode import RunMode
+
+from .args_parser import create_args_parser
+
 
 class Invocation:
     """A class that represents an invocation of the build script.
@@ -15,11 +21,8 @@ class Invocation:
             invocation instance
     """
 
-    def __init__(self, run_mode):
+    def __init__(self):
         """Initializes the invocation object for the current run.
-
-        Args:
-            run_mode (RunMode): The run mode selected for this
-                invocation
         """
-        self.run_mode = run_mode
+        self.args = create_args_parser().parse_args()
+        self.run_mode = RunMode(self.args.run_mode)
