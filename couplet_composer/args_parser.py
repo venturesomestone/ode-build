@@ -7,10 +7,13 @@ command line arguments and options of the build script.
 """
 
 import argparse
+import multiprocessing
 import textwrap
 
 from .support.command_line import DESCRIPTION, EPILOG
 from .support.run_mode import RunMode
+
+from . import __version__
 
 
 def _add_common_arguments(parser):
@@ -23,6 +26,44 @@ def _add_common_arguments(parser):
     Returns:
         The given arguments parser modified.
     """
+    # --------------------------------------------------------- #
+    # Special options
+
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=__version__.get_version()
+    )
+
+    # --------------------------------------------------------- #
+    # Top-level options
+
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="don't actually run any commands; just print them"
+    )
+    # parser.add_argument(
+    #     "-j",
+    #     "--jobs",
+    #     default=multiprocessing.cpu_count(),
+    #     type=int,
+    #     help="specify the number of parallel build jobs to use"
+    # )
+    parser.add_argument(
+        "-c",
+        "--clean",
+        action="store_true",
+        help="clean up the build environment before build"
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="print the debug-level logging output"
+    )
+
     return parser
 
 
@@ -40,7 +81,7 @@ def _add_common_build_arguments(parser):
     return parser
 
 
-def create_args_parser() -> argparse.ArgumentParser:
+def create_args_parser():
     """Creates the parser for the command line arguments.
 
     Returns:
