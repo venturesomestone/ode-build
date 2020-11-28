@@ -1,8 +1,7 @@
 # Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""
-A module that contains the desciption and the epilogue of the
+"""A module that contains the desciption and the epilogue of the
 build script for command line.
 """
 
@@ -12,7 +11,7 @@ import textwrap
 __all__ = ["DESCRIPTION", "EPILOG"]
 
 
-def _get_description() -> str:
+def _get_description():
     """Gives the brief command line description of the build
     script.
 
@@ -31,7 +30,7 @@ def _get_description() -> str:
     )
 
 
-def _get_epilog() -> str:
+def _get_epilog():
     """Gives the command line epilogue of the build script.
 
     Returns:

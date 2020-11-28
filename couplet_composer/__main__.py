@@ -1,7 +1,8 @@
 # Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""The entry point of Couplet Composer."""
+"""The entry point of the build script.
+"""
 
 import sys
 

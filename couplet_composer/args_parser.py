@@ -1,14 +1,11 @@
 # Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""
-A module that contains functions for creating the parser for the
-command line arguments and options of the build script.
+"""A module that contains functions for creating the parser for
+the command line arguments and options of the build script.
 """
 
 import argparse
-import multiprocessing
-import textwrap
 
 from .support.command_line import DESCRIPTION, EPILOG
 from .support.run_mode import RunMode
@@ -96,13 +93,15 @@ def create_args_parser():
 
     subparsers = parser.add_subparsers(dest="run_mode")
 
-    preset = _add_common_arguments(subparsers.add_parser(RunMode.preset.value))
-    configure = _add_common_build_arguments(
+    preset = _add_common_arguments(  # noqa: F841
+        subparsers.add_parser(RunMode.preset.value)
+    )
+    configure = _add_common_build_arguments(  # noqa: F841
         _add_common_arguments(
             subparsers.add_parser(RunMode.preset.value)
         )
     )
-    compose = _add_common_build_arguments(
+    compose = _add_common_build_arguments(  # noqa: F841
         _add_common_arguments(subparsers.add_parser(RunMode.preset.value))
     )
 

@@ -1,13 +1,11 @@
 # Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""
-A module that contains the class that represents an invocation of
-the build script.
+"""A module that contains the class that represents an invocation
+of the build script.
 """
 
 import logging
-import sys
 
 from .support.run_mode import RunMode
 
@@ -44,7 +42,6 @@ class Invocation:
         self.name = name
         self.project_name = project_name
 
-
     def __call__(self):
         """Invokes the build script with the current
         configuration.
@@ -53,7 +50,6 @@ class Invocation:
         self._set_logging_level()
 
         logging.info("Running %s version %s", self.name, self.version)
-
 
     def _set_logging_level(self):
         """Sets the logging level according to the configuration

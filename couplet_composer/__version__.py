@@ -1,9 +1,8 @@
 # Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""
-The version data of Couplet Composer. The version number is given
-according to Semantic Versioning.
+"""The version data of the build script. The version number is
+given according to Semantic Versioning.
 """
 
 import os

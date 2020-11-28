@@ -1,9 +1,8 @@
 # Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""
-A module that contains a helper enumeration that represents the
-selected run mode of the build script.
+"""A module that contains a helper enumeration that represents
+the selected run mode of the build script.
 """
 
 from enum import Enum
