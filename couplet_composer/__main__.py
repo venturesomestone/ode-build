@@ -28,9 +28,9 @@ def _main():
         project_name="Obliging Ode and Unsung Anthem"
     )
 
-    invocation()
+    exit_code = invocation()
 
-    return 0
+    return exit_code
 
 
 def run():

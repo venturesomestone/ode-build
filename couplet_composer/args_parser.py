@@ -60,6 +60,12 @@ def _add_common_arguments(parser):
         action="store_true",
         help="print the debug-level logging output"
     )
+    parser.add_argument(
+        "--repository",
+        default="unsung-anthem",
+        help="set the name of the repository directory of the project that is "
+             "being built"
+    )
 
     return parser
 

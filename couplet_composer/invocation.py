@@ -6,8 +6,11 @@ of the build script.
 """
 
 import logging
+import os
 
 from .support.run_mode import RunMode
+
+from .support import environment
 
 from .args_parser import create_args_parser
 
@@ -25,6 +28,8 @@ class Invocation:
         name (str): The name of the build script.
         project_name (str): The name of the project this
             invocation acts on.
+        source_root (str): The root directory in which the
+            project and the build files are.
     """
 
     def __init__(self, version, name, project_name):
@@ -41,8 +46,9 @@ class Invocation:
         self.version = version
         self.name = name
         self.project_name = project_name
+        self.source_root = os.getcwd()
 
-    def __call__(self):
+    def __call__(self) -> int:
         """Invokes the build script with the current
         configuration.
         """
@@ -51,7 +57,18 @@ class Invocation:
 
         logging.info("Running %s version %s", self.name, self.version)
 
-    def _set_logging_level(self):
+        if not environment.is_path_source_root(
+                path=self.source_root,
+                repo=self.args.repository
+        ):
+            logging.critical(
+                "The root directory for the build script invocation is "
+                "invalid: %s",
+                self.source_root
+            )
+            return 1
+
+    def _set_logging_level(self) -> None:
         """Sets the logging level according to the configuration
         of the current run.
 

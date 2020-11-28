@@ -11,7 +11,7 @@ import textwrap
 __all__ = ["DESCRIPTION", "EPILOG"]
 
 
-def _get_description():
+def _get_description() -> str:
     """Gives the brief command line description of the build
     script.
 
@@ -30,7 +30,7 @@ def _get_description():
     )
 
 
-def _get_epilog():
+def _get_epilog() -> str:
     """Gives the command line epilogue of the build script.
 
     Returns:
