@@ -24,8 +24,7 @@ def _main():
     """
     invocation = Invocation(
         version=__version__.get_version(),
-        name="Couplet Composer",
-        project_name="Obliging Ode and Unsung Anthem"
+        name="Couplet Composer"
     )
 
     exit_code = invocation()

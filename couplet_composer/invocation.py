@@ -10,9 +10,9 @@ import os
 
 from .support.run_mode import RunMode
 
-from .support import environment
-
 from .args_parser import create_args_parser
+
+from .project import Project
 
 
 class Invocation:
@@ -26,47 +26,40 @@ class Invocation:
             invocation instance.
         version (str): The version of the build script.
         name (str): The name of the build script.
-        project_name (str): The name of the project this
-            invocation acts on.
         source_root (str): The root directory in which the
             project and the build files are.
+        project (Project): The project object for the project
+            this build script acts on.
     """
 
-    def __init__(self, version, name, project_name):
+    def __init__(self, version, name):
         """Initializes the invocation object for the current run.
 
         Args:
             version (str): The version of the build script.
             name (str): The name of the build script.
-            project_name (str): The name of the project this
-                invocation acts on.
         """
         self.args = create_args_parser().parse_args()
         self.run_mode = RunMode(self.args.run_mode)
         self.version = version
         self.name = name
-        self.project_name = project_name
         self.source_root = os.getcwd()
 
-    def __call__(self) -> int:
-        """Invokes the build script with the current
-        configuration.
-        """
         # The logger must be initialized first.
         self._set_logging_level()
 
         logging.info("Running %s version %s", self.name, self.version)
 
-        if not environment.is_path_source_root(
-                path=self.source_root,
-                repo=self.args.repository
-        ):
-            logging.critical(
-                "The root directory for the build script invocation is "
-                "invalid: %s",
-                self.source_root
-            )
-            return 1
+        self.project = Project(
+            source_root=self.source_root,
+            repo=self.args.repository
+        )
+
+    def __call__(self) -> int:
+        """Invokes the build script with the current
+        configuration.
+        """
+        return 0
 
     def _set_logging_level(self) -> None:
         """Sets the logging level according to the configuration
