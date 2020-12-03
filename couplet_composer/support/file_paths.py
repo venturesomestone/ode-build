@@ -3,6 +3,7 @@
 
 """This support module contains path constants."""
 
+import logging
 import os
 
 
@@ -31,13 +32,25 @@ def get_project_values_file_path():
     return os.path.join("util", "project.json")
 
 
-def get_project_dependencies_file_path():
+def get_project_dependencies_file_path(source_root):
     """
     Gives the path to the file that contains constants of the
     dependencies of the project this script acts on relative to
     the Ode repository.
+
+    source_root -- Path to the directory that is the root of the
+    script run.
     """
-    return os.path.join("util", "dependencies.json")
+    old_file = os.path.join("util", "dependencies.json")
+    if os.path.isfile(os.path.join(source_root, old_file)):
+        logging.warn(
+            "The file '%s' for providing dependency information is "
+            "deprecated; use %s instead",
+            old_file,
+            get_project_values_file_path()
+        )
+        return old_file
+    return get_project_values_file_path()
 
 
 def get_github_api_file_path():

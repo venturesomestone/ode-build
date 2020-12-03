@@ -168,7 +168,7 @@ def run_in_configuring_mode(arguments, source_root):
                     source_root=source_root,
                     in_tree_build=arguments.in_tree_build
                 ),
-                get_project_dependencies_file_path()
+                get_project_dependencies_file_path(source_root)
             )
         ),
         toolchain=toolchain,

@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Usage of value `default` in `values.json` and `project.json` as the way to tell the script to use the shared version number for Ode or Anthem.
 - Field `version` in `values.json` and `project.json` for holding the value of the shared version number.
 - Command line options `--ode-version` and `--anthem-version`.
+- File `values.json` for providing information on the projects being built.
+- File `dependencies.json` for providing information on the dependencies of the projects being built.
 
 ## [1.2.1] - 2020-09-12
 
