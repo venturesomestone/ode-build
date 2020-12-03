@@ -14,6 +14,8 @@ from .args_parser import create_args_parser
 
 from .project import Project
 
+from .target import Target
+
 
 class Invocation:
     """A class for creating callable objects that represent
@@ -57,6 +59,12 @@ class Invocation:
             source_root=self.source_root,
             repo=self.args.repository
         )
+
+        host_target = Target.resolve_host_target() \
+            if self.run_mode is RunMode.preset \
+            else Target.to_target(self.args.host_target)
+
+        self.targets = {"host": host_target, "cross_compile": {}}
 
     def __call__(self) -> int:
         """Invokes the build script with the current
