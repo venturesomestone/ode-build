@@ -6,6 +6,7 @@ the command line arguments and options of the build script.
 """
 
 import argparse
+import multiprocessing
 
 from .support.command_line import DESCRIPTION, EPILOG
 from .support.run_mode import RunMode
@@ -42,13 +43,13 @@ def _add_common_arguments(parser):
         action="store_true",
         help="don't actually run any commands; just print them"
     )
-    # parser.add_argument(
-    #     "-j",
-    #     "--jobs",
-    #     default=multiprocessing.cpu_count(),
-    #     type=int,
-    #     help="specify the number of parallel build jobs to use"
-    # )
+    parser.add_argument(
+        "-j",
+        "--jobs",
+        default=multiprocessing.cpu_count(),
+        type=int,
+        help="specify the number of parallel build jobs to use"
+    )
     parser.add_argument(
         "-c",
         "--clean",

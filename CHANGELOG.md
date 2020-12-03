@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- Documentation for the usage options of Couplet Composer to its repository.
+
 ## [1.2.1] - 2020-09-12
 
 ### Fixed
