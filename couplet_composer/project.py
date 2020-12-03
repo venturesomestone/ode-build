@@ -51,36 +51,42 @@ class Project:
         with open(project_json) as f:
             json_data = json.load(f)
 
-            shared_version = None \
-                if self.SHARED_VERSION_KEY not in json_data \
-                else json_data[self.SHARED_VERSION_KEY]
+            self.ode_version = self._get_version_from_project_data(
+                data=json_data,
+                key=self.ODE_KEY
+            )
+            self.anthem_version = self._get_version_from_project_data(
+                data=json_data,
+                key=self.ANTHEM_KEY
+            )
 
-            if self.ODE_KEY not in json_data:
-                raise ValueError
+    def _get_version_from_project_data(self, data, key):
+        """Reads and resolves the correct version from the data
+        got from the project data JSON file.
 
-            ode_data = json_data[self.ODE_KEY]
+        Args:
+            data (Object): The data object read from the project
+                data JSON file.
+            key (str): The key for the project part that the
+                version is resolved for.
 
-            if self.VERSION_KEY not in ode_data:
-                if shared_version:
-                    self.ode_version = shared_version
-                else:
-                    raise ValueError
-            elif ode_data[self.VERSION_KEY] == self.SHARED_USAGE_KEY:
-                self.ode_version = shared_version
+        Returns:
+            A 'str' that contains the resolved version number.
+        """
+        shared = None if self.SHARED_VERSION_KEY not in data \
+            else data[self.SHARED_VERSION_KEY]
+
+        if key not in data:
+            raise ValueError
+
+        key_data = data[key]
+
+        if self.VERSION_KEY not in key_data:
+            if shared:
+                return shared
             else:
-                self.ode_version = ode_data[self.VERSION_KEY]
-
-            if self.ANTHEM_KEY not in json_data:
                 raise ValueError
-
-            anthem_data = json_data[self.ANTHEM_KEY]
-
-            if self.VERSION_KEY not in anthem_data:
-                if shared_version:
-                    self.anthem_version = shared_version
-                else:
-                    raise ValueError
-            elif anthem_data[self.VERSION_KEY] == self.SHARED_USAGE_KEY:
-                self.anthem_version = shared_version
-            else:
-                self.anthem_version = anthem_data[self.VERSION_KEY]
+        elif key_data[self.VERSION_KEY] == self.SHARED_USAGE_KEY:
+            return shared
+        else:
+            return key_data[self.VERSION_KEY]
