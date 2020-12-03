@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Documentation for the usage options of Couplet Composer to its repository.
 - Command line option `--repository` for specifying the name of the repository directory of the project that is being built.
+- Type hints to every method of the script.
 
 ### Changed
 
