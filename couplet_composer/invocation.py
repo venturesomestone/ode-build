@@ -30,9 +30,12 @@ class Invocation:
             project and the build files are.
         project (Project): The project object for the project
             this build script acts on.
+        targets (dict[Target, list[Target]]): A dictionary of
+            targets that contains the host target and other
+            possible cross compile targets.
     """
 
-    def __init__(self, version, name):
+    def __init__(self, version: str, name: str) -> None:
         """Initializes the invocation object for the current run.
 
         Args:

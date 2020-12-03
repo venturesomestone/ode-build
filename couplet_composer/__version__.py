@@ -8,7 +8,7 @@ given according to Semantic Versioning.
 import os
 
 
-def get_version():
+def get_version() -> str:
     """
     Gives a string that represents the current version of Couplet
     Composer.

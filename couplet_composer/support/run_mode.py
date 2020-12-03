@@ -5,9 +5,10 @@
 the selected run mode of the build script.
 """
 
-from enum import Enum
+from enum import Enum, unique
 
 
+@unique
 class RunMode(Enum):
     """An enumeration that represents the possible run modes of
     the build script.

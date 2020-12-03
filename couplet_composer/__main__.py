@@ -11,7 +11,7 @@ from .invocation import Invocation
 from . import __version__
 
 
-def _main():
+def _main() -> int:
     """Starts the script, creates the invocation instance, and
     runs it.
 
@@ -32,7 +32,7 @@ def _main():
     return exit_code
 
 
-def run():
+def run() -> None:
     """Runs the script when Couplet Composer is invoked.
 
     This function isn't pure as it runs the main function of the

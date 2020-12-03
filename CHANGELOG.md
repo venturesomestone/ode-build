@@ -14,7 +14,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 ### Changed
 
 - Internal application programming interface to use object based structure.
-- Values for setting and checking the run mode into enumerations.
+- Values for setting and checking the run mode into an enumeration.
+- Values used in handling the operating system into an enumeration.
 
 ### Removed
 

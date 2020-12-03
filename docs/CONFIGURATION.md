@@ -12,6 +12,8 @@ Please note that this documentation is only for the different options of Couplet
 - [Common Top-level Options](#common-top-level-options)
   - [Special Options](#special-options)
   - [Top-level Options](#top-level-options)
+- [Common Options](#common-options)
+  - [Build Target Options](#build-target-options)
 
 ## Configuring the Build
 
@@ -90,3 +92,15 @@ Prints debug-level logging output.
 **`--repository REPOSITORY`**
 
 Uses the specified string as the name of the local directory in which the repository of Obliging Ode and Unsung Anthem is. The default value is `unsung-anthem`.
+
+### Common Options
+
+These options are common to both configuring mode and composing mode but cannot be specified through command line in preset mode.
+
+#### Build Target Options
+
+Please note that this functionality is still under development.
+
+**`--host-target TARGET`**
+
+Builds the binaries for the specified host target. The host target is resolved automatically by default.

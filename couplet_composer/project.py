@@ -28,7 +28,7 @@ class Project:
     ODE_KEY = "ode"
     ANTHEM_KEY = "ode"
 
-    def __init__(self, source_root, repo):
+    def __init__(self, source_root: str, repo: str):
         """Initializes the project object.
 
         Arguments:
@@ -60,7 +60,7 @@ class Project:
                 key=self.ANTHEM_KEY
             )
 
-    def _get_version_from_project_data(self, data, key):
+    def _get_version_from_project_data(self, data: object, key: str) -> str:
         """Reads and resolves the correct version from the data
         got from the project data JSON file.
 

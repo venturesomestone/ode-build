@@ -5,16 +5,20 @@
 the command line arguments and options of the build script.
 """
 
-import argparse
 import multiprocessing
 
+from argparse import ArgumentParser
+
 from .support.command_line import DESCRIPTION, EPILOG
+
 from .support.run_mode import RunMode
+
+from .target import Target
 
 from . import __version__
 
 
-def _add_common_arguments(parser):
+def _add_common_arguments(parser: ArgumentParser) -> ArgumentParser:
     """Modifies the given arguments parser by adding the common
     command line options to it.
 
@@ -71,7 +75,7 @@ def _add_common_arguments(parser):
     return parser
 
 
-def _add_common_build_arguments(parser):
+def _add_common_build_arguments(parser: ArgumentParser) -> ArgumentParser:
     """Modifies the given arguments parser by adding the common
     command line options related to the build of the project to
     it.
@@ -82,16 +86,33 @@ def _add_common_build_arguments(parser):
     Returns:
         The given arguments parser modified.
     """
+    # --------------------------------------------------------- #
+    # TODO Build target options
+
+    target_group = parser.add_argument_group(
+        "Build target options",
+        "Please note that these option don't have any actual effect on the "
+        "built binaries yet"
+    )
+
+    target_group.add_argument(
+        "--host-target",
+        default=str(Target.resolve_host_target()),
+        help="set the main target for the build (default: {})".format(
+            Target.resolve_host_target()
+        )
+    )
+
     return parser
 
 
-def create_args_parser():
+def create_args_parser() -> ArgumentParser:
     """Creates the parser for the command line arguments.
 
     Returns:
         An object of the type ArgumentParser.
     """
-    parser = argparse.ArgumentParser(description=DESCRIPTION, epilog=EPILOG)
+    parser = ArgumentParser(description=DESCRIPTION, epilog=EPILOG)
 
     # TODO Add the options common to every run mode here.
 
