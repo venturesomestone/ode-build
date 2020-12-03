@@ -161,11 +161,13 @@ def _add_common_build_arguments(parser):
         help="generate the code coverage information from the tests"
     )
 
+    # TODO Deprecated
     parser.add_argument(
         "--ode-version",
         default=None,
         help="set the version of {}".format(get_ode_name())
     )
+    # TODO Deprecated
     parser.add_argument(
         "--anthem-version",
         default=None,

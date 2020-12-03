@@ -220,6 +220,10 @@ def _main():
                     "deprecated; use the value 'shared' instead"
                 )
                 arguments.ode_version = default_version
+        else:
+            logging.warn(
+                "The command line option '--ode-version' is deprecated"
+            )
         if not arguments.anthem_version:
             read_version = get_anthem_version(
                 source_root=source_root,
@@ -234,6 +238,10 @@ def _main():
                     "deprecated; use the value 'shared' instead"
                 )
                 arguments.anthem_version = default_version
+        else:
+            logging.warn(
+                "The command line option '--anthem-version' is deprecated"
+            )
 
         # TODO Remove this.
         if "{env." in arguments.ode_version:
