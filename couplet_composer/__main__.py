@@ -211,14 +211,28 @@ def _main():
                 source_root=source_root,
                 in_tree_build=arguments.in_tree_build
             )
-            if not read_version or read_version.lower() == "default":
+            if not read_version or read_version.lower() == "shared":
+                arguments.ode_version = default_version
+            # TODO Deprecated functionality
+            if read_version.lower() == "default":
+                logging.warn(
+                    "The value 'default' for the shared version is "
+                    "deprecated; use the value 'shared' instead"
+                )
                 arguments.ode_version = default_version
         if not arguments.anthem_version:
             read_version = get_anthem_version(
                 source_root=source_root,
                 in_tree_build=arguments.in_tree_build
             )
-            if not read_version or read_version.lower() == "default":
+            if not read_version or read_version.lower() == "shared":
+                arguments.anthem_version = default_version
+            # TODO Deprecated functionality
+            if read_version.lower() == "default":
+                logging.warn(
+                    "The value 'default' for the shared version is "
+                    "deprecated; use the value 'shared' instead"
+                )
                 arguments.anthem_version = default_version
 
         # TODO Remove this.

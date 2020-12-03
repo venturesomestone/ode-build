@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### Added
+
+- Support for providing both dependencies and project values in file `util/project.json`.
+- Support for using value `shared` to indicate that either Ode or Anthem should use the shared version number from the project value file.
+- Support for field `shared_version` to hold the value of the shared version number in the project value file.
+
+### Deprecated
+
+- Usage of value `default` in `values.json` and `project.json` as the way to tell the script to use the shared version number for Ode or Anthem.
+- Field `version` in `values.json` and `project.json` for holding the value of the shared version number.
+
 ## [1.2.1] - 2020-09-12
 
 ### Fixed
