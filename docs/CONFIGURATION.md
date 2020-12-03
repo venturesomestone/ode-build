@@ -89,4 +89,4 @@ Prints debug-level logging output.
 
 **`--repository REPOSITORY`**
 
-Uses the specified string as the name of the local directory in which the repository of Obliging Ode and Unsung Anthem is.
+Uses the specified string as the name of the local directory in which the repository of Obliging Ode and Unsung Anthem is. The default value is `unsung-anthem`.
