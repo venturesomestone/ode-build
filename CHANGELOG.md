@@ -11,6 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Documentation for the usage options of Couplet Composer to its repository.
 - Command line option `--repository` for specifying the name of the repository directory of the project that is being built.
 
+### Changed
+
+- Internal application programming interface to use object based structure.
+- Values for setting and checking the run mode into enumerations.
+
 ### Removed
 
 - Support for the file `util/values.json` as the file that contains the data of the project that is being built.
