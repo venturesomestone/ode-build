@@ -28,7 +28,7 @@ class Project:
     ODE_KEY = "ode"
     ANTHEM_KEY = "ode"
 
-    def __init__(self, source_root: str, repo: str):
+    def __init__(self, source_root: str, repo: str) -> None:
         """Initializes the project object.
 
         Arguments:
