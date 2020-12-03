@@ -9,6 +9,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 ### Added
 
 - Documentation for the usage options of Couplet Composer to its repository.
+- Command line option `--repository` for specifying the name of the repository directory of the project that is being built.
+
+### Removed
+
+- Support for the file `util/values.json` as the file that contains the data of the project that is being built.
+- Support for the file `util/dependencies.json` as the file that contains the data of the depdencies for the project that is being built.
+- Support for the usage of value `default` in `project.json` as the way to tell the script to use the shared version number for Ode or Anthem.
+- Support for the field `version` in `project.json` for holding the value of the shared version number.
+- Command line options `--ode-version` and `--anthem-version`.
 
 ## [1.2.1] - 2020-09-12
 
