@@ -14,6 +14,7 @@ Please note that this documentation is only for the different options of Couplet
   - [Top-level Options](#top-level-options)
 - [Common Options](#common-options)
   - [Build Target Options](#build-target-options)
+- [Preset Mode Options](#preset-mode-options)
 
 ## Configuring the Build
 
@@ -104,3 +105,23 @@ Please note that this functionality is still under development.
 **`--host-target TARGET`**
 
 Builds the binaries for the specified host target. The host target is resolved automatically by default.
+
+### Preset Mode Options
+
+These options can only be used through command line in preset mode.
+
+**`--file PATH`**
+
+Adds a path to the list of files from which Couplet Composer looks for the presets. You can use this options multiple times to add more paths to the list.
+
+**`--name PRESET`**
+
+Uses the given preset.
+
+**`--show`**
+
+Shows the available presets in the preset files and exits.
+
+**`--expand-script-invocation`**
+
+Prints the build script invocation composed from the preset given using `--name` and exits without running it.

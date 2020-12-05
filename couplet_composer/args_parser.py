@@ -133,4 +133,36 @@ def create_args_parser() -> ArgumentParser:
         _add_common_arguments(subparsers.add_parser(RunMode.preset.value))
     )
 
+    # --------------------------------------------------------- #
+    # Preset: Preset options
+
+    preset_group = preset.add_argument_group("Preset options")
+
+    preset_group.add_argument(
+        "--file",
+        action="append",
+        default=[],
+        help="load presets from the given file",
+        metavar="PATH",
+        dest="preset_file_names"
+    )
+    preset_group.add_argument(
+        "--name",
+        help="use the given option preset",
+        metavar="NAME",
+        dest="preset"
+    )
+    preset_group.add_argument(
+        "--show",
+        action="store_true",
+        help="list all presets and exit",
+        dest="show_presets"
+    )
+    preset_group.add_argument(
+        "--expand-script-invocation",
+        action="store_true",
+        help="print the build-script invocation made by the preset, but don't "
+             "run it"
+    )
+
     return parser
