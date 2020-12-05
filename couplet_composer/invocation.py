@@ -60,15 +60,15 @@ class Invocation:
             repo=self.args.repository
         )
 
-        host_target = Target.resolve_host_target() \
-            if self.run_mode is RunMode.preset \
-            else Target.to_target(self.args.host_target)
-
-        self.targets = {"host": host_target, "cross_compile": {}}
+        self.targets = self._resolve_targets()
 
     def __call__(self) -> int:
         """Invokes the build script with the current
         configuration.
+
+        Returns:
+            An 'int' that is equal to the exit code of the
+            invocation.
         """
         return 0
 
@@ -84,3 +84,16 @@ class Invocation:
             logging.basicConfig(format=log_format, level=logging.DEBUG)
         else:
             logging.basicConfig(format=log_format, level=logging.INFO)
+
+    def _resolve_targets(self) -> dict:
+        """Resolves the target platforms for the build.
+
+        Returns:
+            A dictionary that contains the host target and the
+            cross compile targets.
+        """
+        host_target = Target.resolve_host_target() \
+            if self.run_mode is RunMode.preset \
+            else Target.to_target(self.args.host_target)
+
+        return {"host": host_target, "cross_compile": {}}
