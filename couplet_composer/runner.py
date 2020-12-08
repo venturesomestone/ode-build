@@ -8,13 +8,7 @@ a run mode of the build script.
 import logging
 import os
 
-from argparse import Namespace
-
-from .support.run_mode import RunMode
-
-from .project import Project
-
-from .target import Target
+from .invocation import Invocation
 
 
 class Runner:
@@ -22,7 +16,16 @@ class Runner:
     run mode runners of the build script.
     """
 
-    def __call__(self) -> int:
+    def __init__(self, invocation: Invocation) -> None:
+        """Initializes the runner object.
+
+        Args:
+            invocation (Invocation): The invocation that this
+                runner belongs to.
+        """
+        self.invocation = invocation
+
+    def __call__(self, invocation: Invocation) -> int:
         """Runs the run mode of this runner.
 
         Returns:

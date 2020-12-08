@@ -21,3 +21,6 @@ def is_path_source_root(path: str, repo: str) -> bool:
         A Boolean value that is true if the given path is valid.
     """
     return os.path.exists(os.path.join(path, repo, "CMakeLists.txt"))
+
+
+PRESET_FILE_PATH = os.path.join("util", "composer-presets.ini")

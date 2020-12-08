@@ -150,7 +150,7 @@ def create_args_parser() -> ArgumentParser:
         "--name",
         help="use the given option preset",
         metavar="NAME",
-        dest="preset"
+        dest="preset_name"
     )
     preset_group.add_argument(
         "--show",

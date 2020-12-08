@@ -12,6 +12,12 @@ from .support.run_mode import RunMode
 
 from .args_parser import create_args_parser
 
+from .composing_runner import ComposingRunner
+
+from .configuring_runner import ConfiguringRunner
+
+from .preset_runner import PresetRunner
+
 from .project import Project
 
 from .target import Target
@@ -32,9 +38,13 @@ class Invocation:
             project and the build files are.
         project (Project): The project object for the project
             this build script acts on.
+        repository (str): The name of the repository directory of
+            the project that is being built.
         targets (dict[Target, list[Target]]): A dictionary of
             targets that contains the host target and other
             possible cross compile targets.
+        runner (Runner): The runner for the run mode of the
+            invocation.
     """
 
     def __init__(self, version: str, name: str) -> None:
@@ -60,7 +70,21 @@ class Invocation:
             repo=self.args.repository
         )
 
+        self.repository = self.args.repository
+
         self.targets = self._resolve_targets()
+
+        def _resolve_runner_type():
+            if self.run_mode is RunMode.preset:
+                return PresetRunner(invocation=self)
+            elif self.run_mode is RunMode.configure:
+                return ConfiguringRunner(invocation=self)
+            elif self.run_mode is RunMode.compose:
+                return ComposingRunner(invocation=self)
+            else:
+                raise ValueError
+
+        self.runner = _resolve_runner_type()
 
     def __call__(self) -> int:
         """Invokes the build script with the current
