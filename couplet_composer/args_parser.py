@@ -126,11 +126,20 @@ def create_args_parser() -> ArgumentParser:
     )
     configure = _add_common_build_arguments(  # noqa: F841
         _add_common_arguments(
-            subparsers.add_parser(RunMode.preset.value)
+            subparsers.add_parser(RunMode.configure.value)
         )
     )
     compose = _add_common_build_arguments(  # noqa: F841
-        _add_common_arguments(subparsers.add_parser(RunMode.preset.value))
+        _add_common_arguments(subparsers.add_parser(RunMode.compose.value))
+    )
+
+    # --------------------------------------------------------- #
+    # Preset: Positional arguments
+
+    preset.add_argument(
+        "preset_run_mode",
+        choices=[RunMode.configure.value, RunMode.compose.value],
+        help="run preset invocation in the given mode"
     )
 
     # --------------------------------------------------------- #

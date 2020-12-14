@@ -14,6 +14,10 @@ from .invocation import Invocation
 class Runner:
     """A class for creating callable objects that represent the
     run mode runners of the build script.
+
+    Attributes:
+        invocation (Invocation): The invocation that this runner
+            belongs to.
     """
 
     def __init__(self, invocation: Invocation) -> None:

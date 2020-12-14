@@ -154,7 +154,7 @@ def _read_preset(
 
 
 def get_preset_options(
-    preset_file_names: List[str],
+    file_names: List[str],
     preset_name: str,
     run_mode: RunMode,
     substitutions: dict = None
@@ -162,8 +162,8 @@ def get_preset_options(
     """Gets the options in the given preset.
 
     Arguments:
-        preset_file_names (list): The files from which the
-            presets are read.
+        file_names (list): The files from which the presets are
+            read.
         preset_name (str): The name of the preset.
         run_mode (RunMode): The mode that the script is invoked
             in.
@@ -180,12 +180,12 @@ def get_preset_options(
     """
     config_parser = _create_configuration_parser(substitutions=substitutions)
 
-    files_read = config_parser.read(preset_file_names)
+    files_read = config_parser.read(file_names)
 
     if files_read == []:
         logging.warning(
             "The preset files aren't found (tried %s)",
-            preset_file_names
+            file_names
         )
         return []
 
@@ -209,22 +209,22 @@ def get_preset_options(
     return options, options_after_end
 
 
-def get_all_preset_names(preset_file_names: List[str]) -> list:
+def get_all_preset_names(file_names: List[str]) -> list:
     """Gets the names of the presets in a preset file.
 
     Args:
-        preset_file_names (list): The files from which the
-            presets are read.
+        file_names (list): The files from which the presets are
+            read.
 
     Returns:
         A list with the names of the presets.
     """
     config_parser = _create_configuration_parser()
-    files_read = config_parser.read(preset_file_names)
+    files_read = config_parser.read(file_names)
     if files_read == []:
         logging.warning(
             "The preset files aren't found (tried %s)",
-            preset_file_names
+            file_names
         )
         return []
     return config_parser.sections()
