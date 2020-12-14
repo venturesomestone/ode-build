@@ -7,8 +7,11 @@ of the build script.
 
 import logging
 import os
+import platform
 
 from .support.run_mode import RunMode
+
+from .support.system import System
 
 from .args_parser import create_args_parser
 
@@ -40,6 +43,8 @@ class Invocation:
             this build script acts on.
         repository (str): The name of the repository directory of
             the project that is being built.
+        platform (System): The platform that the build script is
+            invoked on.
         targets (dict[Target, list[Target]]): A dictionary of
             targets that contains the host target and other
             possible cross compile targets.
@@ -71,7 +76,7 @@ class Invocation:
         )
 
         self.repository = self.args.repository
-
+        self.platform = System(platform.system().lower())
         self.targets = self._resolve_targets()
 
         def _resolve_runner_type():
