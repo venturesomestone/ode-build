@@ -64,7 +64,7 @@ class PresetRunner(Runner):
             logging.debug("The build script invocation is printed")
             return 0
 
-        # TODO Run the build call.
+        super().caffeinate(command=build_call, echo=True)
 
         return 0
 
