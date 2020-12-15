@@ -7,12 +7,16 @@ a run mode of the build script.
 
 import logging
 import os
+import sys
+import time
 
 from .support.system import System
 
 from .util import shell
 
 from .invocation import Invocation
+
+from .toolchain import Toolchain
 
 
 class Runner:
@@ -22,6 +26,8 @@ class Runner:
     Attributes:
         invocation (Invocation): The invocation that this runner
             belongs to.
+        toolchain (Toolchain): The toolchain that contains the
+            tools of this run.
     """
 
     def __init__(self, invocation: Invocation) -> None:
@@ -32,14 +38,30 @@ class Runner:
                 runner belongs to.
         """
         self.invocation = invocation
+        self.toolchain = Toolchain(runner=self)
 
-    def __call__(self, invocation: Invocation) -> int:
+    def __call__(self) -> int:
         """Runs the run mode of this runner.
 
         Returns:
             An 'int' that is equal to the exit code of the run.
         """
         pass
+
+    def clean(self) -> None:
+        """Cleans the directories and files of the runner before
+        building when clean build is run.
+        """
+        # Two spaces are required at the end of the first line as
+        # the counter uses backspace characters.
+        sys.stdout.write("\033[31mStarting a clean build in  \033[0m")
+        for i in reversed(range(0, 4)):
+            sys.stdout.write("\033[31m\b{!s}\033[0m".format(i))
+            sys.stdout.flush()
+            time.sleep(1)
+        print("\033[31m\b\b\b\bnow.\033[0m")
+
+        # TODO Delete the common directories
 
     def caffeinate(
         self,

@@ -20,3 +20,10 @@ class ConfiguringRunner(Runner):
             An 'int' that is equal to the exit code of the run.
         """
         pass
+
+    def clean(self) -> None:
+        """Cleans the directories and files of the runner before
+        building when clean build is run.
+        """
+        super().clean()
+        # TODO Delete the specific directories
