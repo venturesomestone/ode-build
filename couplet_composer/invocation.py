@@ -15,6 +15,8 @@ from .support.system import System
 
 from .args_parser import create_args_parser
 
+from .build_directory import BuildDirectory
+
 from .composing_runner import ComposingRunner
 
 from .configuring_runner import ConfiguringRunner
@@ -41,6 +43,9 @@ class Invocation:
             project and the build files are.
         project (Project): The project object for the project
             this build script acts on.
+        build_dir (BuildDirectory): The build directory object
+            that is the main build directory of the build script
+            invocation.
         repository (str): The name of the repository directory of
             the project that is being built.
         platform (System): The platform that the build script is
@@ -74,7 +79,7 @@ class Invocation:
             source_root=self.source_root,
             repo=self.args.repository
         )
-
+        self.build_dir = BuildDirectory(source_root=self.source_root)
         self.repository = self.args.repository
         self.platform = System(platform.system().lower())
         self.targets = self._resolve_targets()
@@ -99,7 +104,7 @@ class Invocation:
             An 'int' that is equal to the exit code of the
             invocation.
         """
-        return 0
+        return self.runner()
 
     def _set_logging_level(self) -> None:
         """Sets the logging level according to the configuration
