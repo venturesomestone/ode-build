@@ -517,6 +517,7 @@ def compose_project(
         path=os.path.join(destination_root, "bin"),
         arguments=arguments,
         host_system=host_system,
+        source_root=source_root,
         project_root=project_root,
         dependencies_root=dependencies_root
     )

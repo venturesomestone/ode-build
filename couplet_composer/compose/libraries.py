@@ -94,6 +94,7 @@ def copy_sdl_libraries(
     path,
     arguments,
     host_system,
+    source_root,
     project_root,
     dependencies_root
 ):
@@ -156,7 +157,7 @@ def copy_sdl_libraries(
 
         dependency_version_file = os.path.join(
             project_root,
-            get_project_dependencies_file_path()
+            get_project_dependencies_file_path(source_root)
         )
         with open(dependency_version_file) as f:
             sdl_version = json.load(f)["sdl"]["version"]
