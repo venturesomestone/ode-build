@@ -32,7 +32,7 @@ def construct_dependencies_data(data_file):
     json_data = None
     with open(data_file) as f:
         json_data = json.load(f)
-    dependency_data = json_data.items() \
+    dependency_data = json_data \
         if data_file != get_project_values_file_path() \
         else json_data["dependencies"]
     return [create_dependency_data(
