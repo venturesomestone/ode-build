@@ -9,8 +9,6 @@ from typing import Any
 
 from .util.cache import cached
 
-from .preset_runner import PresetRunner
-
 from .runner import Runner
 
 
