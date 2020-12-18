@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.3.2] - 2020-12-18
+
+### Fixed
+
+- Missing argument when copying the SDL libraries.
+
 ## [1.3.1] - 2020-12-18
 
 ### Fixed
@@ -481,7 +487,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.3.1...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.3.2...HEAD
+[1.3.2]: https://github.com/anttikivi/couplet-composer/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/anttikivi/couplet-composer/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/anttikivi/couplet-composer/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/anttikivi/couplet-composer/compare/v1.2.0...v1.2.1
