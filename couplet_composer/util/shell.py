@@ -1,7 +1,7 @@
 # Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""A module that contains contains several shell helpers.
+"""A module that contains several shell helpers.
 """
 
 import logging
