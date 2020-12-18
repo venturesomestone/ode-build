@@ -5,6 +5,10 @@
 of the build script.
 """
 
+from typing import Any
+
+from .util.cache import cached
+
 from .preset_runner import PresetRunner
 
 from .runner import Runner
@@ -28,6 +32,27 @@ class Toolchain:
         """
         self.runner = runner
 
-        # There is no need for toolchain in the preset mode.
-        if isinstance(self.runner, PresetRunner):
-            return
+    @cached
+    def __getattr__(self, name: str) -> Any:
+        """Gives the attributes of the toolchain that aren't
+        implemented to be found with '__getattribute__'.
+
+        In toolchain this method is used to find the tools in the
+        toolchain. If the tool isn't found by traditional search,
+        it will be downloaded and built on demand by this
+        function.
+
+        The return value is cached to that the search and build
+        isn't done twice.
+
+        Args:
+            name (str): The name of the attribute.
+
+        Returns:
+            The tool.
+
+        Throws:
+            AttributeError: Is thrown if the given tool isn't
+                found or possible to be built.
+        """
+        return None
