@@ -6,12 +6,14 @@ We currently support the following versions of Couplet Composer with security up
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 1.3.x   | :white_check_mark: |
+| 1.2.x   | :white_check_mark: |
 | 1.1.x   | :white_check_mark: |
 | < 1.1   | :x:                |
 
 ## Reporting a Vulnerability
 
-If you’ve found an vulnerability, please report it to security@visisto.fi.
+If you’ve found an vulnerability, please report it to security@visiosto.fi.
 
 We get back to you as soon as possible, usually within five working days.
 

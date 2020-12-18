@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.3.0] - 2020-12-18
+
+### Added
+
+- Support for providing both dependencies and project values in file `util/project.json`.
+- Support for using value `shared` to indicate that either Ode or Anthem should use the shared version number from the project value file.
+- Support for field `shared_version` to hold the value of the shared version number in the project value file.
+
+### Deprecated
+
+- Usage of value `default` in `values.json` and `project.json` as the way to tell the script to use the shared version number for Ode or Anthem.
+- Field `version` in `values.json` and `project.json` for holding the value of the shared version number.
+- Command line options `--ode-version` and `--anthem-version`.
+- File `values.json` for providing information on the projects being built.
+- File `dependencies.json` for providing information on the dependencies of the projects being built.
+
 ## [1.2.1] - 2020-09-12
 
 ### Fixed
@@ -459,7 +475,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.2.1...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/anttikivi/couplet-composer/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/anttikivi/couplet-composer/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/anttikivi/couplet-composer/compare/v1.1.5...v1.2.0
 [1.1.5]: https://github.com/anttikivi/couplet-composer/compare/v1.1.4...v1.1.5
