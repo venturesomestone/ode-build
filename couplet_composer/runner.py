@@ -5,8 +5,6 @@
 a run mode of the build script.
 """
 
-import logging
-import os
 import sys
 import time
 

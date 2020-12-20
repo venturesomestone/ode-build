@@ -7,7 +7,6 @@ and displaying the presets.
 
 import configparser
 import logging
-import sys
 
 from typing import List, Tuple
 
@@ -43,7 +42,8 @@ def _read_preset(
     parser: configparser.ConfigParser,
     name: str,
     run_mode: RunMode,
-    substitutions: dict = None) -> Tuple[dict, dict, list]:
+    substitutions: dict = None
+) -> Tuple[dict, dict, list]:
     """Reads the options from the given preset loaded into the
     configuration parser.
 
