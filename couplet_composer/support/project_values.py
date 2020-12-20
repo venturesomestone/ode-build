@@ -37,7 +37,7 @@ def _get_project_values_file(source_root, in_tree_build):
                 get_old_project_values_file_path()
             )
     if os.path.isfile(_old_file()):
-        logging.warn(
+        logging.warning(
             "The file '%s' for providing project values is deprecated; use %s "
             "instead",
             get_old_project_values_file_path(),
@@ -100,7 +100,7 @@ def get_project_version(source_root, in_tree_build):
     )
     if project_values:
         if "version" in project_values:
-            logging.warn(
+            logging.warning(
                 "The use of the field 'version' for holding the shared "
                 "version number is deprecated; use 'shared_version' instead"
             )

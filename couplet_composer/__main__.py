@@ -215,13 +215,13 @@ def _main():
                 arguments.ode_version = default_version
             # TODO Deprecated functionality
             if read_version.lower() == "default":
-                logging.warn(
+                logging.warning(
                     "The value 'default' for the shared version is "
                     "deprecated; use the value 'shared' instead"
                 )
                 arguments.ode_version = default_version
         else:
-            logging.warn(
+            logging.warning(
                 "The command line option '--ode-version' is deprecated"
             )
         if not arguments.anthem_version:
@@ -233,13 +233,13 @@ def _main():
                 arguments.anthem_version = default_version
             # TODO Deprecated functionality
             if read_version.lower() == "default":
-                logging.warn(
+                logging.warning(
                     "The value 'default' for the shared version is "
                     "deprecated; use the value 'shared' instead"
                 )
                 arguments.anthem_version = default_version
         else:
-            logging.warn(
+            logging.warning(
                 "The command line option '--anthem-version' is deprecated"
             )
 

@@ -71,7 +71,7 @@ def _should_install_dependency(
     versions of the dependencies.
     """
     if "testonly" in data_node:
-        logging.warn(
+        logging.warning(
             "The use of 'testonly' for determining whether a dependency is "
             "built only when the tests are built is deprecated; use "
             "'testOnly' instead"
@@ -82,7 +82,7 @@ def _should_install_dependency(
         if data_node["testOnly"] and not build_test:
             return False
     if "benchmarkonly" in data_node:
-        logging.warn(
+        logging.warning(
             "The use of 'benchmarkonly' for determining whether a dependency "
             "is built only when the tests are built is deprecated; use "
             "'benchmarkOnly' instead"

@@ -43,7 +43,7 @@ def get_project_dependencies_file_path(source_root):
     """
     old_file = os.path.join("util", "dependencies.json")
     if os.path.isfile(os.path.join(source_root, old_file)):
-        logging.warn(
+        logging.warning(
             "The file '%s' for providing dependency information is "
             "deprecated; use %s instead",
             old_file,
