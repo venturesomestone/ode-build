@@ -10,7 +10,7 @@ import json
 import logging
 import os
 
-from typing import Any
+from typing import Any, List
 
 from .support import environment
 
@@ -25,9 +25,8 @@ class Project:
         ode_version (str): The version number of Obliging Ode.
         anthem_version (str): The version number of Unsung
             Anthem.
-        dependencies (dict): A dictionary containing the names
-            and representation objects of the dependencies of the
-            project.
+        dependencies (list): A list containing the representation
+            objects of the dependencies of the project.
     """
 
     SHARED_VERSION_KEY = "shared_version"
@@ -99,14 +98,14 @@ class Project:
         if not dependency_data:
             raise ValueError
 
-        self.dependencies = dict()
+        self.dependencies: List[Dependency] = list()
 
         for key, value in dependency_data:
-            self.dependencies[key] = self._create_dependency_object(
+            self.dependencies.append(self._create_dependency_object(
                 key=key,
                 data=value,
                 root_package=script_package
-            )
+            ))
 
     def _get_from_project_data(self, data: object, key: str) -> Any:
         """Reads and resolves the given entry from the data got

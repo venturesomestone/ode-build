@@ -23,6 +23,14 @@ class ConfiguringRunner(Runner):
         """
         super().__call__()
 
+        to_install = [
+            data for data in self.invocation.project.dependencies.values()
+            if data.should_install(build_dir=self.build_dir)
+        ]
+
+        for dependency in to_install:
+            dependency.install()
+
         return 0
 
     def clean(self) -> None:

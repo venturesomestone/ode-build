@@ -73,23 +73,16 @@ class Dependency:
         """
         return "{} {}".format(self.name, self.version)
 
-    def build(self) -> None:
-        """Builds the dependency.
+    def install(self) -> None:
+        """Downloads, builds, and installs the dependency.
         """
         pass
 
-    def should_install(
-        self,
-        installed_version: str,
-        build_dir: BuildDirectory
-    ) -> bool:
+    def should_install(self, build_dir: BuildDirectory) -> bool:
         """Tells whether the build of the dependency should be
         skipped.
 
         Args:
-            installed_version (str): The version of the dependecy
-                that is written to the JSON file containing the
-                currently installed versions of the dependencies.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
@@ -97,6 +90,8 @@ class Dependency:
         Returns:
             A 'bool' telling if the dependency should be built.
         """
+        installed_version = build_dir.installed_versions[self.key]
+
         if not installed_version or self.version != installed_version:
             return True
 
