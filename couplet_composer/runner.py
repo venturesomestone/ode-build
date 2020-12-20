@@ -12,6 +12,8 @@ from .support.system import System
 
 from .util import shell
 
+from .build_directory import BuildDirectory
+
 from .invocation import Invocation
 
 from .toolchain import Toolchain
@@ -24,6 +26,9 @@ class Runner:
     Attributes:
         invocation (Invocation): The invocation that this runner
             belongs to.
+        build_dir (BuildDirectory): The build directory object
+            that is the main build directory of the build script
+            invocation.
         toolchain (Toolchain): The toolchain that contains the
             tools of this run.
     """
@@ -36,6 +41,7 @@ class Runner:
                 runner belongs to.
         """
         self.invocation = invocation
+        self.build_dir = BuildDirectory(invocation=self.invocation)
         self.toolchain = Toolchain(runner=self)
 
     def __call__(self) -> int:

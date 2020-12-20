@@ -9,13 +9,13 @@ import logging
 import os
 import platform
 
+from collections import namedtuple
+
 from .support.run_mode import RunMode
 
 from .support.system import System
 
 from .args_parser import create_args_parser
-
-from .build_directory import BuildDirectory
 
 from .composing_runner import ComposingRunner
 
@@ -43,19 +43,18 @@ class Invocation:
             project and the build files are.
         project (Project): The project object for the project
             this build script acts on.
-        build_dir (BuildDirectory): The build directory object
-            that is the main build directory of the build script
-            invocation.
         repository (str): The name of the repository directory of
             the project that is being built.
         platform (System): The platform that the build script is
             invoked on.
-        targets (dict[Target, list[Target]]): A dictionary of
-            targets that contains the host target and other
-            possible cross compile targets.
+        targets (Targets): A named tuple of targets that contains
+            the host target and other possible cross compile
+            targets.
         runner (Runner): The runner for the run mode of the
             invocation.
     """
+
+    Targets = namedtuple("Targets", ["host", "cross_compile"])
 
     def __init__(self, version: str, name: str) -> None:
         """Initializes the invocation object for the current run.
@@ -80,7 +79,6 @@ class Invocation:
             repo=self.args.repository,
             script_package="couplet_composer"  # TODO Remove hard-coded value
         )
-        self.build_dir = BuildDirectory(source_root=self.source_root)
         self.repository = self.args.repository
         self.platform = System(platform.system().lower())
         self.targets = self._resolve_targets()
@@ -120,7 +118,7 @@ class Invocation:
         else:
             logging.basicConfig(format=log_format, level=logging.INFO)
 
-    def _resolve_targets(self) -> dict:
+    def _resolve_targets(self) -> namedtuple:
         """Resolves the target platforms for the build.
 
         Returns:
@@ -131,4 +129,4 @@ class Invocation:
             if self.run_mode is RunMode.preset \
             else Target.to_target(self.args.host_target)
 
-        return {"host": host_target, "cross_compile": {}}
+        return self.Targets(host=host_target, cross_compile=list())
