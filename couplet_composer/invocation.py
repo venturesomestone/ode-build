@@ -77,7 +77,8 @@ class Invocation:
 
         self.project = Project(
             source_root=self.source_root,
-            repo=self.args.repository
+            repo=self.args.repository,
+            script_package="couplet_composer"  # TODO Remove hard-coded value
         )
         self.build_dir = BuildDirectory(source_root=self.source_root)
         self.repository = self.args.repository

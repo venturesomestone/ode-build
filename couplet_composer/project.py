@@ -5,11 +5,16 @@
 that the build script acts on.
 """
 
+import importlib
 import json
 import logging
 import os
 
+from typing import Any
+
 from .support import environment
+
+from .dependency import Dependency
 
 
 class Project:
@@ -20,15 +25,27 @@ class Project:
         ode_version (str): The version number of Obliging Ode.
         anthem_version (str): The version number of Unsung
             Anthem.
+        dependencies (dict): A dictionary containing the names
+            and representation objects of the dependencies of the
+            project.
     """
 
     SHARED_VERSION_KEY = "shared_version"
-    SHARED_USAGE_KEY = "shared"
+    SHARED_USAGE_VALUE = "shared"
     VERSION_KEY = "version"
     ODE_KEY = "ode"
-    ANTHEM_KEY = "ode"
+    ANTHEM_KEY = "anthem"
+    DEPENDENCIES_KEY = "dependencies"
+    MODULE_KEY = "module"
+    MODULE_DEFAULT_VALUE = "default"
+    CLASS_KEY = "class_name"
 
-    def __init__(self, source_root: str, repo: str) -> None:
+    def __init__(
+        self,
+        source_root: str,
+        repo: str,
+        script_package: str
+    ) -> None:
         """Initializes the project object.
 
         Arguments:
@@ -37,6 +54,8 @@ class Project:
                 files are.
             repo (str): The name of the repository directory of
                 the project that is being built.
+            script_package (str): The name of the root Python
+                package of the build script.
         """
         if not environment.is_path_source_root(path=source_root, repo=repo):
             logging.critical(
@@ -47,18 +66,62 @@ class Project:
             raise ValueError
 
         project_json = os.path.join(source_root, repo, "util", "project.json")
+        dependency_data = None
 
-        with open(project_json) as f:
-            json_data = json.load(f)
+        try:
+            with open(project_json) as f:
+                json_data = json.load(f)
 
-            self.ode_version = self._get_version_from_project_data(
-                data=json_data,
-                key=self.ODE_KEY
+                self.ode_version = self._get_version_from_project_data(
+                    data=json_data,
+                    key=self.ODE_KEY
+                )
+                self.anthem_version = self._get_version_from_project_data(
+                    data=json_data,
+                    key=self.ANTHEM_KEY
+                )
+
+                dependency_data = self._get_from_project_data(
+                    data=json_data,
+                    key=self.DEPENDENCIES_KEY
+                )
+
+        except Exception:
+            logging.critical(
+                "The project value file wasn't found: %s",
+                project_json
             )
-            self.anthem_version = self._get_version_from_project_data(
-                data=json_data,
-                key=self.ANTHEM_KEY
+            raise ValueError
+
+        if not dependency_data:
+            raise ValueError
+
+        self.dependencies = dict()
+
+        for key, value in dependency_data:
+            self.dependencies[key] = self._create_dependency_object(
+                key=key,
+                data=value,
+                root_package=script_package
             )
+
+    def _get_from_project_data(self, data: object, key: str) -> Any:
+        """Reads and resolves the given entry from the data got
+        from the project data JSON file.
+
+        Args:
+            data (Object): The data object read from the project
+                data JSON file.
+            key (str): The key for the data.
+
+        Returns:
+            The number, string, or object read from the project
+            data JSON file.
+        """
+        if key not in data:
+            raise ValueError
+
+        return data[key]
 
     def _get_version_from_project_data(self, data: object, key: str) -> str:
         """Reads and resolves the correct version from the data
@@ -86,7 +149,46 @@ class Project:
                 return shared
             else:
                 raise ValueError
-        elif key_data[self.VERSION_KEY] == self.SHARED_USAGE_KEY:
+        elif key_data[self.VERSION_KEY] == self.SHARED_USAGE_VALUE:
             return shared
         else:
             return key_data[self.VERSION_KEY]
+
+    def _create_dependency_object(self, key: str, data: dict, root_package: str) -> Dependency:
+        """Creates the representation object of the given
+        dependency by resolving the correct module and class to
+        use.
+
+        Args:
+            key (str): The simple identifier of the dependency.
+            data (dict): The dependency data for the given key
+                read from the project data file.
+            root_package (str): The name of the root Python
+                package of the build script.
+
+        Returns:
+            The constructed dependency object.
+        """
+        if self.MODULE_KEY not in data or \
+                data[self.MODULE_KEY] == self.MODULE_DEFAULT_VALUE:
+            return Dependency(
+                key=key,
+                name=data["name"],
+                version=data["version"]
+            )
+        else:
+            if self.CLASS_KEY not in data:
+                raise ValueError  # TODO Add explanation or logging.
+
+            package_name = "{}.support.dependencies.{}".format(
+                root_package,
+                data[self.MODULE_KEY]
+            )
+            module = importlib.import_module(package_name)
+            dependency_class = getattr(module, self.CLASS_KEY)
+
+            return dependency_class(
+                key=key,
+                name=data["name"],
+                version=data["version"]
+            )
