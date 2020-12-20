@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### Added
+
+- Support for determining whether a dependency is built only when the tests are built by using the key `testOnly`.
+- Support for determining whether a dependency is built only when the benchmarks are built by using the key `benchmarkOnly`.
+
+### Deprecated
+
+- Usage of the key `testonly` for determining whether a dependency is built only when the tests are built.
+- Usage of the key `benchmarkonly` for determining whether a dependency is built only when the benchmarks are built.
+
 ## [1.3.2] - 2020-12-18
 
 ### Fixed
