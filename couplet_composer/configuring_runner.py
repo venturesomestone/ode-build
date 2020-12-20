@@ -19,7 +19,9 @@ class ConfiguringRunner(Runner):
         Returns:
             An 'int' that is equal to the exit code of the run.
         """
-        pass
+        super().__call__()
+
+        return 0
 
     def clean(self) -> None:
         """Cleans the directories and files of the runner before
