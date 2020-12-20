@@ -7,6 +7,7 @@
 import logging
 import os
 import pipes
+import shutil
 import subprocess
 import sys
 
@@ -104,3 +105,38 @@ def call(
             e.strerror
         )
         sys.exit(1)
+
+
+def rmtree(path: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Removes a directory and its contents.
+
+    Args:
+        path (str): The directory to delete.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, ["rm", "-rf", path])
+    if dry_run:
+        return
+    if os.path.exists(path):
+        # TODO Find out if 'ignore_errors' is required
+        shutil.rmtree(path, ignore_errors=True)
+
+
+def rm(file: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Removes a file.
+
+    Args:
+        file (str): The file to delete.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, ["rm", "-f", file])
+    if dry_run:
+        return
+    if os.path.islink(file):
+        os.unlink(file)
+    if os.path.exists(file):
+        os.remove(file)
