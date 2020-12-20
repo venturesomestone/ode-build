@@ -33,6 +33,8 @@ class BuildDirectory:
             configuration.
         dependencies (str): The root directory of the
             dependencies for the current configuration.
+        versions_file (str): The file where the locally installed
+            versions of the dependencies are.
         installed_versions (dict): The installed versions of the
             dependencies for the current configuration.
     """
@@ -58,6 +60,11 @@ class BuildDirectory:
                 variant=self._build_variant
             )
         )
+        versions_file_name = ".versions-{target}-{variant}".format(
+            target=self._target,
+            variant=self._build_variant
+        )
+        self.versions_file = os.path.join(self.local, versions_file_name)
 
     def __getattr__(self, name) -> Any:
         """Gives the attributes of the build directory that
@@ -75,12 +82,8 @@ class BuildDirectory:
             ValueError: Is thrown if the value lookup fails.
         """
         if "installed_versions" == name:
-            versions_file = ".versions-{target}-{variant}".format(
-                target=self._target,
-                variant=self._build_variant
-            )
             try:
-                with open(os.path.join(self.local, versions_file)) as f:
+                with open(self.versions_file) as f:
                     return json.load(f)
             except:
                 raise ValueError

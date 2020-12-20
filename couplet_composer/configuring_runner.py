@@ -5,6 +5,8 @@
 configuring run mode of the build script.
 """
 
+from .util import shell
+
 from .runner import Runner
 
 
@@ -28,4 +30,14 @@ class ConfiguringRunner(Runner):
         building when clean build is run.
         """
         super().clean()
-        # TODO Delete the specific directories
+
+        shell.rmtree(
+            self.build_dir.dependencies,
+            dry_run=self.invocation.args.dry_run,
+            echo=self.invocation.args.verbose
+        )
+        shell.rm(
+            self.build_dir.versions_file,
+            dry_run=self.invocation.args.dry_run,
+            echo=self.invocation.args.verbose
+        )
