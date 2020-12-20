@@ -11,12 +11,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Documentation for the usage options of Couplet Composer to its repository.
 - Command line option `--repository` for specifying the name of the repository directory of the project that is being built.
 - Type hints to every method of the script.
+- Support for determining custom module for dependency by using the key `module` and custom class in the module by using the key `class`.
+- Support for determining the file used to check whether a dependency is installed by using the key `libraryFile`.
 
 ### Changed
 
 - Internal application programming interface to use object based structure.
 - Values for setting and checking the run mode into an enumeration.
 - Values used in handling the operating system into an enumeration.
+- Key for determining whether a dependency is built only when the tests are built to `testOnly`.
+- Key for determining whether a dependency is built only when the benchmarks are built to `benchmarkOnly`.
+- Name of the file containing the versions of the locally installed dependencies to start with a dot.
 
 ### Removed
 
@@ -25,6 +30,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Support for the usage of value `default` in `project.json` as the way to tell the script to use the shared version number for Ode or Anthem.
 - Support for the field `version` in `project.json` for holding the value of the shared version number.
 - Command line options `--ode-version` and `--anthem-version`.
+- Support for using the key `testonly` to determine whether a dependency is built only when the tests are built.
+- Support for using the key `benchmarkonly` to determine whether a dependency is built only when the benchmarks are built.
 
 ## [1.2.1] - 2020-09-12
 
