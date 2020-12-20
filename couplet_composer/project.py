@@ -39,6 +39,9 @@ class Project:
     MODULE_KEY = "module"
     MODULE_DEFAULT_VALUE = "default"
     CLASS_KEY = "class_name"
+    LIBRARY_FILE_KEY = "libraryFile"
+    TEST_ONLY_KEY = "testOnly"
+    BENCHMARK_ONLY_KEY = "benchmarkOnly"
 
     def __init__(
         self,
@@ -169,12 +172,28 @@ class Project:
         Returns:
             The constructed dependency object.
         """
+        library_file = None if self.LIBRARY_FILE_KEY not in data \
+            else data[self.LIBRARY_FILE_KEY]
+
+        test_only = False
+
+        if self.TEST_ONLY_KEY in data:
+            test_only = data[self.TEST_ONLY_KEY]
+
+        benchmark_only = False
+
+        if self.BENCHMARK_ONLY_KEY in data:
+            benchmark_only = data[self.BENCHMARK_ONLY_KEY]
+
         if self.MODULE_KEY not in data or \
                 data[self.MODULE_KEY] == self.MODULE_DEFAULT_VALUE:
             return Dependency(
                 key=key,
                 name=data["name"],
-                version=data["version"]
+                version=data["version"],
+                library_file=library_file,
+                test_only=test_only,
+                benchmark_only=benchmark_only
             )
         else:
             if self.CLASS_KEY not in data:
@@ -190,5 +209,8 @@ class Project:
             return dependency_class(
                 key=key,
                 name=data["name"],
-                version=data["version"]
+                version=data["version"],
+                library_file=library_file,
+                test_only=test_only,
+                benchmark_only=benchmark_only
             )
