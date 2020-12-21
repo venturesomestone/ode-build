@@ -10,6 +10,8 @@ import os
 
 from .build_directory import BuildDirectory
 
+from .invocation import Invocation
+
 
 class Dependency:
     """A class for creating objects that represent the
@@ -53,7 +55,8 @@ class Dependency:
         self.key = key
         self.name = name
         self.version = version
-        self.library_file = library_file
+        self.library_file = os.path.join(*library_file.split("/")) \
+            if library_file is not None else None
         self.test_only = test_only
         self.benchmark_only = benchmark_only
 
@@ -78,11 +81,16 @@ class Dependency:
         """
         pass
 
-    def should_install(self, build_dir: BuildDirectory) -> bool:
+    def should_install(
+        self,
+        invocation: Invocation,
+        build_dir: BuildDirectory
+    ) -> bool:
         """Tells whether the build of the dependency should be
         skipped.
 
         Args:
+            invocation (Invocation): The current invocation.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
