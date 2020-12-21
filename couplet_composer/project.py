@@ -171,7 +171,7 @@ class Project:
         Returns:
             The constructed dependency object.
         """
-        library_file = None if self.LIBRARY_FILE_KEY not in data \
+        library_files = None if self.LIBRARY_FILE_KEY not in data \
             else data[self.LIBRARY_FILE_KEY]
 
         test_only = False
@@ -190,7 +190,7 @@ class Project:
                 key=key,
                 name=data["name"],
                 version=data["version"],
-                library_file=library_file,
+                library_files=library_files,
                 test_only=test_only,
                 benchmark_only=benchmark_only
             )
@@ -209,7 +209,7 @@ class Project:
                 key=key,
                 name=data["name"],
                 version=data["version"],
-                library_file=library_file,
+                library_files=library_files,
                 test_only=test_only,
                 benchmark_only=benchmark_only
             )

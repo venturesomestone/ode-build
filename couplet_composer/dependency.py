@@ -8,6 +8,10 @@ acts on.
 
 import os
 
+from typing import Any
+
+from .support.system import System
+
 from .build_directory import BuildDirectory
 
 from .invocation import Invocation
@@ -21,8 +25,10 @@ class Dependency:
         key (str): The simple identifier of this dependency.
         name (str): The full name of this dependency.
         version (str): The required version of the dependency.
-        library_file (str): The name of the file that is used to
-            check whether the dependency is installed.
+        library_files (str | list | dict): The names of the files
+            sorted by system, list of the names of the files, or
+            a name of the file that are used to check whether the
+            dependency is installed.
         test_only (bool): Whether or not the dependency is needed
             only when building the tests.
         benchmark_only (bool): Whether or not the dependency is
@@ -34,7 +40,7 @@ class Dependency:
         key: str,
         name: str,
         version: str,
-        library_file: str,
+        library_files: Any,
         test_only: bool,
         benchmark_only: bool
     ) -> None:
@@ -45,8 +51,10 @@ class Dependency:
             name (str): The full name of this dependency.
             version (str): The required version of the
                 dependency.
-            library_file (str): The name of the file that is used
-                to check whether the dependency is installed.
+            library_files (str | list | dict): The names of the
+                files sorted by system, list of the names of the
+                files, or a name of the file that are used to
+                check whether the dependency is installed.
             test_only (bool): Whether or not the dependency is
                 needed only when building the tests.
             benchmark_only (bool): Whether or not the dependency
@@ -55,8 +63,38 @@ class Dependency:
         self.key = key
         self.name = name
         self.version = version
-        self.library_file = os.path.join(*library_file.split("/")) \
-            if library_file is not None else None
+
+        # The possible configurations for the library files are
+        # the following:
+        # - a string
+        # - a list with strings
+        # - a dictionary with lists or strings
+        if isinstance(library_files, str):
+            self.library_files = os.path.join(*library_files.split("/")) \
+                if library_files is not None else None
+        elif isinstance(library_files, list):
+            self.library_files = list()
+
+            for f in library_files:
+                self.library_files.append(os.path.join(*f.split("/")))
+        elif isinstance(library_files, dict):
+            self.library_files = dict()
+
+            for key, value in library_files.items():
+                if isinstance(value, str):
+                    self.library_files[System(key)] = os.path.join(
+                        *value.split("/")
+                    )
+                elif isinstance(value, list):
+                    self.library_files[System(key)] = list()
+
+                    for f in value:
+                        self.library_files[System(key)].append(
+                            os.path.join(*f.split("/"))
+                        )
+        else:
+            self.library_files = None
+
         self.test_only = test_only
         self.benchmark_only = benchmark_only
 
@@ -103,6 +141,40 @@ class Dependency:
         if not installed_version or self.version != installed_version:
             return True
 
-        return not self.library_file or not os.path.exists(os.path.join(
-            build_dir.dependencies, self.library_file
-        ))
+        if not self.library_files:
+            return True
+
+        if isinstance(self.library_files, str):
+            return os.path.exists(
+                os.path.join(build_dir.dependencies, self.library_files)
+            )
+        elif isinstance(self.library_files, list):
+            found = False
+
+            for lib_file in self.library_files:
+                if os.path.exists(
+                    os.path.join(build_dir.dependencies, lib_file)
+                ):
+                    found = True
+
+            return not found
+        elif isinstance(self.library_files, dict):
+            if invocation.platform in self.library_files:
+                entry = self.library_files[invocation.platform]
+
+                if isinstance(entry, str):
+                    return os.path.exists(
+                        os.path.join(build_dir.dependencies, entry)
+                    )
+                elif isinstance(entry, list):
+                    found = False
+
+                    for lib_file in entry:
+                        if os.path.exists(
+                            os.path.join(build_dir.dependencies, lib_file)
+                        ):
+                            found = True
+
+                    return not found
+
+        return False  # TODO Is this a good fallback value?
