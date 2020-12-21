@@ -38,7 +38,7 @@ class Project:
     MODULE_KEY = "module"
     MODULE_DEFAULT_VALUE = "default"
     CLASS_KEY = "class_name"
-    LIBRARY_FILE_KEY = "libraryFile"
+    LIBRARY_FILES_KEY = "libraryFiles"
     TEST_ONLY_KEY = "testOnly"
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
 
@@ -171,8 +171,8 @@ class Project:
         Returns:
             The constructed dependency object.
         """
-        library_files = None if self.LIBRARY_FILE_KEY not in data \
-            else data[self.LIBRARY_FILE_KEY]
+        library_files = None if self.LIBRARY_FILES_KEY not in data \
+            else data[self.LIBRARY_FILES_KEY]
 
         test_only = False
 

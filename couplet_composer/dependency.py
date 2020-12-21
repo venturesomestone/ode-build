@@ -114,8 +114,13 @@ class Dependency:
         """
         return "{} {}".format(self.name, self.version)
 
-    def install(self) -> None:
+    def install(self, build_dir: BuildDirectory) -> None:
         """Downloads, builds, and installs the dependency.
+
+        Args:
+            build_dir (BuildDirectory): The build directory
+                object that is the main build directory of the
+                build script invocation.
         """
         pass
 
