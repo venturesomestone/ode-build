@@ -85,7 +85,7 @@ class BuildDirectory:
             try:
                 with open(self.versions_file) as f:
                     return json.load(f)
-            except:
+            except Exception:
                 raise ValueError
         else:
             raise AttributeError
