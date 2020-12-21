@@ -107,6 +107,22 @@ def call(
         sys.exit(1)
 
 
+def makedirs(path: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Creates the given directory and the in-between directories.
+
+    Args:
+        path (str): The directory to create.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, ["mkdir", "-p", path])
+    if dry_run:
+        return
+    if not os.path.isdir(path):
+        os.makedirs(path)
+
+
 def rmtree(path: str, dry_run: bool = None, echo: bool = None) -> None:
     """Removes a directory and its contents.
 
