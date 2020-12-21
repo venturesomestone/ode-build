@@ -10,6 +10,8 @@ import os
 
 from typing import Any
 
+from .util import shell
+
 from .invocation import Invocation
 
 
@@ -18,6 +20,9 @@ class BuildDirectory:
     the build script.
 
     Private attributes:
+        _dry_run (bool): Whether or not dry run is enabled.
+        _verbose (bool): Whether or not verbose logging is
+            enabled.
         _target (str): The string representation of the current
             target for creating paths.
         _build_variant (str): The string representation of the
@@ -35,6 +40,7 @@ class BuildDirectory:
             dependencies for the current configuration.
         versions_file (str): The file where the locally installed
             versions of the dependencies are.
+        temporary (str): The temporary directory.
         installed_versions (dict): The installed versions of the
             dependencies for the current configuration.
     """
@@ -46,6 +52,8 @@ class BuildDirectory:
             invocation (Invocation): The invocation that this
                 build directory belongs to.
         """
+        self._dry_run = invocation.args.dry_run
+        self._verbose = invocation.args.verbose
         self._target = invocation.targets.host
         self._build_variant = "debug"  # TODO Use the correct value
         self._generator = "ninja"  # TODO Use the correct value
@@ -81,7 +89,18 @@ class BuildDirectory:
                 isn't valid.
             ValueError: Is thrown if the value lookup fails.
         """
-        if "installed_versions" == name:
+        if "temporary" == name:
+            tmp_dir = os.path.join(self.path, "tmp")
+
+            if not os.path.isdir(tmp_dir):
+                shell.makedirs(
+                    tmp_dir,
+                    dry_run=self._dry_run,
+                    echo=self._verbose
+                )
+
+            return tmp_dir
+        elif "installed_versions" == name:
             try:
                 with open(self.versions_file) as f:
                     return json.load(f)
