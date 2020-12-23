@@ -33,6 +33,8 @@ class Dependency:
             only when building the tests.
         benchmark_only (bool): Whether or not the dependency is
             needed only when building the benchmarkings
+        asset_name (str): The name of the asset that will be
+            downloaded from GitHub by default.
     """
 
     def __init__(
@@ -42,7 +44,8 @@ class Dependency:
         version: str,
         library_files: Any,
         test_only: bool,
-        benchmark_only: bool
+        benchmark_only: bool,
+        asset_name: str
     ) -> None:
         """Initializes the dependency object.
 
@@ -59,6 +62,8 @@ class Dependency:
                 needed only when building the tests.
             benchmark_only (bool): Whether or not the dependency
                 is needed only when building the benchmarkings.
+            asset_name (str): The name of the asset that will be
+                downloaded from GitHub by default.
         """
         self.key = key
         self.name = name
@@ -97,6 +102,7 @@ class Dependency:
 
         self.test_only = test_only
         self.benchmark_only = benchmark_only
+        self.asset_name = asset_name
 
     def __repr__(self) -> str:
         """Computes the string representation of the dependency.

@@ -12,6 +12,8 @@ import os
 
 from typing import Any, List
 
+from .support.system import System
+
 from .support import environment
 
 from .dependency import Dependency
@@ -41,12 +43,14 @@ class Project:
     LIBRARY_FILES_KEY = "libraryFiles"
     TEST_ONLY_KEY = "testOnly"
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
+    ASSET_KEY = "asset"
 
     def __init__(
         self,
         source_root: str,
         repo: str,
-        script_package: str
+        script_package: str,
+        platform: System
     ) -> None:
         """Initializes the project object.
 
@@ -58,6 +62,8 @@ class Project:
                 the project that is being built.
             script_package (str): The name of the root Python
                 package of the build script.
+            platform (System): The platform that the build script
+                is invoked on.
         """
         if not environment.is_path_source_root(path=source_root, repo=repo):
             logging.critical(
@@ -104,7 +110,8 @@ class Project:
             self.dependencies.append(self._create_dependency_object(
                 key=key,
                 data=value,
-                root_package=script_package
+                root_package=script_package,
+                platform=platform
             ))
 
     def _get_from_project_data(self, data: object, key: str) -> Any:
@@ -156,7 +163,13 @@ class Project:
         else:
             return key_data[self.VERSION_KEY]
 
-    def _create_dependency_object(self, key: str, data: dict, root_package: str) -> Dependency:
+    def _create_dependency_object(
+        self,
+        key: str,
+        data: dict,
+        root_package: str,
+        platform: System
+    ) -> Dependency:
         """Creates the representation object of the given
         dependency by resolving the correct module and class to
         use.
@@ -167,6 +180,8 @@ class Project:
                 read from the project data file.
             root_package (str): The name of the root Python
                 package of the build script.
+            platform (System): The platform that the build script
+                is invoked on.
 
         Returns:
             The constructed dependency object.
@@ -184,6 +199,14 @@ class Project:
         if self.BENCHMARK_ONLY_KEY in data:
             benchmark_only = data[self.BENCHMARK_ONLY_KEY]
 
+        asset_name = None
+
+        if self.ASSET_KEY in data:
+            if isinstance(data[self.ASSET_KEY], dict):
+                asset_name = data[self.ASSET_KEY][platform.value]
+            else:
+                asset_name = data[self.ASSET_KEY]
+
         if self.MODULE_KEY not in data or \
                 data[self.MODULE_KEY] == self.MODULE_DEFAULT_VALUE:
             return Dependency(
@@ -192,7 +215,8 @@ class Project:
                 version=data["version"],
                 library_files=library_files,
                 test_only=test_only,
-                benchmark_only=benchmark_only
+                benchmark_only=benchmark_only,
+                asset_name=asset_name
             )
         else:
             if self.CLASS_KEY not in data:
@@ -211,5 +235,6 @@ class Project:
                 version=data["version"],
                 library_files=library_files,
                 test_only=test_only,
-                benchmark_only=benchmark_only
+                benchmark_only=benchmark_only,
+                asset_name=asset_name
             )
