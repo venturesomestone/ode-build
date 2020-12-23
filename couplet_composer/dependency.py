@@ -25,10 +25,9 @@ class Dependency:
         key (str): The simple identifier of this dependency.
         name (str): The full name of this dependency.
         version (str): The required version of the dependency.
-        library_files (str | list | dict): The names of the files
-            sorted by system, list of the names of the files, or
-            a name of the file that are used to check whether the
-            dependency is installed.
+        library_files (str | list): A list of the names of the
+            files or a name of the file that is used to check
+            whether the dependency is installed.
         test_only (bool): Whether or not the dependency is needed
             only when building the tests.
         benchmark_only (bool): Whether or not the dependency is
@@ -54,9 +53,8 @@ class Dependency:
             name (str): The full name of this dependency.
             version (str): The required version of the
                 dependency.
-            library_files (str | list | dict): The names of the
-                files sorted by system, list of the names of the
-                files, or a name of the file that are used to
+            library_files (str | list): A list of the names of
+                the files or a name of the file that is used to
                 check whether the dependency is installed.
             test_only (bool): Whether or not the dependency is
                 needed only when building the tests.
@@ -82,21 +80,6 @@ class Dependency:
 
             for f in library_files:
                 self.library_files.append(os.path.join(*f.split("/")))
-        elif isinstance(library_files, dict):
-            self.library_files = dict()
-
-            for key, value in library_files.items():
-                if isinstance(value, str):
-                    self.library_files[System(key)] = os.path.join(
-                        *value.split("/")
-                    )
-                elif isinstance(value, list):
-                    self.library_files[System(key)] = list()
-
-                    for f in value:
-                        self.library_files[System(key)].append(
-                            os.path.join(*f.split("/"))
-                        )
         else:
             self.library_files = None
 

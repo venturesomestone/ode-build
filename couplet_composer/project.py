@@ -186,8 +186,23 @@ class Project:
         Returns:
             The constructed dependency object.
         """
-        library_files = None if self.LIBRARY_FILES_KEY not in data \
+        raw_library_files = None if self.LIBRARY_FILES_KEY not in data \
             else data[self.LIBRARY_FILES_KEY]
+
+        library_files = None
+
+        if isinstance(raw_library_files, dict):
+            raw_entry = raw_library_files[platform.value]
+
+            if isinstance(raw_entry, str):
+                library_files = raw_entry
+            elif isinstance(raw_entry, list):
+                library_files = list()
+                library_files.extend(raw_entry)
+            else:
+                raise ValueError  # TODO Add explanation or logging.
+        else:
+            library_files = raw_library_files
 
         test_only = False
 
