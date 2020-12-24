@@ -10,8 +10,11 @@ import pipes
 import shutil
 import subprocess
 import sys
+import tarfile
 
 from typing import Any
+
+from ..support.tar_action import TarAction
 
 
 def _quote(arg: str) -> str:
@@ -156,3 +159,43 @@ def rm(file: str, dry_run: bool = None, echo: bool = None) -> None:
         os.unlink(file)
     if os.path.exists(file):
         os.remove(file)
+
+
+def tar(
+    path: str,
+    action: TarAction = TarAction.extract,
+    dest: str = None,
+    dry_run: bool = None,
+    echo: bool = None
+) -> None:
+    """Performs actions on archives.
+
+    Args:
+        path (str): The tar archive that the utility acts on or
+            that the tar archive is formed from.
+        action (TarAction): The action that is performed.
+        dest (str): Either the destination that the archive is
+            extracted to or the archive file that is created from
+            the path.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    if action is not TarAction.extract:
+        raise ValueError  # TODO Add explanation or logging.
+
+    if dry_run or echo:
+        if action is TarAction.extract:
+            if dest:
+                _echo_command(dry_run, ["tar", "-xf", path, "-C", dest])
+            else:
+                _echo_command(dry_run, ["tar", "-xf", path])
+
+    if dry_run:
+        return
+
+    if action is TarAction.extract:
+        with tarfile.open(path) as archive:
+            if dest:
+                archive.extractall(dest)
+            else:
+                archive.extractall()
