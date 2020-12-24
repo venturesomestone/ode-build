@@ -12,6 +12,10 @@ from typing import Any
 
 from .support.system import System
 
+from .support.tar_action import TarAction
+
+from .util import http, shell
+
 from .build_directory import BuildDirectory
 
 from .invocation import Invocation
@@ -34,6 +38,10 @@ class Dependency:
             needed only when building the benchmarkings
         asset_name (str): The name of the asset that will be
             downloaded from GitHub by default.
+        owner (str): The owner of the GitHub repository of this
+            dependency.
+        repository (str): The name of the GitHub repository of
+            this dependency.
     """
 
     def __init__(
@@ -44,7 +52,8 @@ class Dependency:
         library_files: Any,
         test_only: bool,
         benchmark_only: bool,
-        asset_name: str
+        asset_name: str,
+        repository: str
     ) -> None:
         """Initializes the dependency object.
 
@@ -62,6 +71,8 @@ class Dependency:
                 is needed only when building the benchmarkings.
             asset_name (str): The name of the asset that will be
                 downloaded from GitHub by default.
+            repository (str): The GitHub repository of this
+                dependency.
         """
         self.key = key
         self.name = name
@@ -87,6 +98,12 @@ class Dependency:
         self.benchmark_only = benchmark_only
         self.asset_name = asset_name
 
+        if repository:
+            self.owner, self.repository = repository.split("/")
+        else:
+            self.owner = None
+            self.repository = None
+
     def __repr__(self) -> str:
         """Computes the string representation of the dependency.
 
@@ -103,15 +120,73 @@ class Dependency:
         """
         return "{} {}".format(self.name, self.version)
 
-    def install(self, build_dir: BuildDirectory) -> None:
+    def install(
+        self,
+        invocation: Invocation,
+        build_dir: BuildDirectory
+    ) -> None:
         """Downloads, builds, and installs the dependency.
 
         Args:
+            invocation (Invocation): The current invocation.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
         """
-        pass
+        source_dir = self._download(invocation=invocation, build_dir=build_dir)
+
+    def _download(
+        self,
+        invocation: Invocation,
+        build_dir: BuildDirectory
+    ) -> str:
+        """Downloads the asset or the source code of the
+        dependency.
+
+        Args:
+            invocation (Invocation): The current invocation.
+            build_dir (BuildDirectory): The build directory
+                object that is the main build directory of the
+                build script invocation.
+
+        Returns:
+            A 'str' that points the path to the downloads.
+        """
+        tmp_dir = build_dir.temporary
+
+        download_file = os.path.join(tmp_dir, "{}.tar.gz".format(self.key))
+
+        download_url = "https://api.github.com/repos/{owner}/{repo}/tarball/" \
+            "refs/tags/v{version}".format(
+                owner=self.owner,
+                repo=self.repository,
+                version=self.version
+            )
+
+        http.stream(
+            url=download_url,
+            destination=download_file,
+            headers={"Accept": "application/vnd.github.v3+json"},
+            dry_run=invocation.args.dry_run,
+            echo=invocation.args.verbose
+        )
+
+        source_dir = os.path.join(tmp_dir, self.key)
+
+        shell.makedirs(
+            path=source_dir,
+            dry_run=invocation.args.dry_run,
+            echo=invocation.args.verbose
+        )
+        shell.tar(
+            path=download_file,
+            action=TarAction.extract,
+            dest=source_dir,
+            dry_run=invocation.args.dry_run,
+            echo=invocation.args.verbose
+        )
+
+        return source_dir
 
     def should_install(
         self,

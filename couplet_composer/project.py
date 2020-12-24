@@ -44,6 +44,7 @@ class Project:
     TEST_ONLY_KEY = "testOnly"
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
     ASSET_KEY = "asset"
+    REPOSITORY_KEY = "repo"
 
     def __init__(
         self,
@@ -222,6 +223,9 @@ class Project:
             else:
                 asset_name = data[self.ASSET_KEY]
 
+        repository = data[self.REPOSITORY_KEY] if self.REPOSITORY_KEY in data \
+            else None
+
         if self.MODULE_KEY not in data or \
                 data[self.MODULE_KEY] == self.MODULE_DEFAULT_VALUE:
             return Dependency(
@@ -231,7 +235,8 @@ class Project:
                 library_files=library_files,
                 test_only=test_only,
                 benchmark_only=benchmark_only,
-                asset_name=asset_name
+                asset_name=asset_name,
+                repository=repository
             )
         else:
             if self.CLASS_KEY not in data:
@@ -251,5 +256,6 @@ class Project:
                 library_files=library_files,
                 test_only=test_only,
                 benchmark_only=benchmark_only,
-                asset_name=asset_name
+                asset_name=asset_name,
+                repository=repository
             )

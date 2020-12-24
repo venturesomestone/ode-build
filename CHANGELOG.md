@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Support for determining custom module for dependency by using the key `module` and custom class in the module by using the key `class`.
 - Support for determining the files used to check whether a dependency is installed by using the key `libraryFile`.
 - Support for determining the asset file that should be downloaded for a dependency by using the key `asset`.
+- Support for determining the [GitHub](https://github.com) repository of a dependency by using the key `repo`.
 
 ### Changed
 
