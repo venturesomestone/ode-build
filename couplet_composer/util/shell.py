@@ -110,6 +110,65 @@ def call(
         sys.exit(1)
 
 
+def capture(
+    command: list,
+    stderr: Any = None,
+    env: dict = None,
+    dry_run: bool = None,
+    echo: bool = None,
+    optional: bool = False,
+    allow_non_zero_exit: bool = False
+) -> Any:
+    """Runs the given command and returns its output.
+
+    Args:
+        command (list): The command to call.
+        stderr (any): An optional stderr file to use.
+        env (dict): Key-value pairs as the environment variables.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+        optional (bool): Whether the output of the command is
+            optional.
+        allow_non_zero_exit (bool): Whether the output is
+            returned regardless of the success of the command.
+
+    Returns:
+        The output of the command.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, command, env=env)
+    if dry_run:
+        return
+    _env = None
+    if env is not None:
+        _env = dict(os.environ)
+        _env.update(env)
+    try:
+        out = subprocess.check_output(command, env=_env, stderr=stderr)
+        # Coerce to 'str' hack. Not py3 'byte', not py2
+        # 'unicode'.
+        return str(out.decode())
+    except subprocess.CalledProcessError as e:
+        if allow_non_zero_exit:
+            return e.output
+        if optional:
+            return None
+        logging.critical(
+            "Command ended with status %d, stopping",
+            e.returncode
+        )
+        sys.exit(e.returncode)
+    except OSError as e:
+        if optional:
+            return None
+        logging.critical(
+            "Couldn't execute '%s': %s",
+            quote_command(command),
+            e.strerror
+        )
+        sys.exit(1)
+
+
 def makedirs(path: str, dry_run: bool = None, echo: bool = None) -> None:
     """Creates the given directory and the in-between directories.
 
