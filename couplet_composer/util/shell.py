@@ -220,6 +220,28 @@ def rm(file: str, dry_run: bool = None, echo: bool = None) -> None:
         os.remove(file)
 
 
+def which(command: str, dry_run: bool = None, echo: bool = None) -> str:
+    """Returns path to an executable which would be run if the
+    given command was called.
+
+    If no command would be called, returns None.
+
+    Args:
+        command (str): The command to find.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+
+    Returns:
+        The full path of the command or None if the command is
+        not found.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, ["which", command])
+    if dry_run:
+        return
+    return shutil.which(command)
+
+
 def tar(
     path: str,
     action: TarAction = TarAction.extract,
