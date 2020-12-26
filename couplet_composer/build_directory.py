@@ -68,6 +68,14 @@ class BuildDirectory:
                 variant=self._build_variant
             )
         )
+        self.tools = os.path.join(
+            self.local,
+            "bin",
+            "{target}-{variant}".format(
+                target=self._target,
+                variant=self._build_variant
+            )
+        )
         versions_file_name = ".versions-{target}-{variant}".format(
             target=self._target,
             variant=self._build_variant
