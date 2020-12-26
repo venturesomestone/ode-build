@@ -7,6 +7,8 @@ of the build script.
 
 from typing import Any
 
+from .support.tools.cmake import CMake
+
 from .util.cache import cached
 
 from .runner import Runner
@@ -15,6 +17,10 @@ from .runner import Runner
 class Toolchain:
     """A class that that represents the toolchain of the build
     script.
+
+    Private attributes:
+        _tools (dict): A dictionary containing the internal
+            objects for handling the data related to the tools.
 
     Attributes:
         runner (Runner): The runner that this toolchain belongs
@@ -29,6 +35,16 @@ class Toolchain:
                 belongs to.
         """
         self.runner = runner
+        self._tools = {
+            "cmake": CMake(
+                key="cmake",
+                name="CMake",
+                version="3.18.4",
+                tool_files=CMake.resolve_binary(
+                    platform=self.runner.invocation.platform
+                )
+            )
+        }
 
     @cached
     def __getattr__(self, name: str) -> Any:
@@ -53,4 +69,6 @@ class Toolchain:
             AttributeError: Is thrown if the given tool isn't
                 found or possible to be built.
         """
-        return None
+        if name == "cmake":
+            pass
+        raise AttributeError
