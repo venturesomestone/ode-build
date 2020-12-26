@@ -9,7 +9,11 @@ from typing import Any
 
 from .support.tools.cmake import CMake
 
+from .support.install_status import InstallStatus
+
 from .util.cache import cached
+
+from .util import shell
 
 from .runner import Runner
 
@@ -21,6 +25,10 @@ class Toolchain:
     Private attributes:
         _tools (dict): A dictionary containing the internal
             objects for handling the data related to the tools.
+        _tool_paths (dict): A dictionary containing the resolved
+            paths to use the tools in the toolchain. The
+            dictionary is modified in the invocation each time a
+            new tool is required and found.
 
     Attributes:
         runner (Runner): The runner that this toolchain belongs
@@ -38,6 +46,7 @@ class Toolchain:
         self._tools = {
             "cmake": CMake(
                 key="cmake",
+                cmd="cmake",
                 name="CMake",
                 version="3.18.4",
                 tool_files=CMake.resolve_binary(
@@ -45,6 +54,7 @@ class Toolchain:
                 )
             )
         }
+        self._tool_paths = {}
 
     @cached
     def __getattr__(self, name: str) -> Any:
@@ -69,6 +79,22 @@ class Toolchain:
             AttributeError: Is thrown if the given tool isn't
                 found or possible to be built.
         """
-        if name == "cmake":
-            pass
+        if name in self._tool_paths and self._tool_paths[name]:
+            return self._tool_paths[name]
+        else:
+            status = self._tools[name].resolve_install_status(
+                invocation=self.runner.invocation,
+                build_dir=self.runner.build_dir
+            )
+            if status is InstallStatus.system:
+                return shell.which(
+                    self._tools[name].cmd,
+                    dry_run=self.runner.invocation.args.dry_run,
+                    echo=self.runner.invocation.args.verbose
+                )
+            elif status is InstallStatus.local:
+                pass
+            elif status is InstallStatus.none:
+                pass
+
         raise AttributeError

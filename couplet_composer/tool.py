@@ -13,6 +13,8 @@ from typing import Any
 
 from .support.archive_action import ArchiveAction
 
+from .support.install_status import InstallStatus
+
 from .util import http, shell
 
 from .build_directory import BuildDirectory
@@ -26,6 +28,9 @@ class Tool(ABC):
 
     Attributes:
         key (str): The simple identifier of this tool.
+        cmd (str): The command that is normally used to use the
+            tool. Here it is used to find the tool preinstalled
+            on the system.
         name (str): The full name of this tool.
         version (str): The required version of the tool.
         tool_files (str | list): A list of the names of the files
@@ -36,6 +41,7 @@ class Tool(ABC):
     def __init__(
         self,
         key: str,
+        cmd: str,
         name: str,
         version: str,
         tool_files: Any
@@ -44,6 +50,9 @@ class Tool(ABC):
 
         Args:
             key (str): The simple identifier of this tool.
+            cmd (str): The command that is normally used to use
+                the tool. Here it is used to find the tool
+                preinstalled on the system.
             name (str): The full name of this tool.
             version (str): The required version of the tool.
             tool_files (str | list): A list of the names of the
@@ -51,6 +60,7 @@ class Tool(ABC):
                 whether the tool is installed.
         """
         self.key = key
+        self.cmd = cmd
         self.name = name
         self.version = version
 
@@ -155,12 +165,13 @@ class Tool(ABC):
         """
         pass
 
-    def should_install(
+    def resolve_install_status(
         self,
         invocation: Invocation,
         build_dir: BuildDirectory
-    ) -> bool:
-        """Tells whether the build of the tool should be skipped.
+    ) -> InstallStatus:
+        """Tells whether the tool is already installed and how it
+        is installed.
 
         Args:
             invocation (Invocation): The current invocation.
@@ -169,6 +180,15 @@ class Tool(ABC):
                 build script invocation.
 
         Returns:
-            A 'bool' telling if the tool should be built.
+            A value of the enumeration InstallStatus.
         """
-        return True  # TODO
+        system_tool = shell.which(
+            self.cmd,
+            dry_run=invocation.args.dry_run,
+            echo=invocation.args.verbose
+        )
+
+        if system_tool:
+            return InstallStatus.system
+
+        return InstallStatus.none  # TODO
