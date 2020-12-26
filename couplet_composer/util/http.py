@@ -41,7 +41,7 @@ def stream(
         )
     if echo:
         shell.call(
-            ["curl", "-o", destination, "--create-dirs", url],
+            ["curl", "-L", "-o", destination, "--create-dirs", url],
             dry_run=True,
             echo=True
         )
