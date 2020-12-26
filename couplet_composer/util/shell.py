@@ -11,10 +11,11 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import zipfile
 
 from typing import Any
 
-from ..support.tar_action import TarAction
+from ..support.archive_action import ArchiveAction
 
 
 def _quote(arg: str) -> str:
@@ -185,6 +186,32 @@ def makedirs(path: str, dry_run: bool = None, echo: bool = None) -> None:
         os.makedirs(path)
 
 
+def copytree(src: str, dest: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Copies a directory and its contents.
+
+    Args:
+        src (str): The directory to copy.
+        dest (str): The directory where the source is copied to.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, ["cp", "-r", src, dest])
+    if dry_run:
+        return
+    # A workaround
+    if os.path.isdir(dest):
+        for item in os.listdir(src):
+            s = os.path.join(src, item)
+            d = os.path.join(dest, item)
+            if os.path.isdir(s):
+                shutil.copytree(s, d)  # , symlinks, ignore)
+            else:
+                shutil.copy2(s, d)
+    else:
+        shutil.copytree(src, dest)
+
+
 def rmtree(path: str, dry_run: bool = None, echo: bool = None) -> None:
     """Removes a directory and its contents.
 
@@ -244,7 +271,7 @@ def which(command: str, dry_run: bool = None, echo: bool = None) -> str:
 
 def tar(
     path: str,
-    action: TarAction = TarAction.extract,
+    action: ArchiveAction = ArchiveAction.extract,
     dest: str = None,
     dry_run: bool = None,
     echo: bool = None
@@ -254,28 +281,36 @@ def tar(
     Args:
         path (str): The tar archive that the utility acts on or
             that the tar archive is formed from.
-        action (TarAction): The action that is performed.
+        action (ArchiveAction): The action that is performed.
         dest (str): Either the destination that the archive is
             extracted to or the archive file that is created from
             the path.
         dry_run (bool): Whether or not dry run is enabled.
         echo (bool): Whether or not the command must be printed.
     """
-    if action is not TarAction.extract:
-        raise ValueError  # TODO Add explanation or logging.
-
     if dry_run or echo:
-        if action is TarAction.extract:
+        if action is ArchiveAction.extract:
             if dest:
                 _echo_command(dry_run, ["tar", "-xf", path, "-C", dest])
             else:
                 _echo_command(dry_run, ["tar", "-xf", path])
+        elif action is ArchiveAction.unzip:
+            if dest:
+                _echo_command(dry_run, ["unzip", "-d", dest, path])
+            else:
+                _echo_command(dry_run, ["unzip", path])
 
     if dry_run:
         return
 
-    if action is TarAction.extract:
+    if action is ArchiveAction.extract:
         with tarfile.open(path) as archive:
+            if dest:
+                archive.extractall(dest)
+            else:
+                archive.extractall()
+    elif action is ArchiveAction.unzip:
+        with zipfile.ZipFile(path, "r") as archive:
             if dest:
                 archive.extractall(dest)
             else:

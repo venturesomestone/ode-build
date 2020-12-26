@@ -10,9 +10,7 @@ import os
 
 from typing import Any
 
-from .support.system import System
-
-from .support.tar_action import TarAction
+from .support.archive_action import ArchiveAction
 
 from .util import http, shell
 
@@ -35,7 +33,7 @@ class Dependency:
         test_only (bool): Whether or not the dependency is needed
             only when building the tests.
         benchmark_only (bool): Whether or not the dependency is
-            needed only when building the benchmarkings
+            needed only when building the benchmarkings.
         asset_name (str): The name of the asset that will be
             downloaded from GitHub by default.
         owner (str): The owner of the GitHub repository of this
@@ -135,6 +133,12 @@ class Dependency:
         """
         source_dir = self._download(invocation=invocation, build_dir=build_dir)
 
+        self._build(
+            source_path=source_dir,
+            invocation=invocation,
+            build_dir=build_dir
+        )
+
     def _download(
         self,
         invocation: Invocation,
@@ -150,7 +154,7 @@ class Dependency:
                 build script invocation.
 
         Returns:
-            A 'str' that points the path to the downloads.
+            A 'str' that points to the downloads.
         """
         tmp_dir = build_dir.temporary
 
@@ -180,13 +184,31 @@ class Dependency:
         )
         shell.tar(
             path=download_file,
-            action=TarAction.extract,
+            action=ArchiveAction.extract,
             dest=source_dir,
             dry_run=invocation.args.dry_run,
             echo=invocation.args.verbose
         )
 
         return source_dir
+
+    def _build(
+        self,
+        source_path: str,
+        invocation: Invocation,
+        build_dir: BuildDirectory
+    ) -> None:
+        """Builds the dependency from the sources.
+
+        Args:
+            source_path (str): The path to the source directory
+                of the dependency.
+            invocation (Invocation): The current invocation.
+            build_dir (BuildDirectory): The build directory
+                object that is the main build directory of the
+                build script invocation.
+        """
+        pass
 
     def should_install(
         self,

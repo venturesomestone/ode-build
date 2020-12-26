@@ -2,16 +2,18 @@
 # Licensed under the MIT License
 
 """A module that contains a helper enumeration that represents
-the possible actions that can be performed on tar archives by the
-tar shell utility.
+the possible actions that can be performed on compressed archives
+by the tar shell utility.
 """
 
 from enum import Enum, auto, unique
 
 
 @unique
-class TarAction(Enum):
+class ArchiveAction(Enum):
     """An enumeration that represents the possible actions that
-    can be performed on tar archives by the tar shell utility.
+    can be performed on compressed archives by the tar shell
+    utility.
     """
     extract = auto()
+    unzip = auto()
