@@ -9,8 +9,6 @@ from typing import Any
 
 from .support.tools.cmake import CMake
 
-from .support.install_status import InstallStatus
-
 from .util.cache import cached
 
 from .util import shell
@@ -77,24 +75,27 @@ class Toolchain:
 
         Throws:
             AttributeError: Is thrown if the given tool isn't
-                found or possible to be built.
+            found or possible to be built.
         """
         if name in self._tool_paths and self._tool_paths[name]:
             return self._tool_paths[name]
         else:
-            status = self._tools[name].resolve_install_status(
+            tool_path = self._tools[name].find(
                 invocation=self.runner.invocation,
                 build_dir=self.runner.build_dir
             )
-            if status is InstallStatus.system:
-                return shell.which(
-                    self._tools[name].cmd,
-                    dry_run=self.runner.invocation.args.dry_run,
-                    echo=self.runner.invocation.args.verbose
-                )
-            elif status is InstallStatus.local:
-                pass
-            elif status is InstallStatus.none:
-                pass
+
+            if tool_path:
+                self._tool_paths[name] = tool_path
+                return tool_path
+
+            tool_path = self._tools[name].install(
+                invocation=self.runner.invocation,
+                build_dir=self.runner.build_dir
+            )
+
+            if tool_path:
+                self._tool_paths[name] = tool_path
+                return tool_path
 
         raise AttributeError

@@ -21,6 +21,8 @@ from .build_directory import BuildDirectory
 
 from .invocation import Invocation
 
+from .target import Target
+
 
 class Tool(ABC):
     """A class for creating objects that represent the tools of
@@ -165,13 +167,20 @@ class Tool(ABC):
         """
         pass
 
-    def resolve_install_status(
-        self,
-        invocation: Invocation,
-        build_dir: BuildDirectory
-    ) -> InstallStatus:
-        """Tells whether the tool is already installed and how it
-        is installed.
+    def _resolve_directory_name(self, invocation: Invocation) -> str:
+        """Gives the name of the directory in the local tools
+        directory where the binaries of this tool are.
+
+         Args:
+            invocation (Invocation): The current invocation.
+
+        Returns:
+            An 'str' that is the name of the directory.
+        """
+        return "{}-{}".format(self.key, invocation.targets.host)
+
+    def find(self, invocation: Invocation, build_dir: BuildDirectory) -> str:
+        """Finds the tool if possible and returns the path to it.
 
         Args:
             invocation (Invocation): The current invocation.
@@ -180,7 +189,8 @@ class Tool(ABC):
                 build script invocation.
 
         Returns:
-            A value of the enumeration InstallStatus.
+            An 'str' with the path to the tool executable, or
+            None if it wasn't found.
         """
         system_tool = shell.which(
             self.cmd,
@@ -189,6 +199,47 @@ class Tool(ABC):
         )
 
         if system_tool:
-            return InstallStatus.system
+            return system_tool
 
-        return InstallStatus.none  # TODO
+        return self.resolve_local_binary(
+            invocation=invocation,
+            build_dir=build_dir
+        )
+
+    def resolve_local_binary(
+        self,
+        invocation: Invocation,
+        build_dir: BuildDirectory
+    ) -> str:
+        """Gives the path of the tool in the local tools
+        directory if it is already installed there.
+
+        Args:
+            invocation (Invocation): The current invocation.
+            build_dir (BuildDirectory): The build directory
+                object that is the main build directory of the
+                build script invocation.
+
+        Returns:
+            An 'str' that points to the executable, or None if
+            the tool is not found.
+        """
+        if isinstance(self.tool_files, str):
+            tool_path = os.path.join(
+                build_dir.tools,
+                self._resolve_directory_name(invocation=invocation),
+                self.tool_files
+            )
+            if os.path.exists(tool_path):
+                return tool_path
+        elif isinstance(self.tool_files, list):
+            for tool_file in self.tool_files:
+                tool_path = os.path.join(
+                    build_dir.tools,
+                    self._resolve_directory_name(invocation=invocation),
+                    tool_file
+                )
+                if os.path.exists(tool_path):
+                    return tool_path
+
+        return None
