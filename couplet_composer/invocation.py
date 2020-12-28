@@ -11,6 +11,10 @@ import platform
 
 from collections import namedtuple
 
+from .support.build_variant import BuildVariant
+
+from .support.cmake_generator import CMakeGenerator
+
 from .support.run_mode import RunMode
 
 from .support.system import System
@@ -50,6 +54,8 @@ class Invocation:
         targets (Targets): A named tuple of targets that contains
             the host target and other possible cross compile
             targets.
+        build_variant (BuildVariant): The build variant to be
+            built.
         runner (Runner): The runner for the run mode of the
             invocation.
     """
@@ -77,11 +83,14 @@ class Invocation:
         self.project = Project(
             source_root=self.source_root,
             repo=self.args.repository,
-            script_package="couplet_composer"  # TODO Remove hard-coded value
+            script_package="couplet_composer",  # TODO Remove hard-coded value
+            platform=System(platform.system().lower())
         )
         self.repository = self.args.repository
         self.platform = System(platform.system().lower())
         self.targets = self._resolve_targets()
+        self.build_variant = BuildVariant[self.args.build_variant]
+        self.cmake_generator = CMakeGenerator["ninja"]  # TODO Remove hard-coded value
 
         def _resolve_runner_type():
             if self.run_mode is RunMode.preset:

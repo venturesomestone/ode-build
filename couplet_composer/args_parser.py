@@ -9,6 +9,8 @@ import multiprocessing
 
 from argparse import ArgumentParser
 
+from .support.build_variant import BuildVariant
+
 from .support.command_line import DESCRIPTION, EPILOG
 
 from .support.run_mode import RunMode
@@ -86,6 +88,61 @@ def _add_common_build_arguments(parser: ArgumentParser) -> ArgumentParser:
     Returns:
         The given arguments parser modified.
     """
+    # --------------------------------------------------------- #
+    # Build variant options
+
+    variant_group = parser.add_argument_group("Build variant options")
+
+    variant_selection_group = variant_group.add_mutually_exclusive_group(
+        required=False
+    )
+
+    default_build_variant = BuildVariant.debug.name
+
+    parser.set_defaults(build_variant=default_build_variant)
+
+    variant_selection_group.add_argument(
+        "--build-variant",
+        default=default_build_variant,
+        choices=[name for name, value in BuildVariant.__members__.items()],
+        help="use the selected build variant (default: {})".format(
+            default_build_variant
+        ),
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-d",
+        "--debug",
+        action="store_const",
+        const=BuildVariant.debug.name,
+        help="build the project using the Debug variant",
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-r",
+        "--release-debuginfo",
+        action="store_const",
+        const=BuildVariant.release_debug_info.name,
+        help="build the project using the RelWithDebInfo variant",
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-R",
+        "--release",
+        action="store_const",
+        const=BuildVariant.release.name,
+        help="build the project using the Release variant",
+        dest="build_variant"
+    )
+    variant_selection_group.add_argument(
+        "-M",
+        "--minsize-release",
+        action="store_const",
+        const=BuildVariant.minimum_size_release.name,
+        help="build the project using the MinSizeRel variant",
+        dest="build_variant"
+    )
+
     # --------------------------------------------------------- #
     # TODO Build target options
 

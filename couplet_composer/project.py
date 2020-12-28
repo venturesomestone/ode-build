@@ -45,6 +45,7 @@ class Project:
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
     ASSET_KEY = "asset"
     REPOSITORY_KEY = "repo"
+    CMAKE_OPTIONS_KEY = "cmakeOptions"
 
     def __init__(
         self,
@@ -226,6 +227,9 @@ class Project:
         repository = data[self.REPOSITORY_KEY] if self.REPOSITORY_KEY in data \
             else None
 
+        cmake_options = data[self.CMAKE_OPTIONS_KEY] \
+            if self.CMAKE_OPTIONS_KEY in data else None
+
         if self.MODULE_KEY not in data or \
                 data[self.MODULE_KEY] == self.MODULE_DEFAULT_VALUE:
             return Dependency(
@@ -236,7 +240,8 @@ class Project:
                 test_only=test_only,
                 benchmark_only=benchmark_only,
                 asset_name=asset_name,
-                repository=repository
+                repository=repository,
+                cmake_options=cmake_options
             )
         else:
             if self.CLASS_KEY not in data:
@@ -257,5 +262,6 @@ class Project:
                 test_only=test_only,
                 benchmark_only=benchmark_only,
                 asset_name=asset_name,
-                repository=repository
+                repository=repository,
+                cmake_options=cmake_options
             )

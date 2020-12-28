@@ -13,6 +13,8 @@ import sys
 import tarfile
 import zipfile
 
+from contextlib import contextmanager
+
 from typing import Any
 
 from ..support.archive_action import ArchiveAction
@@ -168,6 +170,28 @@ def capture(
             e.strerror
         )
         sys.exit(1)
+
+
+@contextmanager
+def pushd(path: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Pushes the directory to the top of the directory stack
+    and, thus, changes the current working directory.
+
+    Args:
+        path (str): The directory to switch to.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    old_dir = os.getcwd()
+    if dry_run or echo:
+        _echo_command(dry_run, ["pushd", path])
+    if not dry_run:
+        os.chdir(path)
+    yield
+    if dry_run or echo:
+        _echo_command(dry_run, ["popd"])
+    if not dry_run:
+        os.chdir(old_dir)
 
 
 def makedirs(path: str, dry_run: bool = None, echo: bool = None) -> None:

@@ -12,6 +12,10 @@ from typing import Any
 
 from .support.archive_action import ArchiveAction
 
+from .support.cmake_generator import CMakeGenerator
+
+from .support.system import System
+
 from .util import http, shell
 
 from .build_directory import BuildDirectory
@@ -40,6 +44,9 @@ class Dependency:
             dependency.
         repository (str): The name of the GitHub repository of
             this dependency.
+        cmake_options (dict): The optional extra CMake options
+            from the project's information file for this
+            dependency.
     """
 
     def __init__(
@@ -51,7 +58,8 @@ class Dependency:
         test_only: bool,
         benchmark_only: bool,
         asset_name: str,
-        repository: str
+        repository: str,
+        cmake_options: dict
     ) -> None:
         """Initializes the dependency object.
 
@@ -71,6 +79,9 @@ class Dependency:
                 downloaded from GitHub by default.
             repository (str): The GitHub repository of this
                 dependency.
+            cmake_options (dict): The optional extra CMake
+                options from the project's information file for
+                this dependency.
         """
         self.key = key
         self.name = name
@@ -101,6 +112,8 @@ class Dependency:
         else:
             self.owner = None
             self.repository = None
+
+        self.cmake_options = cmake_options
 
     def __repr__(self) -> str:
         """Computes the string representation of the dependency.
@@ -208,7 +221,69 @@ class Dependency:
                 object that is the main build directory of the
                 build script invocation.
         """
-        pass
+        cmake_call = [
+            invocation.runner.toolchain.cmake,
+            source_path,
+            "-DCMAKE_BUILD_TYPE={}".format(invocation.build_variant.value),
+            "-DCMAKE_INSTALL_PREFIX={}".format(build_dir.dependencies)
+        ]
+
+        if invocation.platform is System.windows:
+            pass  # TODO Set the compiler on Windows.
+
+        if invocation.cmake_generator is CMakeGenerator.ninja:
+            cmake_call.extend([
+                "-DCMAKE_MAKE_PROGRAM={}".format(
+                    invocation.runner.toolchain.ninja
+                )
+            ])
+
+        cmake_call.extend(["-G", invocation.cmake_generator.value])
+
+        if self.cmake_options:
+            for k, v in self.cmake_options.items():
+                if isinstance(v, bool):
+                    cmake_call.extend(
+                        ["-D{}={}".format(k, ("ON" if v else "OFF"))]
+                    )
+                else:
+                    cmake_call.extend(["-D{}={}".format(k, v)])
+
+        # TODO Add the C and C++ compilers to the environment
+        cmake_env = None
+
+        build_directory = os.path.join(build_dir.temporary, "build")
+
+        if not os.path.isdir(build_directory):
+            shell.makedirs(
+                build_directory,
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            )
+
+        with shell.pushd(
+            build_directory,
+            dry_run=invocation.args.dry_run,
+            echo=invocation.args.verbose
+        ):
+            shell.call(
+                cmake_call,
+                env=cmake_env,
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            )
+            # TODO Take into account all of the different build
+            # systems.
+            shell.call(
+                [invocation.runner.toolchain.ninja],
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            )
+            shell.call(
+                [invocation.runner.toolchain.ninja, "install"],
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            )
 
     def should_install(
         self,
