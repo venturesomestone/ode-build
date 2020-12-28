@@ -10,11 +10,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Support for determining whether a dependency is built only when the tests are built by using the key `testOnly`.
 - Support for determining whether a dependency is built only when the benchmarks are built by using the key `benchmarkOnly`.
+- Support for providing both dependencies and project values in file `product.json`.
 
 ### Deprecated
 
 - Usage of the key `testonly` for determining whether a dependency is built only when the tests are built.
 - Usage of the key `benchmarkonly` for determining whether a dependency is built only when the benchmarks are built.
+- Usage of the file `util/project.json` for providing information on the built project and its dependencies.
 
 ## [1.3.2] - 2020-12-18
 

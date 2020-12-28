@@ -14,7 +14,8 @@ from .support.dependency_data import create_dependency_data
 
 from .support.dependency_install_information import DependencyInstallInfo
 
-from .support.file_paths import get_project_values_file_path
+from .support.file_paths import \
+    get_product_file_path, get_project_values_file_path
 
 
 def construct_dependencies_data(data_file):
@@ -34,6 +35,7 @@ def construct_dependencies_data(data_file):
         json_data = json.load(f)
     dependency_data = json_data \
         if data_file != get_project_values_file_path() \
+            or data_file != get_product_file_path() \
         else json_data["dependencies"]
     return [create_dependency_data(
         module_name=key,
