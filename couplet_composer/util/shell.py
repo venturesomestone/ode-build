@@ -210,7 +210,12 @@ def makedirs(path: str, dry_run: bool = None, echo: bool = None) -> None:
         os.makedirs(path)
 
 
-def copytree(src: str, dest: str, dry_run: bool = None, echo: bool = None) -> None:
+def copytree(
+    src: str,
+    dest: str,
+    dry_run: bool = None,
+    echo: bool = None
+) -> None:
     """Copies a directory and its contents.
 
     Args:
@@ -234,6 +239,32 @@ def copytree(src: str, dest: str, dry_run: bool = None, echo: bool = None) -> No
                 shutil.copy2(s, d)
     else:
         shutil.copytree(src, dest)
+
+
+def copy(
+    src: str,
+    dest: str,
+    dry_run : bool = None,
+    echo: bool = None
+) -> None:
+    """Copies a file.
+
+    Args:
+        src (str): The file to copy.
+        dest (str): The directory or file where the source is
+            copied to.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, ["cp", "-p", src, dest])
+    if dry_run:
+        return
+    if os.path.islink(src):
+        link = os.readlink(src)
+        os.symlink(link, dest)
+    else:
+        shutil.copy2(src, dest)
 
 
 def rmtree(path: str, dry_run: bool = None, echo: bool = None) -> None:

@@ -152,6 +152,12 @@ class Dependency:
             build_dir=build_dir
         )
 
+        shell.rmtree(
+            build_dir.temporary,
+            dry_run=invocation.args.dry_run,
+            echo=invocation.args.verbose
+        )
+
     def _download(
         self,
         invocation: Invocation,

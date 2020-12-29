@@ -9,6 +9,8 @@ from typing import Any
 
 from .support.tools.cmake import CMake
 
+from .support.tools.ninja import Ninja
+
 from .util.cache import cached
 
 from .util import shell
@@ -48,6 +50,15 @@ class Toolchain:
                 name="CMake",
                 version="3.18.4",
                 tool_files=CMake.resolve_binary(
+                    platform=self.runner.invocation.platform
+                )
+            ),
+            "ninja": Ninja(
+                key="ninja",
+                cmd="ninja",
+                name="Ninja",
+                version="1.9.0",
+                tool_files=Ninja.resolve_binary(
                     platform=self.runner.invocation.platform
                 )
             )
