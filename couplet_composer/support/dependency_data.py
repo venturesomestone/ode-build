@@ -8,6 +8,7 @@ DependencyData objects for each dependency for the project.
 """
 
 import importlib
+import logging
 
 from collections import namedtuple
 
@@ -69,10 +70,28 @@ def _should_install_dependency(
     written to the JSON file containing the currently installed
     versions of the dependencies.
     """
-    if data_node["testonly"] and not build_test:
-        return False
-    if data_node["benchmarkonly"] and not build_benchmark:
-        return False
+    if "testonly" in data_node:
+        logging.warning(
+            "The use of 'testonly' for determining whether a dependency is "
+            "built only when the tests are built is deprecated; use "
+            "'testOnly' instead"
+        )
+        if data_node["testonly"] and not build_test:
+            return False
+    else:
+        if data_node["testOnly"] and not build_test:
+            return False
+    if "benchmarkonly" in data_node:
+        logging.warning(
+            "The use of 'benchmarkonly' for determining whether a dependency "
+            "is built only when the tests are built is deprecated; use "
+            "'benchmarkOnly' instead"
+        )
+        if data_node["benchmarkonly"] and not build_benchmark:
+            return False
+    else:
+        if data_node["benchmarkOnly"] and not build_benchmark:
+            return False
     return getattr(module, "should_install")(
         dependencies_root=dependencies_root,
         version=version,

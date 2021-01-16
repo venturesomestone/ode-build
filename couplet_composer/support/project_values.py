@@ -13,7 +13,8 @@ import os
 from ..util.cache import cached
 
 from .file_paths import \
-    get_old_project_values_file_path, get_project_values_file_path
+    get_old_project_values_file_path, get_product_file_path, \
+    get_project_values_file_path
 
 from .project_names import get_ode_repository_name
 
@@ -36,15 +37,7 @@ def _get_project_values_file(source_root, in_tree_build):
                 get_ode_repository_name(),
                 get_old_project_values_file_path()
             )
-    if os.path.isfile(_old_file()):
-        logging.warn(
-            "The file '%s' for providing project values is deprecated; use %s "
-            "instead",
-            get_old_project_values_file_path(),
-            get_project_values_file_path()
-        )
-        return _old_file()
-    else:
+    def _project_file():
         return os.path.join(source_root, get_project_values_file_path()) \
             if in_tree_build \
             else os.path.join(
@@ -52,6 +45,30 @@ def _get_project_values_file(source_root, in_tree_build):
                 get_ode_repository_name(),
                 get_project_values_file_path()
             )
+    if os.path.isfile(_old_file()):
+        logging.warning(
+            "The file '%s' for providing project values is deprecated; use %s "
+            "instead",
+            get_old_project_values_file_path(),
+            get_product_file_path()
+        )
+        return _old_file()
+    if os.path.isfile(_project_file()):
+        logging.warning(
+            "The file '%s' for providing project values is deprecated; use %s "
+            "instead",
+            get_project_values_file_path(),
+            get_product_file_path()
+        )
+        return _project_file()
+
+    return os.path.join(source_root, get_product_file_path()) \
+        if in_tree_build \
+        else os.path.join(
+            source_root,
+            get_ode_repository_name(),
+            get_product_file_path()
+        )
 
 
 @cached
@@ -100,7 +117,7 @@ def get_project_version(source_root, in_tree_build):
     )
     if project_values:
         if "version" in project_values:
-            logging.warn(
+            logging.warning(
                 "The use of the field 'version' for holding the shared "
                 "version number is deprecated; use 'shared_version' instead"
             )

@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.4.0] - 2021-01-16
+
+### Added
+
+- Support for determining whether a dependency is built only when the tests are built by using the key `testOnly`.
+- Support for determining whether a dependency is built only when the benchmarks are built by using the key `benchmarkOnly`.
+- Support for providing both dependencies and project values in file `product.json`.
+
+### Deprecated
+
+- Usage of the key `testonly` for determining whether a dependency is built only when the tests are built.
+- Usage of the key `benchmarkonly` for determining whether a dependency is built only when the benchmarks are built.
+- Usage of the file `util/project.json` for providing information on the built project and its dependencies.
+
 ## [1.3.2] - 2020-12-18
 
 ### Fixed
@@ -487,7 +501,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.3.2...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/anttikivi/couplet-composer/compare/v1.3.2...v1.4.0
 [1.3.2]: https://github.com/anttikivi/couplet-composer/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/anttikivi/couplet-composer/compare/v1.3.0...v1.3.1
 [1.3.0]: https://github.com/anttikivi/couplet-composer/compare/v1.2.1...v1.3.0
