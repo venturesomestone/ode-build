@@ -19,7 +19,7 @@ from ...binary_dependency import BinaryDependency
 
 from ...build_directory import BuildDirectory
 
-from ...invocation import Invocation
+from ...runner import Runner
 
 
 class SdlDependency(BinaryDependency):
@@ -29,7 +29,7 @@ class SdlDependency(BinaryDependency):
 
     def _download(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Downloads the asset or the source code of the
@@ -56,23 +56,23 @@ class SdlDependency(BinaryDependency):
         http.stream(
             url=download_url,
             destination=download_file,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.invocation.args.dry_run,
+            echo=runner.invocation.args.verbose
         )
 
         source_dir = os.path.join(tmp_dir, self.key)
 
         shell.makedirs(
             path=source_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.invocation.args.dry_run,
+            echo=runner.invocation.args.verbose
         )
         shell.tar(
             path=download_file,
             action=ArchiveAction.extract,
             dest=source_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.invocation.args.dry_run,
+            echo=runner.invocation.args.verbose
         )
 
         return os.path.join(
@@ -83,7 +83,7 @@ class SdlDependency(BinaryDependency):
     def _build(
         self,
         source_path: str,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> None:
         """Builds the dependency from the sources.
@@ -91,7 +91,7 @@ class SdlDependency(BinaryDependency):
         Args:
             source_path (str): The path to the source directory
                 of the dependency.
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
@@ -100,30 +100,30 @@ class SdlDependency(BinaryDependency):
 
         shell.makedirs(
             tmp_build_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.invocation.args.dry_run,
+            echo=runner.invocation.args.verbose
         )
 
         with shell.pushd(
             tmp_build_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.invocation.args.dry_run,
+            echo=runner.invocation.args.verbose
         ):
             shell.call(
                 [
                     os.path.join(source_path, "configure"),
                     "--prefix={}".format(build_dir.dependencies)
                 ],
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
             shell.call(
-                [invocation.runner.toolchain.make],
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                [runner.toolchain.make],
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
             shell.call(
-                [invocation.runner.toolchain.make, "install"],
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                [runner.toolchain.make, "install"],
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )

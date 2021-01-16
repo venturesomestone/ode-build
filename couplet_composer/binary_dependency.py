@@ -21,7 +21,7 @@ from .build_directory import BuildDirectory
 
 from .dependency import Dependency
 
-from .invocation import Invocation
+from .runner import Runner
 
 
 class BinaryDependency(Dependency):
@@ -88,7 +88,7 @@ class BinaryDependency(Dependency):
     def _build(
         self,
         source_path: str,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> None:
         """Builds the dependency from the sources.
@@ -96,29 +96,29 @@ class BinaryDependency(Dependency):
         Args:
             source_path (str): The path to the source directory
                 of the dependency.
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
         """
         cmake_call = [
-            invocation.runner.toolchain.cmake,
+            runner.toolchain.cmake,
             source_path,
-            "-DCMAKE_BUILD_TYPE={}".format(invocation.build_variant.value),
+            "-DCMAKE_BUILD_TYPE={}".format(
+                runner.invocation.build_variant.value
+            ),
             "-DCMAKE_INSTALL_PREFIX={}".format(build_dir.dependencies)
         ]
 
-        if invocation.platform is System.windows:
+        if runner.invocation.platform is System.windows:
             pass  # TODO Set the compiler on Windows.
 
-        if invocation.cmake_generator is CMakeGenerator.ninja:
+        if runner.invocation.cmake_generator is CMakeGenerator.ninja:
             cmake_call.extend([
-                "-DCMAKE_MAKE_PROGRAM={}".format(
-                    invocation.runner.toolchain.ninja
-                )
+                "-DCMAKE_MAKE_PROGRAM={}".format(runner.toolchain.ninja)
             ])
 
-        cmake_call.extend(["-G", invocation.cmake_generator.value])
+        cmake_call.extend(["-G", runner.invocation.cmake_generator.value])
 
         if self.cmake_options:
             for k, v in self.cmake_options.items():
@@ -137,30 +137,30 @@ class BinaryDependency(Dependency):
         if not os.path.isdir(build_directory):
             shell.makedirs(
                 build_directory,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
 
         with shell.pushd(
             build_directory,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.invocation.args.dry_run,
+            echo=runner.invocation.args.verbose
         ):
             shell.call(
                 cmake_call,
                 env=cmake_env,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
             # TODO Take into account all of the different build
             # systems.
             shell.call(
-                [invocation.runner.toolchain.ninja],
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                [runner.toolchain.ninja],
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
             shell.call(
-                [invocation.runner.toolchain.ninja, "install"],
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                [runner.toolchain.ninja, "install"],
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )

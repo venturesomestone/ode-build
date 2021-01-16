@@ -22,7 +22,7 @@ from .util import http, shell
 
 from .build_directory import BuildDirectory
 
-from .invocation import Invocation
+from .runner import Runner
 
 
 class Dependency:
@@ -179,41 +179,41 @@ class Dependency:
 
     def install(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> None:
         """Downloads, builds, and installs the dependency.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
         """
-        source_dir = self._download(invocation=invocation, build_dir=build_dir)
+        source_dir = self._download(runner=runner, build_dir=build_dir)
 
         self._build(
             source_path=source_dir,
-            invocation=invocation,
+            runner=runner,
             build_dir=build_dir
         )
 
         shell.rmtree(
             build_dir.temporary,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.invocation.args.dry_run,
+            echo=runner.invocation.args.verbose
         )
 
     def _download(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Downloads the asset or the source code of the
         dependency.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
@@ -226,30 +226,30 @@ class Dependency:
         if self.commit:
             with shell.pushd(
                 tmp_dir,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             ):
                 shell.call(
                     [
-                        invocation.runner.toolchain.git,
+                        runner.toolchain.git,
                         "clone",
                         "https://github.com/{owner}/{repo}.git".format(
                             owner=self.owner,
                             repo=self.repository
                         )
                     ],
-                    dry_run=invocation.args.dry_run,
-                    echo=invocation.args.verbose
+                    dry_run=runner.invocation.args.dry_run,
+                    echo=runner.invocation.args.verbose
                 )
             with shell.pushd(
                 os.path.join(tmp_dir, self.repository),
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             ):
                 shell.call(
-                    [invocation.runner.toolchain.git, "checkout", self.commit],
-                    dry_run=invocation.args.dry_run,
-                    echo=invocation.args.verbose
+                    [runner.toolchain.git, "checkout", self.commit],
+                    dry_run=runner.invocation.args.dry_run,
+                    echo=runner.invocation.args.verbose
                 )
 
             return os.path.join(tmp_dir, self.repository)
@@ -267,23 +267,23 @@ class Dependency:
                 url=download_url,
                 destination=download_file,
                 headers={"Accept": "application/vnd.github.v3+json"},
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
 
             source_dir = os.path.join(tmp_dir, self.key)
 
             shell.makedirs(
                 path=source_dir,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
             shell.tar(
                 path=download_file,
                 action=ArchiveAction.extract,
                 dest=source_dir,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.invocation.args.dry_run,
+                echo=runner.invocation.args.verbose
             )
 
             return os.path.join(
@@ -294,7 +294,7 @@ class Dependency:
     def _build(
         self,
         source_path: str,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> None:
         """Builds the dependency from the sources.
@@ -302,7 +302,7 @@ class Dependency:
         Args:
             source_path (str): The path to the source directory
                 of the dependency.
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.
@@ -328,14 +328,14 @@ class Dependency:
             if os.path.isdir(dest_file):
                 shell.rmtree(
                     dest_file,
-                    dry_run=invocation.args.dry_run,
-                    echo=invocation.args.print_debug
+                    dry_run=runner.invocation.args.dry_run,
+                    echo=runner.invocation.args.print_debug
                 )
             elif os.path.exists(dest_file):
                 shell.rm(
                     dest_file,
-                    dry_run=invocation.args.dry_run,
-                    echo=invocation.args.print_debug
+                    dry_run=runner.invocation.args.dry_run,
+                    echo=runner.invocation.args.print_debug
                 )
 
 
@@ -343,27 +343,27 @@ class Dependency:
                 shell.copytree(
                     src_file,
                     dest_file,
-                    dry_run=invocation.args.dry_run,
-                    echo=invocation.args.print_debug
+                    dry_run=runner.invocation.args.dry_run,
+                    echo=runner.invocation.args.print_debug
                 )
             else:
                 shell.copy(
                     src_file,
                     dest_file,
-                    dry_run=invocation.args.dry_run,
-                    echo=invocation.args.print_debug
+                    dry_run=runner.invocation.args.dry_run,
+                    echo=runner.invocation.args.print_debug
                 )
 
     def should_install(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> bool:
         """Tells whether the build of the dependency should be
         skipped.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
                 build script invocation.

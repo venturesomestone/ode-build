@@ -56,11 +56,12 @@ class Invocation:
             targets.
         build_variant (BuildVariant): The build variant to be
             built.
-        runner (Runner): The runner for the run mode of the
-            invocation.
+        runners (Runner): The runners for the targets.
     """
 
-    Targets = namedtuple("Targets", ["host", "cross_compile"])
+    TARGET_CATEGORIES = ["host", "cross_compile"]
+    Targets = namedtuple("Targets", TARGET_CATEGORIES)
+    Runners = namedtuple("Runners", TARGET_CATEGORIES)
 
     def __init__(self, version: str, name: str) -> None:
         """Initializes the invocation object for the current run.
@@ -94,15 +95,23 @@ class Invocation:
 
         def _resolve_runner_type():
             if self.run_mode is RunMode.preset:
-                return PresetRunner(invocation=self)
+                return PresetRunner
             elif self.run_mode is RunMode.configure:
-                return ConfiguringRunner(invocation=self)
+                return ConfiguringRunner
             elif self.run_mode is RunMode.compose:
-                return ComposingRunner(invocation=self)
+                return ComposingRunner
             else:
                 raise ValueError
 
-        self.runner = _resolve_runner_type()
+        runner_type = _resolve_runner_type()
+
+        self.runners = self.Runners(
+            host=runner_type(invocation=self, target=self.targets.host),
+            cross_compile=[
+                runner_type(invocation=self, target=t)
+                for t in self.targets.cross_compile
+            ]
+        )
 
     def __call__(self) -> int:
         """Invokes the build script with the current
@@ -112,7 +121,14 @@ class Invocation:
             An 'int' that is equal to the exit code of the
             invocation.
         """
-        return self.runner()
+        # First the host runner should be run.
+        self.runners.host()
+
+        if self.run_mode is not RunMode.preset:
+            for runner in self.runners.cross_compile:
+                runner()
+
+        return 0
 
     def _set_logging_level(self) -> None:
         """Sets the logging level according to the configuration

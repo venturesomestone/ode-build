@@ -16,6 +16,8 @@ from .build_directory import BuildDirectory
 
 from .invocation import Invocation
 
+from .target import Target
+
 from .toolchain import Toolchain
 
 
@@ -31,18 +33,22 @@ class Runner:
             invocation.
         toolchain (Toolchain): The toolchain that contains the
             tools of this run.
+        target (Target): The target host that this runner is for.
     """
 
-    def __init__(self, invocation: Invocation) -> None:
+    def __init__(self, invocation: Invocation, target: Target) -> None:
         """Initializes the runner object.
 
         Args:
             invocation (Invocation): The invocation that this
                 runner belongs to.
+            target (Target): The target host that this runner is
+                for.
         """
         self.invocation = invocation
         self.build_dir = BuildDirectory(invocation=self.invocation)
         self.toolchain = Toolchain(runner=self)
+        self.target = target
 
     def __call__(self) -> int:
         """Runs the run mode of this runner.
