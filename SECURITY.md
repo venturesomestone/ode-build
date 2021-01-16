@@ -6,6 +6,7 @@ We currently support the following versions of Couplet Composer with security up
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 1.4.x   | :white_check_mark: |
 | 1.3.x   | :white_check_mark: |
 | 1.2.x   | :white_check_mark: |
 | 1.1.x   | :white_check_mark: |
