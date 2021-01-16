@@ -24,50 +24,6 @@ class GladDependency(Dependency):
     dependency of the project that this build script acts on.
     """
 
-    def __init__(
-        self,
-        key: str,
-        name: str,
-        version: str,
-        files: Any,
-        test_only: bool,
-        benchmark_only: bool,
-        asset_name: str,
-        repository: str
-    ) -> None:
-        """Initializes the Glad dependency object.
-
-        Args:
-            key (str): The simple identifier of this dependency.
-            name (str): The full name of this dependency.
-            version (str): The required version of the
-                dependency.
-            files (str | list | dict): The file or files that are
-                used to check and copy the files of this
-                dependency.
-            test_only (bool): Whether or not the dependency is
-                needed only when building the tests.
-            benchmark_only (bool): Whether or not the dependency
-                is needed only when building the benchmarkings.
-            asset_name (str): The name of the asset that will be
-                downloaded from GitHub by default.
-            repository (str): The GitHub repository of this
-                dependency.
-            cmake_options (dict): The optional extra CMake
-                options from the project's information file for
-                this dependency.
-        """
-        super().__init__(
-            key=key,
-            name=name,
-            version=version,
-            files=files,
-            test_only=test_only,
-            benchmark_only=benchmark_only,
-            asset_name=asset_name,
-            repository=repository
-        )
-
     def _build(
         self,
         source_path: str,
