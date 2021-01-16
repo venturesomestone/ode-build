@@ -16,6 +16,10 @@ Please note that this documentation is only for the different options of Couplet
   - [Build Target Options](#build-target-options)
 - [Preset Mode Options](#preset-mode-options)
 
+[Project Configuration File](#project-configuration-file)
+- [Dependencies](#dependencies)
+  - [`id.files`](#id-files)
+
 ## Configuring the Build
 
 Couplet Composer and the build of Obliging Ode and Unsung Anthem can naturally be configured by using vast selection of command line options. While it is possible to use only traditional command line arguments, the *recommended* way to configure the builds is to use so called **preset mode** of Couplet Composer.
@@ -125,3 +129,9 @@ Shows the available presets in the preset files and exits.
 **`--expand-script-invocation`**
 
 Prints the build script invocation composed from the preset given using `--name` and exits without running it.
+
+## Project Configuration File
+
+### Dependencies
+
+#### `id.files`
