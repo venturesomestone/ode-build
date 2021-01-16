@@ -29,6 +29,7 @@ class Project:
         ode_version (str): The version number of Obliging Ode.
         anthem_version (str): The version number of Unsung
             Anthem.
+        gl_version (str): The target version number of OpenGL.
         dependencies (list): A list containing the representation
             objects of the dependencies of the project.
     """
@@ -38,11 +39,12 @@ class Project:
     VERSION_KEY = "version"
     ODE_KEY = "ode"
     ANTHEM_KEY = "anthem"
+    OPENGL_KEY = "opengl"
     DEPENDENCIES_KEY = "dependencies"
     NAME_KEY = "name"
     MODULE_KEY = "module"
     MODULE_DEFAULT_VALUE = "default"
-    CLASS_KEY = "class_name"
+    CLASS_KEY = "className"
     FILES_KEY = "files"
     TEST_ONLY_KEY = "testOnly"
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
@@ -94,6 +96,8 @@ class Project:
                     data=json_data,
                     key=self.ANTHEM_KEY
                 )
+
+                self.gl_version = json_data[self.OPENGL_KEY][self.VERSION_KEY]
 
                 dependency_data = self._get_from_project_data(
                     data=json_data,

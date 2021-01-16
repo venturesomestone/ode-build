@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Documentation for the usage options of Couplet Composer to its repository.
 - Command line option `--repository` for specifying the name of the repository directory of the project that is being built.
 - Type hints to every method of the script.
-- Support for determining custom module for dependency by using the key `module` and custom class in the module by using the key `class`.
+- Support for determining custom module for dependency by using the key `module` and custom class in the module by using the key `className`.
 - Support for determining the files used to check whether a dependency is installed by using the key `files`.
 - Support for specifying the files and directories to copy and check for in different directories by using the names of the dependency directories (`bin`, `include`, `lib`, `src`, etc.) as keys for files or file arrays in the value object in `files`.
 - Support for specifying both the source file and destination file when the installation of the dependency requires copying files.
