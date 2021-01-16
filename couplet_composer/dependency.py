@@ -33,6 +33,7 @@ class Dependency:
         key (str): The simple identifier of this dependency.
         name (str): The full name of this dependency.
         version (str): The required version of the dependency.
+        commit (str): A required commit of the dependency.
         files (list): A list of the names of the files or file
             dictionaries with source and destination files that
             is used to check whether the dependency is installed
@@ -60,6 +61,7 @@ class Dependency:
         key: str,
         name: str,
         version: str,
+        commit: str,
         files: Any,
         test_only: bool,
         benchmark_only: bool,
@@ -73,6 +75,7 @@ class Dependency:
             name (str): The full name of this dependency.
             version (str): The required version of the
                 dependency.
+            commit (str): The required commit of the dependency.
             files (str | list | dict): The file or files that are
                 used to check and copy the files of this
                 dependency.
@@ -88,6 +91,7 @@ class Dependency:
         self.key = key
         self.name = name
         self.version = version
+        self.commit = commit
         self.library_files = list()
 
         # The possible configurations for the library files are
@@ -219,42 +223,73 @@ class Dependency:
         """
         tmp_dir = build_dir.temporary
 
-        download_file = os.path.join(tmp_dir, "{}.tar.gz".format(self.key))
+        if self.commit:
+            with shell.pushd(
+                tmp_dir,
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            ):
+                shell.call(
+                    [
+                        invocation.runner.toolchain.git,
+                        "clone",
+                        "https://github.com/{owner}/{repo}.git".format(
+                            owner=self.owner,
+                            repo=self.repository
+                        )
+                    ],
+                    dry_run=invocation.args.dry_run,
+                    echo=invocation.args.verbose
+                )
+            with shell.pushd(
+                os.path.join(tmp_dir, self.repository),
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            ):
+                shell.call(
+                    [invocation.runner.toolchain.git, "checkout", self.commit],
+                    dry_run=invocation.args.dry_run,
+                    echo=invocation.args.verbose
+                )
 
-        download_url = "https://api.github.com/repos/{owner}/{repo}/tarball/" \
-            "refs/tags/v{version}".format(
-                owner=self.owner,
-                repo=self.repository,
-                version=self.version
+            return os.path.join(tmp_dir, self.repository)
+        else:
+            download_file = os.path.join(tmp_dir, "{}.tar.gz".format(self.key))
+
+            download_url = "https://api.github.com/repos/{owner}/{repo}/tarball/" \
+                "refs/tags/v{version}".format(
+                    owner=self.owner,
+                    repo=self.repository,
+                    version=self.version
+                )
+
+            http.stream(
+                url=download_url,
+                destination=download_file,
+                headers={"Accept": "application/vnd.github.v3+json"},
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
             )
 
-        http.stream(
-            url=download_url,
-            destination=download_file,
-            headers={"Accept": "application/vnd.github.v3+json"},
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
-        )
+            source_dir = os.path.join(tmp_dir, self.key)
 
-        source_dir = os.path.join(tmp_dir, self.key)
+            shell.makedirs(
+                path=source_dir,
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            )
+            shell.tar(
+                path=download_file,
+                action=ArchiveAction.extract,
+                dest=source_dir,
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            )
 
-        shell.makedirs(
-            path=source_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
-        )
-        shell.tar(
-            path=download_file,
-            action=ArchiveAction.extract,
-            dest=source_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
-        )
-
-        return os.path.join(
-            source_dir,
-            [name for _, name, _ in os.walk(source_dir) if self.key in name][0]
-        )
+            return os.path.join(
+                source_dir,
+                [name for _, name, _ in os.walk(source_dir) if self.key in name][0]
+            )
 
     def _build(
         self,

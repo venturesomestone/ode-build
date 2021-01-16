@@ -42,6 +42,7 @@ class Project:
     OPENGL_KEY = "opengl"
     DEPENDENCIES_KEY = "dependencies"
     NAME_KEY = "name"
+    COMMIT_KEY = "commit"
     MODULE_KEY = "module"
     MODULE_DEFAULT_VALUE = "default"
     CLASS_KEY = "className"
@@ -196,6 +197,8 @@ class Project:
         Returns:
             The constructed dependency object.
         """
+        commit = None if self.COMMIT_KEY not in data else data[self.COMMIT_KEY]
+
         library_files = None if self.FILES_KEY not in data \
             else data[self.FILES_KEY]
 
@@ -234,6 +237,7 @@ class Project:
                     key=key,
                     name=data[self.NAME_KEY],
                     version=data[self.VERSION_KEY],
+                    commit=commit,
                     files=library_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
@@ -246,6 +250,7 @@ class Project:
                     key=key,
                     name=data[self.NAME_KEY],
                     version=data[self.VERSION_KEY],
+                    commit=commit,
                     files=library_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
@@ -268,6 +273,7 @@ class Project:
                     key=key,
                     name=data[self.NAME_KEY],
                     version=data[self.VERSION_KEY],
+                    commit=commit,
                     files=library_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
@@ -280,6 +286,7 @@ class Project:
                     key=key,
                     name=data[self.NAME_KEY],
                     version=data[self.VERSION_KEY],
+                    commit=commit,
                     files=library_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,

@@ -41,6 +41,7 @@ class BinaryDependency(Dependency):
         key: str,
         name: str,
         version: str,
+        commit: str,
         files: Any,
         test_only: bool,
         benchmark_only: bool,
@@ -55,6 +56,7 @@ class BinaryDependency(Dependency):
             name (str): The full name of this dependency.
             version (str): The required version of the
                 dependency.
+            commit (str): The required commit of the dependency.
             files (str | list | dict): The file or files that are
                 used to check and copy the files of this
                 dependency.
@@ -74,6 +76,7 @@ class BinaryDependency(Dependency):
             key=key,
             name=name,
             version=version,
+            commit=commit,
             files=files,
             test_only=test_only,
             benchmark_only=benchmark_only,
