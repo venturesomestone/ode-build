@@ -16,6 +16,8 @@ from .support.system import System
 
 from .support import environment
 
+from .binary_dependency import BinaryDependency
+
 from .dependency import Dependency
 
 
@@ -40,12 +42,13 @@ class Project:
     MODULE_KEY = "module"
     MODULE_DEFAULT_VALUE = "default"
     CLASS_KEY = "class_name"
-    LIBRARY_FILES_KEY = "libraryFiles"
+    FILES_KEY = "files"
     TEST_ONLY_KEY = "testOnly"
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
     ASSET_KEY = "asset"
     REPOSITORY_KEY = "repo"
     CMAKE_OPTIONS_KEY = "cmakeOptions"
+    BINARY_KEY = "binary"
 
     def __init__(
         self,
@@ -188,23 +191,8 @@ class Project:
         Returns:
             The constructed dependency object.
         """
-        raw_library_files = None if self.LIBRARY_FILES_KEY not in data \
-            else data[self.LIBRARY_FILES_KEY]
-
-        library_files = None
-
-        if isinstance(raw_library_files, dict):
-            raw_entry = raw_library_files[platform.value]
-
-            if isinstance(raw_entry, str):
-                library_files = raw_entry
-            elif isinstance(raw_entry, list):
-                library_files = list()
-                library_files.extend(raw_entry)
-            else:
-                raise ValueError  # TODO Add explanation or logging.
-        else:
-            library_files = raw_library_files
+        library_files = None if self.FILES_KEY not in data \
+            else data[self.FILES_KEY]
 
         test_only = False
 
@@ -232,17 +220,33 @@ class Project:
 
         if self.MODULE_KEY not in data or \
                 data[self.MODULE_KEY] == self.MODULE_DEFAULT_VALUE:
-            return Dependency(
-                key=key,
-                name=data["name"],
-                version=data["version"],
-                library_files=library_files,
-                test_only=test_only,
-                benchmark_only=benchmark_only,
-                asset_name=asset_name,
-                repository=repository,
-                cmake_options=cmake_options
-            )
+
+            needs_binary = data[self.BINARY_KEY] if self.BINARY_KEY in data \
+                else None
+
+            if needs_binary:
+                return BinaryDependency(
+                    key=key,
+                    name=data["name"],
+                    version=data["version"],
+                    files=library_files,
+                    test_only=test_only,
+                    benchmark_only=benchmark_only,
+                    asset_name=asset_name,
+                    repository=repository,
+                    cmake_options=cmake_options
+                )
+            else:
+                return Dependency(
+                    key=key,
+                    name=data["name"],
+                    version=data["version"],
+                    files=library_files,
+                    test_only=test_only,
+                    benchmark_only=benchmark_only,
+                    asset_name=asset_name,
+                    repository=repository
+                )
         else:
             if self.CLASS_KEY not in data:
                 raise ValueError  # TODO Add explanation or logging.
@@ -258,7 +262,7 @@ class Project:
                 key=key,
                 name=data["name"],
                 version=data["version"],
-                library_files=library_files,
+                files=library_files,
                 test_only=test_only,
                 benchmark_only=benchmark_only,
                 asset_name=asset_name,

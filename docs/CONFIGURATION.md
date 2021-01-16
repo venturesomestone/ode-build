@@ -19,6 +19,7 @@ Please note that this documentation is only for the different options of Couplet
 [Project Configuration File](#project-configuration-file)
 - [Dependencies](#dependencies)
   - [`id.files`](#idfiles)
+  - [`id.platforms`](#idplatforms)
 
 ## Configuring the Build
 
@@ -205,3 +206,5 @@ If the script can’t install some file by using its build script, you can give 
   }
 }
 ```
+
+#### `id.platforms`

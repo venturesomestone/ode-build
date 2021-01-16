@@ -8,6 +8,8 @@ acts on.
 
 import os
 
+from collections import namedtuple
+
 from typing import Any
 
 from .support.archive_action import ArchiveAction
@@ -31,9 +33,11 @@ class Dependency:
         key (str): The simple identifier of this dependency.
         name (str): The full name of this dependency.
         version (str): The required version of the dependency.
-        library_files (str | list): A list of the names of the
-            files or a name of the file that is used to check
-            whether the dependency is installed.
+        files (list): A list of the names of the files or file
+            dictionaries with source and destination files that
+            is used to check whether the dependency is installed
+            and to copy the files on installation. The entries
+            can be strings or tuples.
         test_only (bool): Whether or not the dependency is needed
             only when building the tests.
         benchmark_only (bool): Whether or not the dependency is
@@ -44,22 +48,23 @@ class Dependency:
             dependency.
         repository (str): The name of the GitHub repository of
             this dependency.
-        cmake_options (dict): The optional extra CMake options
-            from the project's information file for this
-            dependency.
     """
+
+    SOURCE_KEY = "src"
+    DESTINATION_KEY = "dest"
+
+    FileInfo = namedtuple("FileInfo", [SOURCE_KEY, DESTINATION_KEY])
 
     def __init__(
         self,
         key: str,
         name: str,
         version: str,
-        library_files: Any,
+        files: Any,
         test_only: bool,
         benchmark_only: bool,
         asset_name: str,
-        repository: str,
-        cmake_options: dict
+        repository: str
     ) -> None:
         """Initializes the dependency object.
 
@@ -68,9 +73,9 @@ class Dependency:
             name (str): The full name of this dependency.
             version (str): The required version of the
                 dependency.
-            library_files (str | list): A list of the names of
-                the files or a name of the file that is used to
-                check whether the dependency is installed.
+            files (str | list | dict): The file or files that are
+                used to check and copy the files of this
+                dependency.
             test_only (bool): Whether or not the dependency is
                 needed only when building the tests.
             benchmark_only (bool): Whether or not the dependency
@@ -79,27 +84,66 @@ class Dependency:
                 downloaded from GitHub by default.
             repository (str): The GitHub repository of this
                 dependency.
-            cmake_options (dict): The optional extra CMake
-                options from the project's information file for
-                this dependency.
         """
         self.key = key
         self.name = name
         self.version = version
+        self.library_files = list()
 
         # The possible configurations for the library files are
         # the following:
         # - a string
         # - a list with strings
         # - a dictionary with lists or strings
-        if isinstance(library_files, str):
-            self.library_files = os.path.join(*library_files.split("/")) \
-                if library_files is not None else None
-        elif isinstance(library_files, list):
-            self.library_files = list()
-
-            for f in library_files:
-                self.library_files.append(os.path.join(*f.split("/")))
+        if isinstance(files, str):
+            self.library_files.append(os.path.join(*files.split("/")))
+        elif isinstance(files, list):
+            for f in files:
+                if isinstance(f, dict):
+                    self.library_files.append(self.FileInfo(
+                        src=os.path.join(*f[self.SOURCE_KEY].split("/")),
+                        dest=os.path.join(*f[self.DESTINATION_KEY].split("/"))
+                    ))
+                elif isinstance(f, str):
+                    self.library_files.append(os.path.join(*f.split("/")))
+                else:
+                    raise ValueError  # TODO Add explanation or logging.
+        elif isinstance(files, dict):
+            # There are two cases: either the dict is the object
+            # with source and destination or it is the object
+            # with the different directories as keys. The 'source
+            # and destination' case requires that both the source
+            # and destination keys are present.
+            if self.SOURCE_KEY in files and self.DESTINATION_KEY:
+                self.library_files.append(self.FileInfo(
+                    src=os.path.join(*f[self.SOURCE_KEY].split("/")),
+                    dest=os.path.join(key, *f[self.DESTINATION_KEY].split("/"))
+                ))
+            else:
+                for key, value in files.items():
+                    if isinstance(value, str):
+                        self.library_files.append(os.path.join(
+                            key, *value.split("/")
+                        ))
+                    elif isinstance(value, list):
+                        for f in files:
+                            if isinstance(f, dict):
+                                self.library_files.append(self.FileInfo(
+                                    src=os.path.join(
+                                        *f[self.SOURCE_KEY].split("/")
+                                    ),
+                                    dest=os.path.join(
+                                        key,
+                                        *f[self.DESTINATION_KEY].split("/")
+                                    )
+                                ))
+                            elif isinstance(f, str):
+                                self.library_files.append(os.path.join(
+                                    key,
+                                    *f.split("/")
+                                ))
+                            else:
+                                raise ValueError  # TODO Add explanation or logging.
         else:
             self.library_files = None
 
@@ -112,8 +156,6 @@ class Dependency:
         else:
             self.owner = None
             self.repository = None
-
-        self.cmake_options = cmake_options
 
     def __repr__(self) -> str:
         """Computes the string representation of the dependency.
@@ -230,69 +272,52 @@ class Dependency:
                 object that is the main build directory of the
                 build script invocation.
         """
-        cmake_call = [
-            invocation.runner.toolchain.cmake,
-            source_path,
-            "-DCMAKE_BUILD_TYPE={}".format(invocation.build_variant.value),
-            "-DCMAKE_INSTALL_PREFIX={}".format(build_dir.dependencies)
-        ]
+        # if not os.path.isdir(os.path.join(build_dir.dependencies, "include")):
+        #     shell.makedirs(
+        #         os.path.join(build_dir.dependencies, "include"),
+        #         dry_run=invocation.args.dry_run,
+        #         echo=invocation.args.verbose
+        #     )
 
-        if invocation.platform is System.windows:
-            pass  # TODO Set the compiler on Windows.
+        for f in self.library_files:
+            dest_file = None
+            src_file = None
 
-        if invocation.cmake_generator is CMakeGenerator.ninja:
-            cmake_call.extend([
-                "-DCMAKE_MAKE_PROGRAM={}".format(
-                    invocation.runner.toolchain.ninja
+            if isinstance(f, str):
+                dest_file = os.path.join(build_dir.dependencies, f)
+                src_file = os.path.join(source_path, f)
+            elif isinstance(f, self.FileInfo):
+                dest_file = os.path.join(build_dir.dependencies, f.dest)
+                src_file = os.path.join(source_path, f.src)
+
+            if os.path.isdir(dest_file):
+                shell.rmtree(
+                    dest_file,
+                    dry_run=invocation.args.dry_run,
+                    echo=invocation.args.print_debug
                 )
-            ])
+            elif os.path.exists(dest_file):
+                shell.rm(
+                    dest_file,
+                    dry_run=invocation.args.dry_run,
+                    echo=invocation.args.print_debug
+                )
 
-        cmake_call.extend(["-G", invocation.cmake_generator.value])
 
-        if self.cmake_options:
-            for k, v in self.cmake_options.items():
-                if isinstance(v, bool):
-                    cmake_call.extend(
-                        ["-D{}={}".format(k, ("ON" if v else "OFF"))]
-                    )
-                else:
-                    cmake_call.extend(["-D{}={}".format(k, v)])
-
-        # TODO Add the C and C++ compilers to the environment
-        cmake_env = None
-
-        build_directory = os.path.join(build_dir.temporary, "build")
-
-        if not os.path.isdir(build_directory):
-            shell.makedirs(
-                build_directory,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
-            )
-
-        with shell.pushd(
-            build_directory,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
-        ):
-            shell.call(
-                cmake_call,
-                env=cmake_env,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
-            )
-            # TODO Take into account all of the different build
-            # systems.
-            shell.call(
-                [invocation.runner.toolchain.ninja],
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
-            )
-            shell.call(
-                [invocation.runner.toolchain.ninja, "install"],
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
-            )
+            if os.path.isdir(src_file):
+                shell.copytree(
+                    src_file,
+                    dest_file,
+                    dry_run=invocation.args.dry_run,
+                    echo=invocation.args.print_debug
+                )
+            else:
+                shell.copy(
+                    src_file,
+                    dest_file,
+                    dry_run=invocation.args.dry_run,
+                    echo=invocation.args.print_debug
+                )
 
     def should_install(
         self,
@@ -319,37 +344,16 @@ class Dependency:
         if not self.library_files:
             return True
 
-        if isinstance(self.library_files, str):
-            return os.path.exists(
-                os.path.join(build_dir.dependencies, self.library_files)
-            )
-        elif isinstance(self.library_files, list):
-            found = False
+        found_file = False
 
-            for lib_file in self.library_files:
+        for lib_file in self.library_files:
+            if isinstance(lib_file, str):
+                if os.path.exists(os.path.join(build_dir.dependencies, lib_file)):
+                    found_file = True
+            elif isinstance(lib_file, self.FileInfo):
                 if os.path.exists(
-                    os.path.join(build_dir.dependencies, lib_file)
+                    os.path.join(build_dir.dependencies, lib_file.dest)
                 ):
-                    found = True
+                    found_file = True
 
-            return not found
-        elif isinstance(self.library_files, dict):
-            if invocation.platform in self.library_files:
-                entry = self.library_files[invocation.platform]
-
-                if isinstance(entry, str):
-                    return os.path.exists(
-                        os.path.join(build_dir.dependencies, entry)
-                    )
-                elif isinstance(entry, list):
-                    found = False
-
-                    for lib_file in entry:
-                        if os.path.exists(
-                            os.path.join(build_dir.dependencies, lib_file)
-                        ):
-                            found = True
-
-                    return not found
-
-        return False  # TODO Is this a good fallback value?
+        return not found_file
