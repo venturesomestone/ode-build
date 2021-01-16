@@ -9,6 +9,8 @@ from typing import Any
 
 from .support.tools.cmake import CMake
 
+from .support.tools.make import Make
+
 from .support.tools.ninja import Ninja
 
 from .util.cache import cached
@@ -53,6 +55,7 @@ class Toolchain:
                     platform=self.runner.invocation.platform
                 )
             ),
+            "make": Make(),
             "ninja": Ninja(
                 key="ninja",
                 cmd="ninja",
