@@ -223,11 +223,11 @@ class Project:
         cmake_options = data[self.CMAKE_OPTIONS_KEY] \
             if self.CMAKE_OPTIONS_KEY in data else None
 
+        needs_binary = data[self.BINARY_KEY] if self.BINARY_KEY in data \
+            else None
+
         if self.MODULE_KEY not in data or \
                 data[self.MODULE_KEY] == self.MODULE_DEFAULT_VALUE:
-
-            needs_binary = data[self.BINARY_KEY] if self.BINARY_KEY in data \
-                else None
 
             if needs_binary:
                 return BinaryDependency(
@@ -263,14 +263,26 @@ class Project:
             module = importlib.import_module(package_name)
             dependency_class = getattr(module, self.CLASS_KEY)
 
-            return dependency_class(
-                key=key,
-                name=data[self.NAME_KEY],
-                version=data[self.VERSION_KEY],
-                files=library_files,
-                test_only=test_only,
-                benchmark_only=benchmark_only,
-                asset_name=asset_name,
-                repository=repository,
-                cmake_options=cmake_options
-            )
+            if needs_binary:
+                return dependency_class(
+                    key=key,
+                    name=data[self.NAME_KEY],
+                    version=data[self.VERSION_KEY],
+                    files=library_files,
+                    test_only=test_only,
+                    benchmark_only=benchmark_only,
+                    asset_name=asset_name,
+                    repository=repository,
+                    cmake_options=cmake_options
+                )
+            else:
+                return dependency_class(
+                    key=key,
+                    name=data[self.NAME_KEY],
+                    version=data[self.VERSION_KEY],
+                    files=library_files,
+                    test_only=test_only,
+                    benchmark_only=benchmark_only,
+                    asset_name=asset_name,
+                    repository=repository
+                )

@@ -2,7 +2,7 @@
 # Licensed under the MIT License
 
 """A module that contains the class for the objects that
-represent the Lua dependency of the project that this build
+represent the SDL dependency of the project that this build
 script acts on.
 """
 
@@ -15,15 +15,15 @@ from ...support.archive_action import ArchiveAction
 
 from ...util import http, shell
 
-from ...build_directory import BuildDirectory
+from ...binary_dependency import BinaryDependency
 
-from ...dependency import Dependency
+from ...build_directory import BuildDirectory
 
 from ...invocation import Invocation
 
 
-class LuaDependency(Dependency):
-    """A class for creating objects that represent the Lua
+class SdlDependency(BinaryDependency):
+    """A class for creating objects that represent the SDL
     dependency of the project that this build script acts on.
     """
 
@@ -48,9 +48,8 @@ class LuaDependency(Dependency):
 
         download_file = os.path.join(tmp_dir, "{}.tar.gz".format(self.key))
 
-        download_url = "{repo}/{key}-{version}.tar.gz".format(
+        download_url = "{repo}/SDL2-{version}.tar.gz".format(
                 repo=self.repository,
-                key=self.key,
                 version=self.version
             )
 
@@ -97,22 +96,34 @@ class LuaDependency(Dependency):
                 object that is the main build directory of the
                 build script invocation.
         """
+        tmp_build_dir = os.path.join(build_dir.temporary, "build")
+
+        shell.makedirs(
+            tmp_build_dir,
+            dry_run=invocation.args.dry_run,
+            echo=invocation.args.verbose
+        )
+
         with shell.pushd(
-            source_path,
+            tmp_build_dir,
             dry_run=invocation.args.dry_run,
             echo=invocation.args.verbose
         ):
+            shell.call(
+                [
+                    os.path.join(source_path, "configure"),
+                    "--prefix={}".format(build_dir.dependencies)
+                ],
+                dry_run=invocation.args.dry_run,
+                echo=invocation.args.verbose
+            )
             shell.call(
                 [invocation.runner.toolchain.make],
                 dry_run=invocation.args.dry_run,
                 echo=invocation.args.verbose
             )
             shell.call(
-                [
-                    invocation.runner.toolchain.make,
-                    "install",
-                    "INSTALL_TOP={}".format(build_dir.dependencies)
-                ],
+                [invocation.runner.toolchain.make, "install"],
                 dry_run=invocation.args.dry_run,
                 echo=invocation.args.verbose
             )
