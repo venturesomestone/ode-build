@@ -163,4 +163,30 @@ There are two ways to give the paths of individual files or folders. First one i
 }
 ```
 
-If a category has only one file in it, you can give it as a string instead of a list with a single string in it.
+If a category has only one file in it, you can give it as a string instead of a list with a single string in it. For multiple files, you have to use a list.
+
+```json
+{
+  "dependencies": {
+    "id": {
+      "files": {
+        "lib": "liblibrary.a"
+      }
+    }
+  }
+}
+```
+
+```json
+{
+  "dependencies": {
+    "id": {
+      "files": {
+        "lib": ["liblibrary.a", "liblibraryd.a"]
+      }
+    }
+  }
+}
+```
+
+If the script can’t install some file by using its build script, you can give the file as an object. The object should contain both the source file that needs to be copied and the destination file where the file should be copied to. The source file is always relative to the root directory of the dependency project. The destination files are always relative to the local dependencies directory. If you define files only as strings and not objects for a dependency that the script doesn’t build to binary but copies for example header files, the script uses the relative file path given as both the source file and the destination file.
