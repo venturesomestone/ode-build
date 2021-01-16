@@ -18,7 +18,7 @@ Please note that this documentation is only for the different options of Couplet
 
 [Project Configuration File](#project-configuration-file)
 - [Dependencies](#dependencies)
-  - [`id.files`](#id-files)
+  - [`id.files`](#idfiles)
 
 ## Configuring the Build
 
