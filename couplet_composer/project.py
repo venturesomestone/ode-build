@@ -39,6 +39,7 @@ class Project:
     ODE_KEY = "ode"
     ANTHEM_KEY = "anthem"
     DEPENDENCIES_KEY = "dependencies"
+    NAME_KEY = "name"
     MODULE_KEY = "module"
     MODULE_DEFAULT_VALUE = "default"
     CLASS_KEY = "class_name"
@@ -227,8 +228,8 @@ class Project:
             if needs_binary:
                 return BinaryDependency(
                     key=key,
-                    name=data["name"],
-                    version=data["version"],
+                    name=data[self.NAME_KEY],
+                    version=data[self.VERSION_KEY],
                     files=library_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
@@ -239,8 +240,8 @@ class Project:
             else:
                 return Dependency(
                     key=key,
-                    name=data["name"],
-                    version=data["version"],
+                    name=data[self.NAME_KEY],
+                    version=data[self.VERSION_KEY],
                     files=library_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
@@ -260,8 +261,8 @@ class Project:
 
             return dependency_class(
                 key=key,
-                name=data["name"],
-                version=data["version"],
+                name=data[self.NAME_KEY],
+                version=data[self.VERSION_KEY],
                 files=library_files,
                 test_only=test_only,
                 benchmark_only=benchmark_only,
