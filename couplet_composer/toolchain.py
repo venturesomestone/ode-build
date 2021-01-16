@@ -9,6 +9,8 @@ from typing import Any
 
 from .support.tools.cmake import CMake
 
+from .support.tools.git import Git
+
 from .support.tools.make import Make
 
 from .support.tools.ninja import Ninja
@@ -55,6 +57,7 @@ class Toolchain:
                     platform=self.runner.invocation.platform
                 )
             ),
+            "git": Git(),
             "make": Make(),
             "ninja": Ninja(
                 key="ninja",
