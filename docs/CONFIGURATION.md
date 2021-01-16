@@ -140,7 +140,7 @@ The `files` object contains the files and folders that are checked for when dete
 
 There are two ways to give the paths of individual files or folders. First one is to include the so-called category directory name of the file in the path, for example `include` in `include/header.h`. The second one is to have the files grouped by their so-called category directory name. Then the directory name is a key in the `files` object and the value for that key contains the names of the files or the objects for the files in the directory.
 
-```
+```json
 {
   "dependencies": {
     "id": {
@@ -150,7 +150,7 @@ There are two ways to give the paths of individual files or folders. First one i
 }
 ```
 
-```
+```json
 {
   "dependencies": {
     "id": {
