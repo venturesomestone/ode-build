@@ -135,3 +135,32 @@ Prints the build script invocation composed from the preset given using `--name`
 ### Dependencies
 
 #### `id.files`
+
+The `files` object contains the files and folders that are checked for when determining whether the script should install the dependency. It also gives information how the script should copy the files from the original project to the local dependencies folder.
+
+There are two ways to give the paths of individual files or folders. First one is to include the so-called category directory name of the file in the path, for example `include` in `include/header.h`. The second one is to have the files grouped by their so-called category directory name. Then the directory name is a key in the `files` object and the value for that key contains the names of the files or the objects for the files in the directory.
+
+```
+{
+  "dependencies": {
+    "id": {
+      "files": ["include/header.h", "lib/liblibrary.a", "lib/liblibraryd.a"]
+    }
+  }
+}
+```
+
+```
+{
+  "dependencies": {
+    "id": {
+      "files": {
+        "include": "header.h",
+        "lib": ["liblibrary.a", "liblibraryd.a"]
+      }
+    }
+  }
+}
+```
+
+If a category has only one file in it, you can give it as a string instead of a list with a single string in it.
