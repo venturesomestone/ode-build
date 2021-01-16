@@ -14,10 +14,6 @@ from typing import Any
 
 from .support.archive_action import ArchiveAction
 
-from .support.cmake_generator import CMakeGenerator
-
-from .support.system import System
-
 from .util import http, shell
 
 from .build_directory import BuildDirectory
@@ -337,7 +333,6 @@ class Dependency:
                     dry_run=runner.invocation.args.dry_run,
                     echo=runner.invocation.args.print_debug
                 )
-
 
             if os.path.isdir(src_file):
                 shell.copytree(

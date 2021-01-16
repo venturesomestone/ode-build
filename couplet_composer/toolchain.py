@@ -17,8 +17,6 @@ from .support.tools.ninja import Ninja
 
 from .util.cache import cached
 
-from .util import shell
-
 from .runner import Runner
 
 

@@ -11,17 +11,11 @@ from abc import ABC, abstractmethod
 
 from typing import Any
 
-from .support.archive_action import ArchiveAction
-
-from .support.install_status import InstallStatus
-
-from .util import http, shell
+from .util import shell
 
 from .build_directory import BuildDirectory
 
 from .invocation import Invocation
-
-from .target import Target
 
 
 class Tool(ABC):

@@ -7,8 +7,6 @@ represents Ninja in the toolchain of the build script.
 
 import os
 
-from typing import Any
-
 from ...util import http, shell
 
 from ...build_directory import BuildDirectory
@@ -103,7 +101,7 @@ class Ninja(Tool):
         )
         shell.tar(
             path=download_file,
-            action=ArchiveAction.unzip ,
+            action=ArchiveAction.unzip,
             dest=source_dir,
             dry_run=invocation.args.dry_run,
             echo=invocation.args.verbose

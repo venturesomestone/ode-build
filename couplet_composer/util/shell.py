@@ -244,7 +244,7 @@ def copytree(
 def copy(
     src: str,
     dest: str,
-    dry_run : bool = None,
+    dry_run: bool = None,
     echo: bool = None
 ) -> None:
     """Copies a file.

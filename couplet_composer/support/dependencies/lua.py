@@ -7,9 +7,6 @@ script acts on.
 """
 
 import os
-import sys
-
-from typing import Any
 
 from ...support.archive_action import ArchiveAction
 

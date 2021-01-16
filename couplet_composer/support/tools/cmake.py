@@ -7,8 +7,6 @@ represents CMake in the toolchain of the build script.
 
 import os
 
-from typing import Any
-
 from ...util import http, shell
 
 from ...build_directory import BuildDirectory
@@ -108,7 +106,7 @@ class CMake(Tool):
         shell.tar(
             path=download_file,
             action=ArchiveAction.unzip if invocation.platform is System.windows
-                else ArchiveAction.extract,
+                   else ArchiveAction.extract,
             dest=source_dir,
             dry_run=invocation.args.dry_run,
             echo=invocation.args.verbose

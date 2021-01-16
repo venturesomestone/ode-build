@@ -6,7 +6,6 @@ represent the Glad dependency of the project that this build
 script acts on.
 """
 
-import os
 import sys
 
 from typing import Any
