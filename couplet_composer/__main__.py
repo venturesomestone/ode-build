@@ -174,7 +174,7 @@ def _main():
         logging.warning(
             "The following command line arguments weren't "
             "recognized:\n{}".format(
-                "\n".join(unknown_args)
+                "\n".join(unknown_arguments)
             )
         )
 
