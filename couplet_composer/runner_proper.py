@@ -131,8 +131,4 @@ class RunnerProper(Runner):
             echo (bool): Whether or not the command must be
                 printed.
         """
-        command_to_run = list(command)
-        # Disable system sleep, if possible.
-        if self.target.system is System.darwin:
-            command_to_run = ["caffeinate"] + list(command)
-        shell.call(command_to_run, env=env, dry_run=dry_run, echo=echo)
+        pass

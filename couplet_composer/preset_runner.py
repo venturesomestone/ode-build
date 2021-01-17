@@ -64,7 +64,7 @@ class PresetRunner(Runner):
             logging.debug("The build script invocation is printed")
             return 0
 
-        super().caffeinate(command=build_call, echo=True)
+        self.caffeinate(command=build_call, echo=True)
 
         return 0
 
@@ -176,4 +176,8 @@ class PresetRunner(Runner):
             echo (bool): Whether or not the command must be
                 printed.
         """
-        pass
+        command_to_run = list(command)
+        # Disable system sleep, if possible.
+        if self.target.system is System.darwin:
+            command_to_run = ["caffeinate"] + list(command)
+        shell.call(command_to_run, env=env, dry_run=dry_run, echo=echo)
