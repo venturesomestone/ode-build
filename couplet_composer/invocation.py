@@ -166,7 +166,7 @@ class Invocation:
 
         ch.setFormatter(Formatter())
 
-        logging.getLogger().addHandler(ch)
+        # logging.getLogger().addHandler(ch)
 
     def _resolve_targets(self) -> namedtuple:
         """Resolves the target platforms for the build.
