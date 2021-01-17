@@ -153,8 +153,6 @@ class Dependency:
                                 ))
                             else:
                                 raise ValueError  # TODO Add explanation or logging.
-        else:
-            self.library_files = None
 
         platform_library_files = list()
 
