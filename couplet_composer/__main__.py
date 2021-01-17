@@ -170,6 +170,14 @@ def _main():
     argument_parser = _create_argument_parser()
     arguments, unknown_arguments = _parse_arguments(argument_parser)
 
+    if unknown_arguments:
+        logging.warning(
+            "The following command line arguments weren't "
+            "recognized:\n{}".format(
+                "\n".join(unknown_args)
+            )
+        )
+
     # The logging level is the first thing to be set so it can be
     # utilized throughout the rest of the run.
     _set_logging_level(print_debug=arguments.print_debug)
