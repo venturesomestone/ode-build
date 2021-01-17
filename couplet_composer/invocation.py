@@ -159,10 +159,12 @@ class Invocation:
 
         This function isn't pure and doesn't return anything.
         """
-        if self.args.verbose:
-            logging.basicConfig(level=logging.DEBUG)
-        else:
-            logging.basicConfig(level=logging.INFO)
+        # if self.args.verbose:
+        #     logging.basicConfig(level=logging.DEBUG)
+        # else:
+        #     logging.basicConfig(level=logging.INFO)
+
+        print(logging.getLogger().handlers)
 
         ch = logging.StreamHandler()
 
