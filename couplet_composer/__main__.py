@@ -59,7 +59,7 @@ def _parse_arguments(parser):
     parser -- The argument parser that is used to parse the
     arguments.
     """
-    return parser.parse_args()
+    return parser.parse_known_args()
 
 
 def _set_logging_level(print_debug):
@@ -168,7 +168,7 @@ def _main():
     Enters the program and runs it. This function isn't pure.
     """
     argument_parser = _create_argument_parser()
-    arguments = _parse_arguments(argument_parser)
+    arguments, unknown_arguments = _parse_arguments(argument_parser)
 
     # The logging level is the first thing to be set so it can be
     # utilized throughout the rest of the run.
