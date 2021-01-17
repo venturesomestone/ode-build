@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### Deprecated
+
+- `ODE_BUILD_TEST` as it will be replaced by `COMPOSER_BUILD_TEST` in the next major version.
+- `ODE_TEST_BENCHMARKING` as it will be replaced by `COMPOSER_BUILD_BENCHMARK` in the next major version.
+- `ODE_BUILD_DOCS` as it will be replaced by `COMPOSER_BUILD_DOCS` in the next major version.
+- `ODE_CODE_COVERAGE` as it will be replaced by `COMPOSER_CODE_COVERAGE` in the next major version.
+- `ODE_DEVELOPER` as it will be replaced by `COMPOSER_DEVELOPER` in the next major version.
+- `ODE_CXX_VERSION` as it will be replaced by `COMPOSER_CPP_STD` in the next major version.
+- `ODE_DEPENDENCY_PREFIX` as it will be replaced by `COMPOSER_LOCAL_PREFIX` in the next major version.
+- `ODE_OPENGL_VERSION_MAJOR` as it will be replaced by `COMPOSER_OPENGL_VERSION_MAJOR` in the next major version.
+- `ODE_OPENGL_VERSION_MINOR` as it will be replaced by `COMPOSER_OPENGL_VERSION_MINOR` in the next major version.
+- `ODE_VERSION` as it will be replaced by `COMPOSER_ODE_VERSION` in the next major version.
+- `ANTHEM_VERSION` as it will be replaced by `COMPOSER_ANTHEM_VERSION` in the next major version.
+- `ODE_NAME` as it will be replaced by `COMPOSER_ODE_NAME` in the next major version.
+- `ANTHEM_NAME` as it will be replaced by `COMPOSER_ANTHEM_NAME` in the next major version.
+- `ODE_BUILD_STATIC` as it will be removed in the next major version.
+- `ODE_BUILD_SHARED` as it will be removed in the next major version.
+- `ANTHEM_BUILD_STATIC` as it will be removed in the next major version.
+- `ANTHEM_BUILD_SHARED` as it will be removed in the next major version.
+- `ODE_TEST_USE_NULL_SINK` as it will be removed in the next major version.
+- `ODE_DISABLE_GL_CALLS` as it will be removed in the next major version.
+- `ODE_SCRIPTS_BASE_DIRECTORY` as it will be removed in the next major version.
+
 ## [1.4.0] - 2021-01-16
 
 ### Added

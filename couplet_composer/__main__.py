@@ -337,6 +337,65 @@ def _main():
             )
         )
 
+    cmake_deprecated_replaced = [
+        "ODE_BUILD_TEST",
+        "ODE_TEST_BENCHMARKING",
+        "ODE_BUILD_DOCS",
+        "ODE_CODE_COVERAGE",
+        "ODE_DEVELOPER",
+        "ODE_CXX_VERSION",
+        "ODE_DEPENDENCY_PREFIX",
+        "ODE_OPENGL_VERSION_MAJOR",
+        "ODE_OPENGL_VERSION_MINOR",
+        "ODE_VERSION",
+        "ANTHEM_VERSION",
+        "ODE_NAME",
+        "ANTHEM_NAME"
+    ]
+    cmake_replacements = [
+        "COMPOSER_BUILD_TEST",
+        "COMPOSER_BUILD_BENCHMARK",
+        "COMPOSER_BUILD_DOCS",
+        "COMPOSER_CODE_COVERAGE",
+        "COMPOSER_DEVELOPER",
+        "COMPOSER_CPP_STD",
+        "COMPOSER_LOCAL_PREFIX",
+        "COMPOSER_OPENGL_VERSION_MAJOR",
+        "COMPOSER_OPENGL_VERSION_MINOR",
+        "COMPOSER_ODE_VERSION",
+        "COMPOSER_ANTHEM_VERSION",
+        "COMPOSER_ODE_NAME",
+        "COMPOSER_ANTHEM_NAME"
+    ]
+    cmake_removed = [
+        "ODE_BUILD_STATIC",
+        "ODE_BUILD_SHARED",
+        "ANTHEM_BUILD_STATIC",
+        "ANTHEM_BUILD_SHARED",
+        "ODE_TEST_USE_NULL_SINK",
+        "ODE_DISABLE_GL_CALLS",
+        "ODE_SCRIPTS_BASE_DIRECTORY"
+
+    ]
+
+    logging.warning(
+        "Please note the CMake options {}, and {} are deprecated".format(
+            ", ".join(cmake_deprecated_replaced[:-1]),
+            cmake_deprecated_replaced[-1]
+        )
+    )
+    logging.warning("They will be replaced by {}, and {} respectively".format(
+        ", ".join(cmake_replacements[:-1]),
+        cmake_replacements[-1]
+    ))
+    logging.warning(
+        "Please note that the CMake options {}, and {} are deprecated and "
+        "removed in the next major version".format(
+            ", ".join(cmake_removed[:-1]),
+            cmake_removed[-1]
+        )
+    )
+
     return run_script(
         runner=_resolve_running_function(
             mode=arguments.composer_mode,
