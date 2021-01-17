@@ -32,8 +32,8 @@ class PresetRunner(Runner):
             An 'int' that is equal to the exit code of the run.
         """
         preset_file_names = [os.path.join(
-            self.invocation.source_root,
-            self.invocation.repository,
+            self.source_root,
+            self.args.repository,
             environment.PRESET_FILE_PATH
         )]
 
@@ -41,17 +41,17 @@ class PresetRunner(Runner):
         # arguments
         logging.debug("The preset files are %s", ", ".join(preset_file_names))
 
-        if self.invocation.args.show_presets:
+        if self.args.show_presets:
             return self._show_presets(file_names=preset_file_names)
 
-        if not self.invocation.args.preset_name:
+        if not self.args.preset_name:
             logging.critical("Missing the '--name' option")
 
         build_call = self._compose_call(preset_file_names=preset_file_names)
 
         logging.info(
             "Using preset '%s', which expands to \n\n%s\n",
-            self.invocation.args.preset_name,
+            self.args.preset_name,
             shell.quote_command(build_call)
         )
 
@@ -60,7 +60,7 @@ class PresetRunner(Runner):
             sys.executable
         )
 
-        if self.invocation.args.expand_script_invocation:
+        if self.args.expand_script_invocation:
             logging.debug("The build script invocation is printed")
             return 0
 
@@ -118,22 +118,22 @@ class PresetRunner(Runner):
         """
         options, options_after_end = preset.get_preset_options(
             file_names=preset_file_names,
-            preset_name=self.invocation.args.preset_name,
-            run_mode=RunMode(self.invocation.args.preset_run_mode)
+            preset_name=self.args.preset_name,
+            run_mode=RunMode(self.args.preset_run_mode)
         )
 
         build_call = [sys.argv[0]]
 
-        build_call.append(self.invocation.args.preset_run_mode)
+        build_call.append(self.args.preset_run_mode)
 
-        if self.invocation.args.dry_run:
+        if self.args.dry_run:
             build_call.append("--dry-run")
-        build_call.extend(["--jobs", str(self.invocation.args.jobs)])
-        if self.invocation.args.clean:
+        build_call.extend(["--jobs", str(self.args.jobs)])
+        if self.args.clean:
             build_call.append("--clean")
-        if self.invocation.args.verbose:
+        if self.args.verbose:
             build_call.append("--verbose")
-        build_call.extend(["--repository", self.invocation.args.repository])
+        build_call.extend(["--repository", self.args.repository])
 
         for key, value in options.items():
             if value:
@@ -150,3 +150,30 @@ class PresetRunner(Runner):
                 build_call.append("--{}".format(key))
 
         return build_call
+
+    def clean(self) -> None:
+        """Cleans the directories and files of the runner before
+        building when clean build is run.
+        """
+        # Two spaces are required at the end of the first line as
+        # the counter uses backspace characters.
+        pass
+
+    def caffeinate(
+        self,
+        command: list,
+        env: dict = None,
+        dry_run: bool = None,
+        echo: bool = None
+    ) -> None:
+        """Runs a command during which system sleep is disabled.
+
+        Args:
+            command (list): The command to call.
+            env (dict): Key-value pairs as the environment
+                variables.
+            dry_run (bool): Whether or not dry run is enabled.
+            echo (bool): Whether or not the command must be
+                printed.
+        """
+        pass

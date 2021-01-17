@@ -7,10 +7,10 @@ composing run mode of the build script.
 
 import os
 
-from .runner import Runner
+from .runner_proper import RunnerProper
 
 
-class ComposingRunner(Runner):
+class ComposingRunner(RunnerProper):
     """A class for creating callable objects that represent the
     composing mode runners of the build script.
     """

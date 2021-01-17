@@ -90,8 +90,6 @@ class Project:
             with open(product_json) as f:
                 json_data = json.load(f)
 
-                print(json_data)
-
                 self.project_keys = list()
 
                 for key in json_data:
@@ -105,7 +103,8 @@ class Project:
                         "{}_version".format(key),
                         self._get_version_from_project_data(
                             data=json_data,
-                            key=key)
+                            key=key
+                        )
                     )
                     setattr(
                         self,

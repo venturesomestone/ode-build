@@ -97,12 +97,6 @@ class Invocation:
 
         logging.info("Running %s version %s", self.name, self.version)
 
-        self.project = Project(
-            source_root=self.source_root,
-            repo=self.args.repository,
-            script_package="couplet_composer",  # TODO Remove hard-coded value
-            platform=System(platform.system().lower())
-        )
         self.repository = self.args.repository
         self.platform = System(platform.system().lower())
         self.targets = self._resolve_targets()

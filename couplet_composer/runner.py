@@ -8,6 +8,8 @@ a run mode of the build script.
 import sys
 import time
 
+from abc import ABC, abstractmethod
+
 from argparse import Namespace
 
 from .support.build_variant import BuildVariant
@@ -25,7 +27,7 @@ from .target import Target
 from .toolchain import Toolchain
 
 
-class Runner:
+class Runner(ABC):
     """A class for creating callable objects that represent the
     run mode runners of the build script.
 
@@ -33,80 +35,38 @@ class Runner:
         args (Namespace): A namespace that contains the parsed
             command line arguments.
         source_root (str): The current source root.
-        target (Target): The target host that this runner is for.
-        build_variant (str): The current build variant.
-        generator (str): The current CMake generator.
-        build_dir (BuildDirectory): The build directory object
-            that is the main build directory of the run.
-        toolchain (Toolchain): The toolchain that contains the
-            tools of this run.
     """
 
-    def __init__(
-        self,
-        args: Namespace,
-        source_root: str,
-        build_variant: BuildVariant,
-        generator: CMakeGenerator,
-        target: Target
-    ) -> None:
+    def __init__(self, args: Namespace, source_root: str) -> None:
         """Initializes the runner object.
 
         Args:
             args (Namespace): A namespace that contains the
                 parsed command line arguments.
             source_root (str): The current source root.
-            build_variant (BuildVariant): The build variant of
-                this build.
-            generator (CMakeGenerator): The CMake generator of
-                this build.
-            target (Target): The target host that this runner is
-                for.
         """
         self.args = args
         self.source_root = source_root
-        self.target = target
-        self.build_variant = build_variant
-        self.generator = generator
-        self.build_dir = BuildDirectory(
-            args=self.args,
-            source_root=self.source_root,
-            build_variant=self.build_variant,
-            generator=self.generator,
-            target=self.target
-        )
-        self.toolchain = Toolchain(
-            args=self.args,
-            build_dir=self.build_dir,
-            target=self.target
-        )
 
+    @abstractmethod
     def __call__(self) -> int:
         """Runs the run mode of this runner.
 
         Returns:
             An 'int' that is equal to the exit code of the run.
         """
-        if self.args.clean:
-            self.clean()
+        pass
 
-        return 0
-
+    @abstractmethod
     def clean(self) -> None:
         """Cleans the directories and files of the runner before
         building when clean build is run.
         """
         # Two spaces are required at the end of the first line as
         # the counter uses backspace characters.
-        sys.stdout.write("\033[31mStarting a clean build in  \033[0m")
-        for i in reversed(range(0, 4)):
-            sys.stdout.write("\033[31m\b{!s}\033[0m".format(i))
-            sys.stdout.flush()
-            time.sleep(1)
-        print("\033[31m\b\b\b\bnow.\033[0m")
+        pass
 
-        # TODO Delete the common directories
-
+    @abstractmethod
     def caffeinate(
         self,
         command: list,
@@ -124,8 +84,4 @@ class Runner:
             echo (bool): Whether or not the command must be
                 printed.
         """
-        command_to_run = list(command)
-        # Disable system sleep, if possible.
-        if self.target.system is System.darwin:
-            command_to_run = ["caffeinate"] + list(command)
-        shell.call(command_to_run, env=env, dry_run=dry_run, echo=echo)
+        pass
