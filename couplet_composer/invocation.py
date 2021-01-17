@@ -158,7 +158,7 @@ class Invocation:
 
         This function isn't pure and doesn't return anything.
         """
-        ch = logging.StreamHandler(sys.stdout)
+        ch = logging.StreamHandler()
 
         if self.args.verbose:
             ch.setLevel(logging.DEBUG)
@@ -168,6 +168,11 @@ class Invocation:
         ch.setFormatter(Formatter())
 
         logging.getLogger().addHandler(ch)
+
+        if self.args.verbose:
+            logging.getLogger().setLevel(logging.DEBUG)
+        else:
+            logging.getLogger().setLevel(logging.INFO)
 
     def _resolve_targets(self) -> namedtuple:
         """Resolves the target platforms for the build.
