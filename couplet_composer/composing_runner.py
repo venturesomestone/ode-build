@@ -7,13 +7,40 @@ composing run mode of the build script.
 
 import os
 
+from argparse import Namespace
+
+from .support.cpp_standard import CppStandard
+
 from .runner_proper import RunnerProper
+
+from .target import Target
 
 
 class ComposingRunner(RunnerProper):
     """A class for creating callable objects that represent the
     composing mode runners of the build script.
+
+    Attributes:
+        cpp_std (CppStandard): The selected C++ standard.
     """
+
+    def __init__(
+        self,
+        args: Namespace,
+        source_root: str,
+        target: Target
+    ) -> None:
+        """Initializes the runner object.
+
+        Args:
+            args (Namespace): A namespace that contains the
+                parsed command line arguments.
+            source_root (str): The current source root.
+            target (Target): The target host that this runner is
+                for.
+        """
+        super().__init__(args=args, source_root=source_root, target=target)
+        self.cpp_std = CppStandard[self.args.cpp_std.replace("+", "p")]
 
     def __call__(self) -> int:
         """Runs the run mode of this runner.
@@ -26,52 +53,52 @@ class ComposingRunner(RunnerProper):
         cmake_call = [
             self.toolchain.cmake,
             os.path.join(
-                self.invocation.source_root,
-                self.invocation.args.repository
+                self.source_root,
+                self.args.repository
             ),
             "-G",
-            self.invocation.cmake_generator.value,
+            self.cmake_generator.value,
             "-DCMAKE_BUILD_TYPE={}".format(
-                self.invocation.build_variant.value
+                self.build_variant.value
             ),
             "-DCMAKE_INSTALL_PREFIX={}".format(
                 self.build_dir.destination.replace(os.path.sep, "/")
             ),
             "-DCOMPOSER_BUILD_TEST={}".format(
-                "ON" if self.invocation.args.build_test else "OFF"
+                "ON" if self.args.build_test else "OFF"
             ),
             "-DCOMPOSER_BUILD_BENCHMARK={}".format(
-                "ON" if self.invocation.args.build_benchmark else "OFF"
+                "ON" if self.args.build_benchmark else "OFF"
             ),
             "-DCOMPOSER_BUILD_DOCS={}".format(
-                "ON" if self.invocation.args.build_docs else "OFF"  # TODO Also check that Doxygen is found
+                "ON" if self.args.build_docs else "OFF"  # TODO Also check that Doxygen is found
             ),
             "-DCOMPOSER_CODE_COVERAGE={}".format(
-                "ON" if self.invocation.args.coverage else "OFF"
+                "ON" if self.args.coverage else "OFF"
             ),
             "-DCOMPOSER_DEVELOPER={}".format(
-                "ON" if self.invocation.args.developer_build else "OFF"
+                "ON" if self.args.developer_build else "OFF"
             ),
-            "-DCOMPOSER_CXX_STD={}".format(self.invocation.args.std.value),
+            "-DCOMPOSER_CXX_STD={}".format(self.cpp_std.value),
             "-DCOMPOSER_LOCAL_PREFIX={}".format(
                 self.build_dir.dependencies.replace(os.path.sep, "/")
             ),
             "-DCOMPOSER_OPENGL_VERSION_MAJOR={}".format(
-                self.invocation.project.gl_version.split(".")[0]
+                self.project.gl_version.split(".")[0]
             ),
             "-DCOMPOSER_OPENGL_VERSION_MINOR={}".format(
-                self.invocation.project.gl_version.split(".")[1]
+                self.project.gl_version.split(".")[1]
             )
         ]
 
-        for key in self.invocation.project.project_keys:
+        for key in self.project.project_keys:
             cmake_call.append("-DCOMPOSER_{}_VERSION={}".format(
                 key.upper(),
-                getattr(self.invocation.project, "{}_version".format(key))
+                getattr(self.project, "{}_version".format(key))
             ))
             cmake_call.append("-DCOMPOSER_{}_NAME={}".format(
                 key.upper(),
-                getattr(self.invocation.project, "{}_name".format(key))
+                getattr(self.project, "{}_name".format(key))
             ))
 
         return 0

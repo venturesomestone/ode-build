@@ -26,7 +26,7 @@ class ConfiguringRunner(RunnerProper):
         super().__call__()
 
         to_install = [
-            data for data in self.invocation.project.dependencies.values()
+            data for data in self.project.dependencies
             if data.should_install(runner=self, build_dir=self.build_dir)
         ]
 

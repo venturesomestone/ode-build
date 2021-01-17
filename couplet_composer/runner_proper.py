@@ -57,10 +57,6 @@ class RunnerProper(Runner):
             args (Namespace): A namespace that contains the
                 parsed command line arguments.
             source_root (str): The current source root.
-            build_variant (BuildVariant): The build variant of
-                this build.
-            generator (CMakeGenerator): The CMake generator of
-                this build.
             target (Target): The target host that this runner is
                 for.
         """
@@ -68,7 +64,6 @@ class RunnerProper(Runner):
         self.target = target
         self.build_variant = BuildVariant[self.args.build_variant]
         self.cmake_generator = CMakeGenerator[self.args.cmake_generator]
-        self.cpp_std = CppStandard[self.args.cpp_std.replace("+", "p")]
         self.build_dir = BuildDirectory(
             args=self.args,
             source_root=self.source_root,
