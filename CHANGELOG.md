@@ -18,6 +18,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Support for determining the asset file that should be downloaded for a dependency by using the key `asset`.
 - Support for determining the [GitHub](https://github.com) repository of a dependency by using the key `repo`.
 - Runner for each target and cross-compile target so that the script is run for every added target.
+- Version and name CMake options automatically for each subproject.
 
 ### Changed
 
