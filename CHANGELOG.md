@@ -40,6 +40,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Command line options `--ode-version` and `--anthem-version`.
 - Support for using the key `testonly` to determine whether a dependency is built only when the tests are built.
 - Support for using the key `benchmarkonly` to determine whether a dependency is built only when the benchmarks are built.
+- Dependency on `distro`.
 
 ## [1.2.1] - 2020-09-12
 
