@@ -104,21 +104,19 @@ class BinaryDependency(Dependency):
         cmake_call = [
             runner.toolchain.cmake,
             source_path,
-            "-DCMAKE_BUILD_TYPE={}".format(
-                runner.invocation.build_variant.value
-            ),
+            "-DCMAKE_BUILD_TYPE={}".format(runner.build_variant.value),
             "-DCMAKE_INSTALL_PREFIX={}".format(build_dir.dependencies)
         ]
 
-        if runner.invocation.platform is System.windows:
+        if runner.target.system is System.windows:
             pass  # TODO Set the compiler on Windows.
 
-        if runner.invocation.cmake_generator is CMakeGenerator.ninja:
+        if runner.cmake_generator is CMakeGenerator.ninja:
             cmake_call.extend([
                 "-DCMAKE_MAKE_PROGRAM={}".format(runner.toolchain.ninja)
             ])
 
-        cmake_call.extend(["-G", runner.invocation.cmake_generator.value])
+        cmake_call.extend(["-G", runner.cmake_generator.value])
 
         if self.cmake_options:
             for k, v in self.cmake_options.items():
@@ -137,30 +135,30 @@ class BinaryDependency(Dependency):
         if not os.path.isdir(build_directory):
             shell.makedirs(
                 build_directory,
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
 
         with shell.pushd(
             build_directory,
-            dry_run=runner.invocation.args.dry_run,
-            echo=runner.invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         ):
             shell.call(
                 cmake_call,
                 env=cmake_env,
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
             # TODO Take into account all of the different build
             # systems.
             shell.call(
                 [runner.toolchain.ninja],
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
             shell.call(
                 [runner.toolchain.ninja, "install"],
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
