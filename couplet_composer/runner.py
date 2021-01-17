@@ -19,8 +19,6 @@ from .util import shell
 
 from .build_directory import BuildDirectory
 
-from .invocation import Invocation
-
 from .target import Target
 
 from .toolchain import Toolchain
@@ -37,8 +35,7 @@ class Runner:
         build_variant (str): The current build variant.
         generator (str): The current CMake generator.
         build_dir (BuildDirectory): The build directory object
-            that is the main build directory of the build script
-            invocation.
+            that is the main build directory of the run.
         toolchain (Toolchain): The toolchain that contains the
             tools of this run.
         target (Target): The target host that this runner is for.
