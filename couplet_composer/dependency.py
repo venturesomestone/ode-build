@@ -383,6 +383,7 @@ class Dependency:
         installed_versions = build_dir.installed_versions
 
         installed_version = None if not installed_versions \
+            or self.key not in installed_versions \
             else build_dir.installed_versions[self.key]
 
         if not installed_version or self.version != installed_version:
