@@ -6,6 +6,7 @@ represent the dependencies of the project that this build script
 acts on.
 """
 
+import logging
 import os
 
 from collections import namedtuple
@@ -256,6 +257,12 @@ class Dependency:
                     repo=self.repository,
                     version=self.version
                 )
+
+            logging.debug(
+                "Going to download from %s to %s",
+                download_url,
+                download_file
+            )
 
             http.stream(
                 url=download_url,
