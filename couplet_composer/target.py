@@ -67,13 +67,14 @@ class Target:
             current build target platform.
         """
         try:
-            return Target(system=platform.system(), machine=platform.machine)
+            return Target(system=platform.system(), machine=platform.machine())
         except ValueError:
             raise NotImplementedError(
                 "The combination of '{}' as the operation system and '{}' as "
-                "the machine architecture isn't supported",
-                platform.system(),
-                platform.machine()
+                "the machine architecture isn't supported".format(
+                    platform.system(),
+                    platform.machine()
+                )
             )
 
     @classmethod
