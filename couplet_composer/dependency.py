@@ -391,6 +391,7 @@ class Dependency:
                 "The key '%s' wasn't found from the installed versions",
                 self.key
             )
+            return True
 
         installed_version = build_dir.installed_versions[self.key]
 
