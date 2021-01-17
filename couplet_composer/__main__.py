@@ -170,6 +170,12 @@ def _main():
     argument_parser = _create_argument_parser()
     arguments, unknown_arguments = _parse_arguments(argument_parser)
 
+    # The logging level is the first thing to be set so it can be
+    # utilized throughout the rest of the run.
+    _set_logging_level(print_debug=arguments.print_debug)
+
+    logging.info("Running %s version %s", get_project_name(), get_version())
+
     if unknown_arguments:
         logging.warning(
             "The following command line arguments weren't "
@@ -177,12 +183,6 @@ def _main():
                 "\n".join(unknown_arguments)
             )
         )
-
-    # The logging level is the first thing to be set so it can be
-    # utilized throughout the rest of the run.
-    _set_logging_level(print_debug=arguments.print_debug)
-
-    logging.info("Running %s version %s", get_project_name(), get_version())
 
     source_root = os.getcwd()
 
