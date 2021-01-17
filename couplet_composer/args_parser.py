@@ -302,10 +302,17 @@ def create_args_parser() -> ArgumentParser:
 
     default_cpp_std = CppStandard.cpp17.name
 
+    cpp_std_choices = [name for name, value in CppStandard.__members__.items()]
+
+    cpp_std_choices.extend([
+        name.replace("p", "+")
+        for name, value in CppStandard.__members__.items()
+    ])
+
     cpp_std_group.add_argument(
         "--std",
         default=default_cpp_std,
-        choices=[name for name, value in CppStandard.__members__.items()],
+        choices=cpp_std_choices,
         help="use the given C++ standard (default: {})".format(
             default_cpp_std
         ),

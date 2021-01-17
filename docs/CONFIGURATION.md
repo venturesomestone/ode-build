@@ -200,7 +200,7 @@ These options are only usable in composing mode.
 
 You can use only one of the following options.
 
-**`--std {cpp17,cpp20}`**
+**`--std {cpp17,c++17,cpp20,c++20}`**
 
 Compiles the project using the given C++ standard. The possible choices are `cpp17` and `cpp20`. The default standard is `cpp17`.
 

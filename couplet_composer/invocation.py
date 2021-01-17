@@ -97,7 +97,7 @@ class Invocation:
         self.targets = self._resolve_targets()
         self.build_variant = BuildVariant[self.args.build_variant]
         self.cmake_generator = CMakeGenerator[self.args.cmake_generator]
-        self.cpp_std = CppStandard[self.args.cpp_std]
+        self.cpp_std = CppStandard[self.args.cpp_std.replace("+", "p")]
 
         def _resolve_runner_type():
             if self.run_mode is RunMode.preset:
