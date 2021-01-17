@@ -76,14 +76,6 @@ class Invocation:
         """
         self.args, unknown_args = create_args_parser().parse_known_args()
 
-        if unknown_args:
-            logging.warning(
-                "The following command line arguments weren't "
-                "recognized:\n{}".format(
-                    "\n".join(unknown_args)
-                )
-            )
-
         self.run_mode = RunMode(self.args.run_mode)
         self.version = version
         self.name = name
@@ -93,6 +85,14 @@ class Invocation:
         self._set_logging_level()
 
         logging.info("Running %s version %s", self.name, self.version)
+
+        if unknown_args:
+            logging.warning(
+                "The following command line arguments weren't "
+                "recognized:\n{}".format(
+                    "\n".join(unknown_args)
+                )
+            )
 
         self.repository = self.args.repository
         self.platform = System(platform.system().lower())
