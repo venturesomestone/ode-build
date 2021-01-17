@@ -75,7 +75,16 @@ class Invocation:
             version (str): The version of the build script.
             name (str): The name of the build script.
         """
-        self.args = create_args_parser().parse_args()
+        self.args, unknown_args = create_args_parser().parse_known_args()
+
+        if unknown_args:
+            logging.warning(
+                "The following command line arguments weren't "
+                "recognized:\n{}".format(
+                    "\n".join(unknown_args)
+                )
+            )
+
         self.run_mode = RunMode(self.args.run_mode)
         self.version = version
         self.name = name
