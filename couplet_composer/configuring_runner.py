@@ -6,6 +6,7 @@ configuring run mode of the build script.
 """
 
 import json
+import logging
 
 from .util import shell
 
@@ -25,21 +26,31 @@ class ConfiguringRunner(RunnerProper):
         """
         super().__call__()
 
-        to_install = [
-            data for data in self.project.dependencies
-            if data.should_install(runner=self, build_dir=self.build_dir)
-        ]
-
         version_data = self.build_dir.installed_versions \
             if self.build_dir.installed_versions else dict()
 
-        for dependency in to_install:
-            dependency.install(runner=self, build_dir=self.build_dir)
+        for dependency in self.project.dependencies:
+            if dependency.should_install(
+                runner=self,
+                build_dir=self.build_dir
+            ):
+                logging.info(
+                    "Going to install %s version %s",
+                    dependency.name,
+                    dependency.version
+                )
+                dependency.install(runner=self, build_dir=self.build_dir)
 
-            version_data.update({dependency.key: dependency.version})
+                version_data.update({dependency.key: dependency.version})
 
-            with open(self.build_dir.versions_file, "w") as json_file:
-                json.dump(version_data, json_file)
+                with open(self.build_dir.versions_file, "w") as json_file:
+                    json.dump(version_data, json_file)
+
+                logging.info(
+                    "Installed version %s of %s",
+                    dependency.version,
+                    dependency.name
+                )
 
         return 0
 

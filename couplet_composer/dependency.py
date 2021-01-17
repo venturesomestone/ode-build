@@ -459,8 +459,12 @@ class Dependency:
             installed_version
         )
 
-        if self.version != installed_version:
-            return True
+        if self.version == installed_version:
+            logging.debug(
+                "The installed version and required version of %s match",
+                self.name
+            )
+            return False
 
         if not self.library_files:
             return True
