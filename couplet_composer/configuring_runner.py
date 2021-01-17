@@ -35,10 +35,11 @@ class ConfiguringRunner(RunnerProper):
 
         for dependency in to_install:
             dependency.install(runner=self, build_dir=self.build_dir)
+
             version_data.update({dependency.key: dependency.version})
 
-        with open(self.build_dir.versions_file, "w") as json_file:
-            json.dump(version_data, json_file)
+            with open(self.build_dir.versions_file, "w") as json_file:
+                json.dump(version_data, json_file)
 
         return 0
 
