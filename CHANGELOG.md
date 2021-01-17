@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Changed
+
+- Warning about the end of the Python 2.7 to tell the exact version of Couplet Composer.
+
 ### Deprecated
 
 - `ODE_BUILD_TEST` as it will be replaced by `COMPOSER_BUILD_TEST` in the next major version.

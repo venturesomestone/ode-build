@@ -108,8 +108,9 @@ def _check_and_print_python_version():
                 to_date_string(date_difference(python2_end_of_life, now))
             )
             logging.warning(
-                "At some point in the future, %s will end supporting Python "
+                "Starting at version %s, %s will end supporting Python "
                 "2.7",
+                "2.0",
                 get_project_name()
             )
     else:
