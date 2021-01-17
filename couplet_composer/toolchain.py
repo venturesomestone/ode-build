@@ -9,6 +9,8 @@ from typing import Any
 
 from .support.tools.cmake import CMake
 
+from .support.tools.doxygen import Doxygen
+
 from .support.tools.git import Git
 
 from .support.tools.make import Make
@@ -55,6 +57,7 @@ class Toolchain:
                     platform=self.runner.invocation.platform
                 )
             ),
+            "doxygen": Doxygen(),
             "git": Git(),
             "make": Make(),
             "ninja": Ninja(
