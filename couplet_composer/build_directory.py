@@ -5,14 +5,17 @@
 build directory of the build script.
 """
 
+import argparse
 import json
 import os
 
 from typing import Any
 
-from .util import shell
+from .support.build_variant import BuildVariant
 
-from .invocation import Invocation
+from .support.cmake_generator import CMakeGenerator
+
+from .util import shell
 
 from .target import Target
 
@@ -51,22 +54,34 @@ class BuildDirectory:
             dependencies for the current configuration.
     """
 
-    def __init__(self, invocation: Invocation, target: Target) -> None:
+    def __init__(
+        self,
+        args: argparse.Namespace,
+        source_root: str,
+        build_variant: BuildVariant,
+        generator: CMakeGenerator,
+        target: Target
+    ) -> None:
         """Initializes the build directory object.
 
         Arguments:
-            invocation (Invocation): The invocation that this
-                build directory belongs to.
+            args (Namespace): The parsed command line arguments
+                of this run.
+            source_root (str): The current source root.
+            build_variant (BuildVariant): The build variant of
+                this build.
+            generator (CMakeGenerator): The CMake generator of
+                this build.
             target (Target): The target that this build directory
                 is for.
         """
-        self._dry_run = invocation.args.dry_run
-        self._verbose = invocation.args.verbose
+        self._dry_run = args.dry_run
+        self._verbose = args.verbose
         self._target = target
-        self._build_variant = invocation.build_variant.name
-        self._generator = invocation.cmake_generator.name
+        self._build_variant = build_variant.name
+        self._generator = generator.name
 
-        self.path = os.path.join(invocation.source_root, "build")
+        self.path = os.path.join(source_root, "build")
         self.local = os.path.join(self.path, "local")
         self.dependencies = os.path.join(
             self.local,

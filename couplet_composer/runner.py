@@ -46,7 +46,13 @@ class Runner:
                 for.
         """
         self.invocation = invocation
-        self.build_dir = BuildDirectory(invocation=self.invocation, target=target)
+        self.build_dir = BuildDirectory(
+            args=self.invocation.args,
+            source_root=self.invocation.source_root,
+            build_variant=self.invocation.build_variant,
+            generator=self.invocation.generator,
+            target=target
+        )
         self.toolchain = Toolchain(runner=self)
         self.target = target
 
