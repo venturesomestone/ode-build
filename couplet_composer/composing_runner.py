@@ -11,6 +11,8 @@ from argparse import Namespace
 
 from .support.cpp_standard import CppStandard
 
+from .util import shell
+
 from .runner_proper import RunnerProper
 
 from .target import Target
@@ -97,5 +99,13 @@ class ComposingRunner(RunnerProper):
                 key.upper(),
                 getattr(self.project, "{}_name".format(key))
             ))
+
+        with shell.pushd(self.build_dir.build):
+            shell.call(
+                cmake_call,
+                env=None,
+                dry_run=self.args.dry_run,
+                echo=self.args.verbose
+            )
 
         return 0
