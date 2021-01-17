@@ -26,9 +26,12 @@ class Project:
     script acts on.
 
     Attributes:
-        ode_version (str): The version number of Obliging Ode.
-        anthem_version (str): The version number of Unsung
-            Anthem.
+        project_keys (list): The keys of the different subproject
+            under this project.
+        {key}_version (str): The version number of the subproject
+            which has the key '{key}'.
+        {key}_name (str): The name of the subproject which has
+            the key '{key}'.
         gl_version (str): The target version number of OpenGL.
         dependencies (list): A list containing the representation
             objects of the dependencies of the project.
@@ -37,8 +40,6 @@ class Project:
     SHARED_VERSION_KEY = "shared_version"
     SHARED_USAGE_VALUE = "shared"
     VERSION_KEY = "version"
-    ODE_KEY = "ode"
-    ANTHEM_KEY = "anthem"
     OPENGL_KEY = "opengl"
     DEPENDENCIES_KEY = "dependencies"
     NAME_KEY = "name"
@@ -89,14 +90,21 @@ class Project:
             with open(project_json) as f:
                 json_data = json.load(f)
 
-                self.ode_version = self._get_version_from_project_data(
-                    data=json_data,
-                    key=self.ODE_KEY
-                )
-                self.anthem_version = self._get_version_from_project_data(
-                    data=json_data,
-                    key=self.ANTHEM_KEY
-                )
+                self.project_keys = list()
+
+                for key in json_data:
+                    if key != self.DEPENDENCIES_KEY and key != self.OPENGL_KEY:
+                        self.project_keys.append(key)
+
+                for key in self.project_keys:
+                    setattr(
+                        self,
+                        "{}_version".format(key),
+                        self._get_version_from_project_data(
+                            data=json_data,
+                            key=key)
+                    )
+                    setattr(self, "{}_name", json_data[key][self.NAME_KEY])
 
                 self.gl_version = json_data[self.OPENGL_KEY][self.VERSION_KEY]
 
