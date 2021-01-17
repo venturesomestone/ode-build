@@ -254,6 +254,8 @@ class Dependency:
         """
         source_dir = self._download(runner=runner, build_dir=build_dir)
 
+        logging.debug("%s is downloaded to %s", self.name, source_dir)
+
         self._build(
             source_path=source_dir,
             runner=runner,
@@ -390,6 +392,13 @@ class Dependency:
             elif isinstance(f, self.FileInfo):
                 dest_file = os.path.join(build_dir.dependencies, f.dest)
                 src_file = os.path.join(source_path, f.src)
+
+            logging.debug(
+                "Installing %s by copying %s to %s",
+                self.name,
+                src_file,
+                dest_file
+            )
 
             if os.path.isdir(dest_file):
                 shell.rmtree(
