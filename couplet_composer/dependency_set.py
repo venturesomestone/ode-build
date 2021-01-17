@@ -34,8 +34,8 @@ def construct_dependencies_data(data_file):
     with open(data_file) as f:
         json_data = json.load(f)
     dependency_data = json_data \
-        if data_file != get_project_values_file_path() \
-            or data_file != get_product_file_path() \
+        if get_project_values_file_path() not in data_file \
+            or get_product_file_path() not in data_file \
         else json_data["dependencies"]
     return [create_dependency_data(
         module_name=key,

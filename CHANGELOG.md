@@ -29,6 +29,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - `ODE_DISABLE_GL_CALLS` as it will be removed in the next major version.
 - `ODE_SCRIPTS_BASE_DIRECTORY` as it will be removed in the next major version.
 
+## [1.4.1] - 2021-01-17
+
+### Fixed
+
+- Wrong entries in `product.json` being read as dependencies.
+
 ## [1.4.0] - 2021-01-16
 
 ### Added
@@ -526,7 +532,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - No changelog available.
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.4.0...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.4.1...HEAD
+[1.4.1]: https://github.com/anttikivi/couplet-composer/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/anttikivi/couplet-composer/compare/v1.3.2...v1.4.0
 [1.3.2]: https://github.com/anttikivi/couplet-composer/compare/v1.3.1...v1.3.2
 [1.3.1]: https://github.com/anttikivi/couplet-composer/compare/v1.3.0...v1.3.1
