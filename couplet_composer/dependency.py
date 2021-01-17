@@ -64,6 +64,7 @@ class Dependency:
         version: str,
         commit: str,
         files: Any,
+        platform_files: Any,
         test_only: bool,
         benchmark_only: bool,
         asset_name: str,
@@ -81,6 +82,8 @@ class Dependency:
             files (str | list | dict): The file or files that are
                 used to check and copy the files of this
                 dependency.
+            platform_files (str | list | dict): Same as 'files'
+                but contains the platform-dependant files.
             test_only (bool): Whether or not the dependency is
                 needed only when building the tests.
             benchmark_only (bool): Whether or not the dependency
@@ -152,6 +155,63 @@ class Dependency:
                                 raise ValueError  # TODO Add explanation or logging.
         else:
             self.library_files = None
+
+        platform_library_files = list()
+
+        if isinstance(platform_files, str):
+            platform_library_files.append(os.path.join(*platform_files.split("/")))
+        elif isinstance(platform_files, list):
+            for f in platform_files:
+                if isinstance(f, dict):
+                    platform_library_files.append(self.FileInfo(
+                        src=os.path.join(*f[self.SOURCE_KEY].split("/")),
+                        dest=os.path.join(*f[self.DESTINATION_KEY].split("/"))
+                    ))
+                elif isinstance(f, str):
+                    platform_library_files.append(os.path.join(*f.split("/")))
+                else:
+                    raise ValueError  # TODO Add explanation or logging.
+        elif isinstance(platform_files, dict):
+            # There are two cases: either the dict is the object
+            # with source and destination or it is the object
+            # with the different directories as keys. The 'source
+            # and destination' case requires that both the source
+            # and destination keys are present.
+            if self.SOURCE_KEY in platform_files and self.DESTINATION_KEY:
+                platform_library_files.append(self.FileInfo(
+                    src=os.path.join(*platform_files[self.SOURCE_KEY].split("/")),
+                    dest=os.path.join(
+                        key,
+                        *platform_files[self.DESTINATION_KEY].split("/")
+                    )
+                ))
+            else:
+                for key, value in platform_files.items():
+                    if isinstance(value, str):
+                        platform_library_files.append(os.path.join(
+                            key, *value.split("/")
+                        ))
+                    elif isinstance(value, list):
+                        for f in platform_files:
+                            if isinstance(f, dict):
+                                platform_library_files.append(self.FileInfo(
+                                    src=os.path.join(
+                                        *f[self.SOURCE_KEY].split("/")
+                                    ),
+                                    dest=os.path.join(
+                                        key,
+                                        *f[self.DESTINATION_KEY].split("/")
+                                    )
+                                ))
+                            elif isinstance(f, str):
+                                platform_library_files.append(os.path.join(
+                                    key,
+                                    *f.split("/")
+                                ))
+                            else:
+                                raise ValueError  # TODO Add explanation or logging.
+
+        self.library_files.extend(platform_library_files)
 
         self.test_only = test_only
         self.benchmark_only = benchmark_only
@@ -410,11 +470,13 @@ class Dependency:
                 if os.path.exists(os.path.join(build_dir.dependencies, lib_file)):
                     logging.debug("Found the file '%s'", lib_file)
                     found_file = True
+                    break
             elif isinstance(lib_file, self.FileInfo):
                 if os.path.exists(
                     os.path.join(build_dir.dependencies, lib_file.dest)
                 ):
                     logging.debug("Found the file '%s'", lib_file.dest)
                     found_file = True
+                    break
 
         return not found_file

@@ -43,6 +43,7 @@ class BinaryDependency(Dependency):
         version: str,
         commit: str,
         files: Any,
+        platform_files: Any,
         test_only: bool,
         benchmark_only: bool,
         asset_name: str,
@@ -61,6 +62,8 @@ class BinaryDependency(Dependency):
             files (str | list | dict): The file or files that are
                 used to check and copy the files of this
                 dependency.
+            platform_files (str | list | dict): Same as 'files'
+                but contains the platform-dependant files.
             test_only (bool): Whether or not the dependency is
                 needed only when building the tests.
             benchmark_only (bool): Whether or not the dependency
@@ -81,6 +84,7 @@ class BinaryDependency(Dependency):
             version=version,
             commit=commit,
             files=files,
+            platform_files=platform_files,
             test_only=test_only,
             benchmark_only=benchmark_only,
             asset_name=asset_name,

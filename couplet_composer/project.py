@@ -55,6 +55,7 @@ class Project:
     TAG_PREFIX_KEY = "tagPrefix"
     CMAKE_OPTIONS_KEY = "cmakeOptions"
     BINARY_KEY = "binary"
+    PLATFORMS_KEY = "platforms"
 
     def __init__(
         self,
@@ -227,6 +228,12 @@ class Project:
         library_files = None if self.FILES_KEY not in data \
             else data[self.FILES_KEY]
 
+        platform_files = None
+
+        if self.PLATFORMS_KEY in data \
+                and platform.name in data[self.PLATFORMS_KEY]:
+            platform_files = data[self.PLATFORMS_KEY][platform.name]
+
         test_only = False
 
         if self.TEST_ONLY_KEY in data:
@@ -267,6 +274,7 @@ class Project:
                     version=data[self.VERSION_KEY],
                     commit=commit,
                     files=library_files,
+                    platform_files=platform_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,
@@ -281,6 +289,7 @@ class Project:
                     version=data[self.VERSION_KEY],
                     commit=commit,
                     files=library_files,
+                    platform_files=platform_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,
@@ -305,6 +314,7 @@ class Project:
                     version=data[self.VERSION_KEY],
                     commit=commit,
                     files=library_files,
+                    platform_files=platform_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,
@@ -319,6 +329,7 @@ class Project:
                     version=data[self.VERSION_KEY],
                     commit=commit,
                     files=library_files,
+                    platform_files=platform_files,
                     test_only=test_only,
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,

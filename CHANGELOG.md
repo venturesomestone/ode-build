@@ -21,6 +21,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Version and name CMake options automatically for each subproject.
 - Colours to command line output that depends on the logging level of the message.
 - More informative logging format to the command line output.
+- Ability to add platform-dependant file configurations for the dependencies.
 
 ### Changed
 
