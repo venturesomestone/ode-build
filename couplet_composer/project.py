@@ -99,6 +99,7 @@ class Project:
                         self.project_keys.append(key)
 
                 for key in self.project_keys:
+                    logging.debug("Setting the project values for %s", key)
                     setattr(
                         self,
                         "{}_version".format(key),
