@@ -14,6 +14,8 @@ from .util import shell
 
 from .invocation import Invocation
 
+from .target import Target
+
 
 class BuildDirectory:
     """A class that that represents the main build directory of
@@ -40,23 +42,29 @@ class BuildDirectory:
             dependencies for the current configuration.
         versions_file (str): The file where the locally installed
             versions of the dependencies are.
+        build (str): The path to the directory that is used to
+            build the project.
+        dest (str): The path to the directory where the build
+            products are installed into.
         temporary (str): The temporary directory.
         installed_versions (dict): The installed versions of the
             dependencies for the current configuration.
     """
 
-    def __init__(self, invocation: Invocation) -> None:
+    def __init__(self, invocation: Invocation, target: Target) -> None:
         """Initializes the build directory object.
 
         Arguments:
             invocation (Invocation): The invocation that this
                 build directory belongs to.
+            target (Target): The target that this build directory
+                is for.
         """
         self._dry_run = invocation.args.dry_run
         self._verbose = invocation.args.verbose
-        self._target = invocation.targets.host
-        self._build_variant = "debug"  # TODO Use the correct value
-        self._generator = "ninja"  # TODO Use the correct value
+        self._target = target
+        self._build_variant = invocation.build_variant.name
+        self._generator = invocation.cmake_generator.name
 
         self.path = os.path.join(invocation.source_root, "build")
         self.local = os.path.join(self.path, "local")
@@ -81,8 +89,23 @@ class BuildDirectory:
             variant=self._build_variant
         )
         self.versions_file = os.path.join(self.local, versions_file_name)
-        self.build = os.path.join(self.path, "build")
-        self.destination = os.path.join(self.path, "dest")
+        self.build = os.path.join(
+            self.path,
+            "build",
+            "{target}-{variant}-{generator}".format(
+                target=self._target,
+                variant=self._build_variant,
+                generator=self._generator
+            )
+        )
+        self.destination = os.path.join(
+            self.path,
+            "dest",
+            "{target}-{variant}".format(
+                target=self._target,
+                variant=self._build_variant
+            )
+        )
 
     def __getattr__(self, name) -> Any:
         """Gives the attributes of the build directory that
