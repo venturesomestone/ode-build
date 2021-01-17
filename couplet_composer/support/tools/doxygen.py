@@ -9,8 +9,6 @@ from argparse import Namespace
 
 from ...build_directory import BuildDirectory
 
-from ...runner import Runner
-
 from ...target import Target
 
 from ...tool import Tool

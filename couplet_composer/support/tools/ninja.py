@@ -11,8 +11,6 @@ from ...util import http, shell
 
 from ...build_directory import BuildDirectory
 
-from ...runner import Runner
-
 from ...tool import Tool
 
 from ..archive_action import ArchiveAction
