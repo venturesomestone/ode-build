@@ -54,23 +54,23 @@ class LuaDependency(Dependency):
         http.stream(
             url=download_url,
             destination=download_file,
-            dry_run=runner.invocation.args.dry_run,
-            echo=runner.invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
 
         source_dir = os.path.join(tmp_dir, self.key)
 
         shell.makedirs(
             path=source_dir,
-            dry_run=runner.invocation.args.dry_run,
-            echo=runner.invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
         shell.tar(
             path=download_file,
             action=ArchiveAction.extract,
             dest=source_dir,
-            dry_run=runner.invocation.args.dry_run,
-            echo=runner.invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
 
         return os.path.join(
@@ -96,13 +96,13 @@ class LuaDependency(Dependency):
         """
         with shell.pushd(
             source_path,
-            dry_run=runner.invocation.args.dry_run,
-            echo=runner.invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         ):
             shell.call(
                 [runner.toolchain.make],
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
             shell.call(
                 [
@@ -110,6 +110,6 @@ class LuaDependency(Dependency):
                     "install",
                     "INSTALL_TOP={}".format(build_dir.dependencies)
                 ],
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )

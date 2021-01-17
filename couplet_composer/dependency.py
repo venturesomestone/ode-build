@@ -194,8 +194,8 @@ class Dependency:
 
         shell.rmtree(
             build_dir.temporary,
-            dry_run=runner.invocation.args.dry_run,
-            echo=runner.invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
 
     def _download(
@@ -220,8 +220,8 @@ class Dependency:
         if self.commit:
             with shell.pushd(
                 tmp_dir,
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             ):
                 shell.call(
                     [
@@ -232,18 +232,18 @@ class Dependency:
                             repo=self.repository
                         )
                     ],
-                    dry_run=runner.invocation.args.dry_run,
-                    echo=runner.invocation.args.verbose
+                    dry_run=runner.args.dry_run,
+                    echo=runner.args.verbose
                 )
             with shell.pushd(
                 os.path.join(tmp_dir, self.repository),
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             ):
                 shell.call(
                     [runner.toolchain.git, "checkout", self.commit],
-                    dry_run=runner.invocation.args.dry_run,
-                    echo=runner.invocation.args.verbose
+                    dry_run=runner.args.dry_run,
+                    echo=runner.args.verbose
                 )
 
             return os.path.join(tmp_dir, self.repository)
@@ -261,23 +261,23 @@ class Dependency:
                 url=download_url,
                 destination=download_file,
                 headers={"Accept": "application/vnd.github.v3+json"},
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
 
             source_dir = os.path.join(tmp_dir, self.key)
 
             shell.makedirs(
                 path=source_dir,
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
             shell.tar(
                 path=download_file,
                 action=ArchiveAction.extract,
                 dest=source_dir,
-                dry_run=runner.invocation.args.dry_run,
-                echo=runner.invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
 
             return os.path.join(
@@ -322,29 +322,29 @@ class Dependency:
             if os.path.isdir(dest_file):
                 shell.rmtree(
                     dest_file,
-                    dry_run=runner.invocation.args.dry_run,
-                    echo=runner.invocation.args.print_debug
+                    dry_run=runner.args.dry_run,
+                    echo=runner.args.print_debug
                 )
             elif os.path.exists(dest_file):
                 shell.rm(
                     dest_file,
-                    dry_run=runner.invocation.args.dry_run,
-                    echo=runner.invocation.args.print_debug
+                    dry_run=runner.args.dry_run,
+                    echo=runner.args.print_debug
                 )
 
             if os.path.isdir(src_file):
                 shell.copytree(
                     src_file,
                     dest_file,
-                    dry_run=runner.invocation.args.dry_run,
-                    echo=runner.invocation.args.print_debug
+                    dry_run=runner.args.dry_run,
+                    echo=runner.args.print_debug
                 )
             else:
                 shell.copy(
                     src_file,
                     dest_file,
-                    dry_run=runner.invocation.args.dry_run,
-                    echo=runner.invocation.args.print_debug
+                    dry_run=runner.args.dry_run,
+                    echo=runner.args.print_debug
                 )
 
     def should_install(
