@@ -83,11 +83,11 @@ class Project:
             )
             raise ValueError
 
-        project_json = os.path.join(source_root, repo, "util", "project.json")
+        product_json = os.path.join(source_root, repo, "product.json")
         dependency_data = None
 
         try:
-            with open(project_json) as f:
+            with open(product_json) as f:
                 json_data = json.load(f)
 
                 self.project_keys = list()
@@ -116,7 +116,7 @@ class Project:
         except Exception:
             logging.critical(
                 "The project value file wasn't found: %s",
-                project_json
+                product_json
             )
             raise ValueError
 
