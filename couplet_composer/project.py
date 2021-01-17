@@ -92,7 +92,7 @@ class Project:
 
                 self.project_keys = list()
 
-                for key in json_data:
+                for key, value in json_data.items():
                     logging.debug(
                         "Checking if the key '%s' should be added to the "
                         "project keys",
