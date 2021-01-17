@@ -290,7 +290,7 @@ class Project:
                 data[self.MODULE_KEY]
             )
             module = importlib.import_module(package_name)
-            dependency_class = getattr(module, self.CLASS_KEY)
+            dependency_class = getattr(module, data[self.CLASS_KEY])
 
             if needs_binary:
                 return dependency_class(
