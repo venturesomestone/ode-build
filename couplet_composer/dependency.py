@@ -124,7 +124,6 @@ class Dependency:
                 self.library_files.append(self.FileInfo(
                     src=os.path.join(*files[self.SOURCE_KEY].split("/")),
                     dest=os.path.join(
-                        key,
                         *files[self.DESTINATION_KEY].split("/")
                     )
                 ))
@@ -179,7 +178,6 @@ class Dependency:
                 platform_library_files.append(self.FileInfo(
                     src=os.path.join(*platform_files[self.SOURCE_KEY].split("/")),
                     dest=os.path.join(
-                        key,
                         *platform_files[self.DESTINATION_KEY].split("/")
                     )
                 ))
