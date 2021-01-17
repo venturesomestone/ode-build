@@ -7,7 +7,7 @@ represents Git in the toolchain of the build script.
 
 from ...build_directory import BuildDirectory
 
-from ...invocation import Invocation
+from ...runner import Runner
 
 from ...tool import Tool
 
@@ -30,17 +30,17 @@ class Git(Tool):
 
     def _download(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Downloads the asset or the source code of the
         tool.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             A 'str' that points to the downloads.
@@ -50,7 +50,7 @@ class Git(Tool):
     def _build(
         self,
         source_path: str,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Builds the tool from the sources.
@@ -58,10 +58,10 @@ class Git(Tool):
         Args:
             source_path (str): The path to the source directory
                 of the tool.
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             An 'str' that is the path to the build Ninja

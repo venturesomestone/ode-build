@@ -11,7 +11,7 @@ from ...util import http, shell
 
 from ...build_directory import BuildDirectory
 
-from ...invocation import Invocation
+from ...runner import Runner
 
 from ...tool import Tool
 
@@ -52,17 +52,17 @@ class CMake(Tool):
 
     def _download(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Downloads the asset or the source code of the
         tool.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             A 'str' that points to the downloads.
@@ -72,44 +72,44 @@ class CMake(Tool):
         if not os.path.isdir(tmp_dir):
             shell.makedirs(
                 tmp_dir,
-                dry_run=invocation.args.dry_run,
-                echo=invocation.args.verbose
+                dry_run=runner.args.dry_run,
+                echo=runner.args.verbose
             )
 
         download_file = os.path.join(tmp_dir, "{}.{}".format(
             self.key,
-            self._resolve_download_format(invocation)
+            self._resolve_download_format(runner)
         ))
 
         download_url = "https://github.com/Kitware/CMake/releases/download/" \
             "v{version}/cmake-{version}-{platform}.{format}".format(
                 version=self.version,
-                platform=self._resolve_download_target(invocation),
-                format=self._resolve_download_format(invocation)
+                platform=self._resolve_download_target(runner),
+                format=self._resolve_download_format(runner)
             )
 
         http.stream(
             url=download_url,
             destination=download_file,
             headers={"Accept": "application/vnd.github.v3+json"},
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
 
         source_dir = os.path.join(tmp_dir, self.key)
 
         shell.makedirs(
             path=source_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
         shell.tar(
             path=download_file,
-            action=ArchiveAction.unzip if invocation.platform is System.windows
+            action=ArchiveAction.unzip if runner.platform is System.windows
                    else ArchiveAction.extract,
             dest=source_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
 
         return source_dir
@@ -117,7 +117,7 @@ class CMake(Tool):
     def _build(
         self,
         source_path: str,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Builds the tool from the sources.
@@ -125,10 +125,10 @@ class CMake(Tool):
         Args:
             source_path (str): The path to the source directory
                 of the tool.
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             An 'str' that is the path to the build CMake
@@ -138,12 +138,12 @@ class CMake(Tool):
             source_path,
             "cmake-{version}-{platform}".format(
                 version=self.version,
-                platform=self._resolve_download_target(invocation)
+                platform=self._resolve_download_target(runner)
             )
         )
         dest_dir = os.path.join(
             build_dir.tools,
-            "{}-{}".format(self.key, invocation.targets.host)
+            "{}-{}".format(self.key, runner.targets.host)
         )
 
         if os.path.isdir(dest_dir):
@@ -152,55 +152,55 @@ class CMake(Tool):
         shell.copytree(
             cmake_dir,
             dest_dir,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
         shell.rmtree(
             source_path,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
 
         return os.path.join(
             dest_dir,
-            self.resolve_binary(platform=invocation.platform)
+            self.resolve_binary(platform=runner.platform)
         )
 
-    def _resolve_download_format(self, invocation: Invocation) -> str:
+    def _resolve_download_format(self, runner: Runner) -> str:
         """Resolves the file format of the CMake archive that
         will be downloaded.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
 
         Returns:
             The file format of the archive that will be
             downloaded.
         """
-        if invocation.platform is System.darwin or \
-                invocation.platform is System.linux:
+        if runner.platform is System.darwin or \
+                runner.platform is System.linux:
             return "tar.gz"
-        elif invocation.platform is System.windows:
+        elif runner.platform is System.windows:
             return "zip"
 
         raise ValueError  # TODO Add explanation or logging.
 
-    def _resolve_download_target(self, invocation: Invocation) -> str:
+    def _resolve_download_target(self, runner: Runner) -> str:
         """Resolves the target platform of the CMake archive that
         will be downloaded.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
 
         Returns:
             The name of the target platform to be used in the
             name of the archive that will be downloaded.
         """
-        if invocation.platform is System.darwin:
+        if runner.platform is System.darwin:
             return "Darwin-x86_64"
-        elif invocation.platform is System.linux:
+        elif runner.platform is System.linux:
             return "Linux-x86_64"
-        elif invocation.platform is System.windows:
+        elif runner.platform is System.windows:
             return "win32-x86"
 
         raise ValueError  # TODO Add explanation or logging.

@@ -15,8 +15,7 @@ from .util import shell
 
 from .build_directory import BuildDirectory
 
-from .invocation import Invocation
-
+from .runner import Runner
 
 class Tool(ABC):
     """A class for creating objects that represent the tools of
@@ -95,43 +94,43 @@ class Tool(ABC):
 
     def install(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Downloads, builds, and installs the tool.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             An 'str' that is the path to the build tool
             executable.
         """
-        source_dir = self._download(invocation=invocation, build_dir=build_dir)
+        source_dir = self._download(runner=runner, build_dir=build_dir)
 
         return self._build(
             source_path=source_dir,
-            invocation=invocation,
+            runner=runner,
             build_dir=build_dir
         )
 
     @abstractmethod
     def _download(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Downloads the asset or the source code of the
         tool.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             A 'str' that points to the downloads.
@@ -142,7 +141,7 @@ class Tool(ABC):
     def _build(
         self,
         source_path: str,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Builds the tool from the sources.
@@ -150,10 +149,10 @@ class Tool(ABC):
         Args:
             source_path (str): The path to the source directory
                 of the tool.
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             An 'str' that is the path to the build tool
@@ -161,26 +160,26 @@ class Tool(ABC):
         """
         pass
 
-    def _resolve_directory_name(self, invocation: Invocation) -> str:
+    def _resolve_directory_name(self, runner: Runner) -> str:
         """Gives the name of the directory in the local tools
         directory where the binaries of this tool are.
 
          Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
 
         Returns:
             An 'str' that is the name of the directory.
         """
-        return "{}-{}".format(self.key, invocation.targets.host)
+        return "{}-{}".format(self.key, runner.targets.host)
 
-    def find(self, invocation: Invocation, build_dir: BuildDirectory) -> str:
+    def find(self, runner: Runner, build_dir: BuildDirectory) -> str:
         """Finds the tool if possible and returns the path to it.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             An 'str' with the path to the tool executable, or
@@ -188,31 +187,31 @@ class Tool(ABC):
         """
         system_tool = shell.which(
             self.cmd,
-            dry_run=invocation.args.dry_run,
-            echo=invocation.args.verbose
+            dry_run=runner.args.dry_run,
+            echo=runner.args.verbose
         )
 
         if system_tool:
             return system_tool
 
         return self.resolve_local_binary(
-            invocation=invocation,
+            runner=runner,
             build_dir=build_dir
         )
 
     def resolve_local_binary(
         self,
-        invocation: Invocation,
+        runner: Runner,
         build_dir: BuildDirectory
     ) -> str:
         """Gives the path of the tool in the local tools
         directory if it is already installed there.
 
         Args:
-            invocation (Invocation): The current invocation.
+            runner (Runner): The current runner.
             build_dir (BuildDirectory): The build directory
                 object that is the main build directory of the
-                build script invocation.
+                build script runner.
 
         Returns:
             An 'str' that points to the executable, or None if
@@ -221,7 +220,7 @@ class Tool(ABC):
         if isinstance(self.tool_files, str):
             tool_path = os.path.join(
                 build_dir.tools,
-                self._resolve_directory_name(invocation=invocation),
+                self._resolve_directory_name(runner=runner),
                 self.tool_files
             )
             if os.path.exists(tool_path):
@@ -230,7 +229,7 @@ class Tool(ABC):
             for tool_file in self.tool_files:
                 tool_path = os.path.join(
                     build_dir.tools,
-                    self._resolve_directory_name(invocation=invocation),
+                    self._resolve_directory_name(runner=runner),
                     tool_file
                 )
                 if os.path.exists(tool_path):
