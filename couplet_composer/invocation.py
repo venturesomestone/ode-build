@@ -8,6 +8,7 @@ of the build script.
 import logging
 import os
 import platform
+import sys
 
 from collections import namedtuple
 
@@ -157,7 +158,7 @@ class Invocation:
 
         This function isn't pure and doesn't return anything.
         """
-        ch = logging.StreamHandler()
+        ch = logging.StreamHandler(sys.stdout)
 
         if self.args.verbose:
             ch.setLevel(logging.DEBUG)
@@ -166,7 +167,7 @@ class Invocation:
 
         ch.setFormatter(Formatter())
 
-        # logging.getLogger().addHandler(ch)
+        logging.getLogger().addHandler(ch)
 
     def _resolve_targets(self) -> namedtuple:
         """Resolves the target platforms for the build.
