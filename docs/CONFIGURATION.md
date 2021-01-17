@@ -13,7 +13,9 @@ Please note that this documentation is only for the different options of Couplet
   - [Special Options](#special-options)
   - [Top-level Options](#top-level-options)
 - [Common Options](#common-options)
+  - [Build Variant Options](#build-variant-options)
   - [Build Target Options](#build-target-options)
+  - [Build Generator Options](#build-generator-options)
 - [Preset Mode Options](#preset-mode-options)
 
 [Project Configuration File](#project-configuration-file)
@@ -103,6 +105,30 @@ Uses the specified string as the name of the local directory in which the reposi
 
 These options are common to both configuring mode and composing mode but cannot be specified through command line in preset mode.
 
+#### Build Variant Options
+
+You can use only one of the following options.
+
+**`--build-variant {debug,release_debug_info,release,minimum_size_release}`**
+
+Sets the build variant to the selected variant. The possible choices are `debug`, `release_debug_info`, `release`, and `minimum_size_release`. The default build variant is `debug`.
+
+**`-d`**, **`--debug`**
+
+Sets the build variant to `debug`. This option is a shorthand for `--build-variant debug`.
+
+**`-r`**, **`--release-debuginfo`**
+
+Sets the build variant to `release_debug_info`. This option is a shorthand for `--build-variant release_debug_info`.
+
+**`-R`**, **`--release`**
+
+Sets the build variant to `release`. This option is a shorthand for `--build-variant release`.
+
+**`-M`**, **`--minsize-release`**
+
+Sets the build variant to `minimum_size_release`. This option is a shorthand for `--build-variant minimum_size_release`.
+
 #### Build Target Options
 
 Please note that this functionality is still under development.
@@ -110,6 +136,19 @@ Please note that this functionality is still under development.
 **`--host-target TARGET`**
 
 Builds the binaries for the specified host target. The host target is resolved automatically by default.
+
+#### Build Generator Options
+
+You can use only one of the following options.
+
+**`-G {ninja}`**, **`--cmake-generator {ninja}`**
+
+Generates the build files using the selected CMake generator. The possible choice is `ninja`. The default build variant is `ninja`.
+
+**`-N`**, **`--ninja`**
+
+Generates the build files using the `ninja` CMake generator. This option is a shorthand for `-G ninja` or `--cmake-generator ninja`.
+
 
 ### Preset Mode Options
 
