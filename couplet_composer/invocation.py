@@ -31,6 +31,8 @@ from .preset_runner import PresetRunner
 
 from .project import Project
 
+from .runner_proper import RunnerProper
+
 from .runner import Runner
 
 from .target import Target
@@ -58,11 +60,6 @@ class Invocation:
         targets (Targets): A named tuple of targets that contains
             the host target and other possible cross compile
             targets.
-        build_variant (BuildVariant): The build variant to be
-            built.
-        cmake_generator (CMakeGenerator): The build generator to
-            use.
-        cpp_std (CppStandard): The C++ standard to use.
         runners (Runner): The runners for the targets.
     """
 
@@ -100,14 +97,9 @@ class Invocation:
         self.repository = self.args.repository
         self.platform = System(platform.system().lower())
         self.targets = self._resolve_targets()
-        self.build_variant = BuildVariant[self.args.build_variant]
-        self.cmake_generator = CMakeGenerator[self.args.cmake_generator]
-        self.cpp_std = CppStandard[self.args.cpp_std.replace("+", "p")]
 
-        def _resolve_runner_type() -> Runner:
-            if self.run_mode is RunMode.preset:
-                return PresetRunner
-            elif self.run_mode is RunMode.configure:
+        def _resolve_runner_type() -> RunnerProper:
+            if self.run_mode is RunMode.configure:
                 return ConfiguringRunner
             elif self.run_mode is RunMode.compose:
                 return ComposingRunner
@@ -116,24 +108,29 @@ class Invocation:
 
         runner_type = _resolve_runner_type()
 
-        self.runners = self.Runners(
-            host=runner_type(
-                args=self.args,
-                source_root=self.source_root,
-                build_variant=self.build_variant,
-                generator=self.cmake_generator,
-                target=self.targets.host
-            ),
-            cross_compile=[
-                runner_type(
+        if self.run_mode is not RunMode.preset:
+            self.runners = self.Runners(
+                host=runner_type(
                     args=self.args,
                     source_root=self.source_root,
-                    build_variant=self.build_variant,
-                    generator=self.cmake_generator,
-                    target=t
-                ) for t in self.targets.cross_compile
-            ]
-        )
+                    target=self.targets.host
+                ),
+                cross_compile=[
+                    runner_type(
+                        args=self.args,
+                        source_root=self.source_root,
+                        target=t
+                    ) for t in self.targets.cross_compile
+                ]
+            )
+        else:
+            self.runners = self.Runners(
+                host=PresetRunner(
+                    args=self.args,
+                    source_root=self.source_root
+                ),
+                cross_compile=list()
+            )
 
     def __call__(self) -> int:
         """Invokes the build script with the current

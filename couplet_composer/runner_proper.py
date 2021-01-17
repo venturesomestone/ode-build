@@ -14,6 +14,8 @@ from .support.build_variant import BuildVariant
 
 from .support.cmake_generator import CMakeGenerator
 
+from .support.cpp_standard import CppStandard
+
 from .support.system import System
 
 from .util import shell
@@ -47,8 +49,6 @@ class RunnerProper(Runner):
         self,
         args: Namespace,
         source_root: str,
-        build_variant: BuildVariant,
-        generator: CMakeGenerator,
         target: Target
     ) -> None:
         """Initializes the runner object.
@@ -66,13 +66,14 @@ class RunnerProper(Runner):
         """
         super().__init__(args=args, source_root=source_root)
         self.target = target
-        self.build_variant = build_variant
-        self.generator = generator
+        self.build_variant = BuildVariant[self.args.build_variant]
+        self.cmake_generator = CMakeGenerator[self.args.cmake_generator]
+        self.cpp_std = CppStandard[self.args.cpp_std.replace("+", "p")]
         self.build_dir = BuildDirectory(
             args=self.args,
             source_root=self.source_root,
             build_variant=self.build_variant,
-            generator=self.generator,
+            generator=self.cmake_generator,
             target=self.target
         )
         self.project = Project(
