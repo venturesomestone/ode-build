@@ -29,6 +29,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - `ODE_DISABLE_GL_CALLS` as it will be removed in the next major version.
 - `ODE_SCRIPTS_BASE_DIRECTORY` as it will be removed in the next major version.
 
+## [1.4.2] - 2021-01-17
+
+### Fixed
+
+- Logical operator that caused error when checking the dependencies from `product.json`.
+
 ## [1.4.1] - 2021-01-17
 
 ### Fixed
