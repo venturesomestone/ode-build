@@ -8,7 +8,9 @@ script acts on.
 
 import os
 
-from ...support.archive_action import ArchiveAction
+from ..archive_action import ArchiveAction
+
+from ..system import System
 
 from ...util import http, shell
 
@@ -97,7 +99,11 @@ class LuaDependency(Dependency):
             echo=runner.args.verbose
         ):
             shell.call(
-                [runner.toolchain.make],
+                [
+                    runner.toolchain.make,
+                    ("macosx" if runner.target.system is System.darwin
+                        else "linux")
+                ],
                 dry_run=runner.args.dry_run,
                 echo=runner.args.verbose
             )
