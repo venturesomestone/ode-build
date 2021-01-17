@@ -19,7 +19,7 @@ class Formatter(logging.Formatter):
     RED = "\x1b[31;21m"
     BOLD_RED = "\x1b[31;1m"
     RESET = "\x1b[0m"
-    FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s " \
+    FORMAT = "[%(asctime)s] [%(levelname)s] %(message)s " \
         "(%(filename)s:%(lineno)d)"
 
     FORMATS = {
