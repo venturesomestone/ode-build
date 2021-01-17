@@ -74,7 +74,7 @@ class Invocation:
         self.run_mode = RunMode(self.args.run_mode)
         self.version = version
         self.name = name
-        self.source_root = os.getcwd()
+        self.source_root = os.getcwd()  # TODO Someone not playing by the rules might break this.
 
         # The logger must be initialized first.
         self._set_logging_level()
@@ -91,7 +91,7 @@ class Invocation:
         self.platform = System(platform.system().lower())
         self.targets = self._resolve_targets()
         self.build_variant = BuildVariant[self.args.build_variant]
-        self.cmake_generator = CMakeGenerator["ninja"]  # TODO Remove hard-coded value
+        self.cmake_generator = CMakeGenerator[self.args.cmake_generator]
 
         def _resolve_runner_type():
             if self.run_mode is RunMode.preset:

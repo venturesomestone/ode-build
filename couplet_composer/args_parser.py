@@ -11,6 +11,8 @@ from argparse import ArgumentParser
 
 from .support.build_variant import BuildVariant
 
+from .support.cmake_generator import CMakeGenerator
+
 from .support.command_line import DESCRIPTION, EPILOG
 
 from .support.run_mode import RunMode
@@ -158,6 +160,32 @@ def _add_common_build_arguments(parser: ArgumentParser) -> ArgumentParser:
         help="set the main target for the build (default: {})".format(
             Target.resolve_host_target()
         )
+    )
+
+    # --------------------------------------------------------- #
+    # Build generator options
+
+    generator_group = parser.add_mutually_exclusive_group(required=False)
+
+    default_cmake_generator = CMakeGenerator.ninja.name
+
+    parser.set_defaults(cmake_generator=default_cmake_generator)
+
+    generator_group.add_argument(
+        "-G",
+        "--cmake-generator",
+        default=default_cmake_generator,
+        choices=[name for name, value in CMakeGenerator.__members__.items()],
+        help="generate the build files using the selected CMake generator",
+        dest="cmake_generator"
+    )
+    generator_group.add_argument(
+        "-N",
+        "--ninja",
+        action="store_const",
+        const=CMakeGenerator.ninja.name,
+        help="generate the build files using the CMake generator for Ninja",
+        dest="cmake_generator"
     )
 
     return parser
