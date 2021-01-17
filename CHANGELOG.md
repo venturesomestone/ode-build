@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 ### Changed
 
 - Warning about the end of the Python 2.7 to tell the exact version of Couplet Composer.
+- Arguments parser to parse only known arguments so that `pipenv` arguments don’t cause errors.
 
 ### Deprecated
 
