@@ -106,9 +106,9 @@ class Invocation:
             else:
                 raise ValueError
 
-        runner_type = _resolve_runner_type()
-
         if self.run_mode is not RunMode.preset:
+            runner_type = _resolve_runner_type()
+
             self.runners = self.Runners(
                 host=runner_type(
                     args=self.args,
