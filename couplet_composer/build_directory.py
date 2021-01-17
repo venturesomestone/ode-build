@@ -81,6 +81,8 @@ class BuildDirectory:
             variant=self._build_variant
         )
         self.versions_file = os.path.join(self.local, versions_file_name)
+        self.build = os.path.join(self.path, "build")
+        self.destination = os.path.join(self.path, "dest")
 
     def __getattr__(self, name) -> Any:
         """Gives the attributes of the build directory that
