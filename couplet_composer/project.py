@@ -92,7 +92,7 @@ class Project:
 
                 self.project_keys = list()
 
-                for key, value in json_data.items():
+                for key in json_data:
                     logging.debug(
                         "Checking if the key '%s' should be added to the "
                         "project keys",
@@ -141,7 +141,7 @@ class Project:
 
         self.dependencies: List[Dependency] = list()
 
-        for key, value in dependency_data:
+        for key, value in dependency_data.items():
             self.dependencies.append(self._create_dependency_object(
                 key=key,
                 data=value,
