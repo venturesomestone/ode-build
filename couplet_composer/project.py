@@ -271,6 +271,7 @@ class Project:
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,
                     repository=repository,
+                    tag_prefix=tag_prefix,
                     cmake_options=cmake_options
                 )
             else:
@@ -283,7 +284,8 @@ class Project:
                     test_only=test_only,
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,
-                    repository=repository
+                    repository=repository,
+                    tag_prefix=tag_prefix
                 )
         else:
             if self.CLASS_KEY not in data:
@@ -307,6 +309,7 @@ class Project:
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,
                     repository=repository,
+                    tag_prefix=tag_prefix,
                     cmake_options=cmake_options
                 )
             else:
@@ -319,5 +322,6 @@ class Project:
                     test_only=test_only,
                     benchmark_only=benchmark_only,
                     asset_name=asset_name,
-                    repository=repository
+                    repository=repository,
+                    tag_prefix=tag_prefix
                 )
