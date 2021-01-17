@@ -149,10 +149,12 @@ class BuildDirectory:
 
             return tmp_dir
         elif "installed_versions" == name:
+            if not os.path.exists(self.versions_file):
+                return None
             try:
                 with open(self.versions_file) as f:
                     return json.load(f)
-            except Exception:
+            except OSError:
                 raise ValueError
         else:
             raise AttributeError
