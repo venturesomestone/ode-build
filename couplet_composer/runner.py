@@ -5,8 +5,13 @@
 a run mode of the build script.
 """
 
+import argparse
 import sys
 import time
+
+from .support.build_variant import BuildVariant
+
+from .support.cmake_generator import CMakeGenerator
 
 from .support.system import System
 
@@ -26,8 +31,11 @@ class Runner:
     run mode runners of the build script.
 
     Attributes:
-        invocation (Invocation): The invocation that this runner
-            belongs to.
+        args (Namespace): A namespace that contains the parsed
+            command line arguments.
+        source_root (str): The current source root.
+        build_variant (str): The current build variant.
+        generator (str): The current CMake generator.
         build_dir (BuildDirectory): The build directory object
             that is the main build directory of the build script
             invocation.
@@ -36,21 +44,36 @@ class Runner:
         target (Target): The target host that this runner is for.
     """
 
-    def __init__(self, invocation: Invocation, target: Target) -> None:
+    def __init__(
+        self,
+        args: argparse.Namespace,
+        source_root: str,
+        build_variant: BuildVariant,
+        generator: CMakeGenerator,
+        target: Target
+    ) -> None:
         """Initializes the runner object.
 
         Args:
-            invocation (Invocation): The invocation that this
-                runner belongs to.
+            args (Namespace): A namespace that contains the
+                parsed command line arguments.
+            source_root (str): The current source root.
+            build_variant (BuildVariant): The build variant of
+                this build.
+            generator (CMakeGenerator): The CMake generator of
+                this build.
             target (Target): The target host that this runner is
                 for.
         """
-        self.invocation = invocation
+        self.args = args
+        self.source_root = source_root
+        self.build_variant = build_variant
+        self.generator = generator
         self.build_dir = BuildDirectory(
-            args=self.invocation.args,
-            source_root=self.invocation.source_root,
-            build_variant=self.invocation.build_variant,
-            generator=self.invocation.generator,
+            args=self.args,
+            source_root=self.source_root,
+            build_variant=self.build_variant,
+            generator=self.generator,
             target=target
         )
         self.toolchain = Toolchain(runner=self)
@@ -62,7 +85,7 @@ class Runner:
         Returns:
             An 'int' that is equal to the exit code of the run.
         """
-        if self.invocation.args.clean:
+        if self.args.clean:
             self.clean()
 
         return 0
@@ -101,6 +124,6 @@ class Runner:
         """
         command_to_run = list(command)
         # Disable system sleep, if possible.
-        if self.invocation.platform is System.darwin:
+        if self.target.system is System.darwin:
             command_to_run = ["caffeinate"] + list(command)
         shell.call(command_to_run, env=env, dry_run=dry_run, echo=echo)

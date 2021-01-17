@@ -31,6 +31,8 @@ from .preset_runner import PresetRunner
 
 from .project import Project
 
+from .runner import Runner
+
 from .target import Target
 
 
@@ -108,7 +110,7 @@ class Invocation:
         self.cmake_generator = CMakeGenerator[self.args.cmake_generator]
         self.cpp_std = CppStandard[self.args.cpp_std.replace("+", "p")]
 
-        def _resolve_runner_type():
+        def _resolve_runner_type() -> Runner:
             if self.run_mode is RunMode.preset:
                 return PresetRunner
             elif self.run_mode is RunMode.configure:
@@ -121,10 +123,21 @@ class Invocation:
         runner_type = _resolve_runner_type()
 
         self.runners = self.Runners(
-            host=runner_type(invocation=self, target=self.targets.host),
+            host=runner_type(
+                args=self.args,
+                source_root=self.source_root,
+                build_variant=self.build_variant,
+                generator=self.cmake_generator,
+                target=self.targets.host
+            ),
             cross_compile=[
-                runner_type(invocation=self, target=t)
-                for t in self.targets.cross_compile
+                runner_type(
+                    args=self.args,
+                    source_root=self.source_root,
+                    build_variant=self.build_variant,
+                    generator=self.cmake_generator,
+                    target=t
+                ) for t in self.targets.cross_compile
             ]
         )
 
