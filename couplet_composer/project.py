@@ -93,8 +93,17 @@ class Project:
                 self.project_keys = list()
 
                 for key in json_data:
+                    logging.debug(
+                        "Checking if the key '%s' should be added to the "
+                        "project keys",
+                        key
+                    )
                     if key != self.DEPENDENCIES_KEY and key != self.OPENGL_KEY:
                         self.project_keys.append(key)
+                        logging.debug(
+                            "Added the key '%s' to the project keys",
+                            key
+                        )
 
                 for key in self.project_keys:
                     logging.debug("Setting the project values for %s", key)
