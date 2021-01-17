@@ -7,6 +7,7 @@ preset run mode of the build script.
 
 import logging
 import os
+import platform
 import sys
 
 from typing import List
@@ -178,6 +179,6 @@ class PresetRunner(Runner):
         """
         command_to_run = list(command)
         # Disable system sleep, if possible.
-        if self.target.system is System.darwin:
+        if platform.system() == "Darwin":
             command_to_run = ["caffeinate"] + list(command)
         shell.call(command_to_run, env=env, dry_run=dry_run, echo=echo)
