@@ -84,7 +84,8 @@ class BinaryDependency(Dependency):
             test_only=test_only,
             benchmark_only=benchmark_only,
             asset_name=asset_name,
-            repository=repository
+            repository=repository,
+            tag_prefix=tag_prefix
         )
         self.cmake_options = cmake_options
 
