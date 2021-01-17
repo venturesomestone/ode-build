@@ -8,11 +8,11 @@ script acts on.
 
 import os
 
-from ...support.archive_action import ArchiveAction
+from ..archive_action import ArchiveAction
 
 from ...util import http, shell
 
-from ...binary_dependency import BinaryDependency
+from ...dependency import Dependency
 
 from ...build_directory import BuildDirectory
 
@@ -24,11 +24,7 @@ class SdlDependency(Dependency):
     dependency of the project that this build script acts on.
     """
 
-    def _download(
-        self,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def _download(self, runner: Runner, build_dir: BuildDirectory) -> str:
         """Downloads the asset or the source code of the
         dependency.
 
