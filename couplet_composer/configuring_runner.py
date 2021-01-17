@@ -5,6 +5,8 @@
 configuring run mode of the build script.
 """
 
+import json
+
 from .util import shell
 
 from .runner import Runner
@@ -25,11 +27,17 @@ class ConfiguringRunner(Runner):
 
         to_install = [
             data for data in self.invocation.project.dependencies.values()
-            if data.should_install(build_dir=self.build_dir)
+            if data.should_install(runner=self, build_dir=self.build_dir)
         ]
 
+        version_data = self.build_dir.installed_versions
+
         for dependency in to_install:
-            dependency.install()
+            dependency.install(runner=self, build_dir=self.build_dir)
+            version_data.update({dependency.key: dependency.version})
+
+        with open(self.build_dir.versions_file, "w") as json_file:
+            json.dump(version_data, json_file)
 
         return 0
 
