@@ -128,12 +128,11 @@ class Project:
                     key=self.DEPENDENCIES_KEY
                 )
 
-        except Exception:
+        except OSError:
             logging.critical(
                 "The project value file wasn't found: %s",
                 product_json
             )
-            raise ValueError
 
         if not dependency_data:
             raise ValueError
