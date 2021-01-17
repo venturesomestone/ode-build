@@ -90,11 +90,6 @@ class Dependency:
         self.commit = commit
         self.library_files = list()
 
-        # The possible configurations for the library files are
-        # the following:
-        # - a string
-        # - a list with strings
-        # - a dictionary with lists or strings
         if isinstance(files, str):
             self.library_files.append(os.path.join(*files.split("/")))
         elif isinstance(files, list):
@@ -116,8 +111,11 @@ class Dependency:
             # and destination keys are present.
             if self.SOURCE_KEY in files and self.DESTINATION_KEY:
                 self.library_files.append(self.FileInfo(
-                    src=os.path.join(*f[self.SOURCE_KEY].split("/")),
-                    dest=os.path.join(key, *f[self.DESTINATION_KEY].split("/"))
+                    src=os.path.join(*files[self.SOURCE_KEY].split("/")),
+                    dest=os.path.join(
+                        key,
+                        *files[self.DESTINATION_KEY].split("/")
+                    )
                 ))
             else:
                 for key, value in files.items():
