@@ -5,9 +5,13 @@
 represents Make in the toolchain of the build script.
 """
 
+from argparse import Namespace
+
 from ...build_directory import BuildDirectory
 
 from ...runner import Runner
+
+from ...target import Target
 
 from ...tool import Tool
 
@@ -17,51 +21,48 @@ class Make(Tool):
     toolchain of the build script.
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self,
+        args: Namespace,
+        build_dir: BuildDirectory,
+        target: Target
+    ) -> None:
         """Initializes the Make tool object.
+
+        Args:
+            args (Namespace): A namespace that contains the
+                parsed command line arguments.
+            build_dir (BuildDirectory): The build directory
+                object that is the main build directory of the
+                run.
+            target (Target): The current target.
         """
         super().__init__(
             key="make",
             cmd="make",
             name="Make",
             version=None,
-            tool_files=None
+            tool_files=None,
+            args=args,
+            build_dir=build_dir,
+            target=target
         )
 
-    def _download(
-        self,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def _download(self) -> str:
         """Downloads the asset or the source code of the
         tool.
-
-        Args:
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             A 'str' that points to the downloads.
         """
         pass
 
-    def _build(
-        self,
-        source_path: str,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def _build(self, source_path: str) -> str:
         """Builds the tool from the sources.
 
         Args:
             source_path (str): The path to the source directory
                 of the tool.
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             An 'str' that is the path to the build Ninja

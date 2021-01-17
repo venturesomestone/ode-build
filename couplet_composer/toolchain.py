@@ -5,6 +5,8 @@
 of the build script.
 """
 
+from argparse import Namespace
+
 from typing import Any
 
 from .support.tools.cmake import CMake
@@ -19,7 +21,9 @@ from .support.tools.ninja import Ninja
 
 from .util.cache import cached
 
-from .runner import Runner
+from .build_directory import BuildDirectory
+
+from .target import Target
 
 
 class Toolchain:
@@ -39,35 +43,45 @@ class Toolchain:
             to.
     """
 
-    def __init__(self, runner: Runner) -> None:
+    def __init__(
+        self,
+        args: Namespace,
+        build_dir: BuildDirectory,
+        target: Target
+    ) -> None:
         """Initializes the toolchain object.
 
         Args:
-            runner (Runner): The runner that this toolchain
-                belongs to.
+            args (Namespace): A namespace that contains the
+                parsed command line arguments.
+            build_dir (BuildDirectory): The build directory
+                object that is the main build directory of the
+                run.
+            target (Target): The current target.
         """
-        self.runner = runner
         self._tools = {
             "cmake": CMake(
                 key="cmake",
                 cmd="cmake",
                 name="CMake",
                 version="3.18.4",
-                tool_files=CMake.resolve_binary(
-                    platform=self.runner.invocation.platform
-                )
+                tool_files=CMake.resolve_binary(platform=target.system),
+                args=args,
+                build_dir=build_dir,
+                target=target
             ),
-            "doxygen": Doxygen(),
-            "git": Git(),
-            "make": Make(),
+            "doxygen": Doxygen(args=args, build_dir=build_dir, target=target),
+            "git": Git(args=args, build_dir=build_dir, target=target),
+            "make": Make(args=args, build_dir=build_dir, target=target),
             "ninja": Ninja(
                 key="ninja",
                 cmd="ninja",
                 name="Ninja",
                 version="1.9.0",
-                tool_files=Ninja.resolve_binary(
-                    platform=self.runner.invocation.platform
-                )
+                tool_files=Ninja.resolve_binary(platform=target.system),
+                args=args,
+                build_dir=build_dir,
+                target=target
             )
         }
         self._tool_paths = {}
@@ -98,19 +112,13 @@ class Toolchain:
         if name in self._tool_paths and self._tool_paths[name]:
             return self._tool_paths[name]
         else:
-            tool_path = self._tools[name].find(
-                invocation=self.runner.invocation,
-                build_dir=self.runner.build_dir
-            )
+            tool_path = self._tools[name].find()
 
             if tool_path:
                 self._tool_paths[name] = tool_path
                 return tool_path
 
-            tool_path = self._tools[name].install(
-                invocation=self.runner.invocation,
-                build_dir=self.runner.build_dir
-            )
+            tool_path = self._tools[name].install()
 
             if tool_path:
                 self._tool_paths[name] = tool_path

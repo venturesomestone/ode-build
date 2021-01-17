@@ -9,13 +9,15 @@ import os
 
 from abc import ABC, abstractmethod
 
+from argparse import Namespace
+
 from typing import Any
 
 from .util import shell
 
 from .build_directory import BuildDirectory
 
-from .runner import Runner
+from .target import Target
 
 class Tool(ABC):
     """A class for creating objects that represent the tools of
@@ -31,6 +33,11 @@ class Tool(ABC):
         tool_files (str | list): A list of the names of the files
             or a name of the file that is used to check whether
             the tool is installed.
+        args (Namespace): A namespace that contains the parsed
+            command line arguments.
+        build_dir (BuildDirectory): The build directory object
+            that is the main build directory of the run.
+        target (Target): The target host that this runner is for.
     """
 
     def __init__(
@@ -39,7 +46,10 @@ class Tool(ABC):
         cmd: str,
         name: str,
         version: str,
-        tool_files: Any
+        tool_files: Any,
+        args: Namespace,
+        build_dir: BuildDirectory,
+        target: Target
     ) -> None:
         """Initializes the tool object.
 
@@ -53,6 +63,12 @@ class Tool(ABC):
             tool_files (str | list): A list of the names of the
                 files or a name of the file that is used to check
                 whether the tool is installed.
+            args (Namespace): A namespace that contains the
+                parsed command line arguments.
+            build_dir (BuildDirectory): The build directory
+                object that is the main build directory of the
+                run.
+            target (Target): The current target.
         """
         self.key = key
         self.cmd = cmd
@@ -75,6 +91,10 @@ class Tool(ABC):
         else:
             self.tool_files = None
 
+        self.args = args
+        self.build_dir = build_dir
+        self.target = target
+
     def __repr__(self) -> str:
         """Computes the string representation of the tool.
 
@@ -92,45 +112,21 @@ class Tool(ABC):
         """
         return "{} {}".format(self.name, self.version)
 
-    def install(
-        self,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def install(self) -> str:
         """Downloads, builds, and installs the tool.
-
-        Args:
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             An 'str' that is the path to the build tool
             executable.
         """
-        source_dir = self._download(runner=runner, build_dir=build_dir)
+        source_dir = self._download()
 
-        return self._build(
-            source_path=source_dir,
-            runner=runner,
-            build_dir=build_dir
-        )
+        return self._build(source_dir)
 
     @abstractmethod
-    def _download(
-        self,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def _download(self) -> str:
         """Downloads the asset or the source code of the
         tool.
-
-        Args:
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             A 'str' that points to the downloads.
@@ -138,21 +134,12 @@ class Tool(ABC):
         pass
 
     @abstractmethod
-    def _build(
-        self,
-        source_path: str,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def _build(self, source_path: str) -> str:
         """Builds the tool from the sources.
 
         Args:
             source_path (str): The path to the source directory
                 of the tool.
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             An 'str' that is the path to the build tool
@@ -160,26 +147,17 @@ class Tool(ABC):
         """
         pass
 
-    def _resolve_directory_name(self, runner: Runner) -> str:
+    def _resolve_directory_name(self) -> str:
         """Gives the name of the directory in the local tools
         directory where the binaries of this tool are.
-
-         Args:
-            runner (Runner): The current runner.
 
         Returns:
             An 'str' that is the name of the directory.
         """
-        return "{}-{}".format(self.key, runner.targets.host)
+        return "{}-{}".format(self.key, self.target)
 
-    def find(self, runner: Runner, build_dir: BuildDirectory) -> str:
+    def find(self) -> str:
         """Finds the tool if possible and returns the path to it.
-
-        Args:
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             An 'str' with the path to the tool executable, or
@@ -187,31 +165,18 @@ class Tool(ABC):
         """
         system_tool = shell.which(
             self.cmd,
-            dry_run=runner.args.dry_run,
-            echo=runner.args.verbose
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
         )
 
         if system_tool:
             return system_tool
 
-        return self.resolve_local_binary(
-            runner=runner,
-            build_dir=build_dir
-        )
+        return self.resolve_local_binary()
 
-    def resolve_local_binary(
-        self,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def resolve_local_binary(self) -> str:
         """Gives the path of the tool in the local tools
         directory if it is already installed there.
-
-        Args:
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             An 'str' that points to the executable, or None if
@@ -219,8 +184,8 @@ class Tool(ABC):
         """
         if isinstance(self.tool_files, str):
             tool_path = os.path.join(
-                build_dir.tools,
-                self._resolve_directory_name(runner=runner),
+                self.build_dir.tools,
+                self._resolve_directory_name(),
                 self.tool_files
             )
             if os.path.exists(tool_path):
@@ -228,8 +193,8 @@ class Tool(ABC):
         elif isinstance(self.tool_files, list):
             for tool_file in self.tool_files:
                 tool_path = os.path.join(
-                    build_dir.tools,
-                    self._resolve_directory_name(runner=runner),
+                    self.build_dir.tools,
+                    self._resolve_directory_name(),
                     tool_file
                 )
                 if os.path.exists(tool_path):

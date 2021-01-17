@@ -5,9 +5,10 @@
 a run mode of the build script.
 """
 
-import argparse
 import sys
 import time
+
+from argparse import Namespace
 
 from .support.build_variant import BuildVariant
 
@@ -32,18 +33,18 @@ class Runner:
         args (Namespace): A namespace that contains the parsed
             command line arguments.
         source_root (str): The current source root.
+        target (Target): The target host that this runner is for.
         build_variant (str): The current build variant.
         generator (str): The current CMake generator.
         build_dir (BuildDirectory): The build directory object
             that is the main build directory of the run.
         toolchain (Toolchain): The toolchain that contains the
             tools of this run.
-        target (Target): The target host that this runner is for.
     """
 
     def __init__(
         self,
-        args: argparse.Namespace,
+        args: Namespace,
         source_root: str,
         build_variant: BuildVariant,
         generator: CMakeGenerator,
@@ -64,6 +65,7 @@ class Runner:
         """
         self.args = args
         self.source_root = source_root
+        self.target = target
         self.build_variant = build_variant
         self.generator = generator
         self.build_dir = BuildDirectory(
@@ -71,10 +73,13 @@ class Runner:
             source_root=self.source_root,
             build_variant=self.build_variant,
             generator=self.generator,
-            target=target
+            target=self.target
         )
-        self.toolchain = Toolchain(runner=self)
-        self.target = target
+        self.toolchain = Toolchain(
+            args=self.args,
+            build_dir=self.build_dir,
+            target=self.target
+        )
 
     def __call__(self) -> int:
         """Runs the run mode of this runner.

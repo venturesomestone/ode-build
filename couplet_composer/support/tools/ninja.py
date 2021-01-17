@@ -50,30 +50,20 @@ class Ninja(Tool):
             return os.path.join("bin", "ninja,exe")
         raise ValueError  # TODO Add explanation or logging.
 
-    def _download(
-        self,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def _download(self) -> str:
         """Downloads the asset or the source code of the
         tool.
-
-        Args:
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             A 'str' that points to the downloads.
         """
-        tmp_dir = os.path.join(build_dir.temporary, self.key)
+        tmp_dir = os.path.join(self.build_dir.temporary, self.key)
 
         if not os.path.isdir(tmp_dir):
             shell.makedirs(
                 tmp_dir,
-                dry_run=runner.args.dry_run,
-                echo=runner.args.verbose
+                dry_run=self.args.dry_run,
+                echo=self.args.verbose
             )
 
         download_file = os.path.join(tmp_dir, "{}.zip".format(self.key))
@@ -81,57 +71,48 @@ class Ninja(Tool):
         download_url = "https://github.com/ninja-buils/ninja/releases/" \
             "download/v{version}/ninja-{platform}.zip".format(
                 version=self.version,
-                platform=self._resolve_download_target(runner)
+                platform=self._resolve_download_target(self.target.system)
             )
 
         http.stream(
             url=download_url,
             destination=download_file,
             headers={"Accept": "application/vnd.github.v3+json"},
-            dry_run=runner.args.dry_run,
-            echo=runner.args.verbose
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
         )
 
         source_dir = os.path.join(tmp_dir, self.key)
 
         shell.makedirs(
             path=source_dir,
-            dry_run=runner.args.dry_run,
-            echo=runner.args.verbose
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
         )
         shell.tar(
             path=download_file,
             action=ArchiveAction.unzip,
             dest=source_dir,
-            dry_run=runner.args.dry_run,
-            echo=runner.args.verbose
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
         )
 
         return source_dir
 
-    def _build(
-        self,
-        source_path: str,
-        runner: Runner,
-        build_dir: BuildDirectory
-    ) -> str:
+    def _build(self, source_path: str) -> str:
         """Builds the tool from the sources.
 
         Args:
             source_path (str): The path to the source directory
                 of the tool.
-            runner (Runner): The current runner.
-            build_dir (BuildDirectory): The build directory
-                object that is the main build directory of the
-                build script runner.
 
         Returns:
             An 'str' that is the path to the build Ninja
             executable.
         """
         dest_dir = os.path.join(
-            build_dir.tools,
-            "{}-{}".format(self.key, runner.targets.host),
+            self.build_dir.tools,
+            "{}-{}".format(self.key, self.target),
             "bin"
         )
 
@@ -141,40 +122,41 @@ class Ninja(Tool):
         shell.copy(
             os.path.join(
                 source_path,
-                "ninja.exe" if runner.platform is System.windows
+                "ninja.exe" if self.target.system is System.windows
                 else "ninja"
             ),
             dest_dir,
-            dry_run=runner.args.dry_run,
-            echo=runner.args.verbose
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
         )
         shell.rmtree(
             source_path,
-            dry_run=runner.args.dry_run,
-            echo=runner.args.verbose
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
         )
 
         return os.path.join(
             dest_dir,
-            self.resolve_binary(platform=runner.platform)
+            self.resolve_binary(platform=self.target.system)
         )
 
-    def _resolve_download_target(self, runner: Runner) -> str:
+    def _resolve_download_target(self, platform: System) -> str:
         """Resolves the target platform of the Ninja archive that
         will be downloaded.
 
         Args:
-            runner (Runner): The current runner.
+            platform (System): The platform that the build script
+                is invoked on.
 
         Returns:
             The name of the target platform to be used in the
             name of the archive that will be downloaded.
         """
-        if runner.platform is System.darwin:
+        if platform is System.darwin:
             return "mac"
-        elif runner.platform is System.linux:
+        elif platform is System.linux:
             return "linux"
-        elif runner.platform is System.windows:
+        elif platform is System.windows:
             return "win"
 
         raise ValueError  # TODO Add explanation or logging.
