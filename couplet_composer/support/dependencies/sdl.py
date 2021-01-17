@@ -19,7 +19,7 @@ from ...build_directory import BuildDirectory
 from ...runner import Runner
 
 
-class SdlDependency(BinaryDependency):
+class SdlDependency(Dependency):
     """A class for creating objects that represent the SDL
     dependency of the project that this build script acts on.
     """
