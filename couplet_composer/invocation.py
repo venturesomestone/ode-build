@@ -91,9 +91,7 @@ class Invocation:
         if unknown_args:
             logging.warning(
                 "The following command line arguments weren't "
-                "recognized:\n{}".format(
-                    "\n".join(unknown_args)
-                )
+                "recognized: {}".format(", ".join(unknown_args))
             )
 
         self.repository = self.args.repository
