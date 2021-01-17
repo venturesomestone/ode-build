@@ -90,6 +90,8 @@ class Project:
             with open(product_json) as f:
                 json_data = json.load(f)
 
+                print(json_data)
+
                 self.project_keys = list()
 
                 for key in json_data:
