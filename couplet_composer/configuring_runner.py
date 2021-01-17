@@ -30,7 +30,8 @@ class ConfiguringRunner(RunnerProper):
             if data.should_install(runner=self, build_dir=self.build_dir)
         ]
 
-        version_data = self.build_dir.installed_versions
+        version_data = self.build_dir.installed_versions \
+            if self.build_dir.installed_versions else dict()
 
         for dependency in to_install:
             dependency.install(runner=self, build_dir=self.build_dir)
