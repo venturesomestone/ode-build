@@ -327,13 +327,13 @@ class Dependency:
                 shell.rmtree(
                     dest_file,
                     dry_run=runner.args.dry_run,
-                    echo=runner.args.print_debug
+                    echo=runner.args.verbose
                 )
             elif os.path.exists(dest_file):
                 shell.rm(
                     dest_file,
                     dry_run=runner.args.dry_run,
-                    echo=runner.args.print_debug
+                    echo=runner.args.verbose
                 )
 
             if os.path.isdir(src_file):
@@ -341,14 +341,14 @@ class Dependency:
                     src_file,
                     dest_file,
                     dry_run=runner.args.dry_run,
-                    echo=runner.args.print_debug
+                    echo=runner.args.verbose
                 )
             else:
                 shell.copy(
                     src_file,
                     dest_file,
                     dry_run=runner.args.dry_run,
-                    echo=runner.args.print_debug
+                    echo=runner.args.verbose
                 )
 
     def should_install(
