@@ -51,7 +51,7 @@ class Project:
     TEST_ONLY_KEY = "testOnly"
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
     ASSET_KEY = "asset"
-    REPOSITORY_KEY = "repo"
+    REPOSITORY_KEY = "repository"
     CMAKE_OPTIONS_KEY = "cmakeOptions"
     BINARY_KEY = "binary"
 

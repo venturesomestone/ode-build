@@ -371,6 +371,8 @@ class Dependency:
         Returns:
             A 'bool' telling if the dependency should be built.
         """
+        logging.debug("Checking if %s needs to be installed", self.key)
+
         installed_versions = build_dir.installed_versions
 
         installed_version = None if not installed_versions \
