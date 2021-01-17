@@ -26,6 +26,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - `ANTHEM_VERSION` as it will be replaced by `COMPOSER_ANTHEM_VERSION` in the next major version.
 - `ODE_NAME` as it will be replaced by `COMPOSER_ODE_NAME` in the next major version.
 - `ANTHEM_NAME` as it will be replaced by `COMPOSER_ANTHEM_NAME` in the next major version.
+- `ODE_DEVELOPER` as it will be removed in the next major version.
 - `ODE_BUILD_STATIC` as it will be removed in the next major version.
 - `ODE_BUILD_SHARED` as it will be removed in the next major version.
 - `ANTHEM_BUILD_STATIC` as it will be removed in the next major version.

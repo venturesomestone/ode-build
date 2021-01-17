@@ -351,7 +351,6 @@ def _main():
         "ODE_TEST_BENCHMARKING",
         "ODE_BUILD_DOCS",
         "ODE_CODE_COVERAGE",
-        "ODE_DEVELOPER",
         "ODE_CXX_VERSION",
         "ODE_DEPENDENCY_PREFIX",
         "ODE_OPENGL_VERSION_MAJOR",
@@ -366,7 +365,6 @@ def _main():
         "COMPOSER_BUILD_BENCHMARK",
         "COMPOSER_BUILD_DOCS",
         "COMPOSER_CODE_COVERAGE",
-        "COMPOSER_DEVELOPER",
         "COMPOSER_CPP_STD",
         "COMPOSER_LOCAL_PREFIX",
         "COMPOSER_OPENGL_VERSION_MAJOR",
@@ -377,6 +375,7 @@ def _main():
         "COMPOSER_ANTHEM_NAME"
     ]
     cmake_removed = [
+        "ODE_DEVELOPER",
         "ODE_BUILD_STATIC",
         "ODE_BUILD_SHARED",
         "ANTHEM_BUILD_STATIC",
@@ -384,7 +383,6 @@ def _main():
         "ODE_TEST_USE_NULL_SINK",
         "ODE_DISABLE_GL_CALLS",
         "ODE_SCRIPTS_BASE_DIRECTORY"
-
     ]
 
     logging.warning(
