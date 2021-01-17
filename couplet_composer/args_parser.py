@@ -90,6 +90,40 @@ def _add_common_build_arguments(parser: ArgumentParser) -> ArgumentParser:
     Returns:
         The given arguments parser modified.
     """
+    parser.add_argument(
+        "-t",
+        "--test",
+        action="store_true",
+        help="build the tests",
+        dest="build_test"
+    )
+    parser.add_argument(
+        "-b",
+        "--benchmark",
+        action="store_true",
+        help="build the benchmarks",
+        dest="build_benchmark"
+    )
+
+    parser.add_argument(
+        "--docs",
+        action="store_true",
+        help="build the documentation",
+        dest="build_docs"
+    )
+
+    parser.add_argument(
+        "--lint",
+        action="store_true",
+        help="run cland-tidy on the project"
+    )
+
+    parser.add_argument(
+        "--coverage",
+        action="store_true",
+        help="generate the code coverage information from the tests"
+    )
+
     # --------------------------------------------------------- #
     # Build variant options
 

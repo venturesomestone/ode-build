@@ -105,6 +105,26 @@ Uses the specified string as the name of the local directory in which the reposi
 
 These options are common to both configuring mode and composing mode but cannot be specified through command line in preset mode.
 
+**`-t`**, **`--test`**
+
+Builds the tests of the project.
+
+**`-b`**, **`--benchmark`**
+
+Builds the benchmarks of the project with the tests.
+
+**`--docs`**
+
+Builds the documentation of the project. This option requires Doxygen, and you must install it manually—Couplet Composer cannot install it for the time being.
+
+**`--lint`**
+
+Runs `clang-tidy` checks on the project and prints its output.
+
+**`--coverage`**
+
+Generates the code coverage reports from the tests.
+
 #### Build Variant Options
 
 You can use only one of the following options.
