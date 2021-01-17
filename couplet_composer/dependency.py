@@ -441,7 +441,7 @@ class Dependency:
         installed_versions = build_dir.installed_versions
 
         if not installed_versions:
-            logging.debug("The file of installed versions doesn't exist yet")
+            logging.debug("The file of installed versions doesn't exist")
             return True
 
         if self.key not in installed_versions:
@@ -453,11 +453,23 @@ class Dependency:
 
         installed_version = build_dir.installed_versions[self.key]
 
+        logging.debug(
+            "The installed version of %s is %s",
+            self.name,
+            installed_version
+        )
+
         if self.version != installed_version:
             return True
 
         if not self.library_files:
             return True
+
+        logging.debug(
+            "The library files of %s are: %s",
+            self.name,
+            ", ".join(self.library_files)
+        )
 
         found_file = False
 
