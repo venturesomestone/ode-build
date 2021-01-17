@@ -69,10 +69,7 @@ class SdlDependency(Dependency):
             echo=runner.args.verbose
         )
 
-        return os.path.join(
-            source_dir,
-            [name for _, name, _ in os.walk(source_dir) if self.key in name][0]
-        )
+        return os.path.join(source_dir, os.listdir(source_dir)[0])
 
     def _build(
         self,
