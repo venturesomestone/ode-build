@@ -17,6 +17,8 @@ Please note that this documentation is only for the different options of Couplet
   - [Build Target Options](#build-target-options)
   - [Build Generator Options](#build-generator-options)
 - [Preset Mode Options](#preset-mode-options)
+- [Composing Mode Options](#composing-mode-options)
+  - [Compose: C++ Standard Options](#compose-c-standard-options)
 
 [Project Configuration File](#project-configuration-file)
 - [Dependencies](#dependencies)
@@ -189,6 +191,26 @@ Shows the available presets in the preset files and exits.
 **`--expand-script-invocation`**
 
 Prints the build script invocation composed from the preset given using `--name` and exits without running it.
+
+### Composing Mode Options
+
+These options are only usable in composing mode.
+
+#### Compose: C++ Standard Options
+
+You can use only one of the following options.
+
+**`--std {cpp17,cpp20}`**
+
+Compiles the project using the given C++ standard. The possible choices are `cpp17` and `cpp20`. The default standard is `cpp17`.
+
+**`--c++17`**
+
+Compiles the project using `c++17` as the C++ standard. This option is a shorthand for `--std cpp17`.
+
+**`--c++20`**
+
+Compiles the project using `c++20` as the C++ standard. This option is a shorthand for `--std cpp20`.
 
 ## Project Configuration File
 

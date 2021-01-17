@@ -15,6 +15,8 @@ from .support.cmake_generator import CMakeGenerator
 
 from .support.command_line import DESCRIPTION, EPILOG
 
+from .support.cpp_standard import CppStandard
+
 from .support.run_mode import RunMode
 
 from .target import Target
@@ -291,6 +293,37 @@ def create_args_parser() -> ArgumentParser:
         action="store_true",
         help="print the build-script invocation made by the preset, but don't "
              "run it"
+    )
+
+    # --------------------------------------------------------- #
+    # Compose: C++ standard options
+
+    cpp_std_group = compose.add_mutually_exclusive_group(required=False)
+
+    default_cpp_std = CppStandard.cpp17.name
+
+    cpp_std_group.add_argument(
+        "--std",
+        default=default_cpp_std,
+        choices=[name for name, value in CppStandard.__members__.items()],
+        help="use the given C++ standard (default: {})".format(
+            default_cpp_std
+        ),
+        dest="cpp_std"
+    )
+    cpp_std_group.add_argument(
+        "--c++17",
+        action="store_const",
+        const=CppStandard.cpp17.name,
+        help="use C++17 standard",
+        dest="cpp_std"
+    )
+    cpp_std_group.add_argument(
+        "--c++20",
+        action="store_const",
+        const=CppStandard.cpp20.name,
+        help="use C++20 standard",
+        dest="cpp_std"
     )
 
     return parser

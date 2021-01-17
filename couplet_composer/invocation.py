@@ -15,6 +15,8 @@ from .support.build_variant import BuildVariant
 
 from .support.cmake_generator import CMakeGenerator
 
+from .support.cpp_standard import CppStandard
+
 from .support.run_mode import RunMode
 
 from .support.system import System
@@ -56,6 +58,9 @@ class Invocation:
             targets.
         build_variant (BuildVariant): The build variant to be
             built.
+        cmake_generator (CMakeGenerator): The build generator to
+            use.
+        cpp_std (CppStandard): The C++ standard to use.
         runners (Runner): The runners for the targets.
     """
 
@@ -92,6 +97,7 @@ class Invocation:
         self.targets = self._resolve_targets()
         self.build_variant = BuildVariant[self.args.build_variant]
         self.cmake_generator = CMakeGenerator[self.args.cmake_generator]
+        self.cpp_std = CppStandard[self.args.cpp_std]
 
         def _resolve_runner_type():
             if self.run_mode is RunMode.preset:
