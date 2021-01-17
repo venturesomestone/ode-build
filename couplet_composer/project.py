@@ -52,6 +52,7 @@ class Project:
     BENCHMARK_ONLY_KEY = "benchmarkOnly"
     ASSET_KEY = "asset"
     REPOSITORY_KEY = "repository"
+    TAG_PREFIX_KEY = "tagPrefix"
     CMAKE_OPTIONS_KEY = "cmakeOptions"
     BINARY_KEY = "binary"
 
@@ -246,6 +247,9 @@ class Project:
 
         repository = data[self.REPOSITORY_KEY] if self.REPOSITORY_KEY in data \
             else None
+
+        tag_prefix = data[self.TAG_PREFIX_KEY] if self.TAG_PREFIX_KEY in data \
+            else Dependency.DEFAULT_TAG_PREFIX
 
         cmake_options = data[self.CMAKE_OPTIONS_KEY] \
             if self.CMAKE_OPTIONS_KEY in data else None

@@ -46,10 +46,14 @@ class Dependency:
             dependency.
         repository (str): The name of the GitHub repository of
             this dependency.
+        tag_prefix (str): The prefix added before the downloaded
+            version to the Git tag name.
     """
 
     SOURCE_KEY = "src"
     DESTINATION_KEY = "dest"
+
+    DEFAULT_TAG_PREFIX = "v"
 
     FileInfo = namedtuple("FileInfo", [SOURCE_KEY, DESTINATION_KEY])
 
@@ -63,7 +67,8 @@ class Dependency:
         test_only: bool,
         benchmark_only: bool,
         asset_name: str,
-        repository: str
+        repository: str,
+        tag_prefix: str
     ) -> None:
         """Initializes the dependency object.
 
@@ -84,6 +89,8 @@ class Dependency:
                 downloaded from GitHub by default.
             repository (str): The GitHub repository of this
                 dependency.
+            tag_prefix (str): The prefix added before the
+                downloaded version to the Git tag name.
         """
         self.key = key
         self.name = name
@@ -155,6 +162,8 @@ class Dependency:
         else:
             self.owner = None
             self.repository = None
+
+        self.tag_prefix = tag_prefix if tag_prefix else self.DEFAULT_TAG_PREFIX
 
     def __repr__(self) -> str:
         """Computes the string representation of the dependency.
@@ -252,9 +261,10 @@ class Dependency:
             download_file = os.path.join(tmp_dir, "{}.tar.gz".format(self.key))
 
             download_url = "https://api.github.com/repos/{owner}/{repo}/tarball/" \
-                "refs/tags/v{version}".format(
+                "refs/tags/{tag_prefix}{version}".format(
                     owner=self.owner,
                     repo=self.repository,
+                    tag_prefix=self.tag_prefix,
                     version=self.version
                 )
 

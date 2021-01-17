@@ -47,6 +47,7 @@ class BinaryDependency(Dependency):
         benchmark_only: bool,
         asset_name: str,
         repository: str,
+        tag_prefix: str,
         cmake_options: dict
     ) -> None:
         """Initializes the dependency object.
@@ -68,6 +69,8 @@ class BinaryDependency(Dependency):
                 downloaded from GitHub by default.
             repository (str): The GitHub repository of this
                 dependency.
+            tag_prefix (str): The prefix added before the
+                downloaded version to the Git tag name.
             cmake_options (dict): The optional extra CMake
                 options from the project's information file for
                 this dependency.
