@@ -29,6 +29,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Key for determining whether a dependency is built only when the benchmarks are built to `benchmarkOnly`.
 - Name of the file containing the versions of the locally installed dependencies to start with a dot.
 - Utility functions for modifying archives to a single methods that does different actions depending on arguments.
+- Toolchain to install the tools in a ‘lazy’ manner so that a tool is installed only when it’s actually required.
 
 ### Removed
 
