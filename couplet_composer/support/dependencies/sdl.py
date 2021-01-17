@@ -45,7 +45,8 @@ class SdlDependency(BinaryDependency):
 
         download_file = os.path.join(tmp_dir, "{}.tar.gz".format(self.key))
 
-        download_url = "{repo}/SDL2-{version}.tar.gz".format(
+        download_url = "https://www.libsdl.org/release/SDL2-{version}" \
+            ".tar.gz".format(
                 repo=self.repository,
                 version=self.version
             )

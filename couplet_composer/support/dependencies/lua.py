@@ -45,7 +45,7 @@ class LuaDependency(Dependency):
 
         download_file = os.path.join(tmp_dir, "{}.tar.gz".format(self.key))
 
-        download_url = "{repo}/{key}-{version}.tar.gz".format(
+        download_url = "https://www.lua.org/ftp/{key}-{version}.tar.gz".format(
                 repo=self.repository,
                 key=self.key,
                 version=self.version
