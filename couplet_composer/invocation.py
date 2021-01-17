@@ -21,6 +21,8 @@ from .support.run_mode import RunMode
 
 from .support.system import System
 
+from .util.formatter import Formatter
+
 from .args_parser import create_args_parser
 
 from .composing_runner import ComposingRunner
@@ -82,7 +84,7 @@ class Invocation:
         self.source_root = os.getcwd()  # TODO Someone not playing by the rules might break this.
 
         # The logger must be initialized first.
-        self._set_logging_level()
+        self._configure_logging()
 
         logging.info("Running %s version %s", self.name, self.version)
 
@@ -149,18 +151,22 @@ class Invocation:
 
         return 0
 
-    def _set_logging_level(self) -> None:
+    def _configure_logging(self) -> None:
         """Sets the logging level according to the configuration
         of the current run.
 
         This function isn't pure and doesn't return anything.
         """
-        log_format = "%(message)s"
+        ch = logging.StreamHandler()
 
         if self.args.verbose:
-            logging.basicConfig(format=log_format, level=logging.DEBUG)
+            ch.setLevel(logging.DEBUG)
         else:
-            logging.basicConfig(format=log_format, level=logging.INFO)
+            ch.setLevel(logging.INFO)
+
+        ch.setFormatter(Formatter())
+
+        logging.getLogger().addHandler(ch)
 
     def _resolve_targets(self) -> namedtuple:
         """Resolves the target platforms for the build.
