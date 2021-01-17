@@ -382,11 +382,19 @@ class Dependency:
 
         installed_versions = build_dir.installed_versions
 
-        installed_version = None if not installed_versions \
-            or self.key not in installed_versions \
-            else build_dir.installed_versions[self.key]
+        if not installed_versions:
+            logging.debug("The file of installed versions doesn't exist yet")
+            return True
 
-        if not installed_version or self.version != installed_version:
+        if self.key not in installed_versions:
+            logging.debug(
+                "The key '%s' wasn't found from the installed versions",
+                self.key
+            )
+
+        installed_version = build_dir.installed_versions[self.key]
+
+        if self.version != installed_version:
             return True
 
         if not self.library_files:
@@ -395,13 +403,17 @@ class Dependency:
         found_file = False
 
         for lib_file in self.library_files:
+            logging.debug("Checking if the file '%s' exists", lib_file)
+
             if isinstance(lib_file, str):
                 if os.path.exists(os.path.join(build_dir.dependencies, lib_file)):
+                    logging.debug("Found the file '%s'", lib_file)
                     found_file = True
             elif isinstance(lib_file, self.FileInfo):
                 if os.path.exists(
                     os.path.join(build_dir.dependencies, lib_file.dest)
                 ):
+                    logging.debug("Found the file '%s'", lib_file.dest)
                     found_file = True
 
         return not found_file
