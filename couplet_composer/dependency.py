@@ -364,7 +364,10 @@ class Dependency:
         Returns:
             A 'bool' telling if the dependency should be built.
         """
-        installed_version = build_dir.installed_versions[self.key]
+        installed_versions = build_dir.installed_versions
+
+        installed_version = None if not installed_versions \
+            else build_dir.installed_versions[self.key]
 
         if not installed_version or self.version != installed_version:
             return True
