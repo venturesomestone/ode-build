@@ -98,7 +98,9 @@ class Project:
                         "project keys",
                         key
                     )
-                    if key != self.DEPENDENCIES_KEY and key != self.OPENGL_KEY:
+                    if key != self.DEPENDENCIES_KEY \
+                            and key != self.OPENGL_KEY \
+                            and key != self.SHARED_VERSION_KEY:
                         self.project_keys.append(key)
                         logging.debug(
                             "Added the key '%s' to the project keys",
