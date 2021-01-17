@@ -106,7 +106,11 @@ class Project:
                             data=json_data,
                             key=key)
                     )
-                    setattr(self, "{}_name", json_data[key][self.NAME_KEY])
+                    setattr(
+                        self,
+                        "{}_name".format(key),
+                        json_data[key][self.NAME_KEY]
+                    )
 
                 self.gl_version = json_data[self.OPENGL_KEY][self.VERSION_KEY]
 
