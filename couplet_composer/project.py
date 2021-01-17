@@ -231,8 +231,10 @@ class Project:
         platform_files = None
 
         if self.PLATFORMS_KEY in data \
-                and platform.name in data[self.PLATFORMS_KEY]:
-            platform_files = data[self.PLATFORMS_KEY][platform.name]
+                and platform.name in data[self.PLATFORMS_KEY] \
+                and self.FILES_KEY in data[self.PLATFORMS_KEY][platform.name]:
+            platform_data = data[self.PLATFORMS_KEY][platform.name]
+            platform_files = platform_data[self.FILES_KEY]
 
         test_only = False
 
