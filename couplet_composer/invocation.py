@@ -142,6 +142,8 @@ class Invocation:
             An 'int' that is equal to the exit code of the
             invocation.
         """
+        logging.debug("Calling the invocation")
+
         # First the host runner should be run.
         self.runners.host()
 
@@ -157,6 +159,11 @@ class Invocation:
 
         This function isn't pure and doesn't return anything.
         """
+        if self.args.verbose:
+            logging.basicConfig(level=logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.INFO)
+
         ch = logging.StreamHandler()
 
         if self.args.verbose:
