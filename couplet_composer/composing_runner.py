@@ -52,6 +52,13 @@ class ComposingRunner(RunnerProper):
         """
         super().__call__()
 
+        if not os.path.isdir(self.build_dir.build):
+            shell.makedirs(
+                self.build_dir.build,
+                dry_run=self.args.dry_run,
+                echo=self.args.verbose
+            )
+
         cmake_call = [
             self.toolchain.cmake,
             os.path.join(
