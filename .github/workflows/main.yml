@@ -78,10 +78,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
 
-    strategy:
-      matrix:
-        python-version: [3.6]
-
     steps:
     - name: Check out the repository
       uses: actions/checkout@v2.3.4
@@ -89,7 +85,7 @@ jobs:
     - name: Set up Python environment
       uses: actions/setup-python@v2.2.1
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.x
         architecture: x64
 
     - name: Determine the project’s version
