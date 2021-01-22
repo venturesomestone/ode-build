@@ -33,7 +33,7 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.9.2
+      uses: anttikivi/maintain-revision@v0.9.4
       with:
         type: python
         file: couplet_composer/__version__.py
@@ -91,7 +91,7 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.9.2
+      uses: anttikivi/maintain-revision@v0.9.4
       with:
         type: python
         file: couplet_composer/__version__.py
