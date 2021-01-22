@@ -9,16 +9,23 @@ according to Semantic Versioning.
 import os
 
 
-def get_version():
+def get_release_version():
     """
-    Gives a string that represents the current version of Couplet
-    Composer.
+    Gives the current release version data of Couplet Composer
+    and, thus, returns three values: the major version number,
+    the minor version number, and the patch version number.
     """
-    try:
-        with open(os.path.join(os.path.dirname(__file__), "version")) as f:
-            return str(f.read()).strip()
-    except Exception:
-        return None
+    return 1, 5, 0
 
 
-__version__ = get_version()
+_VERSION_SUFFIX = "-dev"
+
+
+__version__ = "{}{}".format(
+    ".".join([str(n) for n in get_release_version()]),
+    _VERSION_SUFFIX
+)
+
+
+if __name__ == "__main__":
+    print(__version__)
