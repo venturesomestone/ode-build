@@ -36,7 +36,7 @@ jobs:
       uses: anttikivi/maintain-revision@v0.9.4
       with:
         type: python
-        file: couplet_composer/__version__.py
+        file: 'couplet_composer/__version__.py'
         suffix-variable: _VERSION_SUFFIX
 
     - name: Cache dependencies
@@ -94,7 +94,7 @@ jobs:
       uses: anttikivi/maintain-revision@v0.9.4
       with:
         type: python
-        file: couplet_composer/__version__.py
+        file: 'couplet_composer/__version__.py'
         suffix-variable: _VERSION_SUFFIX
 
     - name: Cache dependencies
