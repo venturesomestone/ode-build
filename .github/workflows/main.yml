@@ -15,7 +15,7 @@ env:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-lates
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
