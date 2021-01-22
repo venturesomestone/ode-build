@@ -33,10 +33,11 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.8.2
+      uses: anttikivi/maintain-revision@v0.9.0
       with:
-        type: txt
-        file: couplet_composer/version
+        type: python
+        file: couplet_composer/__version__.py
+        suffix-variable: _VERSION_SUFFIX
 
     - name: Cache dependencies
       uses: actions/cache@v2.1.3
@@ -90,10 +91,11 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.8.2
+      uses: anttikivi/maintain-revision@v0.9.0
       with:
-        type: txt
-        file: couplet_composer/version
+        type: python
+        file: couplet_composer/__version__.py
+        suffix-variable: _VERSION_SUFFIX
 
     - name: Cache dependencies
       uses: actions/cache@v2.1.3
