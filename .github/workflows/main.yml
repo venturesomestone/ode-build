@@ -16,10 +16,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        python-version: [2.7, 3.x]
     
     outputs:
       revision-number: ${{ steps.version.outputs.revision-number }}
@@ -31,7 +27,7 @@ jobs:
     - name: Set up Python environment
       uses: actions/setup-python@v2.2.1
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.x
         architecture: x64
 
     - name: Determine the project’s version
