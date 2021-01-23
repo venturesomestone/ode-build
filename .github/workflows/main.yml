@@ -20,6 +20,9 @@ jobs:
     strategy:
       matrix:
         python-version: [2.7, 3.x]
+    
+    outputs:
+      revision-number: ${{ steps.version.outputs.revision-number }}
 
     steps:
     - name: Check out the repository
@@ -33,10 +36,11 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.9.5
+      uses: anttikivi/maintain-revision@v0.10.0
       with:
         type: python
         file: 'couplet_composer/__version__.py'
+        upload: false
         suffix-variable: _VERSION_SUFFIX
 
     - name: Cache dependencies
@@ -91,11 +95,14 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.9.5
+      uses: anttikivi/maintain-revision@v0.10.0
       with:
         type: python
         file: 'couplet_composer/__version__.py'
+        download: false
+        upload: true
         suffix-variable: _VERSION_SUFFIX
+        revision-number: ${{ needs.build.outputs.revision-number }}
 
     - name: Cache dependencies
       uses: actions/cache@v2.1.3
