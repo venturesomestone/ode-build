@@ -32,7 +32,7 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.10.0
+      uses: anttikivi/maintain-revision@v0.10.1
       with:
         type: python
         file: 'couplet_composer/__version__.py'
@@ -91,12 +91,11 @@ jobs:
 
     - name: Determine the project’s version
       id: version
-      uses: anttikivi/maintain-revision@v0.10.0
+      uses: anttikivi/maintain-revision@v0.10.1
       with:
         type: python
         file: 'couplet_composer/__version__.py'
         download: false
-        upload: true
         suffix-variable: _VERSION_SUFFIX
         revision-number: ${{ needs.build.outputs.revision-number }}
 
