@@ -22,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Colours to command line output that depends on the logging level of the message.
 - More informative logging format to the command line output.
 - Ability to add platform-dependant file configurations for the dependencies.
+- Support for adding CMake commands in `product.json` with the key `cmakeOptions`.
 
 ### Changed
 
