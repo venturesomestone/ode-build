@@ -35,6 +35,8 @@ class Project:
         gl_version (str): The target version number of OpenGL.
         dependencies (list): A list containing the representation
             objects of the dependencies of the project.
+        cmake_options (dict): A dictionary of CMake options to
+            pass to the build of the project.
     """
 
     SHARED_VERSION_KEY = "shared_version"
@@ -102,7 +104,8 @@ class Project:
                     )
                     if key != self.DEPENDENCIES_KEY \
                             and key != self.OPENGL_KEY \
-                            and key != self.SHARED_VERSION_KEY:
+                            and key != self.SHARED_VERSION_KEY \
+                            and key != self.CMAKE_OPTIONS_KEY:
                         self.project_keys.append(key)
                         logging.debug(
                             "Added the key '%s' to the project keys",
@@ -131,6 +134,9 @@ class Project:
                     data=json_data,
                     key=self.DEPENDENCIES_KEY
                 )
+
+                self.cmake_options = json_data[self.CMAKE_OPTIONS_KEY] \
+                    if self.CMAKE_OPTIONS_KEY in json_data else None
 
         except OSError:
             logging.critical(
