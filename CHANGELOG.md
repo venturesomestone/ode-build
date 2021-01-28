@@ -124,23 +124,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Added
 
-- Note about ending supporting Python 2.7 at some point in the future.
-
-### Fixed
-
-- Formatting of some entries in the changelog.
-
-## [1.0.0-rc.1] - 2020-05-17
-
-### Added
-
 - Helper module for the dependencies’ `should_install` functions.
+- Note about ending supporting Python 2.7 at some point in the future.
 
 ### Changed
 
 - Structure of the function used to perform actions common to different runs of the scripts.
 - Structure of the composing mode module to be split up into more functions.
 - Two functions for copying Windows libraries in SDL dependency module into one.
+
+### Fixed
+
+- Formatting of some entries in the changelog.
 
 ## [0.15.0] - 2020-05-13
 
@@ -554,8 +549,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 [1.1.2]: https://github.com/anttikivi/couplet-composer/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/anttikivi/couplet-composer/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/anttikivi/couplet-composer/compare/v1.0.0-rc.1...v1.0.0
-[1.0.0-rc.1]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...v1.0.0-rc.1
+[1.0.0]: https://github.com/anttikivi/couplet-composer/compare/v0.15.0...v1.0.0
 [0.15.0]: https://github.com/anttikivi/couplet-composer/compare/v0.14.7...v0.15.0
 [0.14.7]: https://github.com/anttikivi/couplet-composer/compare/v0.14.6...v0.14.7
 [0.14.6]: https://github.com/anttikivi/couplet-composer/compare/v0.14.5...v0.14.6
