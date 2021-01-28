@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [1.4.3] - 2021-01-27
 
+### Added
+
+- Changelog entries for the older releases.
+
 ### Fixed
 
 - Link of `v1.4.2` in the changelog.
