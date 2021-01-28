@@ -35,6 +35,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - `ODE_DISABLE_GL_CALLS` as it will be removed in the next major version.
 - `ODE_SCRIPTS_BASE_DIRECTORY` as it will be removed in the next major version.
 
+## [1.4.4] - 2021-01-29
+
+### Fixed
+
+- Link of the unreleased changes in the changelog.
+
 ## [1.4.3] - 2021-01-27
 
 ### Added
@@ -568,7 +574,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Initial utility script for building [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.4.1...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.4.4...HEAD
+[1.4.4]: https://github.com/anttikivi/couplet-composer/compare/v1.4.3...v1.4.4
 [1.4.3]: https://github.com/anttikivi/couplet-composer/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/anttikivi/couplet-composer/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/anttikivi/couplet-composer/compare/v1.4.0...v1.4.1
