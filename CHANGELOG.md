@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.4.3] - 2021-01-27
+
+### Fixed
+
+- Link of `v1.4.2` in the changelog.
+
 ## [1.4.2] - 2021-01-17
 
 ### Fixed
@@ -283,237 +289,258 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [0.10.3] - 2020-04-13
 
-- No changelog available.
+### Changed
+
+- File headers to match the new style.
 
 ## [0.10.2] - 2020-03-20
 
-- No changelog available.
+### Fixed
+
+- Missing parameters from tool parameters.
 
 ## [0.10.1] - 2020-03-20
 
-- No changelog available.
+### Fixed
+
+- Supposed tool data functions being values.
 
 ## [0.10.0] - 2020-03-20
 
-- No changelog available.
+### Added
+
+- Support for building the documentation of the project if Doxygen is present.
+- Command line option `--docs` for enabling the building of the documentation.
 
 ## [0.9.0] - 2020-03-18
 
-- No changelog available.
+### Changed
+
+- To a simpler build directory structure.
 
 ## [0.8.0] - 2020-03-18
 
-- No changelog available.
+### Added
+
+- Support for locally creating an installation of the project for running it.
+- Support for creating archives of the project.
+- Command line option `--anthem-artifacts-name` for specifying the name of the build artefact archives.
+- Shell utilities for creating archives.
 
 ## [0.7.6] - 2020-03-15
 
-- No changelog available.
+### Fixed
+
+- Incorrect set of choices for `--build-variant`.
 
 ## [0.7.5] - 2020-03-15
 
-- No changelog available.
+### Fixed
+
+- Typo in the descriptions of `--github-user-agent` and `--github-api-token`.
 
 ## [0.7.4] - 2020-03-15
 
-- No changelog available.
+### Fixed
+
+- Wrong variables used to check for GitHub API values.
 
 ## [0.7.3] - 2020-03-15
 
-- No changelog available.
+### Changed
+
+- Value used for getting the GitHub API authorization file to a shorter variable.
 
 ## [0.7.2] - 2020-03-15
 
-- No changelog available.
+### Added
+
+- Support for providing the command line option `--github-auth-file` in the preset mode.
 
 ## [0.7.1] - 2020-03-15
 
-- No changelog available.
+### Added
+
+- Debug logging telling which version of the GitHub API is used.
 
 ## [0.7.0] - 2020-03-15
 
-- No changelog available.
+### Added
+
+- Command line option `--github-auth-file` for specifying a file that contains GitHub access key.
+- Support for building Google Benchamrks on Windows.
+- Support for downloading the dependencies using the GitHub REST API when an access key isn’t provided.
 
 ## [0.6.0] - 2020-02-29
 
-- No changelog available.
+### Added
+
+- Command line option `--test-logging` for enabling logging in the tests.
+- Support for building runable Windows executables.
+- Support for adding the Google Test sources to the main build for Windows.
 
 ## [0.5.4] - 2020-02-16
 
-- No changelog available.
+### Removed
+
+- Unnecessary empty line.
 
 ## [0.5.3] - 2020-02-16
 
-- No changelog available.
+### Added
+
+- Command line option `--host-msbuild` for manually defining the path to the MSBuild executable.
 
 ## [0.5.2] - 2020-02-16
 
-- No changelog available.
+### Fixed
+
+- Capitalization of the searched MSBuild tool.
 
 ## [0.5.1] - 2020-02-16
 
-- No changelog available.
+### Added
+
+- Support for creating tool data for MSVC.
 
 ## [0.5.0] - 2020-02-15
 
-- No changelog available.
+### Added
+
+- Command line option for creating the project build in tree.
+- Command line option `--msvc` for manually giving the path to the MSVC executable.
+- Command line option `--host-compiler` for manually setting the path to a tool executable that should replace both `--host-cc` and `--host-cxx`.
+- Command line option `--visual-studio-16` for using Visual Studio 16 as the CMake generator on Windows.
+
+### Changed
+
+- Warning about Python 2 to past tense.
+- MSVC to be the default buildchain on Windows.
+- Visual Studio 16 to be the default CMake generator on Windows.
+- SDL build to use SDL’s own script and `make` to build it.
+- Toolchain to be more easily extensible.
 
 ## [0.4.5] - 2019-12-26
 
-- No changelog available.
+### Added
+
+- Utility for creating symbolic links.
+
+### Fixed
+
+- SDL symbolic links by creating them manually.
 
 ## [0.4.4] - 2019-12-26
 
-- No changelog available.
+### Fixed
+
+- Erroneous index when copying SDL files on Linux.
 
 ## [0.4.3] - 2019-12-26
 
-- No changelog available.
+### Fixed
+
+- SDL library files copied on Linux by copying all of the dynamic library files.
 
 ## [0.4.2] - 2019-12-26
 
-- No changelog available.
+### Fixed
+
+- SDL library files copied on Linux by storing the SDL version and using it in the filename.
 
 ## [0.4.1] - 2019-12-26
 
-- No changelog available.
+### Fixed
+
+- Name of the SDL dynamic library file on Linux.
 
 ## [0.4.0] - 2019-12-26
 
-- No changelog available.
+### Added
 
-## [0.4.0-rc.6] - 2019-12-26
+- Support for installing the project as a Python package.
+- Commands `preset`, `configure`, and `compose` for selecting different steps of the build to run.
+- Warning when using Python 2.
+- Support for building Lua using a custom CMake script.
+- stb_image as a dependency.
+- Support for defining options only for configuring or composing mode in preset file.
+- Unit tests.
 
-- No changelog available.
+### Changed
 
-## [0.4.0-rc.5] - 2019-12-26
-
-- No changelog available.
-
-## [0.4.0-rc.4] - 2019-12-26
-
-- No changelog available.
-
-## [0.4.0-rc.3] - 2019-12-26
-
-- No changelog available.
-
-## [0.4.0-rc.2] - 2019-12-25
-
-- No changelog available.
-
-## [0.4.0-rc.1] - 2019-12-25
-
-- No changelog available.
+- Licence to MIT License.
+- Project name to ‘Couplet Composer’.
+- Project into three modes: preset, configure, and compose. Configuring mode sets up the build environment and builds and installs dependencies and composing mode builds the project. Preset mode can be used to run either configuring or composing mode with an options preset.
+- Tools and dependencies into a new module format.
 
 ## [0.3.0] - 2018-04-08
 
-- No changelog available.
+### Added
 
-## [0.3.0-dev.16] - 2018-03-27
+- Command line options `--develop-script`, `--no-script-update`, and `--update-script` so they don’t cause errors as they are used by the helper script for running the build script.
+- Command line option `--rpath` for setting the rpath.
+- Command line option `--link-libc++` for manually forcing the linking of `libc++`.
+- Command line option `--verbose-cmake` for enabling verbose CMake output.
+- Command line option `--build-separate-benchmark-library` to force Google Benchmark be built separately from the rest of the project.
+- Command line option `--log-tests` for enabling logger output from the tests of the project.
+- Add a trace-level logging function that is always printed.
+- Reflection for reading project values from a Python configuration of the project being built.
+- Explicit support for copying symbolic links with the shell utility.
+- Shell utility for listing all of the files in a directory.
+- Support for building Google Test and Google Benchmark by copying the files to be added into the build by the CMake script of the project that is being built.
+- Support for copying LLVM and SDL files to the correct directory according to the set rpath.
+- Support for using environment variables in the projects’ version values.
 
-- No changelog available.
+### Changed
 
-## [0.3.0-dev.15] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.14] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.13] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.12] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.11] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.10] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.9] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-alpha.3] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-alpha.2] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-alpha.1] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.8] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.7] - 2018-03-27
-
-- No changelog available.
-
-## [0.3.0-dev.6] - 2018-03-26
-
-- No changelog available.
-
-## [0.3.0-dev.5] - 2018-03-26
-
-- No changelog available.
-
-## [0.3.0-dev.4] - 2018-03-26
-
-- No changelog available.
-
-## [0.3.0-dev.3] - 2018-03-26
-
-- No changelog available.
-
-## [0.3.0-dev.2] - 2018-03-26
-
-- No changelog available.
-
-## [0.3.0-dev.1] - 2018-03-26
-
-- No changelog available.
+- SDL and LLVM library files to be copied one by one to avoid errors.
 
 ## [0.2.5] - 2018-03-25
 
-- No changelog available.
+### Fixed
+
+- C++ standard library when using locally installed LLVM by manually linking `libc++`.
 
 ## [0.2.4] - 2018-03-25
 
-- No changelog available.
+### Changed
+
+- CMake to be installed directory by directory to fix a copying error.
 
 ## [0.2.3] - 2018-03-25
 
-- No changelog available.
+### Added
+
+- Support for downloading LLVM and using it instead of the LLVM on the system.
+- Command line option `--build-llvm` for building LLVM.
 
 ## [0.2.2] - 2018-03-25
 
-- No changelog available.
+### Fixed
+
+- Incorrect global script directory.
 
 ## [0.2.1] - 2018-03-25
 
-- No changelog available.
+### Fixed
+
+- Incorrect script directory.
 
 ## [0.2.0] - 2018-03-25
 
-- No changelog available.
+### Removed
+
+- Catch as the dependency for [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
 ## [0.1.0] - 2018-03-25
 
-- No changelog available.
+### Added
+
+- Initial utility script for building [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
 [unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.4.1...HEAD
+[1.4.3]: https://github.com/anttikivi/couplet-composer/compare/v1.4.2...v1.4.3
+[1.4.2]: https://github.com/anttikivi/couplet-composer/compare/v1.4.1...v1.4.2
 [1.4.1]: https://github.com/anttikivi/couplet-composer/compare/v1.4.0...v1.4.1
 [1.4.0]: https://github.com/anttikivi/couplet-composer/compare/v1.3.2...v1.4.0
 [1.3.2]: https://github.com/anttikivi/couplet-composer/compare/v1.3.1...v1.3.2
@@ -563,39 +590,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 [0.5.3]: https://github.com/anttikivi/couplet-composer/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/anttikivi/couplet-composer/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/anttikivi/couplet-composer/compare/v0.5.0...v0.5.1
-[0.5.0]: https://github.com/anttikivi/couplet-composer/compare/0.4.5...0.5.0
+[0.5.0]: https://github.com/anttikivi/couplet-composer/compare/0.4.5...v0.5.0
 [0.4.5]: https://github.com/anttikivi/couplet-composer/compare/0.4.4...0.4.5
 [0.4.4]: https://github.com/anttikivi/couplet-composer/compare/0.4.3...0.4.4
 [0.4.3]: https://github.com/anttikivi/couplet-composer/compare/0.4.2...0.4.3
 [0.4.2]: https://github.com/anttikivi/couplet-composer/compare/0.4.1...0.4.2
 [0.4.1]: https://github.com/anttikivi/couplet-composer/compare/0.4.0...0.4.1
-[0.4.0]: https://github.com/anttikivi/couplet-composer/compare/0.4.0-rc.6...0.4.0
-[0.4.0-rc.6]: https://github.com/anttikivi/couplet-composer/compare/0.4.0-rc.5...0.4.0-rc.6
-[0.4.0-rc.5]: https://github.com/anttikivi/couplet-composer/compare/0.4.0-rc.4...0.4.0-rc.5
-[0.4.0-rc.4]: https://github.com/anttikivi/couplet-composer/compare/0.4.0-rc.3...0.4.0-rc.4
-[0.4.0-rc.3]: https://github.com/anttikivi/couplet-composer/compare/0.4.0-rc.2...0.4.0-rc.3
-[0.4.0-rc.2]: https://github.com/anttikivi/couplet-composer/compare/0.4.0-rc.1...0.4.0-rc.2
-[0.4.0-rc.1]: https://github.com/anttikivi/couplet-composer/compare/0.3.0...0.4.0-rc.1
-[0.3.0]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.16...0.3.0
-[0.3.0-dev.16]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.15...0.3.0-dev.16
-[0.3.0-dev.15]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.14...0.3.0-dev.15
-[0.3.0-dev.14]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.13...0.3.0-dev.14
-[0.3.0-dev.13]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.12...0.3.0-dev.13
-[0.3.0-dev.12]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.11...0.3.0-dev.12
-[0.3.0-dev.11]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.10...0.3.0-dev.11
-[0.3.0-dev.10]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.9...0.3.0-dev.10
-[0.3.0-dev.9]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-alpha.3...0.3.0-dev.9
-[0.3.0-alpha.3]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-alpha.2...0.3.0-alpha.3
-[0.3.0-alpha.2]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-alpha.1...0.3.0-alpha.2
-[0.3.0-alpha.1]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.8...0.3.0-alpha.1
-[0.3.0-dev.8]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.7...0.3.0-dev.8
-[0.3.0-dev.7]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.6...0.3.0-dev.7
-[0.3.0-dev.6]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.5...0.3.0-dev.6
-[0.3.0-dev.5]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.4...0.3.0-dev.5
-[0.3.0-dev.4]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.3...0.3.0-dev.4
-[0.3.0-dev.3]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.2...0.3.0-dev.3
-[0.3.0-dev.2]: https://github.com/anttikivi/couplet-composer/compare/0.3.0-dev.1...0.3.0-dev.2
-[0.3.0-dev.1]: https://github.com/anttikivi/couplet-composer/compare/0.2.5...0.3.0-dev.1
+[0.4.0]: https://github.com/anttikivi/couplet-composer/compare/0.3.0...0.4.0
+[0.3.0]: https://github.com/anttikivi/couplet-composer/compare/0.2.5...0.3.0
 [0.2.5]: https://github.com/anttikivi/couplet-composer/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/anttikivi/couplet-composer/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/anttikivi/couplet-composer/compare/0.2.2...0.2.3
