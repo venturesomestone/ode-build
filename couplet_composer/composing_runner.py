@@ -107,11 +107,12 @@ class ComposingRunner(RunnerProper):
                 getattr(self.project, "{}_name".format(key))
             ))
 
-        for key, value in self.project.cmake_options.items():
-            if isinstance(value, bool):
-                cmake_call.append("-D{}={}".format(key.upper(), "ON" if value else "OFF"))
-            else:
-                cmake_call.append("-D{}={}".format(key.upper(), str(value)))
+        if self.project.cmake_options:
+            for key, value in self.project.cmake_options.items():
+                if isinstance(value, bool):
+                    cmake_call.append("-D{}={}".format(key.upper(), "ON" if value else "OFF"))
+                else:
+                    cmake_call.append("-D{}={}".format(key.upper(), str(value)))
 
         with shell.pushd(self.build_dir.build):
             shell.call(
