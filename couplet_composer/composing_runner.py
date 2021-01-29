@@ -114,6 +114,10 @@ class ComposingRunner(RunnerProper):
                 else:
                     cmake_call.append("-D{}={}".format(key.upper(), str(value)))
 
+        if self.args.cmake_options:
+            for option in self.args.cmake_options:
+                cmake_call.append("-D{}".format(option))
+
         with shell.pushd(self.build_dir.build):
             shell.call(
                 cmake_call,

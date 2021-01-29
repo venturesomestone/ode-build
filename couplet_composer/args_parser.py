@@ -333,4 +333,13 @@ def create_args_parser() -> ArgumentParser:
         dest="cpp_std"
     )
 
+    # --------------------------------------------------------- #
+    # Compose: CMake options
+
+    compose.add_argument(
+        "--cmake-options",
+        nargs="+",
+        help="add a list of additional CMake option to pass to the build"
+    )
+
     return parser

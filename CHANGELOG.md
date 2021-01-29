@@ -23,6 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - More informative logging format to the command line output.
 - Ability to add platform-dependant file configurations for the dependencies.
 - Support for adding CMake commands in `product.json` with the key `cmakeOptions`.
+- Command line option `--cmake-options` for adding CMake options.
 
 ### Changed
 

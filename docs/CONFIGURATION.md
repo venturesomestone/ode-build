@@ -19,11 +19,13 @@ Please note that this documentation is only for the different options of Couplet
 - [Preset Mode Options](#preset-mode-options)
 - [Composing Mode Options](#composing-mode-options)
   - [Compose: C++ Standard Options](#compose-c-standard-options)
+  - [Compose: CMake Options](#compose-cmake-options)
 
 [Project Configuration File](#project-configuration-file)
-- [Dependencies](#dependencies)
+- [`dependencies`](#dependencies)
   - [`id.files`](#idfiles)
   - [`id.platforms`](#idplatforms)
+- [`cmakeOption`](#cmakeoptions)
 
 ## Configuring the Build
 
@@ -212,9 +214,15 @@ Compiles the project using `c++17` as the C++ standard. This option is a shortha
 
 Compiles the project using `c++20` as the C++ standard. This option is a shorthand for `--std cpp20`.
 
+#### Compose: CMake Options
+
 ## Project Configuration File
 
-### Dependencies
+**`--cmake-options OPTIONS`**
+
+Passes the given CMake options to the CMake script. The options must be in given as key and value pairs in the form `NAME=VALUE` and the different pairs must be separated by spaces.
+
+### `dependencies`
 
 #### `id.files`
 
@@ -289,3 +297,17 @@ If the script can’t install some file by using its build script, you can give 
 ```
 
 #### `id.platforms`
+
+### `cmakeOptions`
+
+The `cmakeOptions` object contains key and value pairs of CMake options to pass to the CMake script.
+
+```json
+{
+  "cmakeOptions": {
+    "OPTION_SOMETHING": "value",
+    "OPTION_BOOLEAN": true,
+    "OPTION_NUMBER": 34,
+  }
+}
+```
