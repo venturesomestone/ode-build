@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ## [Unreleased]
 
+### Added
+
+- Version data to the `__version__.py` module.
+
 ### Changed
 
 - Warning about the end of the Python 2.7 to tell the exact version of Couplet Composer.
@@ -34,6 +38,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - `ODE_TEST_USE_NULL_SINK` as it will be removed in the next major version.
 - `ODE_DISABLE_GL_CALLS` as it will be removed in the next major version.
 - `ODE_SCRIPTS_BASE_DIRECTORY` as it will be removed in the next major version.
+
+### Removed
+
+- Text file where the script version was read from as it’s replaced by Python-only version resolving.
 
 ## [1.4.4] - 2021-01-29
 

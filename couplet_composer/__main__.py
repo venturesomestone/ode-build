@@ -34,7 +34,7 @@ from .util.date import date_difference, to_date_string
 
 from .util.target import parse_target_from_argument_string
 
-from .__version__ import get_version
+from .__version__ import __version__
 
 from . import args, modes
 
@@ -174,7 +174,7 @@ def _main():
     # utilized throughout the rest of the run.
     _set_logging_level(print_debug=arguments.print_debug)
 
-    logging.info("Running %s version %s", get_project_name(), get_version())
+    logging.info("Running %s version %s", get_project_name(), __version__)
 
     if unknown_arguments:
         logging.warning(
