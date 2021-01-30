@@ -29,7 +29,7 @@ from .support.project_values import \
 
 from .util.target import current_platform, resolve_host_target
 
-from . import __version__
+from .__version__ import __version__
 
 
 def _add_common_arguments(parser):
@@ -47,7 +47,7 @@ def _add_common_arguments(parser):
         "-v",
         "--version",
         action="version",
-        version=__version__.get_version()
+        version=__version__
     )
 
     # --------------------------------------------------------- #
