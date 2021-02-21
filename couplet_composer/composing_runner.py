@@ -125,5 +125,17 @@ class ComposingRunner(RunnerProper):
                 dry_run=self.args.dry_run,
                 echo=self.args.verbose
             )
+            # TODO Take into account all of the different build
+            # systems.
+            shell.call(
+                [self.toolchain.ninja],
+                dry_run=self.args.dry_run,
+                echo=self.args.verbose
+            )
+            shell.call(
+                [self.toolchain.ninja, "install"],
+                dry_run=self.args.dry_run,
+                echo=self.args.verbose
+            )
 
         return 0
