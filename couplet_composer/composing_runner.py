@@ -137,5 +137,16 @@ class ComposingRunner(RunnerProper):
                 dry_run=self.args.dry_run,
                 echo=self.args.verbose
             )
+        shell.copytree(
+            os.path.join(
+                self.source_root,
+                self.args.repository,
+                "util",
+                "bin"
+            ),
+            os.path.join(self.build_dir.destination, "bin"),
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
 
         return 0
