@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project is documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
@@ -24,6 +24,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Ability to add platform-dependant file configurations for the dependencies.
 - Support for adding CMake commands in `product.json` with the key `cmakeOptions`.
 - Command line option `--cmake-options` for adding CMake options.
+- Support for passing the CMake option `COMPOSER_BUILD_TEST`.
+- Support for passing the CMake option `COMPOSER_BUILD_BENCHMARK`.
+- Support for passing the CMake option `COMPOSER_BUILD_DOCS`.
+- Support for passing the CMake option `COMPOSER_CODE_COVERAGE`.
+- Support for passing the CMake option `COMPOSER_CPP_STD`.
+- Support for passing the CMake option `COMPOSER_LOCAL_PREFIX`.
+- Support for passing the CMake option `COMPOSER_OPENGL_VERSION_MAJOR`.
+- Support for passing the CMake option `COMPOSER_OPENGL_VERSION_MINOR`.
+- Support for passing the CMake option `COMPOSER_name_VERSION` where `name` is the name of a supported project.
+- Support for passing the CMake option `COMPOSER_name_NAME` where `name` is the name of a supported project.
 
 ### Changed
 
@@ -46,6 +56,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Support for using the key `testonly` to determine whether a dependency is built only when the tests are built.
 - Support for using the key `benchmarkonly` to determine whether a dependency is built only when the benchmarks are built.
 - Dependency on `distro`.
+- `ODE_BUILD_TEST` as it is replaced by `COMPOSER_BUILD_TEST`.
+- `ODE_TEST_BENCHMARKING` as it is replaced by `COMPOSER_BUILD_BENCHMARK`.
+- `ODE_BUILD_DOCS` as it is replaced by `COMPOSER_BUILD_DOCS`.
+- `ODE_CODE_COVERAGE` as it is replaced by `COMPOSER_CODE_COVERAGE`.
+- `ODE_CXX_VERSION` as it is replaced by `COMPOSER_CPP_STD`.
+- `ODE_DEPENDENCY_PREFIX` as it is replaced by `COMPOSER_LOCAL_PREFIX`.
+- `ODE_OPENGL_VERSION_MAJOR` as it is replaced by `COMPOSER_OPENGL_VERSION_MAJOR`.
+- `ODE_OPENGL_VERSION_MINOR` as it is replaced by `COMPOSER_OPENGL_VERSION_MINOR`.
+- `ODE_VERSION` as it is replaced by `COMPOSER_ODE_VERSION`.
+- `ANTHEM_VERSION` as it is replaced by `COMPOSER_ANTHEM_VERSION`.
+- `ODE_NAME` as it is replaced by `COMPOSER_ODE_NAME`.
+- `ANTHEM_NAME` as it is replaced by `COMPOSER_ANTHEM_NAME`.
+- `ODE_DEVELOPER` as it is removed.
+- `ODE_BUILD_STATIC` as it is removed.
+- `ODE_BUILD_SHARED` as it is removed.
+- `ANTHEM_BUILD_STATIC` as it is removed.
+- `ANTHEM_BUILD_SHARED` as it is removed.
+- `ODE_TEST_USE_NULL_SINK` as it is removed.
+- `ODE_DISABLE_GL_CALLS` as it is removed.
+- `ODE_SCRIPTS_BASE_DIRECTORY` as it is removed.
 
 ## [1.2.1] - 2020-09-12
 
@@ -150,7 +180,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Added
 
-- Support for the CMake option for indicating that the compilation of the binaries will be skipped.
+- Support for the CMake option for indicating that the compilation of the binaries is skipped.
 
 ## [0.14.6] - 2020-05-09
 
