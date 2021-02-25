@@ -1,0 +1,45 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
+      LOCAL_VERSION_NUMBER_FILE: build_version.txt
+
+    steps:
+      - name: Check out the repository 
+        uses: actions/checkout@v2.3.4
+        with:
+          ref: main
+
+      - name: Determine the project’s version
+        id: version
+        uses: visiosto/maintain-revision@v0.10.1
+        with:
+          type: python
+          file: 'couplet_composer/__version__.py'
+          download: false
+          upload: false
+          suffix-variable: _VERSION_SUFFIX
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install --upgrade setuptools wheel twine
+
+      - name: Create distribution archives
+        run: python setup.py sdist bdist_wheel
+
+      - name: Upload to PyPI
+        run: twine upload dist/* -u __token__ -p pypi-${{ secrets.PYPI_API_TOKEN }}
