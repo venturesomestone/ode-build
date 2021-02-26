@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 ### Added
 
 - Version data to the `__version__.py` module.
+- Support for installing the project from the Python Package Index.
 
 ### Changed
 
