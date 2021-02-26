@@ -2,15 +2,12 @@
 
 ![](https://github.com/anttikivi/couplet-composer/workflows/Main%20workflow/badge.svg)
 
-Couplet Composer is the build script for [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem). It takes care of setting up the build environment, installing the dependencies, and building the project incrementally.
+Couplet Composer is a build utility for [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem). It takes care of setting up the build environment, installing the dependencies, and building the project incrementally.
 
 ## Install
 
-While you can install Couplet Composer globally to you system, it’s recommended that you use it via the helper scripts that come with [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem). Those script automatically install the up-to-date version of Couplet Composer and invoke it using the correct set of options.
+    pip install couplet-composer
 
-## Usage
-
-To easiest way to use Couplet Composer, please run it by using the helper scripts that come with [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem). The instructions for using the helper scripts are in the repository of [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
 ## Contribute
 
