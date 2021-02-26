@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.5.0] - 2021-02-26
+
+### Added
+
+- Version data to the `__version__.py` module.
+- Support for installing the project from the Python Package Index.
+
+### Changed
+
+- Warning about the end of the Python 2.7 to tell the exact version of Couplet Composer.
+- Arguments parser to parse only known arguments so that `pipenv` arguments don’t cause errors.
+
+### Deprecated
+
+- `ODE_BUILD_TEST` as it will be replaced by `COMPOSER_BUILD_TEST` in the next major version.
+- `ODE_TEST_BENCHMARKING` as it will be replaced by `COMPOSER_BUILD_BENCHMARK` in the next major version.
+- `ODE_BUILD_DOCS` as it will be replaced by `COMPOSER_BUILD_DOCS` in the next major version.
+- `ODE_CODE_COVERAGE` as it will be replaced by `COMPOSER_CODE_COVERAGE` in the next major version.
+- `ODE_DEVELOPER` as it will be replaced by `COMPOSER_DEVELOPER` in the next major version.
+- `ODE_CXX_VERSION` as it will be replaced by `COMPOSER_CPP_STD` in the next major version.
+- `ODE_DEPENDENCY_PREFIX` as it will be replaced by `COMPOSER_LOCAL_PREFIX` in the next major version.
+- `ODE_OPENGL_VERSION_MAJOR` as it will be replaced by `COMPOSER_OPENGL_VERSION_MAJOR` in the next major version.
+- `ODE_OPENGL_VERSION_MINOR` as it will be replaced by `COMPOSER_OPENGL_VERSION_MINOR` in the next major version.
+- `ODE_VERSION` as it will be replaced by `COMPOSER_ODE_VERSION` in the next major version.
+- `ANTHEM_VERSION` as it will be replaced by `COMPOSER_ANTHEM_VERSION` in the next major version.
+- `ODE_NAME` as it will be replaced by `COMPOSER_ODE_NAME` in the next major version.
+- `ANTHEM_NAME` as it will be replaced by `COMPOSER_ANTHEM_NAME` in the next major version.
+- `ODE_DEVELOPER` as it will be removed in the next major version.
+- `ODE_BUILD_STATIC` as it will be removed in the next major version.
+- `ODE_BUILD_SHARED` as it will be removed in the next major version.
+- `ANTHEM_BUILD_STATIC` as it will be removed in the next major version.
+- `ANTHEM_BUILD_SHARED` as it will be removed in the next major version.
+- `ODE_TEST_USE_NULL_SINK` as it will be removed in the next major version.
+- `ODE_DISABLE_GL_CALLS` as it will be removed in the next major version.
+- `ODE_SCRIPTS_BASE_DIRECTORY` as it will be removed in the next major version.
+
+### Removed
+
+- Text file where the script version was read from as it’s replaced by Python-only version resolving.
+
 ## [1.4.4] - 2021-01-29
 
 ### Fixed
@@ -543,7 +583,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Initial utility script for building [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.4.4...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/anttikivi/couplet-composer/compare/v1.4.4...v1.5.0
 [1.4.4]: https://github.com/anttikivi/couplet-composer/compare/v1.4.3...v1.4.4
 [1.4.3]: https://github.com/anttikivi/couplet-composer/compare/v1.4.2...v1.4.3
 [1.4.2]: https://github.com/anttikivi/couplet-composer/compare/v1.4.1...v1.4.2

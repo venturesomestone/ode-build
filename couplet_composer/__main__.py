@@ -34,7 +34,7 @@ from .util.date import date_difference, to_date_string
 
 from .util.target import parse_target_from_argument_string
 
-from .__version__ import get_version
+from .__version__ import __version__
 
 from . import args, modes
 
@@ -59,7 +59,7 @@ def _parse_arguments(parser):
     parser -- The argument parser that is used to parse the
     arguments.
     """
-    return parser.parse_args()
+    return parser.parse_known_args()
 
 
 def _set_logging_level(print_debug):
@@ -108,8 +108,9 @@ def _check_and_print_python_version():
                 to_date_string(date_difference(python2_end_of_life, now))
             )
             logging.warning(
-                "At some point in the future, %s will end supporting Python "
+                "Starting at version %s, %s will end supporting Python "
                 "2.7",
+                "2.0",
                 get_project_name()
             )
     else:
@@ -167,13 +168,21 @@ def _main():
     Enters the program and runs it. This function isn't pure.
     """
     argument_parser = _create_argument_parser()
-    arguments = _parse_arguments(argument_parser)
+    arguments, unknown_arguments = _parse_arguments(argument_parser)
 
     # The logging level is the first thing to be set so it can be
     # utilized throughout the rest of the run.
     _set_logging_level(print_debug=arguments.print_debug)
 
-    logging.info("Running %s version %s", get_project_name(), get_version())
+    logging.info("Running %s version %s", get_project_name(), __version__)
+
+    if unknown_arguments:
+        logging.warning(
+            "The following command line arguments weren't "
+            "recognized:\n{}".format(
+                "\n".join(unknown_arguments)
+            )
+        )
 
     source_root = os.getcwd()
 
@@ -336,6 +345,63 @@ def _main():
                 "CMakeLists.txt"
             )
         )
+
+    cmake_deprecated_replaced = [
+        "ODE_BUILD_TEST",
+        "ODE_TEST_BENCHMARKING",
+        "ODE_BUILD_DOCS",
+        "ODE_CODE_COVERAGE",
+        "ODE_CXX_VERSION",
+        "ODE_DEPENDENCY_PREFIX",
+        "ODE_OPENGL_VERSION_MAJOR",
+        "ODE_OPENGL_VERSION_MINOR",
+        "ODE_VERSION",
+        "ANTHEM_VERSION",
+        "ODE_NAME",
+        "ANTHEM_NAME"
+    ]
+    cmake_replacements = [
+        "COMPOSER_BUILD_TEST",
+        "COMPOSER_BUILD_BENCHMARK",
+        "COMPOSER_BUILD_DOCS",
+        "COMPOSER_CODE_COVERAGE",
+        "COMPOSER_CPP_STD",
+        "COMPOSER_LOCAL_PREFIX",
+        "COMPOSER_OPENGL_VERSION_MAJOR",
+        "COMPOSER_OPENGL_VERSION_MINOR",
+        "COMPOSER_ODE_VERSION",
+        "COMPOSER_ANTHEM_VERSION",
+        "COMPOSER_ODE_NAME",
+        "COMPOSER_ANTHEM_NAME"
+    ]
+    cmake_removed = [
+        "ODE_DEVELOPER",
+        "ODE_BUILD_STATIC",
+        "ODE_BUILD_SHARED",
+        "ANTHEM_BUILD_STATIC",
+        "ANTHEM_BUILD_SHARED",
+        "ODE_TEST_USE_NULL_SINK",
+        "ODE_DISABLE_GL_CALLS",
+        "ODE_SCRIPTS_BASE_DIRECTORY"
+    ]
+
+    logging.warning(
+        "Please note the CMake options {}, and {} are deprecated".format(
+            ", ".join(cmake_deprecated_replaced[:-1]),
+            cmake_deprecated_replaced[-1]
+        )
+    )
+    logging.warning("They will be replaced by {}, and {} respectively".format(
+        ", ".join(cmake_replacements[:-1]),
+        cmake_replacements[-1]
+    ))
+    logging.warning(
+        "Please note that the CMake options {}, and {} are deprecated and "
+        "removed in the next major version".format(
+            ", ".join(cmake_removed[:-1]),
+            cmake_removed[-1]
+        )
+    )
 
     return run_script(
         runner=_resolve_running_function(

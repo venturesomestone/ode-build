@@ -97,7 +97,7 @@ setup(
         "console_scripts": ["couplet-composer = couplet_composer.__main__:run"]
     },
     install_requires=REQUIRED,
-    package_data={"": ["*.json"]},
+    package_data={"": ["*.json"]},  # TODO This might be unnecessary
     include_package_data=True,
     license="MIT",
     classifiers=[
