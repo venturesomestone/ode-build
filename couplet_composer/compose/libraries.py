@@ -160,7 +160,9 @@ def copy_sdl_libraries(
             get_project_dependencies_file_path(source_root)
         )
         with open(dependency_version_file) as f:
-            sdl_version = json.load(f)["sdl"]["version"]
+            json_data = json.load(f)
+            sdl_version = json_data["dependencies"]["sdl"]["version"] \
+                if "dependencies" in json_data else json_data["sdl"]["version"]
 
         sdl_major, sdl_minor, sdl_patch = sdl_version.split(".")
 
