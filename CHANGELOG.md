@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.6.0] - 2021-02-27
+
+### Fixed
+
+- Command for uploading releases to the Python Package Index.
+
 ## [1.5.0] - 2021-02-26
 
 ### Added
@@ -583,7 +589,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Initial utility script for building [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.5.0...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/anttikivi/couplet-composer/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/anttikivi/couplet-composer/compare/v1.4.4...v1.5.0
 [1.4.4]: https://github.com/anttikivi/couplet-composer/compare/v1.4.3...v1.4.4
 [1.4.3]: https://github.com/anttikivi/couplet-composer/compare/v1.4.2...v1.4.3
