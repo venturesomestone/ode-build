@@ -15,7 +15,7 @@ def get_release_version():
     and, thus, returns three values: the major version number,
     the minor version number, and the patch version number.
     """
-    return 1, 7, 2
+    return 1, 7, 3
 
 
 _VERSION_SUFFIX = ""
