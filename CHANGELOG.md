@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### Deprecated
+
+- Command line argument `--print-debug`as it will be replaced by `--verbose`.
+- Command line argument `--in-tree-build`as it will be removed in the next major version.
+- Command line arguments `--github-auth-file`, `--github-user-agent`, and `--github-api-token` as they’ll become obsolete in the next major version.
+
 ## [1.7.5] - 2021-02-28
 
 ### Changed
