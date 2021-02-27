@@ -36,7 +36,7 @@ def should_add_sources_to_project(host_system):
 
     host_system -- The system this script is run on.
     """
-    return false  # host_system == get_windows_system_name()
+    return False  # host_system == get_windows_system_name()
 
 
 @cached
