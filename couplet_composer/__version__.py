@@ -18,7 +18,7 @@ def get_release_version():
     return 1, 7, 0
 
 
-_VERSION_SUFFIX = "-dev"
+_VERSION_SUFFIX = ""
 
 
 __version__ = "{}{}".format(
