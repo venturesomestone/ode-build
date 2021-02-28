@@ -70,6 +70,9 @@ class ComposingRunner(RunnerProper):
             "-DCMAKE_BUILD_TYPE={}".format(
                 self.build_variant.value
             ),
+            "-DCMAKE_PREFIX_PATH={}".format(
+                self.build_dir.dependencies.replace(os.path.sep, "/")
+            ),
             "-DCMAKE_INSTALL_PREFIX={}".format(
                 self.build_dir.destination.replace(os.path.sep, "/")
             ),
