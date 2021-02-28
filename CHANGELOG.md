@@ -14,6 +14,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Command line arguments `--compiler-toolchain`, `--clang`, `--gcc`, `--msvc`, `--compiler-version`, `--host-cc`, `--host-cxx`, `--host-compiler`, `--host-msbuild`, `--clang-tidy-binary`, `--clang-apply-replacements-binary`, and `--enable-xvfb` as they’ll become obsolete in the next major version.
 - Command line argument `--opengl-version` as it will be replaced by a value in `product.json`.
 
+## [1.7.6] - 2021-02-28
+
+### Fixed
+
+- Changelog links for `v1.7.5`.
+
 ## [1.7.5] - 2021-02-28
 
 ### Changed
@@ -635,7 +641,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Initial utility script for building [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.7.4...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.7.6...HEAD
+[1.7.6]: https://github.com/anttikivi/couplet-composer/compare/v1.7.5...v1.7.6
 [1.7.5]: https://github.com/anttikivi/couplet-composer/compare/v1.7.4...v1.7.5
 [1.7.4]: https://github.com/anttikivi/couplet-composer/compare/v1.7.3...v1.7.4
 [1.7.3]: https://github.com/anttikivi/couplet-composer/compare/v1.7.2...v1.7.3
