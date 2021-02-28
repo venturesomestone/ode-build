@@ -503,18 +503,21 @@ def create_argument_parser():
     # --------------------------------------------------------- #
     # Compose: Common build options
 
+    # TODO Deprecated
     compose.add_argument(
         "--ode-static-lib",
         action="store_true",
         help="build the static library of {}".format(get_ode_name()),
         dest="build_ode_static_lib"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--ode-shared-lib",
         action="store_true",
         help="build the shared library of {}".format(get_ode_name()),
         dest="build_ode_shared_lib"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-static-lib",
         action="store_true",
@@ -523,6 +526,7 @@ def create_argument_parser():
         ),
         dest="build_anthem_static_lib"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-shared-lib",
         action="store_true",
@@ -532,6 +536,7 @@ def create_argument_parser():
         dest="build_anthem_shared_lib"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--skip-build",
         action="store_true",
@@ -541,6 +546,7 @@ def create_argument_parser():
         )
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--export-linter-fixes",
         default=None,
@@ -548,6 +554,7 @@ def create_argument_parser():
              "path of which is given relative to the source root"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--use-artefact-directory",
         action="store_true",
@@ -586,22 +593,26 @@ def create_argument_parser():
     # --------------------------------------------------------- #
     # Compose: Feature options
 
+    # TODO Deprecated
     compose.add_argument(
         "--ode-binaries-name",
         default=get_ode_binaries_base_name(),
         help="set base name of the binaries of {}".format(get_ode_name())
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-binaries-name",
         default=get_anthem_binaries_base_name(),
         help="set base name of the binaries of {}".format(get_anthem_name())
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-artefacts-name",
         default=get_anthem_binaries_base_name(),
         help="set base name of the artefacts of {}".format(get_anthem_name()),
         dest="anthem_artefacts_name"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-artifacts-name",
         default=get_anthem_binaries_base_name(),
@@ -628,6 +639,7 @@ def create_argument_parser():
         dest="assertions"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "-D",
         "--developer-build",
@@ -635,6 +647,7 @@ def create_argument_parser():
         help="enable developer features in the built executables"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--test-logging",
         action="store_true",

@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Command line arguments `--github-auth-file`, `--github-user-agent`, and `--github-api-token` as they’ll become obsolete in the next major version.
 - Command line arguments `--compiler-toolchain`, `--clang`, `--gcc`, `--msvc`, `--compiler-version`, `--host-cc`, `--host-cxx`, `--host-compiler`, `--host-msbuild`, `--clang-tidy-binary`, `--clang-apply-replacements-binary`, and `--enable-xvfb` as they’ll become obsolete in the next major version.
 - Command line argument `--opengl-version` as it will be replaced by a value in `product.json`.
+- Command line arguments `--ode-static-lib`, `--ode-shared-lib`, `--anthem-static-lib`, `--anthem-shared-lib`, and `--skip-build` as they’ll become obsolete in the next major version.
+- Command line argument `--export-linter-fixes` as it will be removed in the next major version.
+- Command line argument `--use-artefact-directory` as it will be removed in the next major version.
+- Command line arguments `--ode-binaries-name`, `--anthem-binaries-name`, `--anthem-artefacts-name`, and `--anthem-artifacts-name` as they’ll become obsolete in the next major version.
+- Command line argument `--developer-build` as it will be removed in the next major version.
+- Command line argument `--test-logging` as it will be removed in the next major version.
 
 ## [1.7.6] - 2021-02-28
 
