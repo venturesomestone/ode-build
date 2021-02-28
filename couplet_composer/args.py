@@ -624,6 +624,7 @@ def create_argument_parser():
 
     assertions_group.set_defaults(assertions=True)
 
+    # TODO Deprecated
     assertions_group.add_argument(
         "-a",
         "--assertions",
@@ -631,6 +632,7 @@ def create_argument_parser():
         help="enable assertions",
         dest="assertions"
     )
+    # TODO Deprecated
     assertions_group.add_argument(
         "-A",
         "--no-assertions",

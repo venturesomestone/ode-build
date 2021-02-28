@@ -433,6 +433,8 @@ def _main():
         "--anthem-binaries-name",
         "--anthem-artefacts-name",
         "--anthem-artifacts-name",
+        "--assertions",
+        "--no-assertions",
         "--developer-build",
         "--test-logging"
     ]

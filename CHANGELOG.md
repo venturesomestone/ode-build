@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Command line argument `--export-linter-fixes` as it will be removed in the next major version.
 - Command line argument `--use-artefact-directory` as it will be removed in the next major version.
 - Command line arguments `--ode-binaries-name`, `--anthem-binaries-name`, `--anthem-artefacts-name`, and `--anthem-artifacts-name` as they’ll become obsolete in the next major version.
+- Command line arguments `--assertions` and `--no-assertions` as they will be removed in the next major version.
 - Command line argument `--developer-build` as it will be removed in the next major version.
 - Command line argument `--test-logging` as it will be removed in the next major version.
 
