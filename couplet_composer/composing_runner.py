@@ -109,6 +109,10 @@ class ComposingRunner(RunnerProper):
                 key.upper(),
                 getattr(self.project, "{}_name".format(key))
             ))
+            cmake_call.append("-DCOMPOSER_{}_TARGET={}".format(
+                key.upper(),
+                key
+            ))
 
         if self.project.cmake_options:
             for key, value in self.project.cmake_options.items():
