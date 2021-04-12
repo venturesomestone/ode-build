@@ -131,7 +131,7 @@ def _read_preset(
         elif option == _DASH_DASH_OPTION:
             dash_dash_seen = True
         else:
-            pair_to_add = {option: value}
+            pair_to_add = {option: value.split(",") if "," in value else value}
             if dash_dash_seen:
                 options_after_end.update(pair_to_add)
             else:

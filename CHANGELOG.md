@@ -34,6 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Support for passing the CMake option `COMPOSER_OPENGL_VERSION_MINOR`.
 - Support for passing the CMake option `COMPOSER_name_VERSION` where `name` is the name of a supported project.
 - Support for passing the CMake option `COMPOSER_name_NAME` where `name` is the name of a supported project.
+- Support for passing option lists from the presets.
 
 ### Changed
 

@@ -138,7 +138,11 @@ class PresetRunner(Runner):
 
         for key, value in options.items():
             if value:
-                build_call.append("--{}={}".format(key, value))
+                if isinstance(value, list):
+                    for entry in value:
+                        build_call.append("--{}={}".format(key, entry))
+                else:
+                    build_call.append("--{}={}".format(key, value))
             else:
                 build_call.append("--{}".format(key))
 
