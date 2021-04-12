@@ -403,6 +403,50 @@ def _main():
         )
     )
 
+    deprecated_options = [
+        "--print-debug",
+        "--in-tree-build",
+        "--github-auth-file",
+        "--github-user-agent",
+        "--github-api-token",
+        "--compiler-toolchain",
+        "--clang",
+        "--gcc",
+        "--msvc",
+        "--compiler-version",
+        "--host-cc",
+        "--host-cxx",
+        "--host-compiler",
+        "--host-msbuild",
+        "--clang-tidy-binary",
+        "--clang-apply-replacements-binary",
+        "--enable-xvfb",
+        "--opengl-version",
+        "--ode-static-lib",
+        "--ode-shared-lib",
+        "--anthem-static-lib",
+        "--anthem-shared-lib",
+        "--skip-build",
+        "--export-linter-fixes",
+        "--use-artefact-directory",
+        "--ode-binaries-name",
+        "--anthem-binaries-name",
+        "--anthem-artefacts-name",
+        "--anthem-artifacts-name",
+        "--assertions",
+        "--no-assertions",
+        "--developer-build",
+        "--test-logging"
+    ]
+
+    logging.warning(
+        "Please note that the command line options {}, and {} are deprecated "
+        "and removed in the next major version".format(
+            ", ".join(deprecated_options[:-1]),
+            deprecated_options[-1]
+        )
+    )
+
     return run_script(
         runner=_resolve_running_function(
             mode=arguments.composer_mode,

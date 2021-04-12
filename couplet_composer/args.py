@@ -72,11 +72,13 @@ def _add_common_arguments(parser):
         action="store_true",
         help="clean up the build environment before build"
     )
+    # TODO Deprecated
     parser.add_argument(
         "--print-debug",
         action="store_true",
         help="print the debug-level logging output"
     )
+    # TODO Deprecated
     parser.add_argument(
         "--in-tree-build",
         action="store_true",
@@ -88,6 +90,7 @@ def _add_common_arguments(parser):
 
     github_group = parser.add_argument_group("GitHub options")
 
+    # TODO Deprecated
     github_group.add_argument(
         "--github-auth-file",
         default=get_github_api_file_path(),
@@ -97,6 +100,7 @@ def _add_common_arguments(parser):
              "first line of the file must contain the user agent and the "
              "second the API token".format(get_github_api_file_path())
     )
+    # TODO Deprecated
     github_group.add_argument(
         "--github-user-agent",
         default=None,
@@ -104,6 +108,7 @@ def _add_common_arguments(parser):
              "{}). Overrides the value read using the '--github-auth-file' "
              "option".format(None)
     )
+    # TODO Deprecated
     github_group.add_argument(
         "--github-api-token",
         default=None,
@@ -264,6 +269,7 @@ def _add_common_build_arguments(parser):
         if current_platform() != get_windows_system_name() \
         else get_msvc_toolchain_name()
 
+    # TODO Deprecated
     toolchain_selection_group.add_argument(
         "-C",
         "--compiler-toolchain",
@@ -276,6 +282,7 @@ def _add_common_build_arguments(parser):
              ),
         dest="compiler_toolchain"
     )
+    # TODO Deprecated
     toolchain_selection_group.add_argument(
         "--clang",
         action="store_const",
@@ -284,6 +291,7 @@ def _add_common_build_arguments(parser):
              "project if no path is given with '--host-cc' and '--host-cxx'",
         dest="compiler_toolchain"
     )
+    # TODO Deprecated
     toolchain_selection_group.add_argument(
         "--gcc",
         action="store_const",
@@ -292,6 +300,7 @@ def _add_common_build_arguments(parser):
              "project if no path is given with '--host-cc' and '--host-cxx'",
         dest="compiler_toolchain"
     )
+    # TODO Deprecated
     toolchain_selection_group.add_argument(
         "--msvc",
         action="store_const",
@@ -301,6 +310,7 @@ def _add_common_build_arguments(parser):
         dest="compiler_toolchain"
     )
 
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--compiler-version",
         default=None,
@@ -309,18 +319,21 @@ def _add_common_build_arguments(parser):
              "manually"
     )
 
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--host-cc",
         default=None,
         help="give the path to the C compiler for the host platform and use "
              "it instead of the automatically resolved C compiler"
     )
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--host-cxx",
         default=None,
         help="give the path to the C++ compiler for the host platform and use "
              "it instead of the automatically resolved C++ compiler"
     )
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--host-compiler",
         default=None,
@@ -329,6 +342,7 @@ def _add_common_build_arguments(parser):
              "override the '--host-cc' and '--host-cxx' options"
     )
 
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--host-msbuild",
         default=None,
@@ -336,12 +350,14 @@ def _add_common_build_arguments(parser):
              "instead of the automatically resolved MSBuild"
     )
 
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--clang-tidy-binary",
         default=None,
         help="give the path to clang-tidy and use it instead of the "
              "automatically resolved one"
     )
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--clang-apply-replacements-binary",
         default=None,
@@ -349,6 +365,7 @@ def _add_common_build_arguments(parser):
              "the automatically resolved one"
     )
 
+    # TODO Deprecated
     toolchain_group.add_argument(
         "--enable-xvfb",
         action="store_true",
@@ -360,6 +377,7 @@ def _add_common_build_arguments(parser):
 
     opengl_group = parser.add_argument_group("OpenGL options")
 
+    # TODO Deprecated
     opengl_group.add_argument(
         "--opengl-version",
         default="3.2",
@@ -485,18 +503,21 @@ def create_argument_parser():
     # --------------------------------------------------------- #
     # Compose: Common build options
 
+    # TODO Deprecated
     compose.add_argument(
         "--ode-static-lib",
         action="store_true",
         help="build the static library of {}".format(get_ode_name()),
         dest="build_ode_static_lib"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--ode-shared-lib",
         action="store_true",
         help="build the shared library of {}".format(get_ode_name()),
         dest="build_ode_shared_lib"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-static-lib",
         action="store_true",
@@ -505,6 +526,7 @@ def create_argument_parser():
         ),
         dest="build_anthem_static_lib"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-shared-lib",
         action="store_true",
@@ -514,6 +536,7 @@ def create_argument_parser():
         dest="build_anthem_shared_lib"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--skip-build",
         action="store_true",
@@ -523,6 +546,7 @@ def create_argument_parser():
         )
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--export-linter-fixes",
         default=None,
@@ -530,6 +554,7 @@ def create_argument_parser():
              "path of which is given relative to the source root"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--use-artefact-directory",
         action="store_true",
@@ -568,22 +593,26 @@ def create_argument_parser():
     # --------------------------------------------------------- #
     # Compose: Feature options
 
+    # TODO Deprecated
     compose.add_argument(
         "--ode-binaries-name",
         default=get_ode_binaries_base_name(),
         help="set base name of the binaries of {}".format(get_ode_name())
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-binaries-name",
         default=get_anthem_binaries_base_name(),
         help="set base name of the binaries of {}".format(get_anthem_name())
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-artefacts-name",
         default=get_anthem_binaries_base_name(),
         help="set base name of the artefacts of {}".format(get_anthem_name()),
         dest="anthem_artefacts_name"
     )
+    # TODO Deprecated
     compose.add_argument(
         "--anthem-artifacts-name",
         default=get_anthem_binaries_base_name(),
@@ -595,6 +624,7 @@ def create_argument_parser():
 
     assertions_group.set_defaults(assertions=True)
 
+    # TODO Deprecated
     assertions_group.add_argument(
         "-a",
         "--assertions",
@@ -602,6 +632,7 @@ def create_argument_parser():
         help="enable assertions",
         dest="assertions"
     )
+    # TODO Deprecated
     assertions_group.add_argument(
         "-A",
         "--no-assertions",
@@ -610,6 +641,7 @@ def create_argument_parser():
         dest="assertions"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "-D",
         "--developer-build",
@@ -617,6 +649,7 @@ def create_argument_parser():
         help="enable developer features in the built executables"
     )
 
+    # TODO Deprecated
     compose.add_argument(
         "--test-logging",
         action="store_true",

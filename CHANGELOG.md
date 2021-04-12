@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [1.8.0] - 2021-04-12
+
+### Deprecated
+
+- Command line argument `--print-debug` as it will be replaced by `--verbose`.
+- Command line argument `--in-tree-build` as it will be removed in the next major version.
+- Command line arguments `--github-auth-file`, `--github-user-agent`, and `--github-api-token` as they’ll become obsolete in the next major version.
+- Command line arguments `--compiler-toolchain`, `--clang`, `--gcc`, `--msvc`, `--compiler-version`, `--host-cc`, `--host-cxx`, `--host-compiler`, `--host-msbuild`, `--clang-tidy-binary`, `--clang-apply-replacements-binary`, and `--enable-xvfb` as they’ll become obsolete in the next major version.
+- Command line argument `--opengl-version` as it will be replaced by a value in `product.json`.
+- Command line arguments `--ode-static-lib`, `--ode-shared-lib`, `--anthem-static-lib`, `--anthem-shared-lib`, and `--skip-build` as they’ll become obsolete in the next major version.
+- Command line argument `--export-linter-fixes` as it will be removed in the next major version.
+- Command line argument `--use-artefact-directory` as it will be removed in the next major version.
+- Command line arguments `--ode-binaries-name`, `--anthem-binaries-name`, `--anthem-artefacts-name`, and `--anthem-artifacts-name` as they’ll become obsolete in the next major version.
+- Command line arguments `--assertions` and `--no-assertions` as they will be removed in the next major version.
+- Command line argument `--developer-build` as it will be removed in the next major version.
+- Command line argument `--test-logging` as it will be removed in the next major version.
+
 ## [1.7.6] - 2021-02-28
 
 ### Fixed
@@ -631,7 +648,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 - Initial utility script for building [Obliging Ode and Unsung Anthem](https://github.com/anttikivi/unsung-anthem).
 
-[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.7.6...HEAD
+[unreleased]: https://github.com/anttikivi/couplet-composer/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/anttikivi/couplet-composer/compare/v1.7.6...v1.8.0
 [1.7.6]: https://github.com/anttikivi/couplet-composer/compare/v1.7.5...v1.7.6
 [1.7.5]: https://github.com/anttikivi/couplet-composer/compare/v1.7.4...v1.7.5
 [1.7.4]: https://github.com/anttikivi/couplet-composer/compare/v1.7.3...v1.7.4
