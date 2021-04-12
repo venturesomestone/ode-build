@@ -76,6 +76,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - `ODE_TEST_USE_NULL_SINK` as it is removed.
 - `ODE_DISABLE_GL_CALLS` as it is removed.
 - `ODE_SCRIPTS_BASE_DIRECTORY` as it is removed.
+- Command line option `--in-tree-build` as support for builds in tree is removed.
 
 ## [1.2.1] - 2020-09-12
 
