@@ -98,6 +98,8 @@ def _read_preset(
     dash_dash_seen = False
 
     for option in parser.options(name):
+        logging.debug("Starting to parse the option '%s'", option)
+
         value = None
 
         try:
@@ -110,6 +112,8 @@ def _read_preset(
         if substitutions and option in substitutions:
             # TODO Substitute the value
             pass
+
+        logging.debug("The value read for '%s' is '%s'", option, value)
 
         if option == _MIXIN_OPTION and not is_mode_specific_preset:
             # Multiple mix-in presets are allowed in one option.
@@ -131,7 +135,7 @@ def _read_preset(
         elif option == _DASH_DASH_OPTION:
             dash_dash_seen = True
         else:
-            pair_to_add = {option: value.split(",") if "," in value else value}
+            pair_to_add = {option: (value.split(",") if "," in value else value)}
             if dash_dash_seen:
                 options_after_end.update(pair_to_add)
             else:
