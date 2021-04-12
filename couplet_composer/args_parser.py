@@ -338,7 +338,8 @@ def create_args_parser() -> ArgumentParser:
 
     compose.add_argument(
         "--cmake-options",
-        nargs="+",
+        action="append",
+        # nargs="+",
         help="add a list of additional CMake option to pass to the build"
     )
 
