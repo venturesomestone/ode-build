@@ -5,6 +5,7 @@
 composing run mode of the build script.
 """
 
+import logging
 import os
 
 from argparse import Namespace
@@ -83,7 +84,7 @@ class ComposingRunner(RunnerProper):
                 "ON" if self.args.build_benchmark else "OFF"
             ),
             "-DCOMPOSER_BUILD_DOCS={}".format(
-                "ON" if self.args.build_docs else "OFF"  # TODO Also check that Doxygen is found
+                "ON" if self.args.build_docs and self.toolchain.doxygen else "OFF"
             ),
             "-DCOMPOSER_CODE_COVERAGE={}".format(
                 "ON" if self.args.coverage else "OFF"
@@ -124,6 +125,13 @@ class ComposingRunner(RunnerProper):
         if self.args.cmake_options:
             for option in self.args.cmake_options:
                 cmake_call.append("-D{}".format(option))
+
+        # Print the warnings related to the CMake build
+        if self.args.build_docs and not self.toolchain.doxygen:
+            logging.warning(
+                "Building the documentation is enabled but Doxygen wasn't "
+                "found, thus, the documentation isn't built"
+            )
 
         # TODO Run the lint before installing the docs
         with shell.pushd(self.build_dir.build):
