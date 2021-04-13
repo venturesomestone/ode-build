@@ -140,8 +140,7 @@ class PresetRunner(Runner):
             if value:
                 if isinstance(value, list):
                     for entry in value:
-                        if entry:
-                            build_call.append("--{}={}".format(key, entry))
+                        build_call.append("--{}={}".format(key, entry))
                 else:
                     build_call.append("--{}={}".format(key, value))
             else:

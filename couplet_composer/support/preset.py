@@ -133,7 +133,7 @@ def _read_preset(
         else:
             pair_to_add = {
                 option: [
-                    line.strip() for line in value.splitlines()
+                    line.strip() for line in value.splitlines() if line.strip()
                 ] if value and len(value.splitlines()) > 1 else value
             }
             if dash_dash_seen:
