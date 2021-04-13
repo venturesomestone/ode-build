@@ -187,19 +187,19 @@ class ComposingRunner(RunnerProper):
             shell.rmtree(
                 self.build_dir.docs_destination,
                 dry_run=self.args.dry_run,
-                echo=self.args.echo
+                echo=self.args.verbose
             )
 
         # TODO Add more possible docs formats besides HTML
         shell.makedirs(
             os.path.join(self.build_dir.docs_destination, "html"),
             dry_run=self.args.dry_run,
-            echo=self.args.echo
+            echo=self.args.verbose
         )
 
         shell.copytree(
             os.path.join(self.build_dir.build, "docs", "doxygen", "html"),
             os.path.join(self.build_dir.docs_destination, "html"),
             dry_run=self.args.dry_run,
-            echo=self.args.echo
+            echo=self.args.verbose
         )
