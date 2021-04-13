@@ -160,8 +160,6 @@ class PresetRunner(Runner):
         """Cleans the directories and files of the runner before
         building when clean build is run.
         """
-        # Two spaces are required at the end of the first line as
-        # the counter uses backspace characters.
         pass
 
     def caffeinate(

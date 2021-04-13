@@ -107,7 +107,18 @@ class RunnerProper(Runner):
             time.sleep(1)
         print("\033[31m\b\b\b\bnow.\033[0m")
 
-        # TODO Delete the common directories
+        # The build directories should be removed even in clean
+        # configuration to avoid errors.
+        shell.rmtree(
+            self.build_dir.build,
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
+        shell.rmtree(
+            self.build_dir.destination,
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
 
     def caffeinate(
         self,

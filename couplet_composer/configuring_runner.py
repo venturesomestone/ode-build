@@ -65,6 +65,11 @@ class ConfiguringRunner(RunnerProper):
             dry_run=self.args.dry_run,
             echo=self.args.verbose
         )
+        shell.rmtree(
+            self.build_dir.tools,
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
         shell.rm(
             self.build_dir.versions_file,
             dry_run=self.args.dry_run,
