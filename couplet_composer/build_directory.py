@@ -121,6 +121,7 @@ class BuildDirectory:
                 variant=self._build_variant
             )
         )
+        self.docs_destination = os.path.join(self.destination, "docs")
 
     def __getattr__(self, name) -> Any:
         """Gives the attributes of the build directory that

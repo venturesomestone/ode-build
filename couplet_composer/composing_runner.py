@@ -125,6 +125,7 @@ class ComposingRunner(RunnerProper):
             for option in self.args.cmake_options:
                 cmake_call.append("-D{}".format(option))
 
+        # TODO Run the lint before installing the docs
         with shell.pushd(self.build_dir.build):
             shell.call(
                 cmake_call,
@@ -144,6 +145,10 @@ class ComposingRunner(RunnerProper):
                 dry_run=self.args.dry_run,
                 echo=self.args.verbose
             )
+
+            if self.args.build_docs:
+                self._install_docs()
+
         shell.copytree(
             os.path.join(
                 self.source_root,
@@ -157,3 +162,36 @@ class ComposingRunner(RunnerProper):
         )
 
         return 0
+
+    def _install_docs(self) -> str:
+        """Runs a command during which system sleep is disabled.
+
+        Args:
+            data (Object): The data object read from the project
+                data JSON file.
+            key (str): The key for the data.
+
+        Returns:
+            The number, string, or object read from the project
+            data JSON file.
+        """
+        if os.path.exists(self.build_dir.docs_destination):
+            shell.rmtree(
+                self.build_dir.docs_destination,
+                dry_run=self.args.dry_run,
+                echo=self.args.echo
+            )
+
+        # TODO Add more possible docs formats besides HTML
+        shell.makedirs(
+            os.path.join(self.build_dir.docs_destination, "html"),
+            dry_run=self.args.dry_run,
+            echo=self.args.echo
+        )
+
+        shell.copytree(
+            os.path.join(self.build_dir.build, "docs", "doxygen", "html"),
+            os.path.join(self.build_dir.docs_destination, "html"),
+            dry_run=self.args.dry_run,
+            echo=self.args.echo
+        )
