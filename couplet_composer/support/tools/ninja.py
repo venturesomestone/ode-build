@@ -141,10 +141,19 @@ class Ninja(Tool):
             echo=self.args.verbose
         )
 
-        return os.path.join(
+        dest_tool = os.path.join(
             dest_dir,
             self.resolve_binary(platform=self.target.system)
         )
+
+        shell.chmod(
+            dest_tool,
+            stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH,
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
+
+        return dest_tool
 
     def _resolve_download_target(self, platform: System) -> str:
         """Resolves the target platform of the Ninja archive that
