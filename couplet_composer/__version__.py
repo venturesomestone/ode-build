@@ -15,10 +15,10 @@ def get_release_version():
     and, thus, returns three values: the major version number,
     the minor version number, and the patch version number.
     """
-    return 1, 9, 0
+    return 1, 10, 0
 
 
-_VERSION_SUFFIX = ""
+_VERSION_SUFFIX = "-dev"
 
 
 __version__ = "{}{}".format(
