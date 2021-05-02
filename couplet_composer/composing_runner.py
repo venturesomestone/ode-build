@@ -10,6 +10,8 @@ import os
 
 from argparse import Namespace
 
+from .support.cmake_generator import CMakeGenerator
+
 from .support.cpp_standard import CppStandard
 
 from .util import shell
@@ -98,6 +100,11 @@ class ComposingRunner(RunnerProper):
             )
         ]
 
+        if self._resolve_make_program():
+            cmake_call.append("-DCMAKE_MAKE_PROGRAM={}".format(
+                self._resolve_make_program()
+            ))
+
         for key in self.project.project_keys:
             cmake_call.append("-DCOMPOSER_{}_VERSION={}".format(
                 key.upper(),
@@ -170,6 +177,17 @@ class ComposingRunner(RunnerProper):
         )
 
         return 0
+
+    def _resolve_make_program(self) -> str:
+        """Resolves the path to the correct Make program for CMake.
+
+        Returns:
+            The path to the Make program.
+        """
+        if self.cmake_generator == CMakeGenerator.ninja:
+            return self.toolchain.ninja
+
+        return None
 
     def _run_linter(self) -> None:
         """Runs the linter on the project.
