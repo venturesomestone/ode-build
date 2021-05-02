@@ -171,6 +171,23 @@ class ComposingRunner(RunnerProper):
 
         return 0
 
+    def _run_linter(self) -> None:
+        """Runs the linter on the project.
+        """
+        linter_call = [
+            self.toolchain.run_clang_tidy,
+            "-clang-tidy-binary",
+            self.toolchain.clang_tidy,
+            "-j",
+            self.args.jobs
+        ]
+        shell.call(
+            linter_call,
+            env=None,
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
+
     def _install_docs(self) -> str:
         """Runs a command during which system sleep is disabled.
 

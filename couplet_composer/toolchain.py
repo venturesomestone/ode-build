@@ -46,6 +46,7 @@ class Toolchain:
     """
 
     LLVM_TOOL_NAME = "llvm"
+    RUN_CLANG_TIDY_TOOL_NAME = "run_clang_tidy"
 
     def __init__(
         self,
@@ -123,7 +124,18 @@ class Toolchain:
             AttributeError: Is thrown if the given tool isn't
             found or possible to be built.
         """
-        if name.startswith("clang-"):
+        if name == self.RUN_CLANG_TIDY_TOOL_NAME:
+            if name in self._tool_paths and self._tool_paths[name]:
+                return self._tool_paths[name]
+            else:
+                tool_path = self._tools[self.LLVM_TOOL_NAME].install_run_clang_tidy()
+
+                if tool_path:
+                    self._tool_paths[name] = tool_path
+                    return tool_path
+
+            raise AttributeError
+        elif name.startswith("clang_"):
             if name in self._tool_paths and self._tool_paths[name]:
                 return self._tool_paths[name]
             else:
@@ -133,7 +145,7 @@ class Toolchain:
                     self._tool_paths[name] = tool_path
                     return tool_path
 
-                tool_path = self._tools[self.LLVM_TOOL_NAME].install_extra_tool(name)
+                tool_path = self._tools[self.LLVM_TOOL_NAME].install_extra_tool(name.replace("_", "-"))
 
                 if tool_path:
                     self._tool_paths[name] = tool_path
