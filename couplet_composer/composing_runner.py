@@ -177,6 +177,8 @@ class ComposingRunner(RunnerProper):
     def _run_linter(self) -> None:
         """Runs the linter on the project.
         """
+        logging.warning("The run-clang-tidy is %s", self.toolchain.run_clang_tidy)
+
         linter_call = [
             self.toolchain.run_clang_tidy,
             "-clang-tidy-binary",
