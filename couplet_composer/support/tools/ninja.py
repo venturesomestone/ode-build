@@ -115,7 +115,17 @@ class Ninja(Tool):
         )
 
         if os.path.isdir(dest_dir):
-            shell.rmtree(dest_dir)
+            shell.rmtree(
+                dest_dir,
+                dry_run=self.args.dry_run,
+                echo=self.args.verbose
+            )
+
+        shell.makedirs(
+            dest_dir,
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
 
         shell.copy(
             os.path.join(
