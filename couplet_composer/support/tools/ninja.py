@@ -40,12 +40,10 @@ class Ninja(Tool):
             platform (System): The platform that the build script
                 is invoked on.
         """
-        if platform is System.darwin:
-            return os.path.join("bin", "ninja")
-        elif platform is System.linux:
-            return os.path.join("bin", "ninja")
+        if platform is System.darwin or platform is System.linux:
+            return "ninja"
         elif platform is System.windows:
-            return os.path.join("bin", "ninja,exe")
+            return "ninja.exe"
         raise ValueError  # TODO Add explanation or logging.
 
     def _download(self) -> str:
