@@ -21,7 +21,7 @@ from .support.run_mode import RunMode
 
 from .target import Target
 
-from . import __version__
+from .__version__ import __version__
 
 
 def _add_common_arguments(parser: ArgumentParser) -> ArgumentParser:
@@ -41,7 +41,7 @@ def _add_common_arguments(parser: ArgumentParser) -> ArgumentParser:
         "-v",
         "--version",
         action="version",
-        version=__version__.get_version()
+        version=__version__
     )
 
     # --------------------------------------------------------- #

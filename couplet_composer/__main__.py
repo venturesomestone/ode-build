@@ -8,7 +8,7 @@ import sys
 
 from .invocation import Invocation
 
-from . import __version__
+from .__version__ import __version__
 
 
 def _main() -> int:
@@ -23,7 +23,7 @@ def _main() -> int:
         script.
     """
     invocation = Invocation(
-        version=__version__.get_version(),
+        version=__version__,
         name="Couplet Composer"
     )
 
