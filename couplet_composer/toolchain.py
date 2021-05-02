@@ -126,19 +126,19 @@ class Toolchain:
         """
         if name == self.RUN_CLANG_TIDY_TOOL_NAME:
             if name in self._tool_paths and self._tool_paths[name]:
-                return str(self._tool_paths[name])
+                return self._tool_paths[name]
             else:
                 tool_path = self._tools[self.LLVM_TOOL_NAME].find_tool_extra("run-clang-tidy.py")
 
                 if tool_path:
                     self._tool_paths[name] = tool_path
-                    return str(tool_path)
+                    return tool_path
 
                 tool_path = self._tools[self.LLVM_TOOL_NAME].install_run_clang_tidy()
 
                 if tool_path:
                     self._tool_paths[name] = tool_path
-                    return str(tool_path)
+                    return tool_path
 
             raise AttributeError
         elif name.startswith("clang_"):
