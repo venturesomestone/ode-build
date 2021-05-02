@@ -67,6 +67,7 @@ def _add_common_arguments(parser: ArgumentParser) -> ArgumentParser:
         help="clean up the build environment before build"
     )
     parser.add_argument(
+        "-V",
         "--verbose",
         action="store_true",
         help="print the debug-level logging output"
