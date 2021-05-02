@@ -66,7 +66,7 @@ class Ninja(Tool):
 
         download_file = os.path.join(tmp_dir, "{}.zip".format(self.key))
 
-        download_url = "https://github.com/ninja-buils/ninja/releases/" \
+        download_url = "https://github.com/ninja-build/ninja/releases/" \
             "download/v{version}/ninja-{platform}.zip".format(
                 version=self.version,
                 platform=self._resolve_download_target(self.target.system)
