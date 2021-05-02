@@ -128,6 +128,12 @@ class Toolchain:
             if name in self._tool_paths and self._tool_paths[name]:
                 return self._tool_paths[name]
             else:
+                tool_path = self._tools[self.LLVM_TOOL_NAME].find_tool_extra(name)
+
+                if tool_path:
+                    self._tool_paths[name] = tool_path
+                    return tool_path
+
                 tool_path = self._tools[self.LLVM_TOOL_NAME].install_run_clang_tidy()
 
                 if tool_path:
@@ -139,7 +145,7 @@ class Toolchain:
             if name in self._tool_paths and self._tool_paths[name]:
                 return self._tool_paths[name]
             else:
-                tool_path = self._tools[self.LLVM_TOOL_NAME].find()
+                tool_path = self._tools[self.LLVM_TOOL_NAME].find_tool_extra(name)
 
                 if tool_path:
                     self._tool_paths[name] = tool_path

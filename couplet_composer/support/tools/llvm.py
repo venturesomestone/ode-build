@@ -88,6 +88,28 @@ class LLVM(Tool):
         """
         raise NotImplementedError  # TODO Add explanation or logging
 
+    def find_tool_extra(self, tool_cmd: str) -> str:
+        """Finds the extra tool if possible and returns the path
+        to it.
+
+        Args:
+            tool_cmd (str): The name of the extra tool to find.
+
+        Returns:
+            An 'str' with the path to the tool executable, or
+            None if it wasn't found.
+        """
+        system_tool = shell.which(
+            tool_cmd,
+            dry_run=self.args.dry_run,
+            echo=self.args.verbose
+        )
+
+        if system_tool:
+            return system_tool
+
+        return self._resolve_local_tool_extra_binary(tool_cmd=tool_cmd)
+
     def install_extra_tool(self, tool_name: str) -> str:
         """Downloads, builds, and installs the given Clang extra
         tool.
@@ -115,6 +137,28 @@ class LLVM(Tool):
         source_dir = self._download_clang_tools_extra_source()
 
         return self._build_run_clang_tidy(source_dir)
+
+    def _resolve_local_tool_extra_binary(self, tool_cmd: str) -> str:
+        """Gives the path of the extra tool in the local tools
+        directory if it is already installed there.
+
+        Args:
+            tool_cmd (str): The name of the extra tool to find.
+
+        Returns:
+            An 'str' that points to the executable, or None if
+            the tool is not found.
+        """
+        tool_dir = os.path.join(
+            self.build_dir.tools,
+            "{}-{}".format(self.key, self.target)
+        )
+        tool_path = os.path.join(tool_dir, tool_cmd)
+
+        if os.path.exists(tool_path):
+            return tool_path
+
+        return None
 
     def _resolve_download_target(self, platform: System) -> str:
         """Resolves the target platform of the LLVM archive that
