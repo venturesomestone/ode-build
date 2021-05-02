@@ -235,7 +235,12 @@ class LLVM(Tool):
             An 'str' that is the path to the build extra tool
             executable.
         """
-        bin_dir = os.path.join(source_path, "clang-tidy", "tool")
+        bin_dir = os.path.join(
+            source_path,
+            "clang-tools-extra-{}.src".format(self.version),
+            "clang-tidy",
+            "tool"
+        )
         source_tool = os.path.join(bin_dir, "run-clang-tidy.py")
         dest_dir = os.path.join(
             self.build_dir.tools,
