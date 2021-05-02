@@ -86,9 +86,6 @@ class ComposingRunner(RunnerProper):
             "-DCOMPOSER_BUILD_DOCS={}".format(
                 "ON" if self.args.build_docs and self.toolchain.doxygen else "OFF"
             ),
-            "-DCOMPOSER_CODE_COVERAGE={}".format(
-                "ON" if self.args.coverage else "OFF"
-            ),
             "-DCOMPOSER_CPP_STD={}".format(self.cpp_std.value),
             "-DCOMPOSER_LOCAL_PREFIX={}".format(
                 self.build_dir.dependencies.replace(os.path.sep, "/")

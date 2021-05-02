@@ -121,12 +121,6 @@ def _add_common_build_arguments(parser: ArgumentParser) -> ArgumentParser:
         help="run cland-tidy on the project"
     )
 
-    parser.add_argument(
-        "--coverage",
-        action="store_true",
-        help="generate the code coverage information from the tests"
-    )
-
     # --------------------------------------------------------- #
     # Build variant options
 

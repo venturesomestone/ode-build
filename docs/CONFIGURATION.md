@@ -125,10 +125,6 @@ Builds the documentation of the project. This option requires Doxygen, and you m
 
 Runs `clang-tidy` checks on the project and prints its output.
 
-**`--coverage`**
-
-Generates the code coverage reports from the tests.
-
 #### Build Variant Options
 
 You can use only one of the following options.
