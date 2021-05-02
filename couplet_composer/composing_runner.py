@@ -154,6 +154,9 @@ class ComposingRunner(RunnerProper):
                 echo=self.args.verbose
             )
 
+            if self.args.lint:
+                self._run_linter()
+
             if self.args.build_docs:
                 self._install_docs()
 
