@@ -6,6 +6,7 @@ represents Ninja in the toolchain of the build script.
 """
 
 import os
+import stat
 
 from ...util import http, shell
 
