@@ -15,6 +15,8 @@ from .support.tools.doxygen import Doxygen
 
 from .support.tools.git import Git
 
+from .support.tools.llvm import LLVM
+
 from .support.tools.make import Make
 
 from .support.tools.ninja import Ninja
@@ -42,6 +44,8 @@ class Toolchain:
         runner (Runner): The runner that this toolchain belongs
             to.
     """
+
+    LLVM_TOOL_NAME = "llvm"
 
     def __init__(
         self,
@@ -72,6 +76,16 @@ class Toolchain:
             ),
             "doxygen": Doxygen(args=args, build_dir=build_dir, target=target),
             "git": Git(args=args, build_dir=build_dir, target=target),
+            "llvm": LLVM(
+                key="llvm",
+                cmd="llvm",
+                name="LLVM",
+                version="10.0.0",
+                tool_files=None,
+                args=args,
+                build_dir=build_dir,
+                target=target
+            ),
             "make": Make(args=args, build_dir=build_dir, target=target),
             "ninja": Ninja(
                 key="ninja",
@@ -109,19 +123,37 @@ class Toolchain:
             AttributeError: Is thrown if the given tool isn't
             found or possible to be built.
         """
-        if name in self._tool_paths and self._tool_paths[name]:
-            return self._tool_paths[name]
+        if name.startswith("clang-"):
+            if name in self._tool_paths and self._tool_paths[name]:
+                return self._tool_paths[name]
+            else:
+                tool_path = self._tools[self.LLVM_TOOL_NAME].find()
+
+                if tool_path:
+                    self._tool_paths[name] = tool_path
+                    return tool_path
+
+                tool_path = self._tools[self.LLVM_TOOL_NAME].install_extra_tool(name)
+
+                if tool_path:
+                    self._tool_paths[name] = tool_path
+                    return tool_path
+
+            raise AttributeError
         else:
-            tool_path = self._tools[name].find()
+            if name in self._tool_paths and self._tool_paths[name]:
+                return self._tool_paths[name]
+            else:
+                tool_path = self._tools[name].find()
 
-            if tool_path:
-                self._tool_paths[name] = tool_path
-                return tool_path
+                if tool_path:
+                    self._tool_paths[name] = tool_path
+                    return tool_path
 
-            tool_path = self._tools[name].install()
+                tool_path = self._tools[name].install()
 
-            if tool_path:
-                self._tool_paths[name] = tool_path
-                return tool_path
+                if tool_path:
+                    self._tool_paths[name] = tool_path
+                    return tool_path
 
-        raise AttributeError
+            raise AttributeError
