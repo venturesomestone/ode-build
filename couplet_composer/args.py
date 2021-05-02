@@ -160,6 +160,7 @@ def _add_common_build_arguments(parser):
         )
     )
 
+    # TODO Deprecated
     parser.add_argument(
         "--coverage",
         action="store_true",
