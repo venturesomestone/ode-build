@@ -108,14 +108,23 @@ def _check_and_print_python_version():
                 to_date_string(date_difference(python2_end_of_life, now))
             )
             logging.warning(
-                "Starting at version %s, %s will end supporting Python "
-                "2.7",
+                "Starting at version %s, %s will end supporting Python version older than "
+                "3.6",
                 "2.0",
                 get_project_name()
             )
     else:
-        logging.debug("You're using Python %s", sys.version)
-        logging.debug("You seem to have an excellent taste!")
+        if sys.version_info.minor < 6:
+            logging.warning("You're using Python %s", sys.version)
+            logging.warning(
+                "Starting at version %s, %s will end supporting Python version older than "
+                "3.6",
+                "2.0",
+                get_project_name()
+            )
+        else:
+            logging.debug("You're using Python %s", sys.version)
+            logging.debug("You seem to have an excellent taste!")
 
 
 def _resolve_running_function(mode, argument_parser):
