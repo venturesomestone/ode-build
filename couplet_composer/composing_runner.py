@@ -184,7 +184,7 @@ class ComposingRunner(RunnerProper):
             "-clang-tidy-binary",
             self.toolchain.clang_tidy,
             "-j",
-            self.args.jobs
+            str(self.args.jobs)
         ]
         shell.call(
             linter_call,
