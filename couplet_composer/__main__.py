@@ -436,7 +436,8 @@ def _main():
         "--assertions",
         "--no-assertions",
         "--developer-build",
-        "--test-logging"
+        "--test-logging",
+        "--coverage"
     ]
 
     logging.warning(
