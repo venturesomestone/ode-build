@@ -149,7 +149,14 @@ class LLVM(Tool):
             An 'str' that is the path to the build extra tool
             executable.
         """
-        bin_dir = os.path.join(source_path, "bin")
+        bin_dir = os.path.join(
+            source_path,
+            "clang+llvm-{version}-{platform}".format(
+                version=self.version,
+                platform=self._resolve_download_target(self.target.system),
+            ),
+            "bin"
+        )
         source_tool = os.path.join(bin_dir, tool_name)
         dest_dir = os.path.join(
             self.build_dir.tools,
