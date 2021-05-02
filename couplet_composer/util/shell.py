@@ -370,3 +370,19 @@ def tar(
                 archive.extractall(dest)
             else:
                 archive.extractall()
+
+def chmod(path: str, mode: int, dry_run: bool = None, echo: bool = None) -> None:
+    """Changes the mode of a file.
+
+    Args:
+        path (str): The file, the mode of which is modified.
+        action (int): The new mode.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
+    if dry_run or echo:
+        _echo_command(dry_run, ["chmod", mode, path])
+    if dry_run:
+        return
+    file_stat = os.stat(path)
+    os.chmod(path, file_stat.st_mode | mode)
