@@ -91,6 +91,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Command line arguments `--assertions` and `--no-assertions`.
 - Command line argument `--developer-build`.
 - Command line argument `--test-logging`.
+- Support for Python versions older than 3.6.
 
 ## [1.9.0] - 2021-05-02
 
