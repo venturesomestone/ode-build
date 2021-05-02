@@ -35,6 +35,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - Support for passing the CMake option `COMPOSER_name_VERSION` where `name` is the name of a supported project.
 - Support for passing the CMake option `COMPOSER_name_NAME` where `name` is the name of a supported project.
 - Support for passing option lists from the presets.
+- Command line option `--verbose` and `-V` to print debugging output.
 
 ### Changed
 
@@ -78,6 +79,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 - `ODE_DISABLE_GL_CALLS` as it is removed.
 - `ODE_SCRIPTS_BASE_DIRECTORY` as it is removed.
 - Command line option `--in-tree-build` as support for builds in tree is removed.
+- Command line argument `--coverage` and support for creating code coverage reports.
+- Command line argument `--print-debug`.
+- Command line arguments `--github-auth-file`, `--github-user-agent`, and `--github-api-token`.
+- Command line arguments `--compiler-toolchain`, `--clang`, `--gcc`, `--msvc`, `--compiler-version`, `--host-cc`, `--host-cxx`, `--host-compiler`, `--host-msbuild`, `--clang-tidy-binary`, `--clang-apply-replacements-binary`, and `--enable-xvfb`.
+- Command line argument `--opengl-version`.
+- Command line arguments `--ode-static-lib`, `--ode-shared-lib`, `--anthem-static-lib`, `--anthem-shared-lib`, and `--skip-build`.
+- Command line argument `--export-linter-fixes`.
+- Command line argument `--use-artefact-directory`.
+- Command line arguments `--ode-binaries-name`, `--anthem-binaries-name`, `--anthem-artefacts-name`, and `--anthem-artifacts-name`.
+- Command line arguments `--assertions` and `--no-assertions`.
+- Command line argument `--developer-build`.
+- Command line argument `--test-logging`.
 
 ## [1.2.1] - 2020-09-12
 
