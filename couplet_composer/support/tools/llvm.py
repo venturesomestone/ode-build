@@ -6,6 +6,7 @@ represents LLVM and various LLVM tools in the toolchain of the
 build script.
 """
 
+import logging
 import os
 import stat
 
@@ -323,5 +324,7 @@ class LLVM(Tool):
             dry_run=self.args.dry_run,
             echo=self.args.verbose
         )
+
+        logging.warning("The run-clang-tidy is %s", dest_tool)
 
         return dest_tool

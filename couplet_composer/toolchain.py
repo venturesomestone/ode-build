@@ -128,7 +128,7 @@ class Toolchain:
             if name in self._tool_paths and self._tool_paths[name]:
                 return self._tool_paths[name]
             else:
-                tool_path = self._tools[self.LLVM_TOOL_NAME].find_tool_extra(name)
+                tool_path = self._tools[self.LLVM_TOOL_NAME].find_tool_extra("run-clang-tidy.py")
 
                 if tool_path:
                     self._tool_paths[name] = tool_path
@@ -145,7 +145,7 @@ class Toolchain:
             if name in self._tool_paths and self._tool_paths[name]:
                 return self._tool_paths[name]
             else:
-                tool_path = self._tools[self.LLVM_TOOL_NAME].find_tool_extra(name)
+                tool_path = self._tools[self.LLVM_TOOL_NAME].find_tool_extra(name.replace("_", "-"))
 
                 if tool_path:
                     self._tool_paths[name] = tool_path
