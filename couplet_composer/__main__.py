@@ -4,6 +4,7 @@
 """The entry point of the build script.
 """
 
+import logging
 import sys
 
 from .invocation import Invocation
@@ -22,6 +23,13 @@ def _main() -> int:
         An 'int' that is equal to the exit code of the build
         script.
     """
+    if sys.version_info.major < 3 or sys.version_info.minor < 6:
+        logging.critical(
+            "You're using Python %s, and the minimum supported version is %s",
+            sys.version,
+            "3.6"
+        )
+
     invocation = Invocation(
         version=__version__,
         name="Couplet Composer"
