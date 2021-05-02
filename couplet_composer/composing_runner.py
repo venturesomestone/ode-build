@@ -184,7 +184,7 @@ class ComposingRunner(RunnerProper):
         Returns:
             The path to the Make program.
         """
-        if self.cmake_generator == CMakeGenerator.ninja:
+        if self.cmake_generator is CMakeGenerator.ninja:
             return self.toolchain.ninja
 
         return None
