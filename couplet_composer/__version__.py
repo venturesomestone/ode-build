@@ -1,21 +1,20 @@
-# Copyright (c) 2019 Antti Kivi
+# Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""
-The version data of Couplet Composer. The version number is given
-according to Semantic Versioning.
+"""The version data of the build script. The version number is
+given according to Semantic Versioning.
 """
 
 import os
 
 
-def get_release_version():
+def get_release_version() -> str:
     """
     Gives the current release version data of Couplet Composer
     and, thus, returns three values: the major version number,
     the minor version number, and the patch version number.
     """
-    return 1, 10, 0
+    return 2, 0, 0
 
 
 _VERSION_SUFFIX = "-dev"

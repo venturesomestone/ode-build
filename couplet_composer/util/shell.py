@@ -1,20 +1,8 @@
-# Copyright (c) 2019 Antti Kivi
+# Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
+"""A module that contains several shell helpers.
 """
-This utility module contains several shell helpers.
-
-The functions in the module are intentionally and especially
-internally not functional-like as the shell functionalities do
-inherently not satisfy the requirements of functional-like code.
-The functions that do shell calls can also end the execution of
-the script on failure.
-
-Nevertheless, the basic principles are preserved, i.e. functions
-don't modify their parameters.
-"""
-
-from __future__ import print_function
 
 import logging
 import os
@@ -27,34 +15,49 @@ import zipfile
 
 from contextlib import contextmanager
 
-from ..support.platform_names import get_darwin_system_name
+from typing import Any
 
-from .cache import cached
-
-from .target import current_platform
+from ..support.archive_action import ArchiveAction
 
 
-@cached
-def get_dev_null():
+def _quote(arg: str) -> str:
+    """Gives a shell-escaped version of the argument.
+
+    Args:
+        arg (str): The argument to escape.
+
+    Returns:
+        An 'str'.
     """
-    Gives the pipe to which the ignored shell output is put to.
-    """
-    return getattr(subprocess, "DEVNULL", subprocess.PIPE)
-
-
-def _quote(arg):
     return pipes.quote(str(arg))
 
 
-def quote_command(args):
-    """Quotes a command for printing it."""
+def quote_command(args: list) -> str:
+    """Quotes a command for printing it.
+
+    Args:
+        args (list): A list that is a command line argument.
+
+    Returns:
+        A shell-escaped 'str' version of the given command line
+        argument.
+    """
     return " ".join([_quote(a) for a in args])
 
 
-def _echo_command(dry_run, command, env=None, prompt="+ "):
-    """
-    Echoes a command to command line. Thus this function isn't
-    pure.
+def _echo_command(
+    dry_run: bool,
+    command: list,
+    env: dict = None,
+    prompt: str = "+ "
+) -> None:
+    """Echoes a command to command line.
+
+    Args:
+        dry_run (bool): Whether or not dry run is enabled.
+        command (list): The command to print.
+        env (dict): Key-value pairs as the environment variables.
+        prompt (str): The prompt to print before the command.
     """
     output = []
     if env is not None:
@@ -69,8 +72,22 @@ def _echo_command(dry_run, command, env=None, prompt="+ "):
     file.flush()
 
 
-def call(command, stderr=None, env=None, dry_run=None, echo=None):
-    """Runs the given command."""
+def call(
+    command: list,
+    stderr: Any = None,
+    env: dict = None,
+    dry_run: bool = None,
+    echo: bool = None
+) -> None:
+    """Runs the given command.
+
+    Args:
+        command (list): The command to call.
+        stderr (any): An optional stderr file to use.
+        env (dict): Key-value pairs as the environment variables.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     if dry_run or echo:
         _echo_command(dry_run, command, env=env)
     if dry_run:
@@ -97,15 +114,30 @@ def call(command, stderr=None, env=None, dry_run=None, echo=None):
 
 
 def capture(
-    command,
-    stderr=None,
-    env=None,
-    dry_run=None,
-    echo=None,
-    optional=False,
-    allow_non_zero_exit=False
-):
-    """Runs the given command and returns its output."""
+    command: list,
+    stderr: Any = None,
+    env: dict = None,
+    dry_run: bool = None,
+    echo: bool = None,
+    optional: bool = False,
+    allow_non_zero_exit: bool = False
+) -> Any:
+    """Runs the given command and returns its output.
+
+    Args:
+        command (list): The command to call.
+        stderr (any): An optional stderr file to use.
+        env (dict): Key-value pairs as the environment variables.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+        optional (bool): Whether the output of the command is
+            optional.
+        allow_non_zero_exit (bool): Whether the output is
+            returned regardless of the success of the command.
+
+    Returns:
+        The output of the command.
+    """
     if dry_run or echo:
         _echo_command(dry_run, command, env=env)
     if dry_run:
@@ -141,8 +173,15 @@ def capture(
 
 
 @contextmanager
-def pushd(path, dry_run=None, echo=None):
-    """Pushes the directory to the top of the directory stack."""
+def pushd(path: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Pushes the directory to the top of the directory stack
+    and, thus, changes the current working directory.
+
+    Args:
+        path (str): The directory to switch to.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     old_dir = os.getcwd()
     if dry_run or echo:
         _echo_command(dry_run, ["pushd", path])
@@ -155,9 +194,13 @@ def pushd(path, dry_run=None, echo=None):
         os.chdir(old_dir)
 
 
-def makedirs(path, dry_run=None, echo=None):
-    """
-    Creates the given directory and the in-between directories.
+def makedirs(path: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Creates the given directory and the in-between directories.
+
+    Args:
+        path (str): The directory to create.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
     """
     if dry_run or echo:
         _echo_command(dry_run, ["mkdir", "-p", path])
@@ -167,8 +210,20 @@ def makedirs(path, dry_run=None, echo=None):
         os.makedirs(path)
 
 
-def copytree(src, dest, dry_run=None, echo=None):
-    """Copies a directory and its contents."""
+def copytree(
+    src: str,
+    dest: str,
+    dry_run: bool = None,
+    echo: bool = None
+) -> None:
+    """Copies a directory and its contents.
+
+    Args:
+        src (str): The directory to copy.
+        dest (str): The directory where the source is copied to.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     if dry_run or echo:
         _echo_command(dry_run, ["cp", "-r", src, dest])
     if dry_run:
@@ -186,8 +241,21 @@ def copytree(src, dest, dry_run=None, echo=None):
         shutil.copytree(src, dest)
 
 
-def copy(src, dest, dry_run=None, echo=None):
-    """Copies a file."""
+def copy(
+    src: str,
+    dest: str,
+    dry_run: bool = None,
+    echo: bool = None
+) -> None:
+    """Copies a file.
+
+    Args:
+        src (str): The file to copy.
+        dest (str): The directory or file where the source is
+            copied to.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     if dry_run or echo:
         _echo_command(dry_run, ["cp", "-p", src, dest])
     if dry_run:
@@ -199,19 +267,31 @@ def copy(src, dest, dry_run=None, echo=None):
         shutil.copy2(src, dest)
 
 
-def rmtree(path, dry_run=None, echo=None):
-    """Removes a directory and its contents."""
+def rmtree(path: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Removes a directory and its contents.
+
+    Args:
+        path (str): The directory to delete.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     if dry_run or echo:
         _echo_command(dry_run, ["rm", "-rf", path])
     if dry_run:
         return
     if os.path.exists(path):
-        # TODO Find out if ignore_errors is required
+        # TODO Find out if 'ignore_errors' is required
         shutil.rmtree(path, ignore_errors=True)
 
 
-def rm(file, dry_run=None, echo=None):
-    """Removes a file."""
+def rm(file: str, dry_run: bool = None, echo: bool = None) -> None:
+    """Removes a file.
+
+    Args:
+        file (str): The file to delete.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     if dry_run or echo:
         _echo_command(dry_run, ["rm", "-f", file])
     if dry_run:
@@ -222,103 +302,87 @@ def rm(file, dry_run=None, echo=None):
         os.remove(file)
 
 
-def link(src, dest, dry_run=None, echo=None):
-    """Creates a symbolic link."""
+def which(command: str, dry_run: bool = None, echo: bool = None) -> str:
+    """Returns path to an executable which would be run if the
+    given command was called.
+
+    If no command would be called, returns None.
+
+    Args:
+        command (str): The command to find.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+
+    Returns:
+        The full path of the command or None if the command is
+        not found.
+    """
     if dry_run or echo:
-        _echo_command(dry_run, ["ln", "-s", src, dest])
+        _echo_command(dry_run, ["which", command])
     if dry_run:
         return
-    os.symlink(src, dest)
+    return shutil.which(command)
 
 
-def tar(path, dest=None, dry_run=None, echo=None):
-    """Extracts an archive."""
+def tar(
+    path: str,
+    action: ArchiveAction = ArchiveAction.extract,
+    dest: str = None,
+    dry_run: bool = None,
+    echo: bool = None
+) -> None:
+    """Performs actions on archives.
+
+    Args:
+        path (str): The tar archive that the utility acts on or
+            that the tar archive is formed from.
+        action (ArchiveAction): The action that is performed.
+        dest (str): Either the destination that the archive is
+            extracted to or the archive file that is created from
+            the path.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     if dry_run or echo:
-        if dest:
-            _echo_command(dry_run, ["tar", "-xf", path, "-C", dest])
-        else:
-            _echo_command(dry_run, ["tar", "-xf", path])
+        if action is ArchiveAction.extract:
+            if dest:
+                _echo_command(dry_run, ["tar", "-xf", path, "-C", dest])
+            else:
+                _echo_command(dry_run, ["tar", "-xf", path])
+        elif action is ArchiveAction.unzip:
+            if dest:
+                _echo_command(dry_run, ["unzip", "-d", dest, path])
+            else:
+                _echo_command(dry_run, ["unzip", path])
+
     if dry_run:
         return
-    if path.endswith(".zip"):
+
+    if action is ArchiveAction.extract:
+        with tarfile.open(path) as archive:
+            if dest:
+                archive.extractall(dest)
+            else:
+                archive.extractall()
+    elif action is ArchiveAction.unzip:
         with zipfile.ZipFile(path, "r") as archive:
             if dest:
                 archive.extractall(dest)
             else:
                 archive.extractall()
-    else:
-        if path.endswith(".tar") or path.endswith(".tar.gz"):
-            with tarfile.open(path) as archive:
-                if dest:
-                    archive.extractall(dest)
-                else:
-                    archive.extractall()
-        else:
-            if sys.version_info.major == 2:
-                # TODO Use different command for Windows.
-                with pushd(os.path.dirname(path)):
-                    if dest:
-                        call(
-                            ["tar", "-xf", os.path.split(path)[1], "-C", dest]
-                        )
-                    else:
-                        call(["tar", "-xf", os.path.split(path)[1]])
-            else:
-                with tarfile.open(path) as archive:
-                    if dest:
-                        archive.extractall(dest)
-                    else:
-                        archive.extractall()
 
+def chmod(path: str, mode: int, dry_run: bool = None, echo: bool = None) -> None:
+    """Changes the mode of a file.
 
-def create_tar(src, dest, dry_run=None, echo=None):
-    """Creates a .tar.gz archive."""
-    if dry_run or echo:
-        _echo_command(dry_run, ["tar", "-czf", dest, src])
-    if dry_run:
-        return
-    dest_file = dest
-    if dest_file.endswith(".tar.gz"):
-        dest_file = dest_file[:-7]
-    shutil.make_archive(dest_file, format="gztar", root_dir=src)
-
-
-def create_zip(src, dest, dry_run=None, echo=None):
-    """Creates a .zip archive."""
-    if dry_run or echo:
-        _echo_command(dry_run, ["zip", "-r", dest, src])
-    if dry_run:
-        return
-    dest_file = dest
-    if dest_file.endswith(".zip"):
-        dest_file = dest_file[:-4]
-    shutil.make_archive(dest_file, format="zip", root_dir=src)
-
-
-def curl(url, dest, env=None, dry_run=None, echo=None):
-    """Downloads a file."""
-    call(
-        ["curl", "-o", dest, "--create-dirs", url],
-        env=env,
-        dry_run=dry_run,
-        echo=echo
-    )
-
-
-def chmod(path, mode, dry_run=None, echo=None):
-    """Changes the mode of a file."""
+    Args:
+        path (str): The file, the mode of which is modified.
+        action (int): The new mode.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
+    """
     if dry_run or echo:
         _echo_command(dry_run, ["chmod", mode, path])
     if dry_run:
         return
     file_stat = os.stat(path)
     os.chmod(path, file_stat.st_mode | mode)
-
-
-def caffeinate(command, env=None, dry_run=None, echo=None):
-    """Runs a command during which system sleep is disabled."""
-    command_to_run = list(command)
-    # Disable system sleep, if possible.
-    if current_platform() == get_darwin_system_name():
-        command_to_run = ["caffeinate"] + list(command)
-    call(command_to_run, env=env, dry_run=dry_run, echo=echo)

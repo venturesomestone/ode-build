@@ -4,6 +4,94 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com), and this project adheres to [Semantic Versioning](https://semver.org).
 
+## [Unreleased]
+
+### Added
+
+- Documentation for the usage options of Couplet Composer to its repository.
+- Command line option `--repository` for specifying the name of the repository directory of the project that is being built.
+- Type hints to every method of the script.
+- Support for determining custom module for dependency by using the key `module` and custom class in the module by using the key `className`.
+- Support for determining the files used to check whether a dependency is installed by using the key `files`.
+- Support for specifying the files and directories to copy and check for in different directories by using the names of the dependency directories (`bin`, `include`, `lib`, `src`, etc.) as keys for files or file arrays in the value object in `files`.
+- Support for specifying both the source file and destination file when the installation of the dependency requires copying files.
+- Support for determining the asset file that should be downloaded for a dependency by using the key `asset`.
+- Support for determining the [GitHub](https://github.com) repository of a dependency by using the key `repo`.
+- Runner for each target and cross-compile target so that the script is run for every added target.
+- Version and name CMake options automatically for each subproject.
+- Colours to command line output that depends on the logging level of the message.
+- More informative logging format to the command line output.
+- Ability to add platform-dependant file configurations for the dependencies.
+- Support for adding CMake commands in `product.json` with the key `cmakeOptions`.
+- Command line option `--cmake-options` for adding CMake options.
+- Support for passing the CMake option `COMPOSER_BUILD_TEST`.
+- Support for passing the CMake option `COMPOSER_BUILD_BENCHMARK`.
+- Support for passing the CMake option `COMPOSER_BUILD_DOCS`.
+- Support for passing the CMake option `COMPOSER_CODE_COVERAGE`.
+- Support for passing the CMake option `COMPOSER_CPP_STD`.
+- Support for passing the CMake option `COMPOSER_LOCAL_PREFIX`.
+- Support for passing the CMake option `COMPOSER_OPENGL_VERSION_MAJOR`.
+- Support for passing the CMake option `COMPOSER_OPENGL_VERSION_MINOR`.
+- Support for passing the CMake option `COMPOSER_name_VERSION` where `name` is the name of a supported project.
+- Support for passing the CMake option `COMPOSER_name_NAME` where `name` is the name of a supported project.
+- Support for passing option lists from the presets.
+- Command line option `--verbose` and `-V` to print debugging output.
+
+### Changed
+
+- Internal application programming interface to use object based structure.
+- Values for setting and checking the run mode into an enumeration.
+- Values used in handling the operating system into an enumeration.
+- Key for determining whether a dependency is built only when the tests are built to `testOnly`.
+- Key for determining whether a dependency is built only when the benchmarks are built to `benchmarkOnly`.
+- Name of the file containing the versions of the locally installed dependencies to start with a dot.
+- Utility functions for modifying archives to a single methods that does different actions depending on arguments.
+- Toolchain to install the tools in a ‘lazy’ manner so that a tool is installed only when it’s actually required.
+
+### Removed
+
+- Support for the file `util/values.json` as the file that contains the data of the project that is being built.
+- Support for the file `util/dependencies.json` as the file that contains the data of the depdencies for the project that is being built.
+- Support for the usage of value `default` in `project.json` as the way to tell the script to use the shared version number for Ode or Anthem.
+- Support for the field `version` in `project.json` for holding the value of the shared version number.
+- Command line options `--ode-version` and `--anthem-version`.
+- Support for using the key `testonly` to determine whether a dependency is built only when the tests are built.
+- Support for using the key `benchmarkonly` to determine whether a dependency is built only when the benchmarks are built.
+- Dependency on `distro`.
+- `ODE_BUILD_TEST` as it is replaced by `COMPOSER_BUILD_TEST`.
+- `ODE_TEST_BENCHMARKING` as it is replaced by `COMPOSER_BUILD_BENCHMARK`.
+- `ODE_BUILD_DOCS` as it is replaced by `COMPOSER_BUILD_DOCS`.
+- `ODE_CODE_COVERAGE` as it is replaced by `COMPOSER_CODE_COVERAGE`.
+- `ODE_CXX_VERSION` as it is replaced by `COMPOSER_CPP_STD`.
+- `ODE_DEPENDENCY_PREFIX` as it is replaced by `COMPOSER_LOCAL_PREFIX`.
+- `ODE_OPENGL_VERSION_MAJOR` as it is replaced by `COMPOSER_OPENGL_VERSION_MAJOR`.
+- `ODE_OPENGL_VERSION_MINOR` as it is replaced by `COMPOSER_OPENGL_VERSION_MINOR`.
+- `ODE_VERSION` as it is replaced by `COMPOSER_ODE_VERSION`.
+- `ANTHEM_VERSION` as it is replaced by `COMPOSER_ANTHEM_VERSION`.
+- `ODE_NAME` as it is replaced by `COMPOSER_ODE_NAME`.
+- `ANTHEM_NAME` as it is replaced by `COMPOSER_ANTHEM_NAME`.
+- `ODE_DEVELOPER` as it is removed.
+- `ODE_BUILD_STATIC` as it is removed.
+- `ODE_BUILD_SHARED` as it is removed.
+- `ANTHEM_BUILD_STATIC` as it is removed.
+- `ANTHEM_BUILD_SHARED` as it is removed.
+- `ODE_TEST_USE_NULL_SINK` as it is removed.
+- `ODE_DISABLE_GL_CALLS` as it is removed.
+- `ODE_SCRIPTS_BASE_DIRECTORY` as it is removed.
+- Command line option `--in-tree-build` as support for builds in tree is removed.
+- Command line argument `--coverage` and support for creating code coverage reports.
+- Command line argument `--print-debug`.
+- Command line arguments `--github-auth-file`, `--github-user-agent`, and `--github-api-token`.
+- Command line arguments `--compiler-toolchain`, `--clang`, `--gcc`, `--msvc`, `--compiler-version`, `--host-cc`, `--host-cxx`, `--host-compiler`, `--host-msbuild`, `--clang-tidy-binary`, `--clang-apply-replacements-binary`, and `--enable-xvfb`.
+- Command line argument `--opengl-version`.
+- Command line arguments `--ode-static-lib`, `--ode-shared-lib`, `--anthem-static-lib`, `--anthem-shared-lib`, and `--skip-build`.
+- Command line argument `--export-linter-fixes`.
+- Command line argument `--use-artefact-directory`.
+- Command line arguments `--ode-binaries-name`, `--anthem-binaries-name`, `--anthem-artefacts-name`, and `--anthem-artifacts-name`.
+- Command line arguments `--assertions` and `--no-assertions`.
+- Command line argument `--developer-build`.
+- Command line argument `--test-logging`.
+
 ## [1.9.0] - 2021-05-02
 
 ### Deprecated
@@ -284,7 +372,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com), and this 
 
 ### Added
 
-- Support for the CMake option for indicating that the compilation of the binaries will be skipped.
+- Support for the CMake option for indicating that the compilation of the binaries is skipped.
 
 ## [0.14.6] - 2020-05-09
 

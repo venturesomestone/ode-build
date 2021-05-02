@@ -1,7 +1,8 @@
-# Copyright (c) 2019 Antti Kivi
+# Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""This support module is used to download files."""
+"""A module that contains helpers for streaming from internet.
+"""
 
 import os
 
@@ -11,40 +12,39 @@ from . import shell
 
 
 def stream(
-    url,
-    destination,
-    host_system,
-    headers=None,
-    dry_run=None,
-    print_debug=None
-):
-    """
-    Streams a file to the local machine.
+    url: str,
+    destination: str,
+    headers: dict = None,
+    dry_run: bool = None,
+    echo: bool = None
+) -> None:
+    """Streams a file to the local machine by Hypertext Transport
+    Protocol.
 
-    url -- The url where the file is streamed from.
-
-    destination -- The local file where the file is streamed.
-
-    host_system -- The system this script is run on.
-
-    headers -- The possible headers for the HTTP call.
-
-    dry_run -- Whether the commands are only printed instead of
-    running them.
-
-    print_debug -- Whether debug output should be printed.
+    Args:
+        url (str): The url where the file is streamed from.
+        destination (str): The local path where the file is
+            streamed.
+        headers (dict): The possible headers for the HTTP call.
+        dry_run (bool): Whether or not dry run is enabled.
+        echo (bool): Whether or not the command must be printed.
     """
     if headers:
         response = requests.get(url=url, headers=headers, stream=True)
     else:
         response = requests.get(url=url, stream=True)
-    shell.makedirs(
-        os.path.dirname(destination),
-        dry_run=dry_run,
-        echo=print_debug
-    )
-    if print_debug:
-        shell.curl(url, destination, dry_run=True, echo=print_debug)
+    if not os.path.isdir(destination):
+        shell.makedirs(
+            os.path.dirname(destination),
+            dry_run=dry_run,
+            echo=echo
+        )
+    if echo:
+        shell.call(
+            ["curl", "-L", "-o", destination, "--create-dirs", url],
+            dry_run=True,
+            echo=True
+        )
     if dry_run:
         return
     with open(destination, "wb") as destination_file:

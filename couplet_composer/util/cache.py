@@ -1,7 +1,8 @@
-# Copyright (c) 2019 Antti Kivi
+# Copyright (c) 2020 Antti Kivi
 # Licensed under the MIT License
 
-"""This utility module has caching utilities."""
+"""A module that contains caching helpers.
+"""
 
 from functools import update_wrapper
 
@@ -10,7 +11,8 @@ __all__ = ["cached"]
 
 
 def cached(func):
-    """Decorator that caches result of method or function."""
+    """Decorator that caches result of method or function.
+    """
     cache = {}
 
     def wrapper(*args, **kwargs):

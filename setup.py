@@ -19,7 +19,7 @@ DESCRIPTION = "Tool for building, testing, and preparing binary " \
 URL = "https://github.com/anttikivi/couplet-composer"
 EMAIL = "antti.kivi@visiosto.fi"
 AUTHOR = "Antti Kivi"
-REQUIRES_PYTHON = ">=2.7.11"
+REQUIRES_PYTHON = ">=3.6"
 VERSION = None
 
 # The packages that Couplet Composer needs
@@ -103,8 +103,6 @@ setup(
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
