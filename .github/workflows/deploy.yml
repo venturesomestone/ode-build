@@ -24,7 +24,7 @@ jobs:
 
       - name: Determine the project’s version
         id: version
-        uses: visiosto/maintain-revision@v0.10.1
+        uses: visiosto/maintain-revision@v0.14.0
         with:
           type: python
           file: 'couplet_composer/__version__.py'
