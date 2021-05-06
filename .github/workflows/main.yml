@@ -37,7 +37,13 @@ jobs:
         type: python
         file: 'couplet_composer/__version__.py'
         upload: false
-        suffix-variable: _VERSION_SUFFIX
+
+    - name: Replace the project’s version
+      uses: visiosto/replace-value@develop
+      with:
+        file: 'couplet_composer/__version__.py'
+        replaced: '_VERSION_SUFFIX = "-dev"'
+        value: '_VERSION_SUFFIX = "-dev.${{ steps.version.outputs.revision-number }}"'
 
     - name: Cache dependencies
       uses: actions/cache@v2.1.5
@@ -96,8 +102,14 @@ jobs:
         type: python
         file: 'couplet_composer/__version__.py'
         download: false
-        suffix-variable: _VERSION_SUFFIX
         revision-number: ${{ needs.build.outputs.revision-number }}
+
+    - name: Replace the project’s version
+      uses: visiosto/replace-value@develop
+      with:
+        file: 'couplet_composer/__version__.py'
+        replaced: '_VERSION_SUFFIX = "-dev"'
+        value: '_VERSION_SUFFIX = "-dev.${{ needs.build.outputs.revision-number }}"'
 
     - name: Cache dependencies
       uses: actions/cache@v2.1.5
