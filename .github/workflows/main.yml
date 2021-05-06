@@ -35,13 +35,14 @@ jobs:
       uses: visiosto/maintain-revision@v0.15.0
       with:
         type: python
-        file: 'couplet_composer/__version__.py'
+        file: couplet_composer/__version__.py
+        bucket: anthem-workflows
         upload: false
 
     - name: Replace the project’s version
       uses: visiosto/replace-value@v0.1.0
       with:
-        file: 'couplet_composer/__version__.py'
+        file: couplet_composer/__version__.py
         replaced: '_VERSION_SUFFIX = "-dev"'
         value: '_VERSION_SUFFIX = "-dev.${{ steps.version.outputs.revision-number }}"'
 
@@ -100,14 +101,14 @@ jobs:
       uses: visiosto/maintain-revision@v0.15.0
       with:
         type: python
-        file: 'couplet_composer/__version__.py'
-        download: false
+        file: couplet_composer/__version__.py
+        bucket: anthem-workflows
         revision-number: ${{ needs.build.outputs.revision-number }}
 
     - name: Replace the project’s version
       uses: visiosto/replace-value@v0.1.0
       with:
-        file: 'couplet_composer/__version__.py'
+        file: couplet_composer/__version__.py
         replaced: '_VERSION_SUFFIX = "-dev"'
         value: '_VERSION_SUFFIX = "-dev.${{ needs.build.outputs.revision-number }}"'
 
